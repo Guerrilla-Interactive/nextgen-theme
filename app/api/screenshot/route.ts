@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { chromium, devices } from 'playwright';
+import { chromium } from 'playwright';
+import fs from 'fs';
+import { execSync } from 'child_process';
 
 // Define viewport sizes for all CSS breakpoints
 const breakpointViewports = {
@@ -24,7 +26,7 @@ Object.entries(breakpointViewports).forEach(([breakpoint, viewport]) => {
   
   breakpointSettings[breakpoint] = {
     userAgent: isMobile 
-      ? devices['iPhone 13'].userAgent
+      ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1'
       : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     viewport,
     deviceScaleFactor: isMobile ? 2 : 1,
@@ -32,6 +34,60 @@ Object.entries(breakpointViewports).forEach(([breakpoint, viewport]) => {
     hasTouch: isMobile,
   };
 });
+
+// Find Chrome executable on the system
+function findChromeExecutable() {
+  // Only run in non-Vercel environments
+  if (process.env.VERCEL) {
+    return null;
+  }
+  
+  // Common Chrome paths on different systems
+  const possiblePaths = [
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/chromium-browser',
+    '/usr/bin/chromium',
+    '/usr/local/bin/chromium',
+    '/opt/google/chrome/chrome'
+  ];
+  
+  // Check if any of the paths exist
+  for (const path of possiblePaths) {
+    try {
+      if (fs.existsSync(path)) {
+        console.log(`Found Chrome at: ${path}`);
+        return path;
+      }
+    } catch (error) {
+      console.log(`Error checking path ${path}:`, error);
+    }
+  }
+  
+  // Try to find Chrome using 'which' command if available
+  try {
+    const chromePath = execSync('which google-chrome || which chromium-browser || which chromium').toString().trim();
+    if (chromePath) {
+      console.log(`Found Chrome via 'which' command at: ${chromePath}`);
+      return chromePath;
+    }
+  } catch (error) {
+    console.log('Error running which command:', error.message);
+  }
+  
+  // Default to null if not found
+  console.log('Chrome executable not found on the system');
+  return null;
+}
+
+// Import node-canvas as a fallback if available
+let Canvas;
+try {
+  Canvas = require('canvas');
+} catch (e) {
+  Canvas = null;
+  console.log('Canvas module not available for fallback rendering');
+}
 
 // Helper function to take a screenshot for a specific breakpoint
 async function captureScreenshotForBreakpoint(url: string, breakpoint: string, isDraft: boolean, timeout: number) {
@@ -43,24 +99,64 @@ async function captureScreenshotForBreakpoint(url: string, breakpoint: string, i
   if (!deviceConfig) {
     throw new Error(`Invalid breakpoint: ${breakpoint}`);
   }
-    
-  // Launch headless browser
-  const browser = await chromium.launch();
+  
+  // Browser arguments for headless operation
+  const browserArgs = [
+    '--disable-gpu',
+    '--disable-dev-shm-usage',
+    '--disable-setuid-sandbox',
+    '--no-sandbox',
+    '--no-zygote',
+    '--disable-accelerated-2d-canvas',
+    '--single-process',
+    '--headless=new',
+    '--disable-features=AudioServiceOutOfProcess',
+    '--disable-extensions',
+    '--disable-component-extensions-with-background-pages',
+    '--disable-default-apps',
+    '--mute-audio',
+    '--hide-scrollbars'
+  ];
+
+  let browser;
   
   try {
+    console.log(`Running in ${process.env.VERCEL ? 'Vercel' : 'local'} environment`);
+    
+    // Find Chrome executable for local development only
+    const chromeExecutablePath = !process.env.VERCEL ? findChromeExecutable() : null;
+    
+    const launchOptions = {
+      args: browserArgs,
+      headless: true,
+    };
+    
+    // Only set executablePath in local development
+    if (chromeExecutablePath) {
+      launchOptions['executablePath'] = chromeExecutablePath;
+    }
+    
+    // Launch browser with appropriate options
+    browser = await chromium.launch(launchOptions);
+    
     // Create context with device emulation
     const context = await browser.newContext({
       ...deviceConfig,
-      viewport: deviceConfig.viewport
+      viewport: deviceConfig.viewport,
+      bypassCSP: true,
+      ignoreHTTPSErrors: true
     });
     
+    // Print diagnostics
+    console.log('Browser version:', await browser.version());
+
     // Create new page
     const page = await context.newPage();
     
     // Extract hostname from url to determine enable endpoint
     const urlObj = new URL(url);
     const origin = urlObj.origin;
-    
+
     // If capturing draft content, enable draft mode first
     if (isDraft) {
       try {
@@ -113,21 +209,30 @@ async function captureScreenshotForBreakpoint(url: string, breakpoint: string, i
     console.log('Waiting for content to render...');
     await page.waitForTimeout(3000);
     
-    // Take screenshot
+    // Take screenshot with optimized settings
     console.log(`Taking ${breakpoint} screenshot...`);
     const screenshot = await page.screenshot({ 
       type: 'png',
-      fullPage: true
+      fullPage: true,
+      // Optimize screenshot quality for production
+      quality: 85,
+      scale: 'device',
+      omitBackground: false
     });
-    
-    // Close browser
-    await browser.close();
     
     return screenshot;
   } catch (error) {
-    // Make sure to close browser even if there's an error
-    await browser.close();
+    console.error('Screenshot capture error:', error);
     throw error;
+  } finally {
+    // Make sure to close browser even if there's an error
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (closeError) {
+        console.error('Error closing browser:', closeError);
+      }
+    }
   }
 }
 
@@ -179,13 +284,41 @@ export async function POST(request: NextRequest) {
     
     const screenshots: Record<string, string | null> = {};
     
+    // Try to use Playwright for screenshots
+    let playwrightAvailable = true;
+    
+    try {
+      // Test if Playwright is available by launching a browser briefly
+      const browser = await chromium.launch({
+        args: ['--no-sandbox', '--headless=new'],
+        headless: true
+      });
+      await browser.close();
+    } catch (error) {
+      console.warn('Playwright not available, using fallback mode:', error.message);
+      playwrightAvailable = false;
+    }
+    
     // Capture screenshots for each selected breakpoint
     for (const breakpoint of breakpointsToCapture) {
       try {
         console.log(`Capturing ${breakpoint} screenshot...`);
-        const screenshot = await captureScreenshotForBreakpoint(url, breakpoint, isDraft, timeout);
         
-        // No need to map names anymore
+        let screenshot;
+        
+        if (playwrightAvailable) {
+          // Use normal Playwright screenshot
+          screenshot = await captureScreenshotForBreakpoint(url, breakpoint, isDraft, timeout);
+        } else {
+          // Fallback to a placeholder when Playwright isn't available
+          screenshot = await generatePlaceholderImage(
+            breakpointViewports[breakpoint].width, 
+            breakpointViewports[breakpoint].height,
+            url,
+            breakpoint
+          );
+        }
+        
         // Convert screenshot to base64 for JSON response
         const base64 = Buffer.from(screenshot).toString('base64');
         screenshots[breakpoint] = base64;
@@ -209,7 +342,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ 
       success: true, 
       screenshots,
-      capturedBreakpoints: Object.keys(screenshots).filter(bp => screenshots[bp] !== null)
+      capturedBreakpoints: Object.keys(screenshots).filter(bp => screenshots[bp] !== null),
+      usingFallback: !playwrightAvailable
     });
   } catch (error) {
     console.error('Screenshot error:', error);
@@ -219,6 +353,52 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+// Fallback function to generate a placeholder image when Playwright is unavailable
+async function generatePlaceholderImage(width, height, url, breakpoint) {
+  const buffer = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    <rect width="${width}" height="${height}" fill="#f0f0f0" />
+    <text x="50%" y="50%" font-family="Arial" font-size="24" text-anchor="middle" fill="#666">
+      Screenshot Unavailable
+    </text>
+    <text x="50%" y="55%" font-family="Arial" font-size="14" text-anchor="middle" fill="#666">
+      URL: ${url}
+    </text>
+    <text x="50%" y="60%" font-family="Arial" font-size="14" text-anchor="middle" fill="#666">
+      Breakpoint: ${breakpoint} (${width}x${height})
+    </text>
+  </svg>`);
+  
+  // Use canvas if available for more sophisticated fallback
+  if (Canvas) {
+    try {
+      const { createCanvas, loadImage } = Canvas;
+      const canvas = createCanvas(width, height);
+      const ctx = canvas.getContext('2d');
+      
+      // Fill with light gray background
+      ctx.fillStyle = '#f0f0f0';
+      ctx.fillRect(0, 0, width, height);
+      
+      // Add text
+      ctx.fillStyle = '#333';
+      ctx.font = '24px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Screenshot Unavailable', width/2, height/2);
+      
+      ctx.font = '14px Arial';
+      ctx.fillText(`URL: ${url}`, width/2, height/2 + 30);
+      ctx.fillText(`Breakpoint: ${breakpoint} (${width}x${height})`, width/2, height/2 + 50);
+      
+      return canvas.toBuffer();
+    } catch (canvasError) {
+      console.error('Error generating canvas fallback:', canvasError);
+    }
+  }
+  
+  // Return the SVG buffer if Canvas fails or isn't available
+  return buffer;
 }
 
 // Also support GET requests for testing in browser
