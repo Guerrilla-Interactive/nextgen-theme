@@ -1,0 +1,62 @@
+{
+  "_id": "F7H7uwymBevRGso7GnJ4KR",
+  "_type": "command",
+  "title": "nextgen-sanity-deskstructure-settings-tab",
+  "slug": {
+    "_type": "slug",
+    "current": "nextgen-sanity-deskstructure-settings-tab"
+  },
+  "filePaths": [
+    {
+      "_key": "1746625421904-mpeosj6zs",
+      "_type": "filePathGroup",
+      "id": "path-1746625421904",
+      "path": "sanity\\desk-organized-sanity-utilities\\settings",
+      "nodes": [
+        {
+          "_key": "1746625567133-ud033co7h",
+          "_type": "treeNode",
+          "id": "folder-1746625567133",
+          "name": "{{.KebabCaseType}}-settings",
+          "type": "folder",
+          "code": "",
+          "isIndexer": false,
+          "children": [
+            {
+              "id": "node-5/WO2NznDVQcrGm30uMp2Q==",
+              "name": "{{.KebabCaseType}}-settings.query.ts",
+              "type": "file",
+              "children": [],
+              "code": "import { pageBuilderQuery } from \"@/features/page-builder-blocks/block-indexer\";\r\nimport { groq } from \"next-sanity\";\r\n\r\n// @sanity-typegen-ignore\r\nexport const {{.CamelCaseType}}SettingsQuery = groq`\r\n    title\r\n`;\r\n",
+              "_key": "node-AmBr03E4l2B9wbPuQgtqbg==",
+              "_type": "treeNode",
+              "slug": "{{.kebabcasetype}}-settings.query.ts",
+              "title": "{{.KebabCaseType}}-settings.query.ts"
+            },
+            {
+              "id": "node-EcEBw/fIGqfmQE1SFNTsGQ==",
+              "name": "{{.KebabCaseType}}-settings.schema.ts",
+              "type": "file",
+              "children": [],
+              "code": "import { getSanityPageBuilderBlocks } from \"@/features/page-builder-blocks/block-indexer\";\r\nimport { defineField, defineType } from \"sanity\";\r\nimport { PanelTop } from \"lucide-react\";\r\n\r\nexport const {{.CamelCaseType}}SettingsSchema = defineType({\r\n  name: \"{{.CamelCaseType}}Settings\",\r\n  title: \"{{.PascalCaseType}} Settings\",\r\n  type: \"document\",\r\n  icon: PanelTop,\r\n  fields: [\r\n    // title \r\n    defineField({\r\n      name: \"title\",\r\n      title: \"Title\",\r\n      type: \"string\",\r\n      initialValue: \"{{.PascalCaseType}}\"\r\n    }),\r\n  ]\r\n});\r\n",
+              "_key": "node-CLLXbL0YWuLiL7yKhmx9GQ==",
+              "_type": "treeNode",
+              "slug": "{{.kebabcasetype}}-settings.schema.ts",
+              "title": "{{.KebabCaseType}}-settings.schema.ts"
+            }
+          ]
+        },
+        {
+          "_key": "node-Z6mSFEPr5gtj53M1hIkZhQ==",
+          "_type": "treeNode",
+          "id": "node-gFiJUwlCpMW9bNg7a8JV4A==",
+          "name": "all-settings-document-schemas.ts",
+          "type": "file",
+          "code": "// ADD VALUE 1 ABOVE\r\n\r\n\r\n\r\n\r\n\r\n\r\n// ADD VALUE 2 ABOVE\r\n\r\n\r\nconst settingsSchemas = {\r\n  // ADD VALUE 3 ABOVE\r\n};\r\n\r\nexport const allSettingsSchemas= Object.values( settingsSchemas);\r\n\r\n",
+          "isIndexer": false,
+          "children": []
+        }
+      ]
+    }
+  ]
+}

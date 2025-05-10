@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { generatePageMetadata } from "@/features/unorganized-utils/metadata";
-import { fetchSanityServiceBySlug, fetchSanityServiceStaticParams } from "./(service-slug-core-utilities)/service-slug.server-actions";
+import { fetchSanityServiceBySlug, fetchSanityServiceStaticParams } from "./_service-slug-core-utilities/service-slug.server-actions";
 import ServiceSlugPageComponent from "./service-slug.page-component";
 
 // Add ISR with revalidation every 30 seconds

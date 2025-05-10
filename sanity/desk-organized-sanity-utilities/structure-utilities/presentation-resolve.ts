@@ -3,8 +3,8 @@ import {
   defineDocuments,
   PresentationPluginOptions,
 } from "sanity/presentation";
-import { serviceSlugVariables } from "@/app/(main)/service/[slug]/(service-slug-core-utilities)/service-slug.translations-and-variables";
-import { courseSlugVariables } from "@/app/(main)/course/[slug]/(course-slug-core-utilities)/course-slug.translations-and-variables";
+import { serviceSlugVariables } from "@/app/(main)/service/[slug]/_service-slug-core-utilities/service-slug.translations-and-variables";
+import { courseSlugVariables } from "@/app/(main)/course/[slug]/_course-slug-core-utilities/course-slug.translations-and-variables";
 export const resolve: PresentationPluginOptions["resolve"] = {
   locations: {
     // Add more locations for other post types

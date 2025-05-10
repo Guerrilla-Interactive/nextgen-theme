@@ -2,13 +2,10 @@
 import { VisualEditing } from "next-sanity";
 import { draftMode } from "next/headers";
 import { SanityLive } from "@/sanity/lib/live";
-import Header from "@/features/theme/header";
+import Header from "@/sanity/desk-organized-sanity-utilities/settings/header-settings/header";
 import { DisableDraftMode } from "@/features/unorganized-components/disable-draft-mode";
-import Footer from "@/features/theme/footer/footer";
-
-
-import { useGlobalContext } from "@/features/context/global-context";
-import { fetchSettings, fetchFooter } from "@/sanity/desk-organized-sanity-utilities/settings/settings.query";
+import Footer from "@/sanity/desk-organized-sanity-utilities/settings/footer-settings/footer/footer";
+import { fetchSettings } from "@/sanity/desk-organized-sanity-utilities/settings/settings.query";
 
 
 
@@ -20,12 +17,12 @@ export default async function MainLayout({
   children: React.ReactNode;
 }) {
   const settings = await fetchSettings();
-  const footer = await fetchFooter();
+  
 
   
   return (
     <>
-      <Header {...settings.data}/>
+      <Header {...settings.data.headerSettings}/>
       <main>{children}</main>
       <SanityLive />
       {(await draftMode()).isEnabled && (
@@ -34,7 +31,7 @@ export default async function MainLayout({
           <VisualEditing />
         </>
       )}
-      <Footer {...footer.data} />
+      <Footer {...settings.data.footerSettings} />
     </>
   );
 }

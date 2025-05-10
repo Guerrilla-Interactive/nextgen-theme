@@ -6,15 +6,15 @@ import { ThemeProvider } from "@/features/theme/theme-provider";
 import { Toaster } from "@/features/unorganized-components/ui/sonner";
 import { GlobalContextProvider } from "@/features/context/global-context";
 import { NextgenContextStatusPanel } from "@/features/context/nextgen-context-panel";
-
+import { FrontendCaptureProvider } from "./(main)/(root)/[slug]/_page-slug-core-utilities/frontend-capture-provider";
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
   title: {
-    template: "%s | Veitrygghet",
-    default: "Veitrygghet",
+    template: "%s | Nextgen",
+    default: "Nextgen",
   },
   openGraph: {
     images: [
@@ -56,6 +56,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Include html2canvas for screenshot functionality */}
+        <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" async></script>
+      </head>
       <link rel="icon" href="/favicon.ico" />
       <GlobalContextProvider>
       <body
@@ -66,13 +70,13 @@ export default function RootLayout({
           supplementFont.variable
         )}
       >
-
+          <FrontendCaptureProvider />
           {children}
         
         <Toaster position="top-center" richColors />
         <NextgenContextStatusPanel />
 
-        {/* <NextgenContextStatusPanel /> */}
+        
 
       </body>
       </GlobalContextProvider>

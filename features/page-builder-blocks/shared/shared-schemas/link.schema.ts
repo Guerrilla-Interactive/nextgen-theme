@@ -19,10 +19,5 @@ export default defineType({
       type: "boolean",
       title: "Open in new tab",
     }),
-    defineField({
-      name: "buttonVariant",
-      type: "button-variant",
-      title: "Button Variant",
-    }),
   ],
 });

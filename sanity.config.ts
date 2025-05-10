@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * This configuration is used to for the Sanity Studio that’s mounted on the `/app/studio/[[...tool]]/page.tsx` route
+ * This configuration is used to for the Sanity Studio that's mounted on the `/app/studio/[[...tool]]/page.tsx` route
  */
 
 import { visionTool } from "@sanity/vision";
@@ -18,16 +18,22 @@ import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schema } from "./sanity/all-schemas-combined";
 import { resolve } from "@/sanity/desk-organized-sanity-utilities/structure-utilities/presentation-resolve";
 import { structure } from "./sanity/desk-organized-sanity-utilities/structure";
+import AppIcon from "./features/theme/AppIcon";
+
+import { serverScreenshot } from "./sanity/plugins/server-screenshot";
+
 
 
 export default defineConfig({
   basePath: "/studio",
   projectId,
+  icon: AppIcon,
   dataset,
-  name: "Veitrygghet",
+  name: "Nextgen",
   // Add and edit the content schema in the './sanity/schema' folder
   schema,
   plugins: [
+    serverScreenshot(),
     structureTool({ structure }),
     presentationTool({
       previewUrl: {

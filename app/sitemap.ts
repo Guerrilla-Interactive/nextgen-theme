@@ -1,14 +1,18 @@
+// @sanity-typegen-ignore
+
 import type { MetadataRoute } from "next";
 import { groq } from "next-sanity";
 import { sanityFetch } from "@/sanity/lib/live";
-import { courseSlugVariables } from "./(main)/course/[slug]/(course-slug-core-utilities)/course-slug.translations-and-variables";
-import { serviceSlugVariables } from "./(main)/service/[slug]/(service-slug-core-utilities)/service-slug.translations-and-variables";
-
+import { courseSlugVariables } from "./(main)/course/[slug]/_course-slug-core-utilities/course-slug.translations-and-variables";
+import { serviceSlugVariables } from "./(main)/service/[slug]/_service-slug-core-utilities/service-slug.translations-and-variables";
 
 
 
 // 1) Fetch only the front page's slug (for filtering out a matching "page-slug" later).
 async function getFrontPageSlug(): Promise<string | undefined> {
+
+
+  // @sanity-typegen-ignore
   const query = groq`
     *[_type == "siteSettings"][0].frontPage->{
       "slug": slug.current
@@ -23,6 +27,7 @@ async function getFrontPageSlug(): Promise<string | undefined> {
 
 // 2) Fetch the front page itself as a proper Sitemap object
 async function getFrontPage(): Promise<MetadataRoute.Sitemap> {
+  // @sanity-typegen-ignore
   const query = groq`
     *[_type == "siteSettings"][0].frontPage->{
       'url': $baseUrl + '',
@@ -49,6 +54,7 @@ interface ExtendedSitemap extends MetadataRoute.Sitemap {
 
 // 3) Fetch “pages” (excluding the front page) – but we’ll do the filtering later
 async function getPagesSitemap(): Promise<ExtendedSitemap[]> {
+  // @sanity-typegen-ignore
   const pageQuery = groq`
     *[_type == 'page-slug'] | order(slug.current) {
       "url": $baseUrl + select('/' + slug.current),
@@ -72,7 +78,7 @@ async function getPagesSitemap(): Promise<ExtendedSitemap[]> {
 async function getServicesSitemap(): Promise<ExtendedSitemap[]> {
   const servicesQuery = groq`
     *[_type == "service-slug"] | order(_updatedAt desc) {
-      "url": $baseUrl + '${serviceSlugVariables("ROUTE_PATH")}/' + slug.current,
+      "url": $baseUrl + '/service/' + slug.current,
       "slug": slug.current,
       "lastModified": _updatedAt,
       "changeFrequency": 'weekly',
@@ -94,9 +100,10 @@ async function getServicesSitemap(): Promise<ExtendedSitemap[]> {
 
 // 5) Courses
 async function getCoursesSitemap(): Promise<ExtendedSitemap[]> {
+  // @sanity-typegen-ignore
   const coursesQuery = groq`
-    *[_type == '${courseSlugVariables("DOCUMENT_TYPE")}'] | order(_updatedAt desc) {
-      "url": $baseUrl + '${courseSlugVariables("ROUTE_PATH")}/' + slug.current,
+    *[_type == 'course-slug'] | order(_updatedAt desc) {
+      "url": $baseUrl + '/course/' + slug.current,
       "slug": slug.current,
       "lastModified": _updatedAt,
       "changeFrequency": 'weekly',
@@ -115,6 +122,7 @@ async function getCoursesSitemap(): Promise<ExtendedSitemap[]> {
 
 // 6) Optional: Blog posts (only add if you need them in the final output)
 async function getPostsSitemap(): Promise<ExtendedSitemap[]> {
+  // @sanity-typegen-ignore
   const blogQuery = groq`
     *[_type == 'blog-slug'] | order(_updatedAt desc) {
       "url": $baseUrl + '/blog/' + slug.current,

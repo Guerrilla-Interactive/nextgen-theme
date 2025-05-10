@@ -2,11 +2,13 @@ import { settingsStructure } from "@/sanity/desk-organized-sanity-utilities/sett
 import { faqDeskStructure } from "./faq/faq.document-structure";
 import { testimonialDeskStructure } from "./testimonial/testimonial.document-structure";
 
-import { serviceSlugDeskStructure } from "@/app/(main)/service/[slug]/(service-slug-core-utilities)/service-slug.desk-structure";
-import { courseSlugDeskStructure } from "@/app/(main)/course/[slug]/(course-slug-core-utilities)/course-slug.desk-structure";
+import { serviceSlugDeskStructure } from "@/app/(main)/service/[slug]/_service-slug-core-utilities/service-slug.desk-structure";
+import { courseSlugDeskStructure } from "@/app/(main)/course/[slug]/_course-slug-core-utilities/course-slug.desk-structure";
 import { Files, List } from "lucide-react";
 import { StructureBuilder } from "sanity/structure";
 import { faqCategoryDeskStructure } from "./faq-category/faq-category.document-structure";
+
+
 
 // ADD VALUE 1 ABOVE
 export const structure = (S: StructureBuilder, context: any) => {
@@ -20,7 +22,7 @@ export const structure = (S: StructureBuilder, context: any) => {
       settingsStructure(S),
 
 
-      // I want tab to a list... it will show first service slug, then course slug, the seperator, then all the pages listed below
+      
       S.listItem()
       .title("Pages")
       .icon(Files)
@@ -40,6 +42,9 @@ export const structure = (S: StructureBuilder, context: any) => {
           S.divider(),
           serviceSlugDeskStructure(S),
           courseSlugDeskStructure(S),
+
+          
+
           
 
           // show list of pages directly below
@@ -70,6 +75,8 @@ export const structure = (S: StructureBuilder, context: any) => {
           testimonialDeskStructure(S, context),
         ])
       ),
+
+
       // ADD VALUE 2 ABOVE
     ])
 

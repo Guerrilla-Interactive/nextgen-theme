@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 
 import { generatePageMetadata } from "@/features/unorganized-utils/metadata";
 import PortableTextRenderer from "@/features/unorganized-components/portable-text-renderer";
-import { fetchSanityCourseBySlug, fetchSanityCourseStaticParams } from "./(course-slug-core-utilities)/course-slug.server-actions";
-import CourseSlugPageComponent from "./course-slug.page-component";
-import { courseSlugVariables } from "./(course-slug-core-utilities)/course-slug.translations-and-variables";    
+import { fetchSanityCourseBySlug, fetchSanityCourseStaticParams } from "./_course-slug-core-utilities/course-slug.server-actions";
+import CourseSlugPageComponent from "./_course-slug-core-utilities/course-slug.page-component";
+import { courseSlugVariables } from "./_course-slug-core-utilities/course-slug.translations-and-variables";    
 // Add ISR with revalidation every 30 seconds
 export const revalidate = 30;
 

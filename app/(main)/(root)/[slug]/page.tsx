@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { generatePageMetadata } from "@/features/unorganized-utils/metadata";
-import { fetchSanityPageBySlug, fetchSanityPagesStaticParams } from "./page-slug.server-actions";
+import { fetchSanityPageBySlug, fetchSanityPagesStaticParams } from "./_page-slug-core-utilities/page-slug.server-actions";
 
 import { Blocks } from "@/features/page-builder-blocks/block-component-exporter";
 

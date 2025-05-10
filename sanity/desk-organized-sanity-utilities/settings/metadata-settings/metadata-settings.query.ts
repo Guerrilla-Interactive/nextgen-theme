@@ -1,7 +1,7 @@
 import { groq } from "next-sanity";
 import { metadataQuery } from "./metadata.query";
 
-export const metadataSettingsQuery = groq`
+export const metadataSettingsFetchQuery = groq`
   *[_type == "metadataSettings"][0] {
     ${metadataQuery}
   }

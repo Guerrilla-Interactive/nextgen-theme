@@ -13,7 +13,11 @@ export const footerSettingsQuery = groq`
   }
 `;
 
-
+export const footerSettingsFetchQuery = groq`
+  *[_type == "footerSettings"][0] {
+  ${footerSettingsQuery}
+  }
+`;
 
 
 

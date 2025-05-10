@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { generatePageMetadata } from "@/features/unorganized-utils/metadata";
 import PortableTextRenderer from "@/features/unorganized-components/portable-text-renderer";
-import { fetchSanityBlogPostBySlug, fetchSanityBlogPostsStaticParams } from "./(blog-slug-core-utilities)/blog-slug.server-actions";
+import { fetchSanityBlogPostBySlug, fetchSanityBlogPostsStaticParams } from "./_blog-slug-core-utilities/blog-slug.server-actions";
 
 
 export async function generateStaticParams() {

@@ -1,6 +1,6 @@
 import { defineField, defineType } from "sanity";
 import { BookOpen } from "lucide-react";
-import { courseSlugVariables } from "@/app/(main)/course/[slug]/(course-slug-core-utilities)/course-slug.translations-and-variables";
+import { courseSlugVariables } from "@/app/(main)/course/[slug]/_course-slug-core-utilities/course-slug.translations-and-variables";
 
 export default defineType({
   name: "course-slider-block",

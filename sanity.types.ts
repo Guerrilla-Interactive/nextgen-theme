@@ -61,6 +61,94 @@ export type SanityFileAsset = {
   source?: SanityAssetSourceData;
 };
 
+export type Route404Settings = {
+  _id: string;
+  _type: "route404Settings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  subtitle?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  backgroundImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  blocks?: Array<{
+    _key: string;
+  } & Hero1Block | {
+    _key: string;
+  } & Hero2Block | {
+    _key: string;
+  } & Hero3Block | {
+    _key: string;
+  } & SectionHeaderBlock | {
+    _key: string;
+  } & SplitRowBlock | {
+    _key: string;
+  } & Carousel1Block | {
+    _key: string;
+  } & Carousel2Block | {
+    _key: string;
+  } & TimelineRowBlock | {
+    _key: string;
+  } & Cta1Block | {
+    _key: string;
+  } & LogoCloud1Block | {
+    _key: string;
+  } & FaqsBlock | {
+    _key: string;
+  } & FormNewsletterBlock | {
+    _key: string;
+  } & SplitContentBlock | {
+    _key: string;
+  } & SplitCardsListBlock | {
+    _key: string;
+  } & SplitImageBlock | {
+    _key: string;
+  } & SplitInfoListBlock | {
+    _key: string;
+  } & GridCardBlock | {
+    _key: string;
+  } & GridPostBlock | {
+    _key: string;
+  } & GridRowBlock | {
+    _key: string;
+  } & PricingCardBlock | {
+    _key: string;
+  } & HeadingAndParagraphCenteredBlock | {
+    _key: string;
+  } & ServiceGridBlock | {
+    _key: string;
+  } & CoverMapBlock | {
+    _key: string;
+  } & ContactInfoAndFormBlock | {
+    _key: string;
+  } & OurValuesBlock | {
+    _key: string;
+  } & CourseSliderBlock | {
+    _key: string;
+  } & Hero4Block | {
+    _key: string;
+  } & Hero5Block | {
+    _key: string;
+  } & CustomContactFormBlock | {
+    _key: string;
+  } & TwoColumnBlock | {
+    _key: string;
+  } & SeperatorBlock>;
+  meta_title?: string;
+  meta_description?: string;
+};
+
 export type SiteSettings = {
   _id: string;
   _type: "siteSettings";
@@ -97,7 +185,6 @@ export type MetadataSettings = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -129,7 +216,6 @@ export type HeaderSettings = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -141,18 +227,76 @@ export type HeaderSettings = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
     };
   };
   navigationItems?: Array<{
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
+    internalLink?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "page-slug";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "blog-slug";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "service-slug";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "course-slug";
+    };
+    customTitle?: string;
+    _type: "internalLinkObject";
     _key: string;
-    [internalGroqTypeReferenceTo]?: "page-slug";
+  } | {
+    href?: string;
+    customTitle?: string;
+    _type: "link";
+    _key: string;
+  } | {
+    title?: string;
+    links?: Array<{
+      internalLink?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "page-slug";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "blog-slug";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "service-slug";
+      } | {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "course-slug";
+      };
+      customTitle?: string;
+      _type: "internalLinkObject";
+      _key: string;
+    } | {
+      href?: string;
+      customTitle?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    _type: "linkGroup";
+    _key: string;
   }>;
 };
 
@@ -267,7 +411,6 @@ export type TwoColumnBlock = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -304,7 +447,6 @@ export type TwoColumnBlock = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -327,7 +469,6 @@ export type Hero5Block = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -345,7 +486,6 @@ export type Hero4Block = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -416,7 +556,6 @@ export type ServiceGridBlock = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -460,7 +599,6 @@ export type Timeline1Block = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -521,7 +659,6 @@ export type GridCardBlock = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -539,7 +676,6 @@ export type SplitInfoItemBlock = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -570,7 +706,6 @@ export type SplitInfoItemBlock = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -612,7 +747,6 @@ export type SplitCardsItemBlock = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -641,7 +775,6 @@ export type SplitImageBlock = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -687,7 +820,6 @@ export type SplitContentBlock = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -723,7 +855,6 @@ export type LogoCloud1Block = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -764,7 +895,6 @@ export type Cta1Block = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -815,7 +945,6 @@ export type Carousel1Block = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -863,7 +992,6 @@ export type Hero3Block = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -903,7 +1031,6 @@ export type Hero2Block = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -947,7 +1074,6 @@ export type Hero1Block = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -965,7 +1091,6 @@ export type Hero1Block = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -1016,7 +1141,6 @@ export type Link = {
   title?: string;
   href?: string;
   target?: boolean;
-  buttonVariant?: ButtonVariant;
 };
 
 export type BlockContent = Array<{
@@ -1043,7 +1167,6 @@ export type BlockContent = Array<{
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
   };
-  media?: unknown;
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
   alt?: string;
@@ -1070,7 +1193,6 @@ export type CourseSlug = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -1145,7 +1267,6 @@ export type ServiceSlug = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -1182,20 +1303,28 @@ export type CustomContactFormBlock = {
   submitButtonText?: string;
   successMessage?: string;
   formFields?: Array<{
-    fieldType?: "text" | "email" | "tel" | "textarea" | "checkbox" | "select" | "date" | "radio" | "file" | "heading";
+    fieldType?: "text" | "email" | "tel" | "textarea" | "checkbox" | "checkboxGroup" | "select" | "date" | "datetime" | "radio" | "file" | "heading";
     fieldName?: string;
     fieldLabel?: string;
     placeholder?: string;
     isRequired?: boolean;
-    width?: "full" | "half";
+    width?: "full" | "half" | "third" | "quarter" | "remaining";
     options?: Array<{
       label?: string;
+      useUniqueValue?: boolean;
       value?: string;
+      _type: "optionItem";
       _key: string;
     }>;
     helpText?: string;
     labelOnly?: boolean;
     preChecked?: boolean;
+    conditionalLogic?: {
+      enabled?: boolean;
+      controllerFieldName?: string;
+      action?: "show" | "hide";
+      controllerValueChecked?: "true" | "false";
+    };
     _type: "formField";
     _key: string;
   }>;
@@ -1223,7 +1352,6 @@ export type BlogSlug = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -1247,7 +1375,6 @@ export type BlogSlug = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -1335,7 +1462,6 @@ export type PageSlug = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -1358,7 +1484,6 @@ export type Testimonial = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -1422,7 +1547,6 @@ export type Author = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -1508,11 +1632,11 @@ export type Slug = {
   source?: string;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | SiteSettings | MetadataSettings | HeaderSettings | FooterSettings | SeperatorBlock | TwoColumnBlock | Hero5Block | Hero4Block | CourseSliderBlock | OurValuesBlock | ContactInfoAndFormBlock | Geopoint | ServiceGridBlock | HeadingAndParagraphCenteredBlock | Timeline1Block | PricingCardBlock | GridRowBlock | GridPostBlock | GridCardBlock | SplitInfoItemBlock | SplitCardsItemBlock | SplitInfoListBlock | SplitImageBlock | SplitCardsListBlock | SplitContentBlock | FormNewsletterBlock | LogoCloud1Block | Cta1Block | TimelineRowBlock | Carousel2Block | Carousel1Block | SplitRowBlock | SectionHeaderBlock | Hero3Block | Hero2Block | Hero1Block | InternalLink | ExternalLink | ButtonVariant | SectionPadding | ColorVariant | Link | BlockContent | CourseSlug | CoverMapBlock | ServiceSlug | FaqsBlock | CustomContactFormBlock | BlogSlug | PageSlug | Testimonial | FaqCategory | Faq | Category | Author | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Icon | MediaTag | Slug;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Route404Settings | SiteSettings | MetadataSettings | HeaderSettings | FooterSettings | SeperatorBlock | TwoColumnBlock | Hero5Block | Hero4Block | CourseSliderBlock | OurValuesBlock | ContactInfoAndFormBlock | Geopoint | ServiceGridBlock | HeadingAndParagraphCenteredBlock | Timeline1Block | PricingCardBlock | GridRowBlock | GridPostBlock | GridCardBlock | SplitInfoItemBlock | SplitCardsItemBlock | SplitInfoListBlock | SplitImageBlock | SplitCardsListBlock | SplitContentBlock | FormNewsletterBlock | LogoCloud1Block | Cta1Block | TimelineRowBlock | Carousel2Block | Carousel1Block | SplitRowBlock | SectionHeaderBlock | Hero3Block | Hero2Block | Hero1Block | InternalLink | ExternalLink | ButtonVariant | SectionPadding | ColorVariant | Link | BlockContent | CourseSlug | CoverMapBlock | ServiceSlug | FaqsBlock | CustomContactFormBlock | BlogSlug | PageSlug | Testimonial | FaqCategory | Faq | Category | Author | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Icon | MediaTag | Slug;
 export declare const internalGroqTypeReferenceTo: unique symbol;
-// Source: ./app/(main)/(root)/(index)/page-index.route-query.ts
+// Source: ./app/(main)/(root)/(index)/_page-index-core-utilities/page-index.route-query.ts
 // Variable: GET_FRONT_PAGE_QUERY
-// Query: *[_type == "siteSettings"][0].frontPage->{    blocks[]{  // Hero Blocks    _type == "hero-1-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    imagePosition,    links,  },    _type == "hero-2-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },    _type == "hero-3-block" => {    _type,    titleOrange,    titleWhite,    subtitle,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    showOverlay,    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },    _type == "hero-4-block" => {    _type,    title,    description,    showOverlay,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },  // Section/Header Blocks    _type == "section-header-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link,  },    _type == "heading-and-paragraph-centered-block" => {    _type,    heading,    paragraph,  },  // Carousel Blocks    _type == "carousel-1-block" => {    _type,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  },    _type == "carousel-2-block" => {    _type,    padding,    colorVariant,    testimonial[]->{    _id,    name,    title,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }    },      alt    },  },      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      rating,    },  // Timeline    _type == "timeline-row-block" => {    _type,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },  // Call to Action    _type == "cta-1-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },  // Logo Cloud    _type == "logo-cloud-1-block" => {    _type,    padding,    colorVariant,    title,    images[]{      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },  },  // FAQs    _type == "faqs-block" => {    _type,    noPadding,    faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},        faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }  },  // Newsletter    _type == "form-newsletter-block" => {    _type,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },  // Split Blocks    _type == "split-row-block" => {    _type,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },        _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },        _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },        _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },    },  },    _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },    _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },    _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },    _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },  // Grid Blocks    _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },    _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    _type == "grid-row-block" => {    _type,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },        _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },        _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    },  },  // Pricing    _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },  // Service    _type == "service-grid-block" => {    _type,    services[]{      _type == "manualService" => {         title,         link,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      },      _type != "manualService" => @->{         _id,         title,         slug,         excerpt,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      }    },  },  // Cover Map    _type == "cover-map-block" => {    _type,    center,    zoom,    height,    animateIntro,    bearingRotation,    radiusAnimation,    color,  },  // Contact Info    _type == "contact-info-and-form-block" => {    _type,      contactHeading,      contactDescription,      contactEmail,      contactPhone,      contactAddress,      customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        value      }  }    },    },  // Our Values    _type == "our-values-block" => {    _type,    values  },  // Course Slider    _type == "course-slider-block" => {    _type,    title,    sectionId,    courses[]->{      _id,      title,      "slug": slug.current,      featuredImage{            crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }      },      excerpt,    }  },    _type == "hero-5-block" => {    _type,    image{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  },  // Two Column    _type == "two-column-block" => {    _type,    firstColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    },    secondColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    }  },  // Seperator    _type == "seperator-block" => {    _type,    padding,  }  // ADD VALUE 3 ABOVE},    meta_title,    meta_description,    noindex,    ogImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },    }  }
+// Query: *[_type == "siteSettings"][0].frontPage->{    blocks[]{  // Hero Blocks    _type == "hero-1-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    imagePosition,    links,  },    _type == "hero-2-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },    _type == "hero-3-block" => {    _type,    titleOrange,    titleWhite,    subtitle,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    showOverlay,    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },    _type == "hero-4-block" => {    _type,    title,    description,    showOverlay,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },  // Section/Header Blocks    _type == "section-header-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link,  },    _type == "heading-and-paragraph-centered-block" => {    _type,    heading,    paragraph,  },  // Carousel Blocks    _type == "carousel-1-block" => {    _type,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  },    _type == "carousel-2-block" => {    _type,    padding,    colorVariant,    testimonial[]->{    _id,    name,    title,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }    },      alt    },  },      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      rating,    },  // Timeline    _type == "timeline-row-block" => {    _type,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },  // Call to Action    _type == "cta-1-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },  // Logo Cloud    _type == "logo-cloud-1-block" => {    _type,    padding,    colorVariant,    title,    images[]{      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },  },  // FAQs    _type == "faqs-block" => {    _type,    noPadding,    faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},        faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }  },  // Newsletter    _type == "form-newsletter-block" => {    _type,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },  // Split Blocks    _type == "split-row-block" => {    _type,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },        _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },        _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },        _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },    },  },    _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },    _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },    _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },    _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },  // Grid Blocks    _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },    _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    _type == "grid-row-block" => {    _type,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },        _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },        _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    },  },  // Pricing    _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },  // Service    _type == "service-grid-block" => {    _type,    services[]{      _type == "manualService" => {         title,         link,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      },      _type != "manualService" => @->{         _id,         title,         slug,         excerpt,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      }    },  },  // Cover Map    _type == "cover-map-block" => {    _type,    center,    zoom,    height,    animateIntro,    bearingRotation,    radiusAnimation,    color,  },  // Contact Info    _type == "contact-info-and-form-block" => {    _type,      contactHeading,      contactDescription,      contactEmail,      contactPhone,      contactAddress,      customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        "value": select(value != null && value != "" => value, label)      },      conditionalLogic {        enabled,        controllerFieldName,        action,        controllerValueChecked      }  }    },    },  // Our Values    _type == "our-values-block" => {    _type,    values  },  // Course Slider    _type == "course-slider-block" => {    _type,    title,    sectionId,    courses[]->{      _id,      title,      "slug": slug.current,      featuredImage{            crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }      },      excerpt,    }  },    _type == "hero-5-block" => {    _type,    image{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  },  // Two Column    _type == "two-column-block" => {    _type,    firstColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    },    secondColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    }  },  // Seperator    _type == "seperator-block" => {    _type,    padding,  }  // ADD VALUE 3 ABOVE},    meta_title,    meta_description,    noindex,    ogImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },    }  }
 export type GET_FRONT_PAGE_QUERYResult = {
   blocks: Array<{
     _type: "carousel-1-block";
@@ -1576,12 +1700,12 @@ export type GET_FRONT_PAGE_QUERYResult = {
       submitButtonText: string | null;
       successMessage: string | null;
       formFields: Array<{
-        fieldType: "checkbox" | "date" | "email" | "file" | "heading" | "radio" | "select" | "tel" | "text" | "textarea" | null;
+        fieldType: "checkbox" | "checkboxGroup" | "date" | "datetime" | "email" | "file" | "heading" | "radio" | "select" | "tel" | "text" | "textarea" | null;
         fieldName: string | null;
         fieldLabel: string | null;
         placeholder: string | null;
         isRequired: boolean | null;
-        width: "full" | "half" | null;
+        width: "full" | "half" | "quarter" | "remaining" | "third" | null;
         helpText: string | null;
         labelOnly: boolean | null;
         preChecked: boolean | null;
@@ -1589,6 +1713,12 @@ export type GET_FRONT_PAGE_QUERYResult = {
           label: string | null;
           value: string | null;
         }> | null;
+        conditionalLogic: {
+          enabled: boolean | null;
+          controllerFieldName: string | null;
+          action: "hide" | "show" | null;
+          controllerValueChecked: "false" | "true" | null;
+        } | null;
       }> | null;
     } | null;
   } | {
@@ -1696,7 +1826,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -1746,7 +1875,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -1794,7 +1922,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
               } | null;
             } | null;
           } | null;
-          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           alt?: string;
@@ -1960,7 +2087,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -2024,7 +2150,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -2286,7 +2411,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -2335,7 +2459,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -2413,7 +2536,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -2466,7 +2588,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
               } | null;
             } | null;
           } | null;
-          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           alt?: string;
@@ -2515,7 +2636,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -2593,7 +2713,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
               } | null;
             } | null;
           } | null;
-          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           alt?: string;
@@ -2644,7 +2763,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -2689,7 +2807,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -2732,7 +2849,6 @@ export type GET_FRONT_PAGE_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -2762,9 +2878,9 @@ export type GET_FRONT_PAGE_QUERYResult = {
   } | null;
 } | null;
 
-// Source: ./app/(main)/(root)/[slug]/page-slug.route-query.ts
+// Source: ./app/(main)/(root)/[slug]/_page-slug-core-utilities/page-slug.route-query.ts
 // Variable: GET_PAGE_BY_DEFINED_SLUG_QUERY
-// Query: *[_type == "page-slug" && slug.current == $slug][0]{    blocks[]{  // Hero Blocks    _type == "hero-1-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    imagePosition,    links,  },    _type == "hero-2-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },    _type == "hero-3-block" => {    _type,    titleOrange,    titleWhite,    subtitle,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    showOverlay,    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },    _type == "hero-4-block" => {    _type,    title,    description,    showOverlay,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },  // Section/Header Blocks    _type == "section-header-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link,  },    _type == "heading-and-paragraph-centered-block" => {    _type,    heading,    paragraph,  },  // Carousel Blocks    _type == "carousel-1-block" => {    _type,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  },    _type == "carousel-2-block" => {    _type,    padding,    colorVariant,    testimonial[]->{    _id,    name,    title,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }    },      alt    },  },      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      rating,    },  // Timeline    _type == "timeline-row-block" => {    _type,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },  // Call to Action    _type == "cta-1-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },  // Logo Cloud    _type == "logo-cloud-1-block" => {    _type,    padding,    colorVariant,    title,    images[]{      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },  },  // FAQs    _type == "faqs-block" => {    _type,    noPadding,    faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},        faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }  },  // Newsletter    _type == "form-newsletter-block" => {    _type,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },  // Split Blocks    _type == "split-row-block" => {    _type,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },        _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },        _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },        _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },    },  },    _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },    _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },    _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },    _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },  // Grid Blocks    _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },    _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    _type == "grid-row-block" => {    _type,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },        _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },        _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    },  },  // Pricing    _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },  // Service    _type == "service-grid-block" => {    _type,    services[]{      _type == "manualService" => {         title,         link,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      },      _type != "manualService" => @->{         _id,         title,         slug,         excerpt,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      }    },  },  // Cover Map    _type == "cover-map-block" => {    _type,    center,    zoom,    height,    animateIntro,    bearingRotation,    radiusAnimation,    color,  },  // Contact Info    _type == "contact-info-and-form-block" => {    _type,      contactHeading,      contactDescription,      contactEmail,      contactPhone,      contactAddress,      customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        value      }  }    },    },  // Our Values    _type == "our-values-block" => {    _type,    values  },  // Course Slider    _type == "course-slider-block" => {    _type,    title,    sectionId,    courses[]->{      _id,      title,      "slug": slug.current,      featuredImage{            crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }      },      excerpt,    }  },    _type == "hero-5-block" => {    _type,    image{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  },  // Two Column    _type == "two-column-block" => {    _type,    firstColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    },    secondColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    }  },  // Seperator    _type == "seperator-block" => {    _type,    padding,  }  // ADD VALUE 3 ABOVE},    meta_title,    meta_description,    noindex,    ogImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },    }  }
+// Query: *[_type == "page-slug" && slug.current == $slug][0]{    blocks[]{  // Hero Blocks    _type == "hero-1-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    imagePosition,    links,  },    _type == "hero-2-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },    _type == "hero-3-block" => {    _type,    titleOrange,    titleWhite,    subtitle,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    showOverlay,    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },    _type == "hero-4-block" => {    _type,    title,    description,    showOverlay,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },  // Section/Header Blocks    _type == "section-header-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link,  },    _type == "heading-and-paragraph-centered-block" => {    _type,    heading,    paragraph,  },  // Carousel Blocks    _type == "carousel-1-block" => {    _type,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  },    _type == "carousel-2-block" => {    _type,    padding,    colorVariant,    testimonial[]->{    _id,    name,    title,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }    },      alt    },  },      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      rating,    },  // Timeline    _type == "timeline-row-block" => {    _type,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },  // Call to Action    _type == "cta-1-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },  // Logo Cloud    _type == "logo-cloud-1-block" => {    _type,    padding,    colorVariant,    title,    images[]{      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },  },  // FAQs    _type == "faqs-block" => {    _type,    noPadding,    faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},        faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }  },  // Newsletter    _type == "form-newsletter-block" => {    _type,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },  // Split Blocks    _type == "split-row-block" => {    _type,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },        _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },        _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },        _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },    },  },    _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },    _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },    _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },    _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },  // Grid Blocks    _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },    _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    _type == "grid-row-block" => {    _type,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },        _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },        _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    },  },  // Pricing    _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },  // Service    _type == "service-grid-block" => {    _type,    services[]{      _type == "manualService" => {         title,         link,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      },      _type != "manualService" => @->{         _id,         title,         slug,         excerpt,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      }    },  },  // Cover Map    _type == "cover-map-block" => {    _type,    center,    zoom,    height,    animateIntro,    bearingRotation,    radiusAnimation,    color,  },  // Contact Info    _type == "contact-info-and-form-block" => {    _type,      contactHeading,      contactDescription,      contactEmail,      contactPhone,      contactAddress,      customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        "value": select(value != null && value != "" => value, label)      },      conditionalLogic {        enabled,        controllerFieldName,        action,        controllerValueChecked      }  }    },    },  // Our Values    _type == "our-values-block" => {    _type,    values  },  // Course Slider    _type == "course-slider-block" => {    _type,    title,    sectionId,    courses[]->{      _id,      title,      "slug": slug.current,      featuredImage{            crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }      },      excerpt,    }  },    _type == "hero-5-block" => {    _type,    image{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  },  // Two Column    _type == "two-column-block" => {    _type,    firstColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    },    secondColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    }  },  // Seperator    _type == "seperator-block" => {    _type,    padding,  }  // ADD VALUE 3 ABOVE},    meta_title,    meta_description,    noindex,    ogImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },    }  }
 export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
   blocks: Array<{
     _type: "carousel-1-block";
@@ -2828,12 +2944,12 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
       submitButtonText: string | null;
       successMessage: string | null;
       formFields: Array<{
-        fieldType: "checkbox" | "date" | "email" | "file" | "heading" | "radio" | "select" | "tel" | "text" | "textarea" | null;
+        fieldType: "checkbox" | "checkboxGroup" | "date" | "datetime" | "email" | "file" | "heading" | "radio" | "select" | "tel" | "text" | "textarea" | null;
         fieldName: string | null;
         fieldLabel: string | null;
         placeholder: string | null;
         isRequired: boolean | null;
-        width: "full" | "half" | null;
+        width: "full" | "half" | "quarter" | "remaining" | "third" | null;
         helpText: string | null;
         labelOnly: boolean | null;
         preChecked: boolean | null;
@@ -2841,6 +2957,12 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
           label: string | null;
           value: string | null;
         }> | null;
+        conditionalLogic: {
+          enabled: boolean | null;
+          controllerFieldName: string | null;
+          action: "hide" | "show" | null;
+          controllerValueChecked: "false" | "true" | null;
+        } | null;
       }> | null;
     } | null;
   } | {
@@ -2948,7 +3070,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -2998,7 +3119,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -3046,7 +3166,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
               } | null;
             } | null;
           } | null;
-          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           alt?: string;
@@ -3212,7 +3331,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -3276,7 +3394,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -3538,7 +3655,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -3587,7 +3703,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -3665,7 +3780,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -3718,7 +3832,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
               } | null;
             } | null;
           } | null;
-          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           alt?: string;
@@ -3767,7 +3880,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -3845,7 +3957,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
               } | null;
             } | null;
           } | null;
-          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           alt?: string;
@@ -3896,7 +4007,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -3941,7 +4051,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -3984,7 +4093,6 @@ export type GET_PAGE_BY_DEFINED_SLUG_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -4019,7 +4127,7 @@ export type GET_ALL_PAGES_QUERYResult = Array<{
   slug: Slug | null;
 }>;
 
-// Source: ./app/(main)/blog/[slug]/(blog-slug-core-utilities)/blog-slug.route-query.ts
+// Source: ./app/(main)/blog/[slug]/_blog-slug-core-utilities/blog-slug.route-query.ts
 // Variable: GET_BLOG_PAGES_BY_DEFINED_SLUG_QUERY
 // Query: *[_type == "blog-slug" && defined(slug)] | order(_createdAt desc){    title,    slug,    excerpt,}
 export type GET_BLOG_PAGES_BY_DEFINED_SLUG_QUERYResult = Array<{
@@ -4067,7 +4175,6 @@ export type GET_BLOG_PAGE_BY_ROUTE_QUERYResult = {
         } | null;
       } | null;
     } | null;
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -4082,7 +4189,7 @@ export type GET_BLOG_PAGE_BY_ROUTE_QUERYResult = {
   _updatedAt: string;
 } | null;
 
-// Source: ./app/(main)/course/[slug]/(course-slug-core-utilities)/course-slug.route-query.ts
+// Source: ./app/(main)/course/[slug]/_course-slug-core-utilities/course-slug.route-query.ts
 // Variable: GET_COURSE_PAGE_BY_DEFINED_SLUG_QUERY
 // Query: *[_type == "course-slug" && defined(slug)] | order(_createdAt desc){    title,    slug,    excerpt,  }
 export type GET_COURSE_PAGE_BY_DEFINED_SLUG_QUERYResult = Array<{
@@ -4096,7 +4203,7 @@ export type GET_ALL_COURSE_PAGES_QUERYResult = Array<{
   slug: Slug | null;
 }>;
 // Variable: GET_COURSE_PAGE_BY_ROUTE_QUERY
-// Query: *[_type == "course-slug" && slug.current == $slug][0]{    title,    slug,    featuredImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    map,    body,    aboutCourse,    keyConcepts,    customContactForm,    excerpt,    faqs{      faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},          faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }    },    digitalCourse,    _createdAt,    _updatedAt,  }
+// Query: *[_type == "course-slug" && slug.current == $slug][0]{    title,    slug,    featuredImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    _createdAt,    _updatedAt,  }
 export type GET_COURSE_PAGE_BY_ROUTE_QUERYResult = {
   title: string | null;
   slug: Slug | null;
@@ -4126,125 +4233,11 @@ export type GET_COURSE_PAGE_BY_ROUTE_QUERYResult = {
       } | null;
     } | null;
   } | null;
-  map: CoverMapBlock | null;
-  body: BlockContent | null;
-  aboutCourse: BlockContent | null;
-  keyConcepts: Array<{
-    title?: string;
-    description?: string;
-    icon?: Icon;
-    _type: "concept";
-    _key: string;
-  }> | null;
-  customContactForm: CustomContactFormBlock | null;
-  excerpt: string | null;
-  faqs: {
-    faqs: Array<{
-      _id: string;
-      title: string | null;
-      body: Array<{
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
-        listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
-        level?: number;
-        _type: "block";
-        _key: string;
-      } | {
-        asset: {
-          _id: string;
-          url: string | null;
-          mimeType: string | null;
-          metadata: {
-            lqip: string | null;
-            dimensions: {
-              width: number | null;
-              height: number | null;
-            } | null;
-          } | null;
-        } | null;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        alt?: string;
-        _type: "image";
-        _key: string;
-      } | {
-        videoId?: string;
-        _type: "youtube";
-        _key: string;
-      }> | null;
-    }> | null;
-    faqsByCategory: Array<{
-      _id: string;
-      title: string | null;
-      faqs: Array<{
-        _id: string;
-        title: string | null;
-        body: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: "span";
-            _key: string;
-          }>;
-          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
-          listItem?: "bullet" | "number";
-          markDefs?: Array<{
-            href?: string;
-            _type: "link";
-            _key: string;
-          }>;
-          level?: number;
-          _type: "block";
-          _key: string;
-        } | {
-          asset: {
-            _id: string;
-            url: string | null;
-            mimeType: string | null;
-            metadata: {
-              lqip: string | null;
-              dimensions: {
-                width: number | null;
-                height: number | null;
-              } | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: "image";
-          _key: string;
-        } | {
-          videoId?: string;
-          _type: "youtube";
-          _key: string;
-        }> | null;
-      }>;
-    }> | null;
-  } | null;
-  digitalCourse: {
-    enabled?: boolean;
-    icon?: Icon;
-    title?: string;
-    description?: string;
-  } | null;
   _createdAt: string;
   _updatedAt: string;
 } | null;
 
-// Source: ./app/(main)/service/[slug]/(service-slug-core-utilities)/service-slug.route-query.ts
+// Source: ./app/(main)/service/[slug]/_service-slug-core-utilities/service-slug.route-query.ts
 // Variable: GET_SERVICE_PAGE_BY_DEFINED_SLUG_QUERY
 // Query: *[_type == "service-slug" && defined(slug)] | order(_createdAt desc){    title,    slug,    excerpt,    featuredImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  }
 export type GET_SERVICE_PAGE_BY_DEFINED_SLUG_QUERYResult = Array<{
@@ -4284,7 +4277,7 @@ export type GET_ALL_SERVICE_PAGES_QUERYResult = Array<{
   slug: Slug | null;
 }>;
 // Variable: GET_SERVICE_PAGE_BY_ROUTE_QUERY
-// Query: *[_type == "service-slug" && slug.current == $slug][0]{    title,    customTitle,    slug,    layout,    "headerColor": "dark",    excerpt,    _createdAt,    customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        value      }  }    },    body[]{          ...,    _type == "image" => {      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    }    },    _updatedAt,    faqs{       faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},          faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }    },    featuredImage{      _type,           crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  }
+// Query: *[_type == "service-slug" && slug.current == $slug][0]{    title,    customTitle,    slug,    layout,    "headerColor": "dark",    excerpt,    _createdAt,    customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        "value": select(value != null && value != "" => value, label)      },      conditionalLogic {        enabled,        controllerFieldName,        action,        controllerValueChecked      }  }    },    body[]{          ...,    _type == "image" => {      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    }    },    _updatedAt,    faqs{       noPadding,      faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},          faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }    },    featuredImage{      _type,           crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  }
 export type GET_SERVICE_PAGE_BY_ROUTE_QUERYResult = {
   title: string | null;
   customTitle: string | null;
@@ -4300,12 +4293,12 @@ export type GET_SERVICE_PAGE_BY_ROUTE_QUERYResult = {
     submitButtonText: string | null;
     successMessage: string | null;
     formFields: Array<{
-      fieldType: "checkbox" | "date" | "email" | "file" | "heading" | "radio" | "select" | "tel" | "text" | "textarea" | null;
+      fieldType: "checkbox" | "checkboxGroup" | "date" | "datetime" | "email" | "file" | "heading" | "radio" | "select" | "tel" | "text" | "textarea" | null;
       fieldName: string | null;
       fieldLabel: string | null;
       placeholder: string | null;
       isRequired: boolean | null;
-      width: "full" | "half" | null;
+      width: "full" | "half" | "quarter" | "remaining" | "third" | null;
       helpText: string | null;
       labelOnly: boolean | null;
       preChecked: boolean | null;
@@ -4313,6 +4306,12 @@ export type GET_SERVICE_PAGE_BY_ROUTE_QUERYResult = {
         label: string | null;
         value: string | null;
       }> | null;
+      conditionalLogic: {
+        enabled: boolean | null;
+        controllerFieldName: string | null;
+        action: "hide" | "show" | null;
+        controllerValueChecked: "false" | "true" | null;
+      } | null;
     }> | null;
   } | null;
   body: Array<{
@@ -4345,7 +4344,6 @@ export type GET_SERVICE_PAGE_BY_ROUTE_QUERYResult = {
         } | null;
       } | null;
     } | null;
-    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -4358,6 +4356,7 @@ export type GET_SERVICE_PAGE_BY_ROUTE_QUERYResult = {
   }> | null;
   _updatedAt: string;
   faqs: {
+    noPadding: boolean | null;
     faqs: Array<{
       _id: string;
       title: string | null;
@@ -4391,7 +4390,6 @@ export type GET_SERVICE_PAGE_BY_ROUTE_QUERYResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -4439,7 +4437,6 @@ export type GET_SERVICE_PAGE_BY_ROUTE_QUERYResult = {
               } | null;
             } | null;
           } | null;
-          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           alt?: string;
@@ -4482,6 +4479,17 @@ export type GET_SERVICE_PAGE_BY_ROUTE_QUERYResult = {
   } | null;
 } | null;
 
+// Source: ./app/sitemap.ts
+// Variable: servicesQuery
+// Query: *[_type == "service-slug"] | order(_updatedAt desc) {      "url": $baseUrl + '/service/' + slug.current,      "slug": slug.current,      "lastModified": _updatedAt,      "changeFrequency": 'weekly',      "priority": 0.7    }
+export type ServicesQueryResult = Array<{
+  url: unknown;
+  slug: string | null;
+  lastModified: string;
+  changeFrequency: "weekly";
+  priority: 0.7;
+}>;
+
 // Source: ./sanity/desk-organized-sanity-utilities/author/author.document-queries.ts
 // Variable: getAuthorReferenceQuery
 // Query: author->{    name,    image {      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  }
@@ -4502,32 +4510,10 @@ export type GetAllFaqCategoriesQueryResult = never;
 // Query: faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }}
 export type GetAllReferencedFaqsQueryResult = never;
 
-// Source: ./sanity/desk-organized-sanity-utilities/settings/menu-settings/menu-settings.query.ts
-// Variable: menuSettingsQuery
-// Query: *[_type == "menuSettings"][0] {    mainMenu[] {        "_ts": "LinksQuery",  _key,  _type == "internalLinkObject" => {  "_ts": "InternalLinkQuery",  "linkType": "internal",  ...(internalLink-> {    "title": coalesce(      ^.customTitle,      title,      name    ),    "slug": slug.current,    _type  }),  description},  _type == "link" => {  "_ts": "ExternalLinkQuery",  "linkType": "external",  "title": coalesce(    customTitle,    href  ),  "url": href,  description},  _type == "downloadLinkObject" => {  "_ts": "DownloadLinkQuery",  "linkType": "download",  "title": coalesce(      customTitle,      file.asset->originalFilename    ),  "url": file.asset->url,  description},  _type == "linkGroup" => {  "_ts": "LinkGroupQuery",  "linkType": "linkGroup",  title,  links[] {    _key,    _type == "internalLinkObject" => {  "_ts": "InternalLinkQuery",  "linkType": "internal",  ...(internalLink-> {    "title": coalesce(      ^.customTitle,      title,      name    ),    "slug": slug.current,    _type  }),  description},    _type == "link" => {  "_ts": "ExternalLinkQuery",  "linkType": "external",  "title": coalesce(    customTitle,    href  ),  "url": href,  description}  }}      }  }
-export type MenuSettingsQueryResult = null;
-
-// Source: ./sanity/desk-organized-sanity-utilities/settings/metadata-settings/metadata-settings.query.ts
-// Variable: metadataSettingsQuery
-// Query: *[_type == "metadataSettings"][0] {      "metadata": {    "_ts": "MetadataQuery",    "title": coalesce(metadata.title, title, name),    "desc": coalesce(metadata.desc, excerpt),    "image": select(      defined(metadata.image.asset._ref) => metadata.image {          "id": asset._ref,  altText      },      defined(image.asset._ref) => image {          "id": asset._ref,  altText      },      defined(coverImage.asset._ref) => coverImage {          "id": asset._ref,  altText      },      defined(hero.image.asset._ref) => hero.image {          "id": asset._ref,  altText      }    ),    "tags": metadata.tags,    "noIndex": metadata.noIndex  }  }
-export type MetadataSettingsQueryResult = {
-  metadata: {
-    _ts: "MetadataQuery";
-    title: string | null;
-    desc: string | null;
-    image: {
-      id: string | null;
-      altText: null;
-    } | null;
-    tags: null;
-    noIndex: null;
-  };
-} | null;
-
-// Source: ./sanity/desk-organized-sanity-utilities/settings/settings.query.ts
-// Variable: footerQuery
-// Query: *[_type == "footerSettings"][0] {      blocks[]{  // Hero Blocks    _type == "hero-1-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    imagePosition,    links,  },    _type == "hero-2-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },    _type == "hero-3-block" => {    _type,    titleOrange,    titleWhite,    subtitle,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    showOverlay,    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },    _type == "hero-4-block" => {    _type,    title,    description,    showOverlay,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },  // Section/Header Blocks    _type == "section-header-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link,  },    _type == "heading-and-paragraph-centered-block" => {    _type,    heading,    paragraph,  },  // Carousel Blocks    _type == "carousel-1-block" => {    _type,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  },    _type == "carousel-2-block" => {    _type,    padding,    colorVariant,    testimonial[]->{    _id,    name,    title,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }    },      alt    },  },      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      rating,    },  // Timeline    _type == "timeline-row-block" => {    _type,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },  // Call to Action    _type == "cta-1-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },  // Logo Cloud    _type == "logo-cloud-1-block" => {    _type,    padding,    colorVariant,    title,    images[]{      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },  },  // FAQs    _type == "faqs-block" => {    _type,    noPadding,    faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},        faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }  },  // Newsletter    _type == "form-newsletter-block" => {    _type,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },  // Split Blocks    _type == "split-row-block" => {    _type,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },        _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },        _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },        _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },    },  },    _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },    _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },    _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },    _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },  // Grid Blocks    _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },    _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    _type == "grid-row-block" => {    _type,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },        _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },        _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    },  },  // Pricing    _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },  // Service    _type == "service-grid-block" => {    _type,    services[]{      _type == "manualService" => {         title,         link,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      },      _type != "manualService" => @->{         _id,         title,         slug,         excerpt,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      }    },  },  // Cover Map    _type == "cover-map-block" => {    _type,    center,    zoom,    height,    animateIntro,    bearingRotation,    radiusAnimation,    color,  },  // Contact Info    _type == "contact-info-and-form-block" => {    _type,      contactHeading,      contactDescription,      contactEmail,      contactPhone,      contactAddress,      customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        value      }  }    },    },  // Our Values    _type == "our-values-block" => {    _type,    values  },  // Course Slider    _type == "course-slider-block" => {    _type,    title,    sectionId,    courses[]->{      _id,      title,      "slug": slug.current,      featuredImage{            crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }      },      excerpt,    }  },    _type == "hero-5-block" => {    _type,    image{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  },  // Two Column    _type == "two-column-block" => {    _type,    firstColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    },    secondColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    }  },  // Seperator    _type == "seperator-block" => {    _type,    padding,  }  // ADD VALUE 3 ABOVE},    ctaText,    infoText,    contactInfo,    socialMediaLinks[] {      platform,      url  }  }
-export type FooterQueryResult = {
+// Source: ./sanity/desk-organized-sanity-utilities/settings/footer-settings/footer-settings.query.ts
+// Variable: footerSettingsFetchQuery
+// Query: *[_type == "footerSettings"][0] {      blocks[]{  // Hero Blocks    _type == "hero-1-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    imagePosition,    links,  },    _type == "hero-2-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },    _type == "hero-3-block" => {    _type,    titleOrange,    titleWhite,    subtitle,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    showOverlay,    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },    _type == "hero-4-block" => {    _type,    title,    description,    showOverlay,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },  // Section/Header Blocks    _type == "section-header-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link,  },    _type == "heading-and-paragraph-centered-block" => {    _type,    heading,    paragraph,  },  // Carousel Blocks    _type == "carousel-1-block" => {    _type,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  },    _type == "carousel-2-block" => {    _type,    padding,    colorVariant,    testimonial[]->{    _id,    name,    title,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }    },      alt    },  },      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      rating,    },  // Timeline    _type == "timeline-row-block" => {    _type,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },  // Call to Action    _type == "cta-1-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },  // Logo Cloud    _type == "logo-cloud-1-block" => {    _type,    padding,    colorVariant,    title,    images[]{      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },  },  // FAQs    _type == "faqs-block" => {    _type,    noPadding,    faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},        faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }  },  // Newsletter    _type == "form-newsletter-block" => {    _type,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },  // Split Blocks    _type == "split-row-block" => {    _type,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },        _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },        _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },        _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },    },  },    _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },    _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },    _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },    _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },  // Grid Blocks    _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },    _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    _type == "grid-row-block" => {    _type,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },        _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },        _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    },  },  // Pricing    _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },  // Service    _type == "service-grid-block" => {    _type,    services[]{      _type == "manualService" => {         title,         link,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      },      _type != "manualService" => @->{         _id,         title,         slug,         excerpt,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      }    },  },  // Cover Map    _type == "cover-map-block" => {    _type,    center,    zoom,    height,    animateIntro,    bearingRotation,    radiusAnimation,    color,  },  // Contact Info    _type == "contact-info-and-form-block" => {    _type,      contactHeading,      contactDescription,      contactEmail,      contactPhone,      contactAddress,      customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        "value": select(value != null && value != "" => value, label)      },      conditionalLogic {        enabled,        controllerFieldName,        action,        controllerValueChecked      }  }    },    },  // Our Values    _type == "our-values-block" => {    _type,    values  },  // Course Slider    _type == "course-slider-block" => {    _type,    title,    sectionId,    courses[]->{      _id,      title,      "slug": slug.current,      featuredImage{            crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }      },      excerpt,    }  },    _type == "hero-5-block" => {    _type,    image{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  },  // Two Column    _type == "two-column-block" => {    _type,    firstColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    },    secondColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    }  },  // Seperator    _type == "seperator-block" => {    _type,    padding,  }  // ADD VALUE 3 ABOVE},    ctaText,    infoText,    contactInfo,    socialMediaLinks[] {      platform,      url  }  }
+export type FooterSettingsFetchQueryResult = {
   blocks: Array<{
     _type: "carousel-1-block";
     padding: SectionPadding | null;
@@ -4590,12 +4576,12 @@ export type FooterQueryResult = {
       submitButtonText: string | null;
       successMessage: string | null;
       formFields: Array<{
-        fieldType: "checkbox" | "date" | "email" | "file" | "heading" | "radio" | "select" | "tel" | "text" | "textarea" | null;
+        fieldType: "checkbox" | "checkboxGroup" | "date" | "datetime" | "email" | "file" | "heading" | "radio" | "select" | "tel" | "text" | "textarea" | null;
         fieldName: string | null;
         fieldLabel: string | null;
         placeholder: string | null;
         isRequired: boolean | null;
-        width: "full" | "half" | null;
+        width: "full" | "half" | "quarter" | "remaining" | "third" | null;
         helpText: string | null;
         labelOnly: boolean | null;
         preChecked: boolean | null;
@@ -4603,6 +4589,12 @@ export type FooterQueryResult = {
           label: string | null;
           value: string | null;
         }> | null;
+        conditionalLogic: {
+          enabled: boolean | null;
+          controllerFieldName: string | null;
+          action: "hide" | "show" | null;
+          controllerValueChecked: "false" | "true" | null;
+        } | null;
       }> | null;
     } | null;
   } | {
@@ -4710,7 +4702,6 @@ export type FooterQueryResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -4760,7 +4751,6 @@ export type FooterQueryResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -4808,7 +4798,6 @@ export type FooterQueryResult = {
               } | null;
             } | null;
           } | null;
-          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           alt?: string;
@@ -4974,7 +4963,6 @@ export type FooterQueryResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -5038,7 +5026,6 @@ export type FooterQueryResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -5300,7 +5287,6 @@ export type FooterQueryResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -5349,7 +5335,6 @@ export type FooterQueryResult = {
           } | null;
         } | null;
       } | null;
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       alt?: string;
@@ -5427,7 +5412,6 @@ export type FooterQueryResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -5480,7 +5464,6 @@ export type FooterQueryResult = {
               } | null;
             } | null;
           } | null;
-          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           alt?: string;
@@ -5529,7 +5512,6 @@ export type FooterQueryResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -5607,7 +5589,6 @@ export type FooterQueryResult = {
               } | null;
             } | null;
           } | null;
-          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           alt?: string;
@@ -5658,7 +5639,6 @@ export type FooterQueryResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -5703,7 +5683,6 @@ export type FooterQueryResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -5746,7 +5725,6 @@ export type FooterQueryResult = {
             } | null;
           } | null;
         } | null;
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -5767,9 +5745,11 @@ export type FooterQueryResult = {
     url: string | null;
   }> | null;
 } | null;
-// Variable: headerQuery
-// Query: *[_type == "headerSettings"][0] {      email,    phoneNumber,    logo,    navigationItems[]->  }
-export type HeaderQueryResult = {
+
+// Source: ./sanity/desk-organized-sanity-utilities/settings/header-settings/header-settings.query.ts
+// Variable: headerSettingsFetchQuery
+// Query: *[_type == "headerSettings"][0] {      email,    phoneNumber,    logo,    navigationItems[] {          "_ts": "LinksQuery",  _key,  _type == "internalLinkObject" => {  "_ts": "InternalLinkQuery",  "linkType": "internal",  ...(internalLink-> {    "title": coalesce(      ^.customTitle,      title,      name    ),    "slug": slug.current,    _type  }),  description},  _type == "link" => {  "_ts": "ExternalLinkQuery",  "linkType": "external",  "title": coalesce(    customTitle,    href  ),  "url": href,  description},  _type == "downloadLinkObject" => {  "_ts": "DownloadLinkQuery",  "linkType": "download",  "title": coalesce(      customTitle,      file.asset->originalFilename    ),  "url": file.asset->url,  description},  _type == "linkGroup" => {  "_ts": "LinkGroupQuery",  "linkType": "linkGroup",  title,  links[] {    _key,    _type == "internalLinkObject" => {  "_ts": "InternalLinkQuery",  "linkType": "internal",  ...(internalLink-> {    "title": coalesce(      ^.customTitle,      title,      name    ),    "slug": slug.current,    _type  }),  description},    _type == "link" => {  "_ts": "ExternalLinkQuery",  "linkType": "external",  "title": coalesce(    customTitle,    href  ),  "url": href,  description}  }}      }  }
+export type HeaderSettingsFetchQueryResult = {
   email: {
     icon?: Icon;
     email?: string;
@@ -5787,7 +5767,6 @@ export type HeaderQueryResult = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -5799,103 +5778,155 @@ export type HeaderQueryResult = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
-      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
     };
   } | null;
   navigationItems: Array<{
-    _id: string;
+    _ts: "ExternalLinkQuery";
+    _key: string;
+    linkType: "external";
+    title: string | null;
+    url: string | null;
+    description: null;
+  } | {
+    _ts: "InternalLinkQuery";
+    _key: string;
+    linkType: "internal";
+    title: string | null;
+    slug: string | null;
+    _type: "blog-slug";
+    description: null;
+  } | {
+    _ts: "InternalLinkQuery";
+    _key: string;
+    linkType: "internal";
+    title: string | null;
+    slug: string | null;
+    _type: "course-slug";
+    description: null;
+  } | {
+    _ts: "InternalLinkQuery";
+    _key: string;
+    linkType: "internal";
+    title: string | null;
+    slug: string | null;
     _type: "page-slug";
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-    title?: string;
-    slug?: Slug;
-    blocks?: Array<{
+    description: null;
+  } | {
+    _ts: "InternalLinkQuery";
+    _key: string;
+    linkType: "internal";
+    title: string | null;
+    slug: string | null;
+    _type: "service-slug";
+    description: null;
+  } | {
+    _ts: "InternalLinkQuery";
+    _key: string;
+    linkType: "internal";
+    description: null;
+  } | {
+    _ts: "LinkGroupQuery";
+    _key: string;
+    linkType: "linkGroup";
+    title: string | null;
+    links: Array<{
       _key: string;
-    } & Carousel1Block | {
+      _ts: "ExternalLinkQuery";
+      linkType: "external";
+      title: string | null;
+      url: string | null;
+      description: null;
+    } | {
       _key: string;
-    } & Carousel2Block | {
+      _ts: "InternalLinkQuery";
+      linkType: "internal";
+      title: string | null;
+      slug: string | null;
+      _type: "blog-slug";
+      description: null;
+    } | {
       _key: string;
-    } & ContactInfoAndFormBlock | {
+      _ts: "InternalLinkQuery";
+      linkType: "internal";
+      title: string | null;
+      slug: string | null;
+      _type: "course-slug";
+      description: null;
+    } | {
       _key: string;
-    } & CourseSliderBlock | {
+      _ts: "InternalLinkQuery";
+      linkType: "internal";
+      title: string | null;
+      slug: string | null;
+      _type: "page-slug";
+      description: null;
+    } | {
       _key: string;
-    } & CoverMapBlock | {
+      _ts: "InternalLinkQuery";
+      linkType: "internal";
+      title: string | null;
+      slug: string | null;
+      _type: "service-slug";
+      description: null;
+    } | {
       _key: string;
-    } & Cta1Block | {
-      _key: string;
-    } & CustomContactFormBlock | {
-      _key: string;
-    } & FaqsBlock | {
-      _key: string;
-    } & FormNewsletterBlock | {
-      _key: string;
-    } & GridCardBlock | {
-      _key: string;
-    } & GridPostBlock | {
-      _key: string;
-    } & GridRowBlock | {
-      _key: string;
-    } & HeadingAndParagraphCenteredBlock | {
-      _key: string;
-    } & Hero1Block | {
-      _key: string;
-    } & Hero2Block | {
-      _key: string;
-    } & Hero3Block | {
-      _key: string;
-    } & Hero4Block | {
-      _key: string;
-    } & Hero5Block | {
-      _key: string;
-    } & LogoCloud1Block | {
-      _key: string;
-    } & OurValuesBlock | {
-      _key: string;
-    } & PricingCardBlock | {
-      _key: string;
-    } & SectionHeaderBlock | {
-      _key: string;
-    } & SeperatorBlock | {
-      _key: string;
-    } & ServiceGridBlock | {
-      _key: string;
-    } & SplitCardsListBlock | {
-      _key: string;
-    } & SplitContentBlock | {
-      _key: string;
-    } & SplitImageBlock | {
-      _key: string;
-    } & SplitInfoListBlock | {
-      _key: string;
-    } & SplitRowBlock | {
-      _key: string;
-    } & TimelineRowBlock | {
-      _key: string;
-    } & TwoColumnBlock>;
-    meta_title?: string;
-    meta_description?: string;
-    noindex?: boolean;
-    ogImage?: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    };
-    orderRank?: string;
+      _ts: "InternalLinkQuery";
+      linkType: "internal";
+      description: null;
+    }> | null;
   }> | null;
 } | null;
+
+// Source: ./sanity/desk-organized-sanity-utilities/settings/metadata-settings/metadata-settings.query.ts
+// Variable: metadataSettingsFetchQuery
+// Query: *[_type == "metadataSettings"][0] {      "metadata": {    "_ts": "MetadataQuery",    "title": coalesce(metadata.title, title, name),    "desc": coalesce(metadata.desc, excerpt),    "image": select(      defined(metadata.image.asset._ref) => metadata.image {          "id": asset._ref,  altText      },      defined(image.asset._ref) => image {          "id": asset._ref,  altText      },      defined(coverImage.asset._ref) => coverImage {          "id": asset._ref,  altText      },      defined(hero.image.asset._ref) => hero.image {          "id": asset._ref,  altText      }    ),    "tags": metadata.tags,    "noIndex": metadata.noIndex  }  }
+export type MetadataSettingsFetchQueryResult = {
+  metadata: {
+    _ts: "MetadataQuery";
+    title: string | null;
+    desc: string | null;
+    image: {
+      id: string | null;
+      altText: null;
+    } | null;
+    tags: null;
+    noIndex: null;
+  };
+} | null;
+
+// Source: ./sanity/desk-organized-sanity-utilities/settings/route-404-settings/route-404-settings.query.ts
+// Variable: route404SettingsFetchQuery
+// Query: *[_type == "route404Settings"][0] {      title,    subtitle,    buttonText,    buttonLink,    backgroundImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      }    },    blocks[] {      blocks[]{  // Hero Blocks    _type == "hero-1-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    imagePosition,    links,  },    _type == "hero-2-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },    _type == "hero-3-block" => {    _type,    titleOrange,    titleWhite,    subtitle,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    showOverlay,    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },    _type == "hero-4-block" => {    _type,    title,    description,    showOverlay,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },  // Section/Header Blocks    _type == "section-header-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link,  },    _type == "heading-and-paragraph-centered-block" => {    _type,    heading,    paragraph,  },  // Carousel Blocks    _type == "carousel-1-block" => {    _type,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  },    _type == "carousel-2-block" => {    _type,    padding,    colorVariant,    testimonial[]->{    _id,    name,    title,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }    },      alt    },  },      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      rating,    },  // Timeline    _type == "timeline-row-block" => {    _type,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },  // Call to Action    _type == "cta-1-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },  // Logo Cloud    _type == "logo-cloud-1-block" => {    _type,    padding,    colorVariant,    title,    images[]{      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },  },  // FAQs    _type == "faqs-block" => {    _type,    noPadding,    faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},        faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }  },  // Newsletter    _type == "form-newsletter-block" => {    _type,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },  // Split Blocks    _type == "split-row-block" => {    _type,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },        _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },        _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },        _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },    },  },    _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },    _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },    _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },    _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },  // Grid Blocks    _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },    _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    _type == "grid-row-block" => {    _type,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },        _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },        _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    },  },  // Pricing    _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },  // Service    _type == "service-grid-block" => {    _type,    services[]{      _type == "manualService" => {         title,         link,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      },      _type != "manualService" => @->{         _id,         title,         slug,         excerpt,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      }    },  },  // Cover Map    _type == "cover-map-block" => {    _type,    center,    zoom,    height,    animateIntro,    bearingRotation,    radiusAnimation,    color,  },  // Contact Info    _type == "contact-info-and-form-block" => {    _type,      contactHeading,      contactDescription,      contactEmail,      contactPhone,      contactAddress,      customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        "value": select(value != null && value != "" => value, label)      },      conditionalLogic {        enabled,        controllerFieldName,        action,        controllerValueChecked      }  }    },    },  // Our Values    _type == "our-values-block" => {    _type,    values  },  // Course Slider    _type == "course-slider-block" => {    _type,    title,    sectionId,    courses[]->{      _id,      title,      "slug": slug.current,      featuredImage{            crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }      },      excerpt,    }  },    _type == "hero-5-block" => {    _type,    image{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  },  // Two Column    _type == "two-column-block" => {    _type,    firstColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    },    secondColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    }  },  // Seperator    _type == "seperator-block" => {    _type,    padding,  }  // ADD VALUE 3 ABOVE}    },    meta_title,    meta_description  }
+export type Route404SettingsFetchQueryResult = {
+  title: string | null;
+  subtitle: string | null;
+  buttonText: string | null;
+  buttonLink: string | null;
+  backgroundImage: {
+    asset: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+  } | null;
+  blocks: Array<{
+    blocks: null;
+  }> | null;
+  meta_title: string | null;
+  meta_description: string | null;
+} | null;
+
+// Source: ./sanity/desk-organized-sanity-utilities/settings/settings.query.ts
 // Variable: settingsQuery
-// Query: {  "siteSettings":   *[_type == "siteSettings"][0] {    privacyPolicyPage-> {      "slug": slug.current,      title    },  },  "headerSettings":   *[_type == "headerSettings"][0] {      email,    phoneNumber,    logo,    navigationItems[]->  },  "footerSettings":     blocks[]{  // Hero Blocks    _type == "hero-1-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    imagePosition,    links,  },    _type == "hero-2-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },    _type == "hero-3-block" => {    _type,    titleOrange,    titleWhite,    subtitle,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    showOverlay,    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },    _type == "hero-4-block" => {    _type,    title,    description,    showOverlay,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },  // Section/Header Blocks    _type == "section-header-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link,  },    _type == "heading-and-paragraph-centered-block" => {    _type,    heading,    paragraph,  },  // Carousel Blocks    _type == "carousel-1-block" => {    _type,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  },    _type == "carousel-2-block" => {    _type,    padding,    colorVariant,    testimonial[]->{    _id,    name,    title,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }    },      alt    },  },      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      rating,    },  // Timeline    _type == "timeline-row-block" => {    _type,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },  // Call to Action    _type == "cta-1-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },  // Logo Cloud    _type == "logo-cloud-1-block" => {    _type,    padding,    colorVariant,    title,    images[]{      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },  },  // FAQs    _type == "faqs-block" => {    _type,    noPadding,    faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},        faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }  },  // Newsletter    _type == "form-newsletter-block" => {    _type,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },  // Split Blocks    _type == "split-row-block" => {    _type,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },        _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },        _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },        _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },    },  },    _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },    _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },    _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },    _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },  // Grid Blocks    _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },    _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    _type == "grid-row-block" => {    _type,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },        _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },        _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    },  },  // Pricing    _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },  // Service    _type == "service-grid-block" => {    _type,    services[]{      _type == "manualService" => {         title,         link,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      },      _type != "manualService" => @->{         _id,         title,         slug,         excerpt,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      }    },  },  // Cover Map    _type == "cover-map-block" => {    _type,    center,    zoom,    height,    animateIntro,    bearingRotation,    radiusAnimation,    color,  },  // Contact Info    _type == "contact-info-and-form-block" => {    _type,      contactHeading,      contactDescription,      contactEmail,      contactPhone,      contactAddress,      customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        value      }  }    },    },  // Our Values    _type == "our-values-block" => {    _type,    values  },  // Course Slider    _type == "course-slider-block" => {    _type,    title,    sectionId,    courses[]->{      _id,      title,      "slug": slug.current,      featuredImage{            crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }      },      excerpt,    }  },    _type == "hero-5-block" => {    _type,    image{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  },  // Two Column    _type == "two-column-block" => {    _type,    firstColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    },    secondColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    }  },  // Seperator    _type == "seperator-block" => {    _type,    padding,  }  // ADD VALUE 3 ABOVE},    ctaText,    infoText,    contactInfo,    socialMediaLinks[] {      platform,      url  },  "menuSettings":   *[_type == "menuSettings"][0] {    mainMenu[] {        "_ts": "LinksQuery",  _key,  _type == "internalLinkObject" => {  "_ts": "InternalLinkQuery",  "linkType": "internal",  ...(internalLink-> {    "title": coalesce(      ^.customTitle,      title,      name    ),    "slug": slug.current,    _type  }),  description},  _type == "link" => {  "_ts": "ExternalLinkQuery",  "linkType": "external",  "title": coalesce(    customTitle,    href  ),  "url": href,  description},  _type == "downloadLinkObject" => {  "_ts": "DownloadLinkQuery",  "linkType": "download",  "title": coalesce(      customTitle,      file.asset->originalFilename    ),  "url": file.asset->url,  description},  _type == "linkGroup" => {  "_ts": "LinkGroupQuery",  "linkType": "linkGroup",  title,  links[] {    _key,    _type == "internalLinkObject" => {  "_ts": "InternalLinkQuery",  "linkType": "internal",  ...(internalLink-> {    "title": coalesce(      ^.customTitle,      title,      name    ),    "slug": slug.current,    _type  }),  description},    _type == "link" => {  "_ts": "ExternalLinkQuery",  "linkType": "external",  "title": coalesce(    customTitle,    href  ),  "url": href,  description}  }}      }  },  "metadataSettings":   *[_type == "metadataSettings"][0] {      "metadata": {    "_ts": "MetadataQuery",    "title": coalesce(metadata.title, title, name),    "desc": coalesce(metadata.desc, excerpt),    "image": select(      defined(metadata.image.asset._ref) => metadata.image {          "id": asset._ref,  altText      },      defined(image.asset._ref) => image {          "id": asset._ref,  altText      },      defined(coverImage.asset._ref) => coverImage {          "id": asset._ref,  altText      },      defined(hero.image.asset._ref) => hero.image {          "id": asset._ref,  altText      }    ),    "tags": metadata.tags,    "noIndex": metadata.noIndex  }  },}
+// Query: {  "siteSettings":   *[_type == "siteSettings"][0] {    privacyPolicyPage-> {      "slug": slug.current,      title    },  },  "headerSettings":   *[_type == "headerSettings"][0] {      email,    phoneNumber,    logo,    navigationItems[] {          "_ts": "LinksQuery",  _key,  _type == "internalLinkObject" => {  "_ts": "InternalLinkQuery",  "linkType": "internal",  ...(internalLink-> {    "title": coalesce(      ^.customTitle,      title,      name    ),    "slug": slug.current,    _type  }),  description},  _type == "link" => {  "_ts": "ExternalLinkQuery",  "linkType": "external",  "title": coalesce(    customTitle,    href  ),  "url": href,  description},  _type == "downloadLinkObject" => {  "_ts": "DownloadLinkQuery",  "linkType": "download",  "title": coalesce(      customTitle,      file.asset->originalFilename    ),  "url": file.asset->url,  description},  _type == "linkGroup" => {  "_ts": "LinkGroupQuery",  "linkType": "linkGroup",  title,  links[] {    _key,    _type == "internalLinkObject" => {  "_ts": "InternalLinkQuery",  "linkType": "internal",  ...(internalLink-> {    "title": coalesce(      ^.customTitle,      title,      name    ),    "slug": slug.current,    _type  }),  description},    _type == "link" => {  "_ts": "ExternalLinkQuery",  "linkType": "external",  "title": coalesce(    customTitle,    href  ),  "url": href,  description}  }}      }  },  "footerSettings":   *[_type == "footerSettings"][0] {      blocks[]{  // Hero Blocks    _type == "hero-1-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    imagePosition,    links,  },    _type == "hero-2-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },    _type == "hero-3-block" => {    _type,    titleOrange,    titleWhite,    subtitle,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    showOverlay,    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },    _type == "hero-4-block" => {    _type,    title,    description,    showOverlay,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },  // Section/Header Blocks    _type == "section-header-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link,  },    _type == "heading-and-paragraph-centered-block" => {    _type,    heading,    paragraph,  },  // Carousel Blocks    _type == "carousel-1-block" => {    _type,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  },    _type == "carousel-2-block" => {    _type,    padding,    colorVariant,    testimonial[]->{    _id,    name,    title,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }    },      alt    },  },      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      rating,    },  // Timeline    _type == "timeline-row-block" => {    _type,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },  // Call to Action    _type == "cta-1-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },  // Logo Cloud    _type == "logo-cloud-1-block" => {    _type,    padding,    colorVariant,    title,    images[]{      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },  },  // FAQs    _type == "faqs-block" => {    _type,    noPadding,    faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},        faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }  },  // Newsletter    _type == "form-newsletter-block" => {    _type,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },  // Split Blocks    _type == "split-row-block" => {    _type,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },        _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },        _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },        _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },    },  },    _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },    _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },    _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },    _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },  // Grid Blocks    _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },    _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    _type == "grid-row-block" => {    _type,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },        _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },        _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    },  },  // Pricing    _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },  // Service    _type == "service-grid-block" => {    _type,    services[]{      _type == "manualService" => {         title,         link,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      },      _type != "manualService" => @->{         _id,         title,         slug,         excerpt,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      }    },  },  // Cover Map    _type == "cover-map-block" => {    _type,    center,    zoom,    height,    animateIntro,    bearingRotation,    radiusAnimation,    color,  },  // Contact Info    _type == "contact-info-and-form-block" => {    _type,      contactHeading,      contactDescription,      contactEmail,      contactPhone,      contactAddress,      customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        "value": select(value != null && value != "" => value, label)      },      conditionalLogic {        enabled,        controllerFieldName,        action,        controllerValueChecked      }  }    },    },  // Our Values    _type == "our-values-block" => {    _type,    values  },  // Course Slider    _type == "course-slider-block" => {    _type,    title,    sectionId,    courses[]->{      _id,      title,      "slug": slug.current,      featuredImage{            crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }      },      excerpt,    }  },    _type == "hero-5-block" => {    _type,    image{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  },  // Two Column    _type == "two-column-block" => {    _type,    firstColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    },    secondColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    }  },  // Seperator    _type == "seperator-block" => {    _type,    padding,  }  // ADD VALUE 3 ABOVE},    ctaText,    infoText,    contactInfo,    socialMediaLinks[] {      platform,      url  }  },  "metadataSettings":   *[_type == "metadataSettings"][0] {      "metadata": {    "_ts": "MetadataQuery",    "title": coalesce(metadata.title, title, name),    "desc": coalesce(metadata.desc, excerpt),    "image": select(      defined(metadata.image.asset._ref) => metadata.image {          "id": asset._ref,  altText      },      defined(image.asset._ref) => image {          "id": asset._ref,  altText      },      defined(coverImage.asset._ref) => coverImage {          "id": asset._ref,  altText      },      defined(hero.image.asset._ref) => hero.image {          "id": asset._ref,  altText      }    ),    "tags": metadata.tags,    "noIndex": metadata.noIndex  }  },  "route404Settings":   *[_type == "route404Settings"][0] {      title,    subtitle,    buttonText,    buttonLink,    backgroundImage {      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      }    },    blocks[] {      blocks[]{  // Hero Blocks    _type == "hero-1-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    imagePosition,    links,  },    _type == "hero-2-block" => {    _type,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },    _type == "hero-3-block" => {    _type,    titleOrange,    titleWhite,    subtitle,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    showOverlay,    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },    _type == "hero-4-block" => {    _type,    title,    description,    showOverlay,    backgroundImage{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },    topOverlayStrength,    upperCenterOverlayStrength,    lowerCenterOverlayStrength,    bottomOverlayStrength,  },  // Section/Header Blocks    _type == "section-header-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    description,    link,  },    _type == "heading-and-paragraph-centered-block" => {    _type,    heading,    paragraph,  },  // Carousel Blocks    _type == "carousel-1-block" => {    _type,    padding,    colorVariant,    size,    orientation,    indicators,    images[]{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    }  },    _type == "carousel-2-block" => {    _type,    padding,    colorVariant,    testimonial[]->{    _id,    name,    title,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }    },      alt    },  },      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      rating,    },  // Timeline    _type == "timeline-row-block" => {    _type,    padding,    colorVariant,    timelines[]{      title,      tagLine,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },  // Call to Action    _type == "cta-1-block" => {    _type,    padding,    colorVariant,    sectionWidth,    stackAlign,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    links,  },  // Logo Cloud    _type == "logo-cloud-1-block" => {    _type,    padding,    colorVariant,    title,    images[]{      asset->{        _id,        url,        metadata {          dimensions {            width,            height          }        }      },      alt    },  },  // FAQs    _type == "faqs-block" => {    _type,    noPadding,    faqs[]->{      _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }},        faqsByCategory[]->{      _id,      title,      "faqs": *[_type == "faq" && references(^._id)] {            _id,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    }        }      }  },  // Newsletter    _type == "form-newsletter-block" => {    _type,    padding,    colorVariant,    stackAlign,    consentText,    buttonText,    successMessage,  },  // Split Blocks    _type == "split-row-block" => {    _type,    padding,    colorVariant,    noGap,    splitColumns[]{        _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },        _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },        _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },        _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },    },  },    _type == "split-content-block" => {    _type,    sticky,    padding,    colorVariant,    tagLine,    title,    body[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    link,  },    _type == "split-cards-list-block" => {    _type,    list[]{      tagLine,      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },    },  },    _type == "split-image-block" => {    _type,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },  },    _type == "split-info-list-block" => {    _type,    list[]{      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      title,      body[]{        ...,        _type == "image" => {          ...,          asset->{            _id,            url,            mimeType,            metadata {              lqip,              dimensions {                width,                height              }            }          }        }      },      tags[],    },  },  // Grid Blocks    _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },    _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    _type == "grid-row-block" => {    _type,    padding,    colorVariant,    gridColumns,    columns[]{        _type == "grid-card-block" => {    _type,    title,    excerpt,    image{      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      },      alt    },    link,  },        _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },        _type == "grid-post-block" => {    _type,    ...post->{      title,      slug,      excerpt,      image{        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        },        alt      },      categories[]->{        title,      },    },  },    },  },  // Pricing    _type == "pricing-card-block" => {    _type,    title,    tagLine,    price,    list[],    excerpt,    link,  },  // Service    _type == "service-grid-block" => {    _type,    services[]{      _type == "manualService" => {         title,         link,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      },      _type != "manualService" => @->{         _id,         title,         slug,         excerpt,         featuredImage{               crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }         }      }    },  },  // Cover Map    _type == "cover-map-block" => {    _type,    center,    zoom,    height,    animateIntro,    bearingRotation,    radiusAnimation,    color,  },  // Contact Info    _type == "contact-info-and-form-block" => {    _type,      contactHeading,      contactDescription,      contactEmail,      contactPhone,      contactAddress,      customContactForm{         _type,    formTitle,    formDescription,    submitButtonText,    successMessage,    formFields[] {      fieldType,      fieldName,      fieldLabel,      placeholder,      isRequired,      width,      helpText,      labelOnly,      preChecked,      options[] {        label,        "value": select(value != null && value != "" => value, label)      },      conditionalLogic {        enabled,        controllerFieldName,        action,        controllerValueChecked      }  }    },    },  // Our Values    _type == "our-values-block" => {    _type,    values  },  // Course Slider    _type == "course-slider-block" => {    _type,    title,    sectionId,    courses[]->{      _id,      title,      "slug": slug.current,      featuredImage{            crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }      },      excerpt,    }  },    _type == "hero-5-block" => {    _type,    image{          crop,  hotspot,  "darkScore": (    (coalesce(asset->metadata.palette.darkVibrant.population, 0)     + coalesce(asset->metadata.palette.darkMuted.population, 0))    /    (      coalesce(asset->metadata.palette.darkVibrant.population, 0)      + coalesce(asset->metadata.palette.darkMuted.population, 0)      + coalesce(asset->metadata.palette.dominant.population, 0)      + coalesce(asset->metadata.palette.lightVibrant.population, 0)      + coalesce(asset->metadata.palette.lightMuted.population, 0)      + coalesce(asset->metadata.palette.muted.population, 0)    )  ),  asset->{    _id,    title,    altText,    description,    metadata {      lqip,      dimensions {        aspectRatio,        width,        height      },      palette {        dominant {          background,          foreground,          population        }      }    }  }    },  },  // Two Column    _type == "two-column-block" => {    _type,    firstColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    },    secondColumn {      blockContent[]{      ...,      _type == "image" => {        ...,        asset->{          _id,          url,          mimeType,          metadata {            lqip,            dimensions {              width,              height            }          }        }      }    },    }  },  // Seperator    _type == "seperator-block" => {    _type,    padding,  }  // ADD VALUE 3 ABOVE}    },    meta_title,    meta_description  },  // ADD VALUE 3 ABOVE}
 export type SettingsQueryResult = {
   siteSettings: {
     privacyPolicyPage: {
@@ -5921,7 +5952,6 @@ export type SettingsQueryResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         _type: "image";
@@ -5933,107 +5963,1339 @@ export type SettingsQueryResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
-        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         _type: "image";
       };
     } | null;
     navigationItems: Array<{
-      _id: string;
+      _ts: "ExternalLinkQuery";
+      _key: string;
+      linkType: "external";
+      title: string | null;
+      url: string | null;
+      description: null;
+    } | {
+      _ts: "InternalLinkQuery";
+      _key: string;
+      linkType: "internal";
+      title: string | null;
+      slug: string | null;
+      _type: "blog-slug";
+      description: null;
+    } | {
+      _ts: "InternalLinkQuery";
+      _key: string;
+      linkType: "internal";
+      title: string | null;
+      slug: string | null;
+      _type: "course-slug";
+      description: null;
+    } | {
+      _ts: "InternalLinkQuery";
+      _key: string;
+      linkType: "internal";
+      title: string | null;
+      slug: string | null;
       _type: "page-slug";
-      _createdAt: string;
-      _updatedAt: string;
-      _rev: string;
-      title?: string;
-      slug?: Slug;
-      blocks?: Array<{
+      description: null;
+    } | {
+      _ts: "InternalLinkQuery";
+      _key: string;
+      linkType: "internal";
+      title: string | null;
+      slug: string | null;
+      _type: "service-slug";
+      description: null;
+    } | {
+      _ts: "InternalLinkQuery";
+      _key: string;
+      linkType: "internal";
+      description: null;
+    } | {
+      _ts: "LinkGroupQuery";
+      _key: string;
+      linkType: "linkGroup";
+      title: string | null;
+      links: Array<{
         _key: string;
-      } & Carousel1Block | {
+        _ts: "ExternalLinkQuery";
+        linkType: "external";
+        title: string | null;
+        url: string | null;
+        description: null;
+      } | {
         _key: string;
-      } & Carousel2Block | {
+        _ts: "InternalLinkQuery";
+        linkType: "internal";
+        title: string | null;
+        slug: string | null;
+        _type: "blog-slug";
+        description: null;
+      } | {
         _key: string;
-      } & ContactInfoAndFormBlock | {
+        _ts: "InternalLinkQuery";
+        linkType: "internal";
+        title: string | null;
+        slug: string | null;
+        _type: "course-slug";
+        description: null;
+      } | {
         _key: string;
-      } & CourseSliderBlock | {
+        _ts: "InternalLinkQuery";
+        linkType: "internal";
+        title: string | null;
+        slug: string | null;
+        _type: "page-slug";
+        description: null;
+      } | {
         _key: string;
-      } & CoverMapBlock | {
+        _ts: "InternalLinkQuery";
+        linkType: "internal";
+        title: string | null;
+        slug: string | null;
+        _type: "service-slug";
+        description: null;
+      } | {
         _key: string;
-      } & Cta1Block | {
-        _key: string;
-      } & CustomContactFormBlock | {
-        _key: string;
-      } & FaqsBlock | {
-        _key: string;
-      } & FormNewsletterBlock | {
-        _key: string;
-      } & GridCardBlock | {
-        _key: string;
-      } & GridPostBlock | {
-        _key: string;
-      } & GridRowBlock | {
-        _key: string;
-      } & HeadingAndParagraphCenteredBlock | {
-        _key: string;
-      } & Hero1Block | {
-        _key: string;
-      } & Hero2Block | {
-        _key: string;
-      } & Hero3Block | {
-        _key: string;
-      } & Hero4Block | {
-        _key: string;
-      } & Hero5Block | {
-        _key: string;
-      } & LogoCloud1Block | {
-        _key: string;
-      } & OurValuesBlock | {
-        _key: string;
-      } & PricingCardBlock | {
-        _key: string;
-      } & SectionHeaderBlock | {
-        _key: string;
-      } & SeperatorBlock | {
-        _key: string;
-      } & ServiceGridBlock | {
-        _key: string;
-      } & SplitCardsListBlock | {
-        _key: string;
-      } & SplitContentBlock | {
-        _key: string;
-      } & SplitImageBlock | {
-        _key: string;
-      } & SplitInfoListBlock | {
-        _key: string;
-      } & SplitRowBlock | {
-        _key: string;
-      } & TimelineRowBlock | {
-        _key: string;
-      } & TwoColumnBlock>;
-      meta_title?: string;
-      meta_description?: string;
-      noindex?: boolean;
-      ogImage?: {
-        asset?: {
-          _ref: string;
-          _type: "reference";
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-        };
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-      };
-      orderRank?: string;
+        _ts: "InternalLinkQuery";
+        linkType: "internal";
+        description: null;
+      }> | null;
     }> | null;
   } | null;
-  footerSettings: never;
-  ctaText: never;
-  infoText: never;
-  contactInfo: never;
-  socialMediaLinks: never;
-  menuSettings: null;
+  footerSettings: {
+    blocks: Array<{
+      _type: "carousel-1-block";
+      padding: SectionPadding | null;
+      colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+      size: "one" | "three" | "two" | null;
+      orientation: null;
+      indicators: "count" | "dots" | "none" | null;
+      images: Array<{
+        asset: {
+          _id: string;
+          url: string | null;
+          mimeType: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        alt: string | null;
+      }> | null;
+    } | {
+      _type: "carousel-2-block";
+      padding: SectionPadding | null;
+      colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+      testimonial: Array<{
+        _id: string;
+        name: string | null;
+        title: string | null;
+        image: {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          alt: null;
+        } | null;
+      }> | null;
+      body: null;
+      rating: null;
+    } | {
+      _type: "contact-info-and-form-block";
+      contactHeading: string | null;
+      contactDescription: string | null;
+      contactEmail: string | null;
+      contactPhone: string | null;
+      contactAddress: string | null;
+      customContactForm: {
+        _type: "custom-contact-form-block";
+        formTitle: string | null;
+        formDescription: string | null;
+        submitButtonText: string | null;
+        successMessage: string | null;
+        formFields: Array<{
+          fieldType: "checkbox" | "checkboxGroup" | "date" | "datetime" | "email" | "file" | "heading" | "radio" | "select" | "tel" | "text" | "textarea" | null;
+          fieldName: string | null;
+          fieldLabel: string | null;
+          placeholder: string | null;
+          isRequired: boolean | null;
+          width: "full" | "half" | "quarter" | "remaining" | "third" | null;
+          helpText: string | null;
+          labelOnly: boolean | null;
+          preChecked: boolean | null;
+          options: Array<{
+            label: string | null;
+            value: string | null;
+          }> | null;
+          conditionalLogic: {
+            enabled: boolean | null;
+            controllerFieldName: string | null;
+            action: "hide" | "show" | null;
+            controllerValueChecked: "false" | "true" | null;
+          } | null;
+        }> | null;
+      } | null;
+    } | {
+      _type: "course-slider-block";
+      title: string | null;
+      sectionId: string | null;
+      courses: Array<{
+        _id: string;
+        title: string | null;
+        slug: string | null;
+        featuredImage: {
+          crop: SanityImageCrop | null;
+          hotspot: SanityImageHotspot | null;
+          darkScore: number | NaN;
+          asset: {
+            _id: string;
+            title: string | null;
+            altText: string | null;
+            description: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                aspectRatio: number | null;
+                width: number | null;
+                height: number | null;
+              } | null;
+              palette: {
+                dominant: {
+                  background: string | null;
+                  foreground: string | null;
+                  population: number | null;
+                } | null;
+              } | null;
+            } | null;
+          } | null;
+        } | null;
+        excerpt: string | null;
+      }> | null;
+    } | {
+      _type: "cover-map-block";
+      center: Geopoint | null;
+      zoom: number | null;
+      height: {
+        type?: "auto" | "px";
+        height?: number;
+      } | null;
+      animateIntro: {
+        enabled?: boolean;
+        initialZoom?: number;
+        initialPitch?: number;
+        duration?: number;
+      } | null;
+      bearingRotation: {
+        enabled?: boolean;
+        speed?: number;
+        introDelay?: number;
+      } | null;
+      radiusAnimation: {
+        enabled?: boolean;
+        duration?: number;
+        spawnInterval?: number;
+        radius?: number;
+        opacity?: {
+          startOpacity?: number;
+          endOpacity?: number;
+        };
+        color?: string;
+      } | null;
+      color: null;
+    } | {
+      _type: "cta-1-block";
+      padding: SectionPadding | null;
+      colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+      sectionWidth: "default" | "narrow" | null;
+      stackAlign: "center" | "left" | null;
+      tagLine: string | null;
+      title: string | null;
+      body: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      } | {
+        asset: {
+          _id: string;
+          url: string | null;
+          mimeType: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      } | {
+        videoId?: string;
+        _type: "youtube";
+        _key: string;
+      }> | null;
+      links: Array<{
+        _key: string;
+      } & Link> | null;
+    } | {
+      _type: "faqs-block";
+      noPadding: boolean | null;
+      faqs: Array<{
+        _id: string;
+        title: string | null;
+        body: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        } | {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+          _key: string;
+        } | {
+          videoId?: string;
+          _type: "youtube";
+          _key: string;
+        }> | null;
+      }> | null;
+      faqsByCategory: Array<{
+        _id: string;
+        title: string | null;
+        faqs: Array<{
+          _id: string;
+          title: string | null;
+          body: Array<{
+            children?: Array<{
+              marks?: Array<string>;
+              text?: string;
+              _type: "span";
+              _key: string;
+            }>;
+            style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+            listItem?: "bullet" | "number";
+            markDefs?: Array<{
+              href?: string;
+              _type: "link";
+              _key: string;
+            }>;
+            level?: number;
+            _type: "block";
+            _key: string;
+          } | {
+            asset: {
+              _id: string;
+              url: string | null;
+              mimeType: string | null;
+              metadata: {
+                lqip: string | null;
+                dimensions: {
+                  width: number | null;
+                  height: number | null;
+                } | null;
+              } | null;
+            } | null;
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
+            alt?: string;
+            _type: "image";
+            _key: string;
+          } | {
+            videoId?: string;
+            _type: "youtube";
+            _key: string;
+          }> | null;
+        }>;
+      }> | null;
+    } | {
+      _type: "form-newsletter-block";
+      padding: SectionPadding | null;
+      colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+      stackAlign: "center" | "left" | null;
+      consentText: string | null;
+      buttonText: string | null;
+      successMessage: string | null;
+    } | {
+      _type: "grid-card-block";
+      title: string | null;
+      excerpt: string | null;
+      image: {
+        asset: {
+          _id: string;
+          url: string | null;
+          mimeType: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        alt: string | null;
+      } | null;
+      link: Link | null;
+    } | {
+      _type: "grid-post-block";
+      title: string | null;
+      slug: Slug | null;
+      excerpt: string | null;
+      image: {
+        asset: {
+          _id: string;
+          url: string | null;
+          mimeType: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        alt: string | null;
+      } | null;
+      categories: Array<{
+        title: string | null;
+      }> | null;
+    } | {
+      _type: "grid-post-block";
+    } | {
+      _type: "grid-row-block";
+      padding: SectionPadding | null;
+      colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+      gridColumns: "grid-cols-2" | "grid-cols-3" | "grid-cols-4" | null;
+      columns: Array<{
+        _type: "grid-card-block";
+        title: string | null;
+        excerpt: string | null;
+        image: {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          alt: string | null;
+        } | null;
+        link: Link | null;
+      } | {
+        _type: "grid-post-block";
+        title: string | null;
+        slug: Slug | null;
+        excerpt: string | null;
+        image: {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          alt: string | null;
+        } | null;
+        categories: Array<{
+          title: string | null;
+        }> | null;
+      } | {
+        _type: "grid-post-block";
+      } | {
+        _type: "pricing-card-block";
+        title: string | null;
+        tagLine: string | null;
+        price: {
+          value?: number;
+          period?: string;
+        } | null;
+        list: Array<string> | null;
+        excerpt: string | null;
+        link: Link | null;
+      }> | null;
+    } | {
+      _type: "heading-and-paragraph-centered-block";
+      heading: string | null;
+      paragraph: string | null;
+    } | {
+      _type: "hero-1-block";
+      tagLine: string | null;
+      title: string | null;
+      body: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      } | {
+        asset: {
+          _id: string;
+          url: string | null;
+          mimeType: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      } | {
+        videoId?: string;
+        _type: "youtube";
+        _key: string;
+      }> | null;
+      image: {
+        asset: {
+          _id: string;
+          url: string | null;
+          mimeType: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        alt: string | null;
+      } | null;
+      imagePosition: "left" | "right" | null;
+      links: Array<{
+        _key: string;
+      } & Link> | null;
+    } | {
+      _type: "hero-2-block";
+      tagLine: string | null;
+      title: string | null;
+      body: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      } | {
+        asset: {
+          _id: string;
+          url: string | null;
+          mimeType: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      } | {
+        videoId?: string;
+        _type: "youtube";
+        _key: string;
+      }> | null;
+      links: Array<{
+        _key: string;
+      } & Link> | null;
+    } | {
+      _type: "hero-3-block";
+      titleOrange: string | null;
+      titleWhite: string | null;
+      subtitle: string | null;
+      backgroundImage: {
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        darkScore: number | NaN;
+        asset: {
+          _id: string;
+          title: string | null;
+          altText: string | null;
+          description: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              aspectRatio: number | null;
+              width: number | null;
+              height: number | null;
+            } | null;
+            palette: {
+              dominant: {
+                background: string | null;
+                foreground: string | null;
+                population: number | null;
+              } | null;
+            } | null;
+          } | null;
+        } | null;
+      } | null;
+      showOverlay: boolean | null;
+      topOverlayStrength: number | null;
+      upperCenterOverlayStrength: number | null;
+      lowerCenterOverlayStrength: number | null;
+      bottomOverlayStrength: number | null;
+    } | {
+      _type: "hero-4-block";
+      title: string | null;
+      description: string | null;
+      showOverlay: boolean | null;
+      backgroundImage: {
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        darkScore: number | NaN;
+        asset: {
+          _id: string;
+          title: string | null;
+          altText: string | null;
+          description: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              aspectRatio: number | null;
+              width: number | null;
+              height: number | null;
+            } | null;
+            palette: {
+              dominant: {
+                background: string | null;
+                foreground: string | null;
+                population: number | null;
+              } | null;
+            } | null;
+          } | null;
+        } | null;
+      } | null;
+      topOverlayStrength: number | null;
+      upperCenterOverlayStrength: number | null;
+      lowerCenterOverlayStrength: number | null;
+      bottomOverlayStrength: number | null;
+    } | {
+      _type: "hero-5-block";
+      image: {
+        crop: SanityImageCrop | null;
+        hotspot: SanityImageHotspot | null;
+        darkScore: number | NaN;
+        asset: {
+          _id: string;
+          title: string | null;
+          altText: string | null;
+          description: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              aspectRatio: number | null;
+              width: number | null;
+              height: number | null;
+            } | null;
+            palette: {
+              dominant: {
+                background: string | null;
+                foreground: string | null;
+                population: number | null;
+              } | null;
+            } | null;
+          } | null;
+        } | null;
+      } | null;
+    } | {
+      _type: "logo-cloud-1-block";
+      padding: SectionPadding | null;
+      colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+      title: string | null;
+      images: Array<{
+        asset: {
+          _id: string;
+          url: string | null;
+          metadata: {
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        alt: string | null;
+      }> | null;
+    } | {
+      _type: "our-values-block";
+      values: Array<{
+        icon?: Icon;
+        title?: string;
+        description?: string;
+        _type: "value";
+        _key: string;
+      }> | null;
+    } | {
+      _type: "pricing-card-block";
+      title: string | null;
+      tagLine: string | null;
+      price: {
+        value?: number;
+        period?: string;
+      } | null;
+      list: Array<string> | null;
+      excerpt: string | null;
+      link: Link | null;
+    } | {
+      _type: "section-header-block";
+      padding: SectionPadding | null;
+      colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+      sectionWidth: "default" | "narrow" | null;
+      stackAlign: "center" | "left" | null;
+      tagLine: string | null;
+      title: string | null;
+      description: string | null;
+      link: null;
+    } | {
+      _type: "seperator-block";
+      padding: SectionPadding | null;
+    } | {
+      _type: "service-grid-block";
+      services: Array<{
+        _id: string;
+        title: string | null;
+        slug: Slug | null;
+        excerpt: string | null;
+        featuredImage: {
+          crop: SanityImageCrop | null;
+          hotspot: SanityImageHotspot | null;
+          darkScore: number | NaN;
+          asset: {
+            _id: string;
+            title: string | null;
+            altText: string | null;
+            description: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                aspectRatio: number | null;
+                width: number | null;
+                height: number | null;
+              } | null;
+              palette: {
+                dominant: {
+                  background: string | null;
+                  foreground: string | null;
+                  population: number | null;
+                } | null;
+              } | null;
+            } | null;
+          } | null;
+        } | null;
+      } | {
+        title: string | null;
+        link: string | null;
+        featuredImage: {
+          crop: SanityImageCrop | null;
+          hotspot: SanityImageHotspot | null;
+          darkScore: number | NaN;
+          asset: {
+            _id: string;
+            title: string | null;
+            altText: string | null;
+            description: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                aspectRatio: number | null;
+                width: number | null;
+                height: number | null;
+              } | null;
+              palette: {
+                dominant: {
+                  background: string | null;
+                  foreground: string | null;
+                  population: number | null;
+                } | null;
+              } | null;
+            } | null;
+          } | null;
+        } | null;
+      }> | null;
+    } | {
+      _type: "split-cards-list-block";
+      list: Array<{
+        tagLine: string | null;
+        title: string | null;
+        body: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        } | {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+          _key: string;
+        } | {
+          videoId?: string;
+          _type: "youtube";
+          _key: string;
+        }> | null;
+      }> | null;
+    } | {
+      _type: "split-content-block";
+      sticky: boolean | null;
+      padding: SectionPadding | null;
+      colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+      tagLine: string | null;
+      title: string | null;
+      body: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      } | {
+        asset: {
+          _id: string;
+          url: string | null;
+          mimeType: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      } | {
+        videoId?: string;
+        _type: "youtube";
+        _key: string;
+      }> | null;
+      link: Link | null;
+    } | {
+      _type: "split-image-block";
+      image: {
+        asset: {
+          _id: string;
+          url: string | null;
+          mimeType: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+        alt: string | null;
+      } | null;
+    } | {
+      _type: "split-info-list-block";
+      list: Array<{
+        image: {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          alt: string | null;
+        } | null;
+        title: string | null;
+        body: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        } | {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+          _key: string;
+        } | {
+          videoId?: string;
+          _type: "youtube";
+          _key: string;
+        }> | null;
+        tags: Array<string> | null;
+      }> | null;
+    } | {
+      _type: "split-row-block";
+      padding: SectionPadding | null;
+      colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+      noGap: boolean | null;
+      splitColumns: Array<{
+        _type: "split-cards-list-block";
+        list: Array<{
+          tagLine: string | null;
+          title: string | null;
+          body: Array<{
+            children?: Array<{
+              marks?: Array<string>;
+              text?: string;
+              _type: "span";
+              _key: string;
+            }>;
+            style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+            listItem?: "bullet" | "number";
+            markDefs?: Array<{
+              href?: string;
+              _type: "link";
+              _key: string;
+            }>;
+            level?: number;
+            _type: "block";
+            _key: string;
+          } | {
+            asset: {
+              _id: string;
+              url: string | null;
+              mimeType: string | null;
+              metadata: {
+                lqip: string | null;
+                dimensions: {
+                  width: number | null;
+                  height: number | null;
+                } | null;
+              } | null;
+            } | null;
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
+            alt?: string;
+            _type: "image";
+            _key: string;
+          } | {
+            videoId?: string;
+            _type: "youtube";
+            _key: string;
+          }> | null;
+        }> | null;
+      } | {
+        _type: "split-content-block";
+        sticky: boolean | null;
+        padding: SectionPadding | null;
+        colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+        tagLine: string | null;
+        title: string | null;
+        body: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        } | {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+          _key: string;
+        } | {
+          videoId?: string;
+          _type: "youtube";
+          _key: string;
+        }> | null;
+        link: Link | null;
+      } | {
+        _type: "split-image-block";
+        image: {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          alt: string | null;
+        } | null;
+      } | {
+        _type: "split-info-list-block";
+        list: Array<{
+          image: {
+            asset: {
+              _id: string;
+              url: string | null;
+              mimeType: string | null;
+              metadata: {
+                lqip: string | null;
+                dimensions: {
+                  width: number | null;
+                  height: number | null;
+                } | null;
+              } | null;
+            } | null;
+            alt: string | null;
+          } | null;
+          title: string | null;
+          body: Array<{
+            children?: Array<{
+              marks?: Array<string>;
+              text?: string;
+              _type: "span";
+              _key: string;
+            }>;
+            style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+            listItem?: "bullet" | "number";
+            markDefs?: Array<{
+              href?: string;
+              _type: "link";
+              _key: string;
+            }>;
+            level?: number;
+            _type: "block";
+            _key: string;
+          } | {
+            asset: {
+              _id: string;
+              url: string | null;
+              mimeType: string | null;
+              metadata: {
+                lqip: string | null;
+                dimensions: {
+                  width: number | null;
+                  height: number | null;
+                } | null;
+              } | null;
+            } | null;
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
+            alt?: string;
+            _type: "image";
+            _key: string;
+          } | {
+            videoId?: string;
+            _type: "youtube";
+            _key: string;
+          }> | null;
+          tags: Array<string> | null;
+        }> | null;
+      }> | null;
+    } | {
+      _type: "timeline-row-block";
+      padding: SectionPadding | null;
+      colorVariant: "accent" | "background" | "card" | "destructive" | "muted" | "primary" | "secondary" | null;
+      timelines: Array<{
+        title: string | null;
+        tagLine: string | null;
+        body: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        } | {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+          _key: string;
+        } | {
+          videoId?: string;
+          _type: "youtube";
+          _key: string;
+        }> | null;
+      }> | null;
+    } | {
+      _type: "two-column-block";
+      firstColumn: {
+        blockContent: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        } | {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+          _key: string;
+        } | {
+          videoId?: string;
+          _type: "youtube";
+          _key: string;
+        }> | null;
+      } | null;
+      secondColumn: {
+        blockContent: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs?: Array<{
+            href?: string;
+            _type: "link";
+            _key: string;
+          }>;
+          level?: number;
+          _type: "block";
+          _key: string;
+        } | {
+          asset: {
+            _id: string;
+            url: string | null;
+            mimeType: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+          _key: string;
+        } | {
+          videoId?: string;
+          _type: "youtube";
+          _key: string;
+        }> | null;
+      } | null;
+    } | {}> | null;
+    ctaText: string | null;
+    infoText: string | null;
+    contactInfo: string | null;
+    socialMediaLinks: Array<{
+      platform: string | null;
+      url: string | null;
+    }> | null;
+  } | null;
   metadataSettings: {
     metadata: {
       _ts: "MetadataQuery";
@@ -6047,12 +7309,35 @@ export type SettingsQueryResult = {
       noIndex: null;
     };
   } | null;
+  route404Settings: {
+    title: string | null;
+    subtitle: string | null;
+    buttonText: string | null;
+    buttonLink: string | null;
+    backgroundImage: {
+      asset: {
+        _id: string;
+        url: string | null;
+        metadata: {
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+    } | null;
+    blocks: Array<{
+      blocks: null;
+    }> | null;
+    meta_title: string | null;
+    meta_description: string | null;
+  } | null;
 };
 
 // Source: ./sanity/desk-organized-sanity-utilities/settings/site-settings/site-settings.query.ts
-// Variable: siteSettingsQuery
+// Variable: siteSettingsFetchQuery
 // Query: *[_type == "siteSettings"][0] {    privacyPolicyPage-> {      "slug": slug.current,      title    },  }
-export type SiteSettingsQueryResult = {
+export type SiteSettingsFetchQueryResult = {
   privacyPolicyPage: {
     slug: string | null;
     title: string | null;
@@ -6068,28 +7353,29 @@ export type GetAllReferencedTestimonialsQueryResult = never;
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n*[_type == \"siteSettings\"][0].frontPage->{\n    \nblocks[]{\n  // Hero Blocks\n  \n  _type == \"hero-1-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    imagePosition,\n    links,\n  }\n,\n  \n  _type == \"hero-2-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n  \n  _type == \"hero-3-block\" => {\n    _type,\n    titleOrange,\n    titleWhite,\n    subtitle,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    showOverlay,\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n  \n  _type == \"hero-4-block\" => {\n    _type,\n    title,\n    description,\n    showOverlay,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n\n  // Section/Header Blocks\n  \n  _type == \"section-header-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link,\n  }\n,\n  \n  _type == \"heading-and-paragraph-centered-block\" => {\n    _type,\n    heading,\n    paragraph,\n  }\n,\n\n  // Carousel Blocks\n  \n  _type == \"carousel-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n,\n  \n  _type == \"carousel-2-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    \ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      rating,\n    }\n,\n\n  // Timeline\n  \n  _type == \"timeline-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n\n  // Call to Action\n  \n  _type == \"cta-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n\n  // Logo Cloud\n  \n  _type == \"logo-cloud-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n\n  // FAQs\n  \n  _type == \"faqs-block\" => {\n    _type,\n    noPadding,\n    \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n    \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n  }\n,\n\n  // Newsletter\n  \n  _type == \"form-newsletter-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n\n  // Split Blocks\n  \n  _type == \"split-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n      \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n      \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n      \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n  \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n  \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n  \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n  \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n\n  // Grid Blocks\n  \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n  \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n  \n  _type == \"grid-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n      \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n      \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n    },\n  }\n,\n\n  // Pricing\n  \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n\n  // Service\n  \n  _type == \"service-grid-block\" => {\n    _type,\n    services[]{\n      _type == \"manualService\" => {\n         title,\n         link,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      },\n      _type != \"manualService\" => @->{\n         _id,\n         title,\n         slug,\n         excerpt,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      }\n    },\n  }\n,\n\n  // Cover Map\n  \n  _type == \"cover-map-block\" => {\n    _type,\n    center,\n    zoom,\n    height,\n    animateIntro,\n    bearingRotation,\n    radiusAnimation,\n    color,\n\n  }\n,\n\n  // Contact Info\n  \n  _type == \"contact-info-and-form-block\" => {\n    _type,\n      contactHeading,\n      contactDescription,\n      contactEmail,\n      contactPhone,\n      contactAddress,\n      customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        value\n      }\n  }\n\n    },\n    }\n,\n\n  // Our Values\n  \n  _type == \"our-values-block\" => {\n    _type,\n    values\n  }\n,\n\n  // Course Slider\n  \n  _type == \"course-slider-block\" => {\n    _type,\n    title,\n    sectionId,\n    courses[]->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      featuredImage{\n        \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n      },\n      excerpt,\n    }\n  }\n,\n  \n  _type == \"hero-5-block\" => {\n    _type,\n    image{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n,\n\n  // Two Column\n  \n  _type == \"two-column-block\" => {\n    _type,\n    firstColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    },\n    secondColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    }\n  }\n,\n\n  // Seperator\n  \n  _type == \"seperator-block\" => {\n    _type,\n    padding,\n  }\n\n  // ADD VALUE 3 ABOVE\n}\n,\n    meta_title,\n    meta_description,\n    noindex,\n    ogImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n    }\n  }\n": GET_FRONT_PAGE_QUERYResult;
-    "\n  *[_type == \"page-slug\" && slug.current == $slug][0]{\n    \nblocks[]{\n  // Hero Blocks\n  \n  _type == \"hero-1-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    imagePosition,\n    links,\n  }\n,\n  \n  _type == \"hero-2-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n  \n  _type == \"hero-3-block\" => {\n    _type,\n    titleOrange,\n    titleWhite,\n    subtitle,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    showOverlay,\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n  \n  _type == \"hero-4-block\" => {\n    _type,\n    title,\n    description,\n    showOverlay,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n\n  // Section/Header Blocks\n  \n  _type == \"section-header-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link,\n  }\n,\n  \n  _type == \"heading-and-paragraph-centered-block\" => {\n    _type,\n    heading,\n    paragraph,\n  }\n,\n\n  // Carousel Blocks\n  \n  _type == \"carousel-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n,\n  \n  _type == \"carousel-2-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    \ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      rating,\n    }\n,\n\n  // Timeline\n  \n  _type == \"timeline-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n\n  // Call to Action\n  \n  _type == \"cta-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n\n  // Logo Cloud\n  \n  _type == \"logo-cloud-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n\n  // FAQs\n  \n  _type == \"faqs-block\" => {\n    _type,\n    noPadding,\n    \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n    \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n  }\n,\n\n  // Newsletter\n  \n  _type == \"form-newsletter-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n\n  // Split Blocks\n  \n  _type == \"split-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n      \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n      \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n      \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n  \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n  \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n  \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n  \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n\n  // Grid Blocks\n  \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n  \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n  \n  _type == \"grid-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n      \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n      \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n    },\n  }\n,\n\n  // Pricing\n  \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n\n  // Service\n  \n  _type == \"service-grid-block\" => {\n    _type,\n    services[]{\n      _type == \"manualService\" => {\n         title,\n         link,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      },\n      _type != \"manualService\" => @->{\n         _id,\n         title,\n         slug,\n         excerpt,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      }\n    },\n  }\n,\n\n  // Cover Map\n  \n  _type == \"cover-map-block\" => {\n    _type,\n    center,\n    zoom,\n    height,\n    animateIntro,\n    bearingRotation,\n    radiusAnimation,\n    color,\n\n  }\n,\n\n  // Contact Info\n  \n  _type == \"contact-info-and-form-block\" => {\n    _type,\n      contactHeading,\n      contactDescription,\n      contactEmail,\n      contactPhone,\n      contactAddress,\n      customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        value\n      }\n  }\n\n    },\n    }\n,\n\n  // Our Values\n  \n  _type == \"our-values-block\" => {\n    _type,\n    values\n  }\n,\n\n  // Course Slider\n  \n  _type == \"course-slider-block\" => {\n    _type,\n    title,\n    sectionId,\n    courses[]->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      featuredImage{\n        \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n      },\n      excerpt,\n    }\n  }\n,\n  \n  _type == \"hero-5-block\" => {\n    _type,\n    image{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n,\n\n  // Two Column\n  \n  _type == \"two-column-block\" => {\n    _type,\n    firstColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    },\n    secondColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    }\n  }\n,\n\n  // Seperator\n  \n  _type == \"seperator-block\" => {\n    _type,\n    padding,\n  }\n\n  // ADD VALUE 3 ABOVE\n}\n,\n    meta_title,\n    meta_description,\n    noindex,\n    ogImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n    }\n  }\n": GET_PAGE_BY_DEFINED_SLUG_QUERYResult;
+    "\n*[_type == \"siteSettings\"][0].frontPage->{\n    \nblocks[]{\n  // Hero Blocks\n  \n  _type == \"hero-1-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    imagePosition,\n    links,\n  }\n,\n  \n  _type == \"hero-2-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n  \n  _type == \"hero-3-block\" => {\n    _type,\n    titleOrange,\n    titleWhite,\n    subtitle,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    showOverlay,\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n  \n  _type == \"hero-4-block\" => {\n    _type,\n    title,\n    description,\n    showOverlay,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n\n  // Section/Header Blocks\n  \n  _type == \"section-header-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link,\n  }\n,\n  \n  _type == \"heading-and-paragraph-centered-block\" => {\n    _type,\n    heading,\n    paragraph,\n  }\n,\n\n  // Carousel Blocks\n  \n  _type == \"carousel-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n,\n  \n  _type == \"carousel-2-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    \ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      rating,\n    }\n,\n\n  // Timeline\n  \n  _type == \"timeline-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n\n  // Call to Action\n  \n  _type == \"cta-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n\n  // Logo Cloud\n  \n  _type == \"logo-cloud-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n\n  // FAQs\n  \n  _type == \"faqs-block\" => {\n    _type,\n    noPadding,\n    \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n    \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n  }\n,\n\n  // Newsletter\n  \n  _type == \"form-newsletter-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n\n  // Split Blocks\n  \n  _type == \"split-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n      \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n      \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n      \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n  \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n  \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n  \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n  \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n\n  // Grid Blocks\n  \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n  \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n  \n  _type == \"grid-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n      \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n      \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n    },\n  }\n,\n\n  // Pricing\n  \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n\n  // Service\n  \n  _type == \"service-grid-block\" => {\n    _type,\n    services[]{\n      _type == \"manualService\" => {\n         title,\n         link,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      },\n      _type != \"manualService\" => @->{\n         _id,\n         title,\n         slug,\n         excerpt,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      }\n    },\n  }\n,\n\n  // Cover Map\n  \n  _type == \"cover-map-block\" => {\n    _type,\n    center,\n    zoom,\n    height,\n    animateIntro,\n    bearingRotation,\n    radiusAnimation,\n    color,\n\n  }\n,\n\n  // Contact Info\n  \n  _type == \"contact-info-and-form-block\" => {\n    _type,\n      contactHeading,\n      contactDescription,\n      contactEmail,\n      contactPhone,\n      contactAddress,\n      customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        \"value\": select(value != null && value != \"\" => value, label)\n      },\n      conditionalLogic {\n        enabled,\n        controllerFieldName,\n        action,\n        controllerValueChecked\n      }\n  }\n\n    },\n    }\n,\n\n  // Our Values\n  \n  _type == \"our-values-block\" => {\n    _type,\n    values\n  }\n,\n\n  // Course Slider\n  \n  _type == \"course-slider-block\" => {\n    _type,\n    title,\n    sectionId,\n    courses[]->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      featuredImage{\n        \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n      },\n      excerpt,\n    }\n  }\n,\n  \n  _type == \"hero-5-block\" => {\n    _type,\n    image{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n,\n\n  // Two Column\n  \n  _type == \"two-column-block\" => {\n    _type,\n    firstColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    },\n    secondColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    }\n  }\n,\n\n  // Seperator\n  \n  _type == \"seperator-block\" => {\n    _type,\n    padding,\n  }\n\n  // ADD VALUE 3 ABOVE\n}\n,\n    meta_title,\n    meta_description,\n    noindex,\n    ogImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n    }\n  }\n": GET_FRONT_PAGE_QUERYResult;
+    "\n  *[_type == \"page-slug\" && slug.current == $slug][0]{\n    \nblocks[]{\n  // Hero Blocks\n  \n  _type == \"hero-1-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    imagePosition,\n    links,\n  }\n,\n  \n  _type == \"hero-2-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n  \n  _type == \"hero-3-block\" => {\n    _type,\n    titleOrange,\n    titleWhite,\n    subtitle,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    showOverlay,\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n  \n  _type == \"hero-4-block\" => {\n    _type,\n    title,\n    description,\n    showOverlay,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n\n  // Section/Header Blocks\n  \n  _type == \"section-header-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link,\n  }\n,\n  \n  _type == \"heading-and-paragraph-centered-block\" => {\n    _type,\n    heading,\n    paragraph,\n  }\n,\n\n  // Carousel Blocks\n  \n  _type == \"carousel-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n,\n  \n  _type == \"carousel-2-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    \ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      rating,\n    }\n,\n\n  // Timeline\n  \n  _type == \"timeline-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n\n  // Call to Action\n  \n  _type == \"cta-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n\n  // Logo Cloud\n  \n  _type == \"logo-cloud-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n\n  // FAQs\n  \n  _type == \"faqs-block\" => {\n    _type,\n    noPadding,\n    \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n    \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n  }\n,\n\n  // Newsletter\n  \n  _type == \"form-newsletter-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n\n  // Split Blocks\n  \n  _type == \"split-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n      \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n      \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n      \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n  \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n  \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n  \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n  \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n\n  // Grid Blocks\n  \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n  \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n  \n  _type == \"grid-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n      \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n      \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n    },\n  }\n,\n\n  // Pricing\n  \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n\n  // Service\n  \n  _type == \"service-grid-block\" => {\n    _type,\n    services[]{\n      _type == \"manualService\" => {\n         title,\n         link,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      },\n      _type != \"manualService\" => @->{\n         _id,\n         title,\n         slug,\n         excerpt,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      }\n    },\n  }\n,\n\n  // Cover Map\n  \n  _type == \"cover-map-block\" => {\n    _type,\n    center,\n    zoom,\n    height,\n    animateIntro,\n    bearingRotation,\n    radiusAnimation,\n    color,\n\n  }\n,\n\n  // Contact Info\n  \n  _type == \"contact-info-and-form-block\" => {\n    _type,\n      contactHeading,\n      contactDescription,\n      contactEmail,\n      contactPhone,\n      contactAddress,\n      customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        \"value\": select(value != null && value != \"\" => value, label)\n      },\n      conditionalLogic {\n        enabled,\n        controllerFieldName,\n        action,\n        controllerValueChecked\n      }\n  }\n\n    },\n    }\n,\n\n  // Our Values\n  \n  _type == \"our-values-block\" => {\n    _type,\n    values\n  }\n,\n\n  // Course Slider\n  \n  _type == \"course-slider-block\" => {\n    _type,\n    title,\n    sectionId,\n    courses[]->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      featuredImage{\n        \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n      },\n      excerpt,\n    }\n  }\n,\n  \n  _type == \"hero-5-block\" => {\n    _type,\n    image{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n,\n\n  // Two Column\n  \n  _type == \"two-column-block\" => {\n    _type,\n    firstColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    },\n    secondColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    }\n  }\n,\n\n  // Seperator\n  \n  _type == \"seperator-block\" => {\n    _type,\n    padding,\n  }\n\n  // ADD VALUE 3 ABOVE\n}\n,\n    meta_title,\n    meta_description,\n    noindex,\n    ogImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n    }\n  }\n": GET_PAGE_BY_DEFINED_SLUG_QUERYResult;
     "*[_type == \"page-slug\" && defined(slug)]{slug}": GET_ALL_PAGES_QUERYResult;
     "*[_type == \"blog-slug\" && defined(slug)] | order(_createdAt desc){\n    title,\n    slug,\n    excerpt,\n}": GET_BLOG_PAGES_BY_DEFINED_SLUG_QUERYResult;
     "*[_type == \"blog-slug\" && defined(slug)]{slug}": GET_ALL_BLOG_PAGES_QUERYResult;
     "*[_type == \"blog-slug\" && slug.current == $slug][0]{\n  title,\n  slug,\n  body[]{\n    \n    ...,\n    _type == \"image\" => {\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    }\n\n  },\n  _createdAt,\n  _updatedAt,\n}": GET_BLOG_PAGE_BY_ROUTE_QUERYResult;
     "\n  *[_type == \"course-slug\" && defined(slug)] | order(_createdAt desc){\n    title,\n    slug,\n    excerpt,\n  }\n": GET_COURSE_PAGE_BY_DEFINED_SLUG_QUERYResult;
     "\n  *[_type == \"course-slug\" && defined(slug)]{\n    slug\n  }\n": GET_ALL_COURSE_PAGES_QUERYResult;
-    "\n  *[_type == \"course-slug\" && slug.current == $slug][0]{\n    title,\n    slug,\n    featuredImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    map,\n    body,\n    aboutCourse,\n    keyConcepts,\n    customContactForm,\n    excerpt,\n    faqs{\n      \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n      \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n    },\n    digitalCourse,\n    _createdAt,\n    _updatedAt,\n  }\n": GET_COURSE_PAGE_BY_ROUTE_QUERYResult;
+    "\n  *[_type == \"course-slug\" && slug.current == $slug][0]{\n    title,\n    slug,\n    featuredImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    _createdAt,\n    _updatedAt,\n  }\n": GET_COURSE_PAGE_BY_ROUTE_QUERYResult;
     "*[_type == \"service-slug\" && defined(slug)] | order(_createdAt desc){\n    title,\n    slug,\n    excerpt,\n    featuredImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n": GET_SERVICE_PAGE_BY_DEFINED_SLUG_QUERYResult;
     "\n  *[_type == \"service-slug\" && defined(slug)]{\n    slug\n  }\n": GET_ALL_SERVICE_PAGES_QUERYResult;
-    "\n  *[_type == \"service-slug\" && slug.current == $slug][0]{\n    title,\n    customTitle,\n    slug,\n    layout,\n    \"headerColor\": \"dark\",\n    excerpt,\n    _createdAt,\n    customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        value\n      }\n  }\n\n    },\n    body[]{\n      \n    ...,\n    _type == \"image\" => {\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    }\n\n    },\n    _updatedAt,\n    faqs{ \n      \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n      \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n    },\n    featuredImage{\n      _type, \n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n\n  }\n": GET_SERVICE_PAGE_BY_ROUTE_QUERYResult;
+    "\n  *[_type == \"service-slug\" && slug.current == $slug][0]{\n    title,\n    customTitle,\n    slug,\n    layout,\n    \"headerColor\": \"dark\",\n    excerpt,\n    _createdAt,\n    customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        \"value\": select(value != null && value != \"\" => value, label)\n      },\n      conditionalLogic {\n        enabled,\n        controllerFieldName,\n        action,\n        controllerValueChecked\n      }\n  }\n\n    },\n    body[]{\n      \n    ...,\n    _type == \"image\" => {\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    }\n\n    },\n    _updatedAt,\n    faqs{ \n      noPadding,\n      \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n      \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n    },\n    featuredImage{\n      _type, \n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n\n  }\n": GET_SERVICE_PAGE_BY_ROUTE_QUERYResult;
+    "\n    *[_type == \"service-slug\"] | order(_updatedAt desc) {\n      \"url\": $baseUrl + '/service/' + slug.current,\n      \"slug\": slug.current,\n      \"lastModified\": _updatedAt,\n      \"changeFrequency\": 'weekly',\n      \"priority\": 0.7\n    }\n  ": ServicesQueryResult;
     "\n  author->{\n    name,\n    image {\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n": GetAuthorReferenceQueryResult;
     "\ncategories[]->{\n        title,\n      }\n": GetAllCategoriesQueryResult;
     "\n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n": GetAllFaqCategoriesQueryResult;
     "\nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n": GetAllReferencedFaqsQueryResult;
-    "\n  *[_type == \"menuSettings\"][0] {\n    mainMenu[] {\n      \n  \"_ts\": \"LinksQuery\",\n  _key,\n  _type == \"internalLinkObject\" => {\n  \"_ts\": \"InternalLinkQuery\",\n  \"linkType\": \"internal\",\n  ...(internalLink-> {\n    \"title\": coalesce(\n      ^.customTitle,\n      title,\n      name\n    ),\n    \"slug\": slug.current,\n    _type\n  }),\n  description\n},\n  _type == \"link\" => {\n  \"_ts\": \"ExternalLinkQuery\",\n  \"linkType\": \"external\",\n  \"title\": coalesce(\n    customTitle,\n    href\n  ),\n  \"url\": href,\n  description\n},\n  _type == \"downloadLinkObject\" => {\n  \"_ts\": \"DownloadLinkQuery\",\n  \"linkType\": \"download\",\n  \"title\": coalesce(\n      customTitle,\n      file.asset->originalFilename\n    ),\n  \"url\": file.asset->url,\n  description\n},\n  _type == \"linkGroup\" => {\n  \"_ts\": \"LinkGroupQuery\",\n  \"linkType\": \"linkGroup\",\n  title,\n  links[] {\n    _key,\n    _type == \"internalLinkObject\" => {\n  \"_ts\": \"InternalLinkQuery\",\n  \"linkType\": \"internal\",\n  ...(internalLink-> {\n    \"title\": coalesce(\n      ^.customTitle,\n      title,\n      name\n    ),\n    \"slug\": slug.current,\n    _type\n  }),\n  description\n},\n    _type == \"link\" => {\n  \"_ts\": \"ExternalLinkQuery\",\n  \"linkType\": \"external\",\n  \"title\": coalesce(\n    customTitle,\n    href\n  ),\n  \"url\": href,\n  description\n}\n  }\n}\n  \n\n    }\n  }\n": MenuSettingsQueryResult;
-    "\n  *[_type == \"metadataSettings\"][0] {\n    \n  \"metadata\": {\n    \"_ts\": \"MetadataQuery\",\n    \"title\": coalesce(metadata.title, title, name),\n    \"desc\": coalesce(metadata.desc, excerpt),\n    \"image\": select(\n      defined(metadata.image.asset._ref) => metadata.image {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(image.asset._ref) => image {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(coverImage.asset._ref) => coverImage {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(hero.image.asset._ref) => hero.image {\n        \n  \"id\": asset._ref,\n  altText\n\n      }\n    ),\n    \"tags\": metadata.tags,\n    \"noIndex\": metadata.noIndex\n  }\n\n  }\n": MetadataSettingsQueryResult;
-    "\n  *[_type == \"footerSettings\"][0] {\n  \n    \nblocks[]{\n  // Hero Blocks\n  \n  _type == \"hero-1-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    imagePosition,\n    links,\n  }\n,\n  \n  _type == \"hero-2-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n  \n  _type == \"hero-3-block\" => {\n    _type,\n    titleOrange,\n    titleWhite,\n    subtitle,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    showOverlay,\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n  \n  _type == \"hero-4-block\" => {\n    _type,\n    title,\n    description,\n    showOverlay,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n\n  // Section/Header Blocks\n  \n  _type == \"section-header-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link,\n  }\n,\n  \n  _type == \"heading-and-paragraph-centered-block\" => {\n    _type,\n    heading,\n    paragraph,\n  }\n,\n\n  // Carousel Blocks\n  \n  _type == \"carousel-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n,\n  \n  _type == \"carousel-2-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    \ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      rating,\n    }\n,\n\n  // Timeline\n  \n  _type == \"timeline-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n\n  // Call to Action\n  \n  _type == \"cta-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n\n  // Logo Cloud\n  \n  _type == \"logo-cloud-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n\n  // FAQs\n  \n  _type == \"faqs-block\" => {\n    _type,\n    noPadding,\n    \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n    \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n  }\n,\n\n  // Newsletter\n  \n  _type == \"form-newsletter-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n\n  // Split Blocks\n  \n  _type == \"split-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n      \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n      \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n      \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n  \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n  \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n  \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n  \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n\n  // Grid Blocks\n  \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n  \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n  \n  _type == \"grid-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n      \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n      \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n    },\n  }\n,\n\n  // Pricing\n  \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n\n  // Service\n  \n  _type == \"service-grid-block\" => {\n    _type,\n    services[]{\n      _type == \"manualService\" => {\n         title,\n         link,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      },\n      _type != \"manualService\" => @->{\n         _id,\n         title,\n         slug,\n         excerpt,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      }\n    },\n  }\n,\n\n  // Cover Map\n  \n  _type == \"cover-map-block\" => {\n    _type,\n    center,\n    zoom,\n    height,\n    animateIntro,\n    bearingRotation,\n    radiusAnimation,\n    color,\n\n  }\n,\n\n  // Contact Info\n  \n  _type == \"contact-info-and-form-block\" => {\n    _type,\n      contactHeading,\n      contactDescription,\n      contactEmail,\n      contactPhone,\n      contactAddress,\n      customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        value\n      }\n  }\n\n    },\n    }\n,\n\n  // Our Values\n  \n  _type == \"our-values-block\" => {\n    _type,\n    values\n  }\n,\n\n  // Course Slider\n  \n  _type == \"course-slider-block\" => {\n    _type,\n    title,\n    sectionId,\n    courses[]->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      featuredImage{\n        \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n      },\n      excerpt,\n    }\n  }\n,\n  \n  _type == \"hero-5-block\" => {\n    _type,\n    image{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n,\n\n  // Two Column\n  \n  _type == \"two-column-block\" => {\n    _type,\n    firstColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    },\n    secondColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    }\n  }\n,\n\n  // Seperator\n  \n  _type == \"seperator-block\" => {\n    _type,\n    padding,\n  }\n\n  // ADD VALUE 3 ABOVE\n}\n,\n    ctaText,\n    infoText,\n    contactInfo,\n    socialMediaLinks[] {\n      platform,\n      url\n  }\n\n  }\n": FooterQueryResult;
-    "\n  *[_type == \"headerSettings\"][0] {\n  \n    email,\n    phoneNumber,\n    logo,\n    navigationItems[]->\n\n  }\n": HeaderQueryResult;
-    "{\n  \"siteSettings\": \n  *[_type == \"siteSettings\"][0] {\n    privacyPolicyPage-> {\n      \"slug\": slug.current,\n      title\n    },\n  }\n,\n  \"headerSettings\": \n  *[_type == \"headerSettings\"][0] {\n  \n    email,\n    phoneNumber,\n    logo,\n    navigationItems[]->\n\n  }\n,\n  \"footerSettings\": \n    \nblocks[]{\n  // Hero Blocks\n  \n  _type == \"hero-1-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    imagePosition,\n    links,\n  }\n,\n  \n  _type == \"hero-2-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n  \n  _type == \"hero-3-block\" => {\n    _type,\n    titleOrange,\n    titleWhite,\n    subtitle,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    showOverlay,\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n  \n  _type == \"hero-4-block\" => {\n    _type,\n    title,\n    description,\n    showOverlay,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n\n  // Section/Header Blocks\n  \n  _type == \"section-header-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link,\n  }\n,\n  \n  _type == \"heading-and-paragraph-centered-block\" => {\n    _type,\n    heading,\n    paragraph,\n  }\n,\n\n  // Carousel Blocks\n  \n  _type == \"carousel-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n,\n  \n  _type == \"carousel-2-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    \ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      rating,\n    }\n,\n\n  // Timeline\n  \n  _type == \"timeline-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n\n  // Call to Action\n  \n  _type == \"cta-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n\n  // Logo Cloud\n  \n  _type == \"logo-cloud-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n\n  // FAQs\n  \n  _type == \"faqs-block\" => {\n    _type,\n    noPadding,\n    \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n    \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n  }\n,\n\n  // Newsletter\n  \n  _type == \"form-newsletter-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n\n  // Split Blocks\n  \n  _type == \"split-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n      \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n      \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n      \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n  \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n  \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n  \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n  \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n\n  // Grid Blocks\n  \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n  \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n  \n  _type == \"grid-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n      \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n      \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n    },\n  }\n,\n\n  // Pricing\n  \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n\n  // Service\n  \n  _type == \"service-grid-block\" => {\n    _type,\n    services[]{\n      _type == \"manualService\" => {\n         title,\n         link,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      },\n      _type != \"manualService\" => @->{\n         _id,\n         title,\n         slug,\n         excerpt,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      }\n    },\n  }\n,\n\n  // Cover Map\n  \n  _type == \"cover-map-block\" => {\n    _type,\n    center,\n    zoom,\n    height,\n    animateIntro,\n    bearingRotation,\n    radiusAnimation,\n    color,\n\n  }\n,\n\n  // Contact Info\n  \n  _type == \"contact-info-and-form-block\" => {\n    _type,\n      contactHeading,\n      contactDescription,\n      contactEmail,\n      contactPhone,\n      contactAddress,\n      customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        value\n      }\n  }\n\n    },\n    }\n,\n\n  // Our Values\n  \n  _type == \"our-values-block\" => {\n    _type,\n    values\n  }\n,\n\n  // Course Slider\n  \n  _type == \"course-slider-block\" => {\n    _type,\n    title,\n    sectionId,\n    courses[]->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      featuredImage{\n        \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n      },\n      excerpt,\n    }\n  }\n,\n  \n  _type == \"hero-5-block\" => {\n    _type,\n    image{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n,\n\n  // Two Column\n  \n  _type == \"two-column-block\" => {\n    _type,\n    firstColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    },\n    secondColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    }\n  }\n,\n\n  // Seperator\n  \n  _type == \"seperator-block\" => {\n    _type,\n    padding,\n  }\n\n  // ADD VALUE 3 ABOVE\n}\n,\n    ctaText,\n    infoText,\n    contactInfo,\n    socialMediaLinks[] {\n      platform,\n      url\n  }\n,\n  \"menuSettings\": \n  *[_type == \"menuSettings\"][0] {\n    mainMenu[] {\n      \n  \"_ts\": \"LinksQuery\",\n  _key,\n  _type == \"internalLinkObject\" => {\n  \"_ts\": \"InternalLinkQuery\",\n  \"linkType\": \"internal\",\n  ...(internalLink-> {\n    \"title\": coalesce(\n      ^.customTitle,\n      title,\n      name\n    ),\n    \"slug\": slug.current,\n    _type\n  }),\n  description\n},\n  _type == \"link\" => {\n  \"_ts\": \"ExternalLinkQuery\",\n  \"linkType\": \"external\",\n  \"title\": coalesce(\n    customTitle,\n    href\n  ),\n  \"url\": href,\n  description\n},\n  _type == \"downloadLinkObject\" => {\n  \"_ts\": \"DownloadLinkQuery\",\n  \"linkType\": \"download\",\n  \"title\": coalesce(\n      customTitle,\n      file.asset->originalFilename\n    ),\n  \"url\": file.asset->url,\n  description\n},\n  _type == \"linkGroup\" => {\n  \"_ts\": \"LinkGroupQuery\",\n  \"linkType\": \"linkGroup\",\n  title,\n  links[] {\n    _key,\n    _type == \"internalLinkObject\" => {\n  \"_ts\": \"InternalLinkQuery\",\n  \"linkType\": \"internal\",\n  ...(internalLink-> {\n    \"title\": coalesce(\n      ^.customTitle,\n      title,\n      name\n    ),\n    \"slug\": slug.current,\n    _type\n  }),\n  description\n},\n    _type == \"link\" => {\n  \"_ts\": \"ExternalLinkQuery\",\n  \"linkType\": \"external\",\n  \"title\": coalesce(\n    customTitle,\n    href\n  ),\n  \"url\": href,\n  description\n}\n  }\n}\n  \n\n    }\n  }\n,\n  \"metadataSettings\": \n  *[_type == \"metadataSettings\"][0] {\n    \n  \"metadata\": {\n    \"_ts\": \"MetadataQuery\",\n    \"title\": coalesce(metadata.title, title, name),\n    \"desc\": coalesce(metadata.desc, excerpt),\n    \"image\": select(\n      defined(metadata.image.asset._ref) => metadata.image {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(image.asset._ref) => image {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(coverImage.asset._ref) => coverImage {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(hero.image.asset._ref) => hero.image {\n        \n  \"id\": asset._ref,\n  altText\n\n      }\n    ),\n    \"tags\": metadata.tags,\n    \"noIndex\": metadata.noIndex\n  }\n\n  }\n,\n}": SettingsQueryResult;
-    "\n  *[_type == \"siteSettings\"][0] {\n    privacyPolicyPage-> {\n      \"slug\": slug.current,\n      title\n    },\n  }\n": SiteSettingsQueryResult;
+    "\n  *[_type == \"footerSettings\"][0] {\n  \n    \nblocks[]{\n  // Hero Blocks\n  \n  _type == \"hero-1-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    imagePosition,\n    links,\n  }\n,\n  \n  _type == \"hero-2-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n  \n  _type == \"hero-3-block\" => {\n    _type,\n    titleOrange,\n    titleWhite,\n    subtitle,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    showOverlay,\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n  \n  _type == \"hero-4-block\" => {\n    _type,\n    title,\n    description,\n    showOverlay,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n\n  // Section/Header Blocks\n  \n  _type == \"section-header-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link,\n  }\n,\n  \n  _type == \"heading-and-paragraph-centered-block\" => {\n    _type,\n    heading,\n    paragraph,\n  }\n,\n\n  // Carousel Blocks\n  \n  _type == \"carousel-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n,\n  \n  _type == \"carousel-2-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    \ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      rating,\n    }\n,\n\n  // Timeline\n  \n  _type == \"timeline-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n\n  // Call to Action\n  \n  _type == \"cta-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n\n  // Logo Cloud\n  \n  _type == \"logo-cloud-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n\n  // FAQs\n  \n  _type == \"faqs-block\" => {\n    _type,\n    noPadding,\n    \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n    \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n  }\n,\n\n  // Newsletter\n  \n  _type == \"form-newsletter-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n\n  // Split Blocks\n  \n  _type == \"split-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n      \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n      \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n      \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n  \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n  \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n  \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n  \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n\n  // Grid Blocks\n  \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n  \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n  \n  _type == \"grid-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n      \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n      \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n    },\n  }\n,\n\n  // Pricing\n  \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n\n  // Service\n  \n  _type == \"service-grid-block\" => {\n    _type,\n    services[]{\n      _type == \"manualService\" => {\n         title,\n         link,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      },\n      _type != \"manualService\" => @->{\n         _id,\n         title,\n         slug,\n         excerpt,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      }\n    },\n  }\n,\n\n  // Cover Map\n  \n  _type == \"cover-map-block\" => {\n    _type,\n    center,\n    zoom,\n    height,\n    animateIntro,\n    bearingRotation,\n    radiusAnimation,\n    color,\n\n  }\n,\n\n  // Contact Info\n  \n  _type == \"contact-info-and-form-block\" => {\n    _type,\n      contactHeading,\n      contactDescription,\n      contactEmail,\n      contactPhone,\n      contactAddress,\n      customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        \"value\": select(value != null && value != \"\" => value, label)\n      },\n      conditionalLogic {\n        enabled,\n        controllerFieldName,\n        action,\n        controllerValueChecked\n      }\n  }\n\n    },\n    }\n,\n\n  // Our Values\n  \n  _type == \"our-values-block\" => {\n    _type,\n    values\n  }\n,\n\n  // Course Slider\n  \n  _type == \"course-slider-block\" => {\n    _type,\n    title,\n    sectionId,\n    courses[]->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      featuredImage{\n        \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n      },\n      excerpt,\n    }\n  }\n,\n  \n  _type == \"hero-5-block\" => {\n    _type,\n    image{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n,\n\n  // Two Column\n  \n  _type == \"two-column-block\" => {\n    _type,\n    firstColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    },\n    secondColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    }\n  }\n,\n\n  // Seperator\n  \n  _type == \"seperator-block\" => {\n    _type,\n    padding,\n  }\n\n  // ADD VALUE 3 ABOVE\n}\n,\n    ctaText,\n    infoText,\n    contactInfo,\n    socialMediaLinks[] {\n      platform,\n      url\n  }\n\n  }\n": FooterSettingsFetchQueryResult;
+    "\n  *[_type == \"headerSettings\"][0] {\n  \n    email,\n    phoneNumber,\n    logo,\n    navigationItems[] {\n        \n  \"_ts\": \"LinksQuery\",\n  _key,\n  _type == \"internalLinkObject\" => {\n  \"_ts\": \"InternalLinkQuery\",\n  \"linkType\": \"internal\",\n  ...(internalLink-> {\n    \"title\": coalesce(\n      ^.customTitle,\n      title,\n      name\n    ),\n    \"slug\": slug.current,\n    _type\n  }),\n  description\n},\n  _type == \"link\" => {\n  \"_ts\": \"ExternalLinkQuery\",\n  \"linkType\": \"external\",\n  \"title\": coalesce(\n    customTitle,\n    href\n  ),\n  \"url\": href,\n  description\n},\n  _type == \"downloadLinkObject\" => {\n  \"_ts\": \"DownloadLinkQuery\",\n  \"linkType\": \"download\",\n  \"title\": coalesce(\n      customTitle,\n      file.asset->originalFilename\n    ),\n  \"url\": file.asset->url,\n  description\n},\n  _type == \"linkGroup\" => {\n  \"_ts\": \"LinkGroupQuery\",\n  \"linkType\": \"linkGroup\",\n  title,\n  links[] {\n    _key,\n    _type == \"internalLinkObject\" => {\n  \"_ts\": \"InternalLinkQuery\",\n  \"linkType\": \"internal\",\n  ...(internalLink-> {\n    \"title\": coalesce(\n      ^.customTitle,\n      title,\n      name\n    ),\n    \"slug\": slug.current,\n    _type\n  }),\n  description\n},\n    _type == \"link\" => {\n  \"_ts\": \"ExternalLinkQuery\",\n  \"linkType\": \"external\",\n  \"title\": coalesce(\n    customTitle,\n    href\n  ),\n  \"url\": href,\n  description\n}\n  }\n}\n  \n\n    }\n\n  }\n": HeaderSettingsFetchQueryResult;
+    "\n  *[_type == \"metadataSettings\"][0] {\n    \n  \"metadata\": {\n    \"_ts\": \"MetadataQuery\",\n    \"title\": coalesce(metadata.title, title, name),\n    \"desc\": coalesce(metadata.desc, excerpt),\n    \"image\": select(\n      defined(metadata.image.asset._ref) => metadata.image {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(image.asset._ref) => image {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(coverImage.asset._ref) => coverImage {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(hero.image.asset._ref) => hero.image {\n        \n  \"id\": asset._ref,\n  altText\n\n      }\n    ),\n    \"tags\": metadata.tags,\n    \"noIndex\": metadata.noIndex\n  }\n\n  }\n": MetadataSettingsFetchQueryResult;
+    "\n  *[_type == \"route404Settings\"][0] {\n  \n    title,\n    subtitle,\n    buttonText,\n    buttonLink,\n    backgroundImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    blocks[] {\n      \nblocks[]{\n  // Hero Blocks\n  \n  _type == \"hero-1-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    imagePosition,\n    links,\n  }\n,\n  \n  _type == \"hero-2-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n  \n  _type == \"hero-3-block\" => {\n    _type,\n    titleOrange,\n    titleWhite,\n    subtitle,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    showOverlay,\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n  \n  _type == \"hero-4-block\" => {\n    _type,\n    title,\n    description,\n    showOverlay,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n\n  // Section/Header Blocks\n  \n  _type == \"section-header-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link,\n  }\n,\n  \n  _type == \"heading-and-paragraph-centered-block\" => {\n    _type,\n    heading,\n    paragraph,\n  }\n,\n\n  // Carousel Blocks\n  \n  _type == \"carousel-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n,\n  \n  _type == \"carousel-2-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    \ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      rating,\n    }\n,\n\n  // Timeline\n  \n  _type == \"timeline-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n\n  // Call to Action\n  \n  _type == \"cta-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n\n  // Logo Cloud\n  \n  _type == \"logo-cloud-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n\n  // FAQs\n  \n  _type == \"faqs-block\" => {\n    _type,\n    noPadding,\n    \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n    \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n  }\n,\n\n  // Newsletter\n  \n  _type == \"form-newsletter-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n\n  // Split Blocks\n  \n  _type == \"split-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n      \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n      \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n      \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n  \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n  \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n  \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n  \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n\n  // Grid Blocks\n  \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n  \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n  \n  _type == \"grid-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n      \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n      \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n    },\n  }\n,\n\n  // Pricing\n  \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n\n  // Service\n  \n  _type == \"service-grid-block\" => {\n    _type,\n    services[]{\n      _type == \"manualService\" => {\n         title,\n         link,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      },\n      _type != \"manualService\" => @->{\n         _id,\n         title,\n         slug,\n         excerpt,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      }\n    },\n  }\n,\n\n  // Cover Map\n  \n  _type == \"cover-map-block\" => {\n    _type,\n    center,\n    zoom,\n    height,\n    animateIntro,\n    bearingRotation,\n    radiusAnimation,\n    color,\n\n  }\n,\n\n  // Contact Info\n  \n  _type == \"contact-info-and-form-block\" => {\n    _type,\n      contactHeading,\n      contactDescription,\n      contactEmail,\n      contactPhone,\n      contactAddress,\n      customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        \"value\": select(value != null && value != \"\" => value, label)\n      },\n      conditionalLogic {\n        enabled,\n        controllerFieldName,\n        action,\n        controllerValueChecked\n      }\n  }\n\n    },\n    }\n,\n\n  // Our Values\n  \n  _type == \"our-values-block\" => {\n    _type,\n    values\n  }\n,\n\n  // Course Slider\n  \n  _type == \"course-slider-block\" => {\n    _type,\n    title,\n    sectionId,\n    courses[]->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      featuredImage{\n        \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n      },\n      excerpt,\n    }\n  }\n,\n  \n  _type == \"hero-5-block\" => {\n    _type,\n    image{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n,\n\n  // Two Column\n  \n  _type == \"two-column-block\" => {\n    _type,\n    firstColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    },\n    secondColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    }\n  }\n,\n\n  // Seperator\n  \n  _type == \"seperator-block\" => {\n    _type,\n    padding,\n  }\n\n  // ADD VALUE 3 ABOVE\n}\n\n    },\n    meta_title,\n    meta_description\n\n  }\n": Route404SettingsFetchQueryResult;
+    "{\n  \"siteSettings\": \n  *[_type == \"siteSettings\"][0] {\n    privacyPolicyPage-> {\n      \"slug\": slug.current,\n      title\n    },\n  }\n,\n  \"headerSettings\": \n  *[_type == \"headerSettings\"][0] {\n  \n    email,\n    phoneNumber,\n    logo,\n    navigationItems[] {\n        \n  \"_ts\": \"LinksQuery\",\n  _key,\n  _type == \"internalLinkObject\" => {\n  \"_ts\": \"InternalLinkQuery\",\n  \"linkType\": \"internal\",\n  ...(internalLink-> {\n    \"title\": coalesce(\n      ^.customTitle,\n      title,\n      name\n    ),\n    \"slug\": slug.current,\n    _type\n  }),\n  description\n},\n  _type == \"link\" => {\n  \"_ts\": \"ExternalLinkQuery\",\n  \"linkType\": \"external\",\n  \"title\": coalesce(\n    customTitle,\n    href\n  ),\n  \"url\": href,\n  description\n},\n  _type == \"downloadLinkObject\" => {\n  \"_ts\": \"DownloadLinkQuery\",\n  \"linkType\": \"download\",\n  \"title\": coalesce(\n      customTitle,\n      file.asset->originalFilename\n    ),\n  \"url\": file.asset->url,\n  description\n},\n  _type == \"linkGroup\" => {\n  \"_ts\": \"LinkGroupQuery\",\n  \"linkType\": \"linkGroup\",\n  title,\n  links[] {\n    _key,\n    _type == \"internalLinkObject\" => {\n  \"_ts\": \"InternalLinkQuery\",\n  \"linkType\": \"internal\",\n  ...(internalLink-> {\n    \"title\": coalesce(\n      ^.customTitle,\n      title,\n      name\n    ),\n    \"slug\": slug.current,\n    _type\n  }),\n  description\n},\n    _type == \"link\" => {\n  \"_ts\": \"ExternalLinkQuery\",\n  \"linkType\": \"external\",\n  \"title\": coalesce(\n    customTitle,\n    href\n  ),\n  \"url\": href,\n  description\n}\n  }\n}\n  \n\n    }\n\n  }\n,\n  \"footerSettings\": \n  *[_type == \"footerSettings\"][0] {\n  \n    \nblocks[]{\n  // Hero Blocks\n  \n  _type == \"hero-1-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    imagePosition,\n    links,\n  }\n,\n  \n  _type == \"hero-2-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n  \n  _type == \"hero-3-block\" => {\n    _type,\n    titleOrange,\n    titleWhite,\n    subtitle,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    showOverlay,\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n  \n  _type == \"hero-4-block\" => {\n    _type,\n    title,\n    description,\n    showOverlay,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n\n  // Section/Header Blocks\n  \n  _type == \"section-header-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link,\n  }\n,\n  \n  _type == \"heading-and-paragraph-centered-block\" => {\n    _type,\n    heading,\n    paragraph,\n  }\n,\n\n  // Carousel Blocks\n  \n  _type == \"carousel-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n,\n  \n  _type == \"carousel-2-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    \ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      rating,\n    }\n,\n\n  // Timeline\n  \n  _type == \"timeline-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n\n  // Call to Action\n  \n  _type == \"cta-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n\n  // Logo Cloud\n  \n  _type == \"logo-cloud-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n\n  // FAQs\n  \n  _type == \"faqs-block\" => {\n    _type,\n    noPadding,\n    \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n    \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n  }\n,\n\n  // Newsletter\n  \n  _type == \"form-newsletter-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n\n  // Split Blocks\n  \n  _type == \"split-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n      \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n      \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n      \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n  \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n  \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n  \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n  \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n\n  // Grid Blocks\n  \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n  \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n  \n  _type == \"grid-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n      \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n      \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n    },\n  }\n,\n\n  // Pricing\n  \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n\n  // Service\n  \n  _type == \"service-grid-block\" => {\n    _type,\n    services[]{\n      _type == \"manualService\" => {\n         title,\n         link,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      },\n      _type != \"manualService\" => @->{\n         _id,\n         title,\n         slug,\n         excerpt,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      }\n    },\n  }\n,\n\n  // Cover Map\n  \n  _type == \"cover-map-block\" => {\n    _type,\n    center,\n    zoom,\n    height,\n    animateIntro,\n    bearingRotation,\n    radiusAnimation,\n    color,\n\n  }\n,\n\n  // Contact Info\n  \n  _type == \"contact-info-and-form-block\" => {\n    _type,\n      contactHeading,\n      contactDescription,\n      contactEmail,\n      contactPhone,\n      contactAddress,\n      customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        \"value\": select(value != null && value != \"\" => value, label)\n      },\n      conditionalLogic {\n        enabled,\n        controllerFieldName,\n        action,\n        controllerValueChecked\n      }\n  }\n\n    },\n    }\n,\n\n  // Our Values\n  \n  _type == \"our-values-block\" => {\n    _type,\n    values\n  }\n,\n\n  // Course Slider\n  \n  _type == \"course-slider-block\" => {\n    _type,\n    title,\n    sectionId,\n    courses[]->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      featuredImage{\n        \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n      },\n      excerpt,\n    }\n  }\n,\n  \n  _type == \"hero-5-block\" => {\n    _type,\n    image{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n,\n\n  // Two Column\n  \n  _type == \"two-column-block\" => {\n    _type,\n    firstColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    },\n    secondColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    }\n  }\n,\n\n  // Seperator\n  \n  _type == \"seperator-block\" => {\n    _type,\n    padding,\n  }\n\n  // ADD VALUE 3 ABOVE\n}\n,\n    ctaText,\n    infoText,\n    contactInfo,\n    socialMediaLinks[] {\n      platform,\n      url\n  }\n\n  }\n,\n  \"metadataSettings\": \n  *[_type == \"metadataSettings\"][0] {\n    \n  \"metadata\": {\n    \"_ts\": \"MetadataQuery\",\n    \"title\": coalesce(metadata.title, title, name),\n    \"desc\": coalesce(metadata.desc, excerpt),\n    \"image\": select(\n      defined(metadata.image.asset._ref) => metadata.image {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(image.asset._ref) => image {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(coverImage.asset._ref) => coverImage {\n        \n  \"id\": asset._ref,\n  altText\n\n      },\n      defined(hero.image.asset._ref) => hero.image {\n        \n  \"id\": asset._ref,\n  altText\n\n      }\n    ),\n    \"tags\": metadata.tags,\n    \"noIndex\": metadata.noIndex\n  }\n\n  }\n,\n  \"route404Settings\": \n  *[_type == \"route404Settings\"][0] {\n  \n    title,\n    subtitle,\n    buttonText,\n    buttonLink,\n    backgroundImage {\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    blocks[] {\n      \nblocks[]{\n  // Hero Blocks\n  \n  _type == \"hero-1-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    imagePosition,\n    links,\n  }\n,\n  \n  _type == \"hero-2-block\" => {\n    _type,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n  \n  _type == \"hero-3-block\" => {\n    _type,\n    titleOrange,\n    titleWhite,\n    subtitle,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    showOverlay,\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n  \n  _type == \"hero-4-block\" => {\n    _type,\n    title,\n    description,\n    showOverlay,\n    backgroundImage{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n    topOverlayStrength,\n    upperCenterOverlayStrength,\n    lowerCenterOverlayStrength,\n    bottomOverlayStrength,\n  }\n,\n\n  // Section/Header Blocks\n  \n  _type == \"section-header-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    description,\n    link,\n  }\n,\n  \n  _type == \"heading-and-paragraph-centered-block\" => {\n    _type,\n    heading,\n    paragraph,\n  }\n,\n\n  // Carousel Blocks\n  \n  _type == \"carousel-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    size,\n    orientation,\n    indicators,\n    images[]{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    }\n  }\n,\n  \n  _type == \"carousel-2-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    \ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      rating,\n    }\n,\n\n  // Timeline\n  \n  _type == \"timeline-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    timelines[]{\n      title,\n      tagLine,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n\n  // Call to Action\n  \n  _type == \"cta-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    sectionWidth,\n    stackAlign,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    links,\n  }\n,\n\n  // Logo Cloud\n  \n  _type == \"logo-cloud-1-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    title,\n    images[]{\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n\n  // FAQs\n  \n  _type == \"faqs-block\" => {\n    _type,\n    noPadding,\n    \nfaqs[]->{\n  \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n}\n,\n    \n    faqsByCategory[]->{\n      _id,\n      title,\n      \"faqs\": *[_type == \"faq\" && references(^._id)] {\n        \n    _id,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    }\n\n        }\n      }\n\n  }\n,\n\n  // Newsletter\n  \n  _type == \"form-newsletter-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    stackAlign,\n    consentText,\n    buttonText,\n    successMessage,\n  }\n,\n\n  // Split Blocks\n  \n  _type == \"split-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    noGap,\n    splitColumns[]{\n      \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n      \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n      \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n      \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n    },\n  }\n,\n  \n  _type == \"split-content-block\" => {\n    _type,\n    sticky,\n    padding,\n    colorVariant,\n    tagLine,\n    title,\n    body[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    link,\n  }\n,\n  \n  _type == \"split-cards-list-block\" => {\n    _type,\n    list[]{\n      tagLine,\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n    },\n  }\n,\n  \n  _type == \"split-image-block\" => {\n    _type,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n  }\n,\n  \n  _type == \"split-info-list-block\" => {\n    _type,\n    list[]{\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      title,\n      body[]{\n        ...,\n        _type == \"image\" => {\n          ...,\n          asset->{\n            _id,\n            url,\n            mimeType,\n            metadata {\n              lqip,\n              dimensions {\n                width,\n                height\n              }\n            }\n          }\n        }\n      },\n      tags[],\n    },\n  }\n,\n\n  // Grid Blocks\n  \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n  \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n  \n  _type == \"grid-row-block\" => {\n    _type,\n    padding,\n    colorVariant,\n    gridColumns,\n    columns[]{\n      \n  _type == \"grid-card-block\" => {\n    _type,\n    title,\n    excerpt,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      },\n      alt\n    },\n    link,\n  }\n,\n      \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n      \n  _type == \"grid-post-block\" => {\n    _type,\n    ...post->{\n      title,\n      slug,\n      excerpt,\n      image{\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      },\n      \ncategories[]->{\n        title,\n      }\n,\n    },\n  }\n,\n    },\n  }\n,\n\n  // Pricing\n  \n  _type == \"pricing-card-block\" => {\n    _type,\n    title,\n    tagLine,\n    price,\n    list[],\n    excerpt,\n    link,\n  }\n,\n\n  // Service\n  \n  _type == \"service-grid-block\" => {\n    _type,\n    services[]{\n      _type == \"manualService\" => {\n         title,\n         link,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      },\n      _type != \"manualService\" => @->{\n         _id,\n         title,\n         slug,\n         excerpt,\n         featuredImage{\n           \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n         }\n      }\n    },\n  }\n,\n\n  // Cover Map\n  \n  _type == \"cover-map-block\" => {\n    _type,\n    center,\n    zoom,\n    height,\n    animateIntro,\n    bearingRotation,\n    radiusAnimation,\n    color,\n\n  }\n,\n\n  // Contact Info\n  \n  _type == \"contact-info-and-form-block\" => {\n    _type,\n      contactHeading,\n      contactDescription,\n      contactEmail,\n      contactPhone,\n      contactAddress,\n      customContactForm{\n      \n   _type,\n    formTitle,\n    formDescription,\n    submitButtonText,\n    successMessage,\n    formFields[] {\n      fieldType,\n      fieldName,\n      fieldLabel,\n      placeholder,\n      isRequired,\n      width,\n      helpText,\n      labelOnly,\n      preChecked,\n      options[] {\n        label,\n        \"value\": select(value != null && value != \"\" => value, label)\n      },\n      conditionalLogic {\n        enabled,\n        controllerFieldName,\n        action,\n        controllerValueChecked\n      }\n  }\n\n    },\n    }\n,\n\n  // Our Values\n  \n  _type == \"our-values-block\" => {\n    _type,\n    values\n  }\n,\n\n  // Course Slider\n  \n  _type == \"course-slider-block\" => {\n    _type,\n    title,\n    sectionId,\n    courses[]->{\n      _id,\n      title,\n      \"slug\": slug.current,\n      featuredImage{\n        \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n      },\n      excerpt,\n    }\n  }\n,\n  \n  _type == \"hero-5-block\" => {\n    _type,\n    image{\n      \n  \n  crop,\n  hotspot,\n  \"darkScore\": (\n    (coalesce(asset->metadata.palette.darkVibrant.population, 0)\n     + coalesce(asset->metadata.palette.darkMuted.population, 0))\n    /\n    (\n      coalesce(asset->metadata.palette.darkVibrant.population, 0)\n      + coalesce(asset->metadata.palette.darkMuted.population, 0)\n      + coalesce(asset->metadata.palette.dominant.population, 0)\n      + coalesce(asset->metadata.palette.lightVibrant.population, 0)\n      + coalesce(asset->metadata.palette.lightMuted.population, 0)\n      + coalesce(asset->metadata.palette.muted.population, 0)\n    )\n  ),\n  asset->{\n    _id,\n    title,\n    altText,\n    description,\n    metadata {\n      lqip,\n      dimensions {\n        aspectRatio,\n        width,\n        height\n      },\n      palette {\n        dominant {\n          background,\n          foreground,\n          population\n        }\n      }\n    }\n  }\n\n\n    },\n  }\n,\n\n  // Two Column\n  \n  _type == \"two-column-block\" => {\n    _type,\n    firstColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    },\n    secondColumn {\n      blockContent[]{\n      ...,\n      _type == \"image\" => {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        }\n      }\n    },\n    }\n  }\n,\n\n  // Seperator\n  \n  _type == \"seperator-block\" => {\n    _type,\n    padding,\n  }\n\n  // ADD VALUE 3 ABOVE\n}\n\n    },\n    meta_title,\n    meta_description\n\n  }\n,\n  // ADD VALUE 3 ABOVE\n}": SettingsQueryResult;
+    "\n  *[_type == \"siteSettings\"][0] {\n    privacyPolicyPage-> {\n      \"slug\": slug.current,\n      title\n    },\n  }\n": SiteSettingsFetchQueryResult;
     "\ntestimonial[]->{\n    _id,\n    name,\n    title,\n    image{\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n    },\n      alt\n    },\n  }\n": GetAllReferencedTestimonialsQueryResult;
   }
 }

@@ -100,6 +100,7 @@ const ImgInner = (props: ImgProps) => {
       width={width ?? undefined}
       height={height ?? undefined}
       mode="cover"
+      
       hotspot={(hotspot) ?? undefined}
       crop={(crop as CropData) ?? undefined}
       preview={eager ? undefined : (metadata?.lqip ?? undefined)}
@@ -107,6 +108,7 @@ const ImgInner = (props: ImgProps) => {
       sizes={getSizes(sizes)}
       loading={eager ? "eager" : "lazy"}
       queryParams={{ q: 100 }}
+      
       className={cn("sanity-image h-full", cover && "object-cover w-full")}
       style={{
         objectFit: "cover",
@@ -209,5 +211,3 @@ function calculateDimensions(
 
   return { width: Math.round(w), height: Math.round(h) };
 }
-
-// Usage

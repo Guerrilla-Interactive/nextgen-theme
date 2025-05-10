@@ -15,7 +15,6 @@ export const internalLinkObjectField = defineField({
       type: "internalLink",
       options: {
         disableNew: true,
-        required: true,
       },
       validation: (Rule) => Rule.required(),
     }),

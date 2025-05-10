@@ -8,12 +8,15 @@ import { getSanityPageBuilderBlocks } from "@/features/page-builder-blocks/block
 import { defineField, defineType } from "sanity";
 import { PanelTop } from "lucide-react";
 // Social media links.
+import { linksField } from "@/sanity/type-organized-schemas/generator-fields/links.field";
 
 
 export const headerSettingsSchema = defineType({
   name: "headerSettings",
   title: "Header Settings",
   type: "document",
+  
+
   icon: PanelTop,
   fields: [
     // title 
@@ -92,17 +95,23 @@ export const headerSettingsSchema = defineType({
       defineField({
         name: "darkLogo",
         title: "Dark Logo",
+        
         type: "image",
       }),
     ],
   }),
 
-  // navigation items - references to pages
-  defineField({
+  // navigation items - using links field for various link types
+  linksField({
     name: "navigationItems",
     title: "Navigation Items",
-    type: "array",
-    of: [{ type: "reference", to: [{ type: "page-slug" }] }],
+    includeInternal: true,
+    includeExternal: true,
+    includeDownload: false,
+    includeLinkGroup: true,
+    includeCustomTitle: true,
+    includeDescription: false,
+    required: true,
   })
 
 

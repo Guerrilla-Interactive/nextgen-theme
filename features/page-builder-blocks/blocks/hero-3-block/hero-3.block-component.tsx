@@ -35,6 +35,7 @@ export default function Hero3BlockComponent(props: Partial<Hero3Block>) {
           eager
           className={`animate-scale-in-bg`}
           sizes={{ md: "full" }}
+          topImage={true}
         />
       )}
 
