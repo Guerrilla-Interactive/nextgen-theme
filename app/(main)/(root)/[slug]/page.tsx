@@ -40,5 +40,5 @@ export default async function Page(props: {
     notFound();
   }
   //@ts-ignore
-  return <Blocks blocks={page?.blocks ?? []} />;
+  return <Blocks navigationTextColor={page?.navigationTextColor} blocks={page?.blocks ?? []} />;
 }

@@ -48,6 +48,18 @@ export default defineType({
       description: t("showOverlay.description", 
         "Toggle the overlay on and off"),
     }),
+    // Overlay color - dark or light
+    defineField({
+      name: "overlayColor",
+      type: "string",
+      title: t("overlayColor.title", "Overlay Color"),
+      description: t("overlayColor.description", 
+        "Choose the color of the overlay"),
+      options: {
+        list: ["dark", "light"],
+      },
+    }),
+
     defineField({
       name: "topOverlayStrength",
       type: "number",

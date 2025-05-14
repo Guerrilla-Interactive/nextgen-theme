@@ -2,6 +2,7 @@ import { defineField, defineType } from "sanity";
 import { Files } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 import { getSanityPageBuilderBlocks } from "@/features/page-builder-blocks/block-indexer";
+import { NavigationSettingsInput } from "../../../../../sanity/plugins/image-brightness-plugin";
 
 
 export default defineType({
@@ -41,32 +42,28 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "captureImage",
-      title: "Page Screenshot",
-      type: "screenshotImage",
-      group: "visual",
-      description: "Server-side screenshot of how this page appears on the frontend",
-    }),
-
-    defineField({
-      name: "captureMetadata",
-      title: "Capture Metadata",
+      name: "navigationSettings",
+      title: "Navigation Settings",
       type: "object",
-      group: "visual",
-      hidden: true,
-      
+      group: "settings",
+      components: {
+        input: NavigationSettingsInput
+      },
       fields: [
-        { name: "captureDate", type: "datetime", title: "Capture Date" },
-        { name: "pageTitle", type: "string", title: "Page Title" },
-        { name: "pageUrl", type: "string", title: "Page URL" },
-        { name: "path", type: "string", title: "Path" },
-        { name: "viewportWidth", type: "number", title: "Viewport Width" },
-        { name: "captureMethod", type: "string", title: "Capture Method" },
-        { name: "viewportHeight", type: "number", title: "Viewport Height" },
-        { name: "captureMode", type: "string", title: "Capture Mode", options: { list: ["draft", "published"] } },
-        { name: "deviceTypes", type: "array", title: "Device Types", of: [{ type: "string" }] },
+        defineField({
+          // dark or white navigation text
+          name: "navigationTextColor",
+          title: "Navigation Text Color",
+          type: "string",
+          initialValue: "dark",
+          options: {
+            list: ["dark", "white"],
+          },
+        }),
       ],
     }),
+
+ 
     defineField({
       name: "blocks",
       type: "array",

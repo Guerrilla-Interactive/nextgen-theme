@@ -8,7 +8,7 @@ export const headerSettingsQuery = groq`
     logo,
     navigationItems[] {
         ${linksQuery}
-    }
+    },  
 `;
 
 export const headerSettingsFetchQuery = groq`

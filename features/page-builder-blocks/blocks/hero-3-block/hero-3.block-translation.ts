@@ -32,6 +32,9 @@ export const hero3SchemaTranslations = translate({
   
   "showOverlay.title": "Vis Overlegg",
   "showOverlay.description": "Slå overlegget på og av",
+
+  "overlayColor.title": "Overlay Farge",
+  "overlayColor.description": "Velg fargen til overleggen",
   
   "topOverlayStrength.title": "Øverste Overlegg Styrke",
   "topOverlayStrength.description": "Gjennomsiktighet på toppen (0–1)",

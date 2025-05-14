@@ -24,7 +24,7 @@ export default function DesktopNav({ navItems }: { navItems: HeaderSettingsFetch
             return (
               <NavigationMenuItem key={navItem._key}>
                 <Link href={`/${navItem.slug}`} legacyBehavior passHref>
-                  <NavigationMenuLink className="text-sm transition-colors px-3 py-2">
+                  <NavigationMenuLink className="text-sm px-3 py-2">
                     {'title' in navItem ? navItem.title || "" : ""}
                   </NavigationMenuLink>
                 </Link>

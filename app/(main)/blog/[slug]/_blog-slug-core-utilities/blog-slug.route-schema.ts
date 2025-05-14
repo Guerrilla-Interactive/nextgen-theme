@@ -43,27 +43,7 @@ export default defineType({
       },
       validation: (Rule) => Rule.required(),
     }),
-    defineField({
-      name: "captureImage",
-      title: "Page Screenshot",
-      type: "screenshotImage",
-      group: "visual",
-      description: "Server-side screenshot of how this page appears on the frontend",
-    }),
-    defineField({
-      name: "captureMetadata",
-      title: "Capture Metadata",
-      type: "object",
-      group: "visual",
-      fields: [
-        { name: "captureDate", type: "datetime", title: "Capture Date" },
-        { name: "pageTitle", type: "string", title: "Page Title" },
-        { name: "pageUrl", type: "string", title: "Page URL" },
-        { name: "path", type: "string", title: "Path" },
-        { name: "viewportWidth", type: "number", title: "Viewport Width" },
-        { name: "viewportHeight", type: "number", title: "Viewport Height" },
-      ],
-    }),
+
     defineField({
       name: "excerpt",
       title: "Excerpt",

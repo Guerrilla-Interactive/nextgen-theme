@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalContext } from "@/features/context/global-context";
 import { Img, type ImageQuery } from "@/features/unorganized-components/image-component/image.component";
 import { Hero3Block } from "@/sanity.types";
@@ -14,17 +14,25 @@ export default function Hero3BlockComponent(props: Partial<Hero3Block>) {
     titleWhite,
     subtitle,
     showOverlay = true,
+    overlayColor = "0,0,0",
     topOverlayStrength = 0.2,
     upperCenterOverlayStrength = 0.0,
     lowerCenterOverlayStrength = 0.2,
     bottomOverlayStrength = 0.3,
   } = props;
   const { sessionStatus } = useGlobalContext();
-  const { sessionLoaded } = sessionStatus;
+  const { sessionLoaded, setIsTopDark } = sessionStatus;
+
+  useEffect(() => {
+    if (sessionLoaded) {
+      setIsTopDark(overlayColor === "0,0,0");
+    }
+  }, [sessionLoaded, setIsTopDark, overlayColor]);
   
   // Capture the initial state of sessionLoaded. If it's false, we should animate.
   // This state won't update even if sessionLoaded becomes true later, ensuring the animations complete.
   const [shouldAnimate] = useState(!sessionLoaded);
+
 
   return (
     <div className="relative w-full h-[90vh] md:h-[90vh] overflow-hidden">
@@ -45,10 +53,10 @@ export default function Hero3BlockComponent(props: Partial<Hero3Block>) {
           style={{
             background: `linear-gradient(
               to top,
-              rgba(0,0,0,${bottomOverlayStrength}) 0%,
-              rgba(0,0,0,${lowerCenterOverlayStrength}) 33%,
-              rgba(0,0,0,${upperCenterOverlayStrength}) 66%,
-              rgba(0,0,0,${topOverlayStrength}) 100%
+              rgba(${overlayColor},${bottomOverlayStrength}) 0%,
+              rgba(${overlayColor},${lowerCenterOverlayStrength}) 33%,
+              rgba(${overlayColor},${upperCenterOverlayStrength}) 66%,
+              rgba(${overlayColor},${topOverlayStrength}) 100%
             )`,
           }}
         />

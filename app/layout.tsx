@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/features/theme/theme-provider";
 import { Toaster } from "@/features/unorganized-components/ui/sonner";
 import { GlobalContextProvider } from "@/features/context/global-context";
 import { NextgenContextStatusPanel } from "@/features/context/nextgen-context-panel";
-import { FrontendCaptureProvider } from "./(main)/(root)/[slug]/_page-slug-core-utilities/frontend-capture-provider";
+
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
@@ -70,7 +70,7 @@ export default function RootLayout({
           supplementFont.variable
         )}
       >
-          <FrontendCaptureProvider />
+          
           {children}
         
         <Toaster position="top-center" richColors />

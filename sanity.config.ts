@@ -19,8 +19,10 @@ import { schema } from "./sanity/all-schemas-combined";
 import { resolve } from "@/sanity/desk-organized-sanity-utilities/structure-utilities/presentation-resolve";
 import { structure } from "./sanity/desk-organized-sanity-utilities/structure";
 import AppIcon from "./features/theme/AppIcon";
+import { imageBrightnessPlugin } from "./sanity/plugins/image-brightness-plugin";
 
-import { serverScreenshot } from "./sanity/plugins/server-screenshot";
+
+
 
 
 
@@ -33,7 +35,8 @@ export default defineConfig({
   // Add and edit the content schema in the './sanity/schema' folder
   schema,
   plugins: [
-    serverScreenshot(),
+    
+      
     structureTool({ structure }),
     presentationTool({
       previewUrl: {
@@ -45,6 +48,7 @@ export default defineConfig({
     }),
     visionTool({ defaultApiVersion: apiVersion }),
     media(),
+    imageBrightnessPlugin(),
     iconify({
       // Optional configuration
   

@@ -12,6 +12,14 @@ const hero3BlockQuery = groq`
       ${imageQuery}
     },
     showOverlay,
+    "overlayColor": select(
+      
+      overlayColor == "dark" => "0,0,0",
+      overlayColor == "light" => "255,255,255",
+      overlayColor
+    ),
+  
+  
     topOverlayStrength,
     upperCenterOverlayStrength,
     lowerCenterOverlayStrength,

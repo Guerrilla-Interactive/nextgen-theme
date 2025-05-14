@@ -1,6 +1,6 @@
 "use client"
 
-import {  useLayoutEffect, useRef, useState } from "react";
+import {  useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import DesktopNav from "./desktop-nav";
@@ -15,6 +15,7 @@ import { Icon } from "@iconify/react";
 import { HeaderSettingsFetchQueryResult } from "@/sanity.types";
 
 import DefaultLogo from "@/features/theme/DefaultLogo";
+import { fetchSanityPageBySlug } from "@/app/(main)/(root)/[slug]/_page-slug-core-utilities/page-slug.server-actions";
 
 
 
@@ -26,15 +27,21 @@ export default function Header(props: HeaderSettingsFetchQueryResult) {
 
   
 
+  
+
   const logoRef = useRef<HTMLDivElement>(null);
 
   // isLogoHovered
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   
+  // load navigationTextColor from page-slug
+  const [navigationTextColor, setNavigationTextColor] = useState<string | null>(null);
 
-  
+
 
   const pathname = usePathname();
+
+  // load navigationTextColor from page-slug
   
   // make it update on route change
   useLayoutEffect(() => {
@@ -65,13 +72,13 @@ export default function Header(props: HeaderSettingsFetchQueryResult) {
     <>
       <header
         className={cn(
-          "absolute top-0 w-full border-border/40 z-50 transition-all   ",
+          "absolute top-0 w-full border-border/40 z-50 transition-opacity   ",
           !isTopDark ? "text-black" : "text-white",
           iconLoaded && !sessionLoaded && "animate-fade-down-slow",
           iconLoaded ? "opacity-100" : "opacity-0"
         )}
       >
-        <div className="container duration-700">
+        <div className={cn(`container`, sessionLoaded ? "duration-600" : "duration-0")}>
           <FlexRow notAuto  className={cn(`justify-between pt-1 border-b pb-1 font-light`, isTopDark ? "border-white/20" : "border-black/20")}>
             {/* Mail, availability, phone number */}
             
