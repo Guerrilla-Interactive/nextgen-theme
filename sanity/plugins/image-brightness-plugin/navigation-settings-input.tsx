@@ -1,40 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Card, Flex, Stack, Text, Spinner, Badge, Box, Switch } from '@sanity/ui'
+import { Button, Card, Flex, Stack, Text, Spinner, Badge, Box } from '@sanity/ui'
 import { ObjectInputProps, set, useClient, useFormValue } from 'sanity'
 import imageUrlBuilder from '@sanity/image-url'
-import { GoogleGenerativeAI } from '@google/generative-ai'
 
 // Fraction of the image height to evaluate from the top (0 – 1)
 const TOP_FRACTION = 0.15
-
-// Local storage key for analysis method preference
-const ANALYSIS_METHOD_KEY = 'sanity-image-brightness-use-ai'
-
-// Helper function to get API key from various possible environment variables
-function getApiKey(): string | undefined {
-  return process.env.GEMINI_API_KEY || 
-         process.env.NEXT_PUBLIC_GEMINI_API_KEY || 
-         process.env.VITE_GEMINI_API_KEY ||
-         process.env.SANITY_STUDIO_GEMINI_API_KEY;
-}
-
-// Safe method to convert ArrayBuffer to base64 without stack overflow
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
-  const bytes = new Uint8Array(buffer);
-  let binary = '';
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
 
 // Direct pixel-based analysis of image brightness
 async function analyzeImageBrightness(imageBlob: Blob): Promise<'dark' | 'light'> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     
-    // Store the original image loading handler function
     const handleImageLoad = () => {
       // Create canvas for image analysis
       const canvas = document.createElement('canvas');
@@ -189,16 +165,6 @@ export function NavigationSettingsInput(props: ObjectInputProps) {
   const [contrast, setContrast] = useState<ReturnType<typeof evaluateContrast> | null>(null)
   const [updating, setUpdating] = useState(false)
   
-  // State for AI/direct analysis toggle (default to direct method for consistency)
-  const [useAI, setUseAI] = useState<boolean>(() => {
-    // Get from localStorage if available
-    if (typeof window !== 'undefined') {
-      const saved = window.localStorage.getItem(ANALYSIS_METHOD_KEY);
-      return saved === 'true'; // default to false if not saved
-    }
-    return false; // default to direct method
-  })
-  
   // Get the client to fetch image data
   const client = useClient({ apiVersion: '2025-02-10' })
   const imageBuilder = imageUrlBuilder(client)
@@ -210,13 +176,6 @@ export function NavigationSettingsInput(props: ObjectInputProps) {
   
   // Get document operations for patching blocks
   const patchDoc = client.patch(documentId)
-  
-  // Save useAI preference to localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(ANALYSIS_METHOD_KEY, useAI.toString());
-    }
-  }, [useAI]);
 
   // Update contrast evaluation when result or navigation color changes
   useEffect(() => {
@@ -225,74 +184,33 @@ export function NavigationSettingsInput(props: ObjectInputProps) {
     }
   }, [result, currentNavColor]);
   
-  // Function to analyze an image with the selected method (AI or direct)
-  const analyzeImageWithMethod = async (croppedBlob: Blob): Promise<'dark' | 'light'> => {
-    if (useAI) {
-      // AI-based analysis
-      const apiKey = getApiKey()
-      
-      if (!apiKey) {
-        throw new Error('Gemini API Key not found in environment variables. Please add GEMINI_API_KEY, NEXT_PUBLIC_GEMINI_API_KEY, VITE_GEMINI_API_KEY, or SANITY_STUDIO_GEMINI_API_KEY to your .env file.')
-      }
-      
-      const genAI = new GoogleGenerativeAI(apiKey)
-      const vision = genAI.getGenerativeModel({ model: 'learnlm-2.0-flash-experimental' })
-      
-      // Convert cropped image to base64
-      const arrayBuffer = await croppedBlob.arrayBuffer();
-      const base64 = arrayBufferToBase64(arrayBuffer);
-      
-      // Create prompt for AI analysis
-      const prompt = `Is this image predominantly DARK or LIGHT? Reply with exactly one word: DARK or LIGHT.`
-      
-      // Get response
-      const resp = await vision.generateContent([
-        { text: prompt },
-        {
-          inlineData: {
-            mimeType: croppedBlob.type,
-            data: base64,
-          },
-        },
-      ])
-      
-      const answer = resp.response.text().trim().toLowerCase()
-      return answer.startsWith('dark') ? 'dark' : 'light';
-    } else {
-      // Direct pixel-based analysis
-      return analyzeImageBrightness(croppedBlob);
-    }
-  };
-  
   // Function to ensure hero blocks have correct overlayColor based on navigation color
   const updateHeroBlocksOverlayColor = async (navColor: 'dark' | 'white') => {
     if (!blocks || blocks.length === 0 || !patchDoc) return;
     
-    // Don't show loading state for this background operation
     try {
-      // Find all hero-3 blocks
-      const heroBlocks = blocks
+      // Find all blocks with backgroundImage
+      const blocksWithBackground = blocks
         .map((block, index) => ({ block, index }))
-        .filter(item => item.block._type === 'hero-3-block');
+        .filter(item => item.block.backgroundImage?.asset?._ref);
       
-      if (heroBlocks.length === 0) {
-        // No hero blocks to update
+      if (blocksWithBackground.length === 0) {
         return;
       }
       
       // Set correct overlay color (opposite of navigation text color)
       const overlayColor = navColor === 'white' ? 'dark' : 'light';
       
-      // Prepare patch operations for all hero blocks
+      // Prepare patch operations for all blocks with background
       const patches = {};
       
-      heroBlocks.forEach(({ block, index }) => {
+      blocksWithBackground.forEach(({ block, index }) => {
         // Only update if overlay color is missing or different
         if (block.overlayColor !== overlayColor) {
           patches[`blocks[${index}].overlayColor`] = overlayColor;
         }
-        // Ensure overlay is enabled
-        if (block.showOverlay !== true) {
+        // Ensure overlay is enabled if the block has the showOverlay property
+        if (block.hasOwnProperty('showOverlay') && block.showOverlay !== true) {
           patches[`blocks[${index}].showOverlay`] = true;
         }
       });
@@ -300,10 +218,10 @@ export function NavigationSettingsInput(props: ObjectInputProps) {
       // Only apply patch if there are changes
       if (Object.keys(patches).length > 0) {
         await patchDoc.set(patches).commit();
-        console.log(`Updated overlayColor to "${overlayColor}" for hero blocks`);
+        console.log(`Updated overlayColor to "${overlayColor}" for blocks with background images`);
       }
     } catch (err) {
-      console.error('Error updating hero blocks:', err);
+      console.error('Error updating blocks with background:', err);
       // Silent error - don't disrupt the UI
     }
   };
@@ -318,16 +236,22 @@ export function NavigationSettingsInput(props: ObjectInputProps) {
         throw new Error('No blocks found in document')
       }
       
-      const firstBlock = blocks[0]
+      // Find the first block with an image
+      let blockWithImage = null
+      let assetRef = null
       
-      // Get image asset reference from first block
-      const assetRef = 
-        firstBlock.backgroundImage?.asset?._ref ?? 
-        firstBlock.image?.asset?._ref ??
-        null
+      for (const block of blocks) {
+        // Check for backgroundImage or image in the block
+        assetRef = block.backgroundImage?.asset?._ref || block.image?.asset?._ref || null
         
-      if (!assetRef) {
-        throw new Error('No image found in first block')
+        if (assetRef) {
+          blockWithImage = block
+          break
+        }
+      }
+      
+      if (!blockWithImage || !assetRef) {
+        throw new Error('No block with image found in document')
       }
       
       // Get full image URL 
@@ -341,23 +265,21 @@ export function NavigationSettingsInput(props: ObjectInputProps) {
         const croppedUrl = URL.createObjectURL(croppedBlob);
         setCroppedImageUrl(croppedUrl);
         
-        // Analyze the image with selected method
-        const label = await analyzeImageWithMethod(croppedBlob);
+        // Analyze the image
+        const label = await analyzeImageBrightness(croppedBlob);
         
         setResult(label)
         
-        // Always update the navigation text color based on analysis
         // If background is dark, use white text, if light use dark text
         const recommendedColor = label === 'dark' ? 'white' : 'dark'
         
-        // Always update the color
+        // Update the color
         props.onChange(set(recommendedColor, ['navigationTextColor']))
         
         // Calculate and set contrast information
         setContrast(evaluateContrast(label, recommendedColor));
 
-        // Silently update hero blocks in the background
-        // This ensures overlay colors always match navigation
+        // Update hero blocks in the background
         setTimeout(() => {
           updateHeroBlocksOverlayColor(recommendedColor);
         }, 500);
@@ -397,28 +319,6 @@ export function NavigationSettingsInput(props: ObjectInputProps) {
             Analyzes your hero image to set optimal navigation text color. 
             Automatically configures overlay settings for hero sections.
           </Text>
-          
-          {/* Analysis method toggle */}
-          <Card padding={2} radius={2} tone="default">
-            <Flex direction="column" gap={2}>
-              <Text size={1} weight="semibold">Analysis Method</Text>
-              <Flex align="center" gap={2}>
-                <Switch 
-                  checked={useAI} 
-                  onChange={e => setUseAI(e.currentTarget.checked)} 
-                />
-                <Text size={1}>
-                  {useAI ? 'AI-powered analysis' : 'Direct pixel analysis'}
-                </Text>
-              </Flex>
-              <Text size={0} muted>
-                {useAI 
-                  ? 'Uses Gemini Vision for intelligent image brightness detection.'
-                  : 'Uses mathematical brightness analysis for consistent results.'
-                }
-              </Text>
-            </Flex>
-          </Card>
           
           <Button
             mode="ghost"

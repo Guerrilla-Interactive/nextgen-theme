@@ -3,7 +3,7 @@ import { fetchFrontPage } from './_page-index-core-utilities/page-index.server-a
 import { Blocks } from '@/features/page-builder-blocks/block-component-exporter';
 import { generatePageMetadata } from '@/features/unorganized-utils/metadata';
 import { notFound } from 'next/navigation';
-
+import { UseClientConfigs } from '../[slug]/_page-slug-core-utilities/use-client-configs';
 // Add ISR with revalidation every 30 seconds
 export const revalidate = 30;
 
@@ -27,6 +27,7 @@ export default async function Page() {
   return (
     <>
     {/* @ts-ignore */}
+    <UseClientConfigs navigationTextColor={frontPageData?.navigationSettings?.navigationTextColor} />
     <Blocks blocks={frontPageData?.blocks} />
     </>
   )
