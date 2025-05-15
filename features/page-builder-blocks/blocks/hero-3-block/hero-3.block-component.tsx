@@ -23,12 +23,7 @@ export default function Hero3BlockComponent(props: Partial<Hero3Block>) {
   const { sessionStatus } = useGlobalContext();
   const { sessionLoaded, setIsTopDark } = sessionStatus;
 
-  useEffect(() => {
-    if (sessionLoaded) {
-      setIsTopDark(overlayColor === "0,0,0");
-    }
-  }, [sessionLoaded, setIsTopDark, overlayColor]);
-  
+
   // Capture the initial state of sessionLoaded. If it's false, we should animate.
   // This state won't update even if sessionLoaded becomes true later, ensuring the animations complete.
   const [shouldAnimate] = useState(!sessionLoaded);
@@ -39,6 +34,7 @@ export default function Hero3BlockComponent(props: Partial<Hero3Block>) {
       {backgroundImage && (
         <Img
           {...backgroundImage}
+          
           cover
           eager
           className={`animate-scale-in-bg`}

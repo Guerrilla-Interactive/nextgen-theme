@@ -3,6 +3,7 @@ import { generatePageMetadata } from "@/features/unorganized-utils/metadata";
 import { fetchSanityPageBySlug, fetchSanityPagesStaticParams } from "./_page-slug-core-utilities/page-slug.server-actions";
 
 import { Blocks } from "@/features/page-builder-blocks/block-component-exporter";
+import { UseClientConfigs } from "./_page-slug-core-utilities/use-client-configs";
 
 // Add ISR with revalidation every 30 seconds
 export const revalidate = 30;
@@ -39,6 +40,17 @@ export default async function Page(props: {
   if (!page) {
     notFound();
   }
+  
+
+
+
+  
   //@ts-ignore
-  return <Blocks navigationTextColor={page?.navigationTextColor} blocks={page?.blocks ?? []} />;
+  return <>
+  
+
+
+  <UseClientConfigs navigationTextColor={page?.navigationSettings?.navigationTextColor} />
+  <Blocks blocks={page?.blocks ?? []} />
+  </>;
 }

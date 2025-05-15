@@ -56,10 +56,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* Include html2canvas for screenshot functionality */}
-        <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" async></script>
-      </head>
+
       <link rel="icon" href="/favicon.ico" />
       <GlobalContextProvider>
       <body

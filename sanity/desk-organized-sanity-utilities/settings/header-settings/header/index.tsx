@@ -15,7 +15,7 @@ import { Icon } from "@iconify/react";
 import { HeaderSettingsFetchQueryResult } from "@/sanity.types";
 
 import DefaultLogo from "@/features/theme/DefaultLogo";
-import { fetchSanityPageBySlug } from "@/app/(main)/(root)/[slug]/_page-slug-core-utilities/page-slug.server-actions";
+
 
 
 
@@ -24,49 +24,8 @@ export default function Header(props: HeaderSettingsFetchQueryResult) {
   const { sessionStatus } = useGlobalContext();
   const { sessionLoaded, setIsTopDark, isTopDark } = sessionStatus;
   const [iconLoaded, setIconLoaded] = useState(false);
-
-  
-
-  
-
   const logoRef = useRef<HTMLDivElement>(null);
-
-  // isLogoHovered
-  const [isLogoHovered, setIsLogoHovered] = useState(false);
   
-  // load navigationTextColor from page-slug
-  const [navigationTextColor, setNavigationTextColor] = useState<string | null>(null);
-
-
-
-  const pathname = usePathname();
-
-  // load navigationTextColor from page-slug
-  
-  // make it update on route change
-  useLayoutEffect(() => {
-    // Locate the first <div> within <main> and then search for a <figure> with the "data-cover" attribute.
-    // Check if "data-top-image" is true.
-    const mainDiv = document.querySelector("main > div");
-    const figureEl = mainDiv ? mainDiv.querySelector("figure[data-cover]") : null;
-
-    if (
-      figureEl &&
-      figureEl.getAttribute("data-cover") === "true" &&
-      figureEl.getAttribute("data-top-image") !== "false"
-    ) {
-      // Get the palette value and convert to a number.
-      const paletteStr = figureEl.getAttribute("data-palette");
-      const palette = paletteStr ? Number(paletteStr) : NaN;
-      if (!Number.isNaN(palette)) {
-        // For example, if the palette value is less than 0.4, we consider the top section dark.
-        setIsTopDark(palette > 0.4);
-      }
-    } else {
-      // If no figure element is found or it doesn't have the right attributes, set isTopDark to false
-      setIsTopDark(false);
-    }
-  }, [pathname]);
 
   return (
     <>

@@ -7,6 +7,9 @@ export const GET_PAGE_BY_DEFINED_SLUG_QUERY = groq`
     meta_title,
     meta_description,
     noindex,
+    navigationSettings {
+      navigationTextColor,
+    },
     navigationTextColor,
     ogImage {
       asset->{
