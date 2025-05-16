@@ -6,8 +6,6 @@ import { TextAlignRightIcon } from "@radix-ui/react-icons";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/features/unorganized-components/ui/sheet";
 import { Button } from "@/features/unorganized-components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/features/unorganized-components/ui/accordion";
-import { cn } from "@/features/unorganized-utils/utils";
-import Logo from "../../../../../features/theme/logo";
 import { HeaderSettingsFetchQueryResult } from "@/sanity.types";
 import DefaultLogo from "@/features/theme/DefaultLogo";
 

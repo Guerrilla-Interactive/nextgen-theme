@@ -40,7 +40,6 @@ export default function Header(props: HeaderSettingsFetchQueryResult) {
         <div className={cn(`container`, sessionLoaded ? "duration-600" : "duration-0")}>
           <FlexRow notAuto  className={cn(`justify-between pt-1 border-b pb-1 font-light`, isTopDark ? "border-white/20" : "border-black/20")}>
             {/* Mail, availability, phone number */}
-            
             <FlexCol className=" items-center hidden md:flex hover:underline">
             <Link href={`mailto:${props?.email?.email}`}>
               <FlexRow notAuto className=" items-center gap-2 ">
@@ -74,7 +73,7 @@ export default function Header(props: HeaderSettingsFetchQueryResult) {
               </div>
             </Link>
             <div className="hidden xl:flex gap-7 items-center justify-between">
-              <DesktopNav navItems={props?.navigationItems || []} />
+              <DesktopNav navItems={props?.navigationItems || []} isTopDark={isTopDark} />
               {/* <ModeToggle /> */}
             </div>
             <div className="flex items-center xl:hidden">

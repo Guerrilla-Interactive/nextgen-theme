@@ -1,133 +1,125 @@
-import Link from "next/link";
 import { HeaderSettingsFetchQueryResult } from "@/sanity.types";
+import Link from "next/link";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/features/unorganized-components/ui/navigation-menu";
-import { cn } from "@/features/unorganized-utils/utils";
+  NextgenDesktopNav,
+  NextgenDesktopNavItem,
+  NextgenDesktopNavLink,
+  NextgenDesktopNavTrigger,
+  NextgenDesktopNavBridge,
+  NextgenDesktopNavContent,
+  NextgenDesktopNavDropdownItem,
+  type NavStyleProps,
+} from "@/features/unorganized-components/ui/nextgen-desktop-nav";
 
-export default function DesktopNav({ navItems }: { navItems: HeaderSettingsFetchQueryResult["navigationItems"] }) {
+export default function HeaderDesktopNav({ 
+  isTopDark,
+  navItems,
+  styleProps
+}: { 
+  navItems: HeaderSettingsFetchQueryResult["navigationItems"],
+  isTopDark: boolean,
+  styleProps?: NavStyleProps
+}) {
   if (!navItems) return null;
-
+  
   return (
-    <NavigationMenu className="hidden xl:flex font-supplement uppercase">
-      <NavigationMenuList className="gap-4">
-        {navItems.map((navItem) => {
-          // Handle internal links
-          if (navItem.linkType === "internal") {
-            if (!('slug' in navItem) || !navItem.slug) return null;
-            
-            return (
-              <NavigationMenuItem key={navItem._key}>
-                <Link href={`/${navItem.slug}`} legacyBehavior passHref>
-                  <NavigationMenuLink className="text-sm px-3 py-2">
-                    {'title' in navItem ? navItem.title || "" : ""}
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            );
-          } 
+    <NextgenDesktopNav
+      isTopDark={isTopDark}
+      styleProps={styleProps}
+    >
+      {navItems.map((navItem) => {
+        // Create unique ID for this nav item
+        const navId = navItem._key || `nav-${Math.random().toString(36).substring(2, 9)}`;
+        
+        // Handle internal links
+        if (navItem.linkType === "internal") {
+          if (!('slug' in navItem) || !navItem.slug) return null;
           
-          // Handle external links
-          if (navItem.linkType === "external") {
-            if (!('url' in navItem) || !navItem.url) return null;
-            
-            return (
-              <NavigationMenuItem key={navItem._key}>
-                <Link href={navItem.url} target="_blank" rel="noopener noreferrer" legacyBehavior passHref>
-                  <NavigationMenuLink className="text-sm transition-colors px-3 py-2">
-                    {'title' in navItem ? navItem.title || "" : ""}
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            );
-          }
-          
-          // Handle link groups with dropdown
-          if (navItem.linkType === "linkGroup") {
-            if (!('links' in navItem) || !navItem.links || navItem.links.length === 0) return null;
-            
-            return (
-              <NavigationMenuItem key={navItem._key}>
-                <NavigationMenuTrigger className="text-sm transition-colors px-3 py-2">
+          return (
+            <NextgenDesktopNavItem key={navId} id={navId}>
+              <Link href={`/${navItem.slug}`} passHref legacyBehavior>
+                <NextgenDesktopNavLink>
                   {'title' in navItem ? navItem.title || "" : ""}
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[200px] gap-2 p-4">
-                    {navItem.links.map((link) => {
-                      // Internal link in dropdown
-                      if (link.linkType === "internal") {
-                        if (!('slug' in link) || !link.slug) return null;
-                        
-                        return (
-                          <li key={link._key}>
-                            <Link href={`/${link.slug}`} legacyBehavior passHref>
-                              <NavigationMenuLink
-                                className={cn(
-                                  "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                )}
-                              >
-                                <div className="text-sm font-medium">
-                                  {'title' in link ? link.title || "" : ""}
-                                </div>
-                                {'description' in link && link.description && (
-                                  <p className="text-xs leading-tight text-muted-foreground">
-                                    {link.description}
-                                  </p>
-                                )}
-                              </NavigationMenuLink>
-                            </Link>
-                          </li>
-                        );
-                      }
-                      
-                      // External link in dropdown
-                      if (link.linkType === "external") {
-                        if (!('url' in link) || !link.url) return null;
-                        
-                        return (
-                          <li key={link._key}>
-                            <Link 
-                              href={link.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              legacyBehavior 
-                              passHref
-                            >
-                              <NavigationMenuLink
-                                className={cn(
-                                  "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                )}
-                              >
-                                <div className="text-sm font-medium">
-                                  {'title' in link ? link.title || "" : ""}
-                                </div>
-                                {'description' in link && link.description && (
-                                  <p className="text-xs leading-tight text-muted-foreground">
-                                    {link.description}
-                                  </p>
-                                )}
-                              </NavigationMenuLink>
-                            </Link>
-                          </li>
-                        );
-                      }
-                      
-                      return null;
-                    })}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            );
-          }
+                </NextgenDesktopNavLink>
+              </Link>
+            </NextgenDesktopNavItem>
+          );
+        } 
+        
+        // Handle external links
+        if (navItem.linkType === "external") {
+          if (!('url' in navItem) || !navItem.url) return null;
           
-          return null;
-        })}
-      </NavigationMenuList>
-    </NavigationMenu>
+          return (
+            <NextgenDesktopNavItem key={navId} id={navId}>
+              <Link href={navItem.url} passHref legacyBehavior>
+                <NextgenDesktopNavLink external>
+                  {'title' in navItem ? navItem.title || "" : ""}
+                </NextgenDesktopNavLink>
+              </Link>
+            </NextgenDesktopNavItem>
+          );
+        }
+        
+        // Handle link groups with dropdown
+        if (navItem.linkType === "linkGroup") {
+          if (!('links' in navItem) || !navItem.links || navItem.links.length === 0) return null;
+          
+          return (
+            <NextgenDesktopNavItem key={navId} id={navId}>
+              <NextgenDesktopNavTrigger id={navId}>
+                {'title' in navItem ? navItem.title || "" : ""}
+              </NextgenDesktopNavTrigger>
+              
+              <NextgenDesktopNavBridge />
+              
+              <NextgenDesktopNavContent id={navId}>
+                {navItem.links.map((link, idx) => {
+                  // Create unique ID for this menu item
+                  const itemId = link._key || `item-${Math.random().toString(36).substring(2, 9)}`;
+                  
+                  // Internal link in dropdown
+                  if (link.linkType === "internal") {
+                    if (!('slug' in link) || !link.slug) return null;
+                    
+                    return (
+                      <NextgenDesktopNavDropdownItem 
+                        key={itemId}
+                        href={`/${link.slug}`}
+                        index={idx}
+                        description={'description' in link ? link.description : undefined}
+                      >
+                        {'title' in link ? link.title || "" : ""}
+                      </NextgenDesktopNavDropdownItem>
+                    );
+                  }
+                  
+                  // External link in dropdown
+                  if (link.linkType === "external") {
+                    if (!('url' in link) || !link.url) return null;
+                    
+                    return (
+                      <NextgenDesktopNavDropdownItem 
+                        key={itemId}
+                        href={link.url}
+                        external
+                        index={idx}
+                        description={'description' in link ? link.description : undefined}
+                      >
+                        {'title' in link ? link.title || "" : ""}
+                      </NextgenDesktopNavDropdownItem>
+                    );
+                  }
+                  
+                  return null;
+                })}
+              </NextgenDesktopNavContent>
+            </NextgenDesktopNavItem>
+          );
+        }
+        
+        return null;
+      })}
+    </NextgenDesktopNav>
   );
 }
