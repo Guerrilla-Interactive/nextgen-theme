@@ -145,7 +145,7 @@ interface SpacingProperties {
  */
 interface AnimationProperties {
   /** 
-   * Animation duration 
+   * Default animation duration (applies to all properties unless overridden)
    * @examples
    * Works:
    * - CSS time values only: '200ms', '0.3s'
@@ -176,6 +176,46 @@ interface AnimationProperties {
    * - Other strings: 'zoom', 'rotate'
    */
   type?: 'fade' | 'slide' | 'scale' | 'none'
+  /**
+   * Property-specific durations
+   */
+  properties?: {
+    /** 
+     * Background transition duration 
+     * @examples
+     * Works:
+     * - CSS time values only: '200ms', '0.3s'
+     */
+    background?: string
+    /** 
+     * Text color transition duration 
+     * @examples
+     * Works:
+     * - CSS time values only: '200ms', '0.3s'
+     */
+    color?: string
+    /** 
+     * Border transition duration 
+     * @examples
+     * Works:
+     * - CSS time values only: '200ms', '0.3s'
+     */
+    border?: string
+    /** 
+     * Transform transition duration 
+     * @examples
+     * Works:
+     * - CSS time values only: '200ms', '0.3s'
+     */
+    transform?: string
+    /** 
+     * Opacity transition duration 
+     * @examples
+     * Works:
+     * - CSS time values only: '200ms', '0.3s'
+     */
+    opacity?: string
+  }
 }
 
 /**
@@ -316,7 +356,7 @@ interface DropdownLayoutProperties {
  */
 interface DropdownThemeProps {
   /** 
-   * Background colors for the dropdown 
+   * Background colors for the dropdown container
    * @examples
    * Works:
    * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.05)', 'transparent'
@@ -348,6 +388,24 @@ interface DropdownThemeProps {
    * - CSS values: '#9ca3af'
    */
   descriptionColor?: string
+  /**
+   * Individual dropdown item styling
+   */
+  items?: {
+    /** 
+     * Background colors for dropdown items (different states)
+     * @examples
+     * Works:
+     * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.05)', 'transparent'
+     * - CSS variables: 'var(--bg-primary)'
+     * 
+     * Doesn't work:
+     * - Tailwind classes: 'bg-white', 'bg-opacity-5'
+     */
+    background: StateProperties<string>
+    /** Border properties for dropdown items */
+    border?: BorderProperties
+  }
 }
 
 /**
@@ -481,14 +539,14 @@ const DEFAULT_THEME: NavThemeConfig = {
     },
     dropdown: {
       background: {
-        default: 'transparent',
+        default: '#ffffff05',
         hover: 'rgba(255, 255, 255, 0.05)',
         focus: 'rgba(255, 255, 255, 0.10)',
         active: 'rgba(255, 255, 255, 0.10)',
       },
       text: {
         color: {
-          default: 'rgba(255, 255, 255, 1)',
+          default: '#ffffff',
           hover: 'rgba(255, 255, 255, 1)',
           focus: 'rgba(255, 255, 255, 1',
           active: 'rgba(255, 255, 255, 0.9)',
@@ -515,13 +573,20 @@ const DEFAULT_THEME: NavThemeConfig = {
       },
       layout: {
         shadow: 'shadow-lg',
-        blur: "2px",
+        blur: '4px',
         maxHeight: 'max-h-[80vh]',
         minWidth: 'min-w-[200px]',
       },
       animation: {
         duration: '200ms',
         easing: 'ease-out',
+        properties: {
+          background: '300ms',
+          color: '200ms',
+          border: '250ms',
+          transform: '200ms',
+          opacity: '200ms'
+        }
       },
       indicators: {
         showArrow: false,
@@ -531,14 +596,37 @@ const DEFAULT_THEME: NavThemeConfig = {
         hoverIndicatorWidth: 'w-[3px]',
       },
       descriptionColor: 'text-muted-foreground',
+      items: {
+        background: {
+          default: 'transparent',
+          hover: 'rgba(255, 255, 255, 0.1)',
+          focus: 'rgba(255, 255, 255, 0.15)',
+          active: 'rgba(255, 255, 255, 0.15)',
+        },
+        border: {
+          color: {
+            default: 'transparent',
+            hover: 'rgba(255, 255, 255, 0.1)',
+            focus: 'rgba(255, 255, 255, 0.2)',
+            active: 'rgba(255, 255, 255, 0.2)',
+          },
+          width: {
+            default: 'border',
+            hover: 'border',
+            focus: 'border',
+            active: 'border',
+          },
+          radius: 'rounded',
+        },
+      },
     },
   },
   dark: {
     background: {
       default: 'transparent',
-      hover: 'rgba(0, 0, 0, 0.03)',
-      focus: 'rgba(0, 0, 0, 0.06)',
-      active: 'rgba(0, 0, 0, 0.06)',
+      hover: 'rgba(255, 255, 255, 0.1)',
+      focus: 'rgba(255, 255, 255, 0.15)',
+      active: 'rgba(255, 255, 255, 0.15)',
     },
     text: {
       color: {
@@ -556,10 +644,10 @@ const DEFAULT_THEME: NavThemeConfig = {
     },
     border: {
       color: {
-        default: 'transparent',
-        hover: 'rgba(0, 0, 0, 0.1)',
-        focus: 'rgba(0, 0, 0, 0.2)',
-        active: 'rgba(0, 0, 0, 0.3)',
+        default: 'rgba(0, 0, 0, 0.1)',
+        hover: 'rgba(0, 0, 0, 0.2)',
+        focus: 'rgba(0, 0, 0, 0.3)',
+        active: 'rgba(0, 0, 0, 0.4)',
       },
       width: {
         default: 'border',
@@ -567,7 +655,7 @@ const DEFAULT_THEME: NavThemeConfig = {
         focus: 'border',
         active: 'border',
       },
-      radius: 'rounded',
+      radius: 'rounded-md',
     },
     spacing: {
       padding: 'px-3 py-2',
@@ -575,9 +663,9 @@ const DEFAULT_THEME: NavThemeConfig = {
     dropdown: {
       background: {
         default: 'transparent',
-        hover: 'rgba(0, 0, 0, 0.03)',
-        focus: 'rgba(0, 0, 0, 0.06)',
-        active: 'rgba(0, 0, 0, 0.06)',
+        hover: 'rgba(255, 255, 255, 0.05)',
+        focus: 'rgba(255, 255, 255, 0.10)',
+        active: 'rgba(255, 255, 255, 0.10)',
       },
       text: {
         color: {
@@ -608,13 +696,20 @@ const DEFAULT_THEME: NavThemeConfig = {
       },
       layout: {
         shadow: 'shadow-lg',
-        blur: '2px',
+        blur: '4px',
         maxHeight: 'max-h-[80vh]',
         minWidth: 'min-w-[200px]',
       },
       animation: {
         duration: '200ms',
         easing: 'ease-out',
+        properties: {
+          background: '300ms',
+          color: '200ms',
+          border: '250ms',
+          transform: '200ms',
+          opacity: '200ms'
+        }
       },
       indicators: {
         showArrow: false,
@@ -624,6 +719,29 @@ const DEFAULT_THEME: NavThemeConfig = {
         hoverIndicatorWidth: 'w-[3px]',
       },
       descriptionColor: 'text-muted-foreground',
+      items: {
+        background: {
+          default: 'transparent',
+          hover: 'rgba(0, 0, 0, 0.05)',
+          focus: 'rgba(0, 0, 0, 0.10)',
+          active: 'rgba(0, 0, 0, 0.10)',
+        },
+        border: {
+          color: {
+            default: 'transparent',
+            hover: 'rgba(0, 0, 0, 0.1)',
+            focus: 'rgba(0, 0, 0, 0.2)',
+            active: 'rgba(0, 0, 0, 0.2)',
+          },
+          width: {
+            default: 'border',
+            hover: 'border',
+            focus: 'border',
+            active: 'border',
+          },
+          radius: 'rounded',
+        },
+      },
     },
   },
   layout: {
@@ -638,6 +756,13 @@ const DEFAULT_THEME: NavThemeConfig = {
     type: 'fade',
     duration: '200ms',
     easing: 'ease-in-out',
+    properties: {
+      background: '200ms',
+      color: '600ms',
+      border: '300ms',
+      transform: '200ms',
+      opacity: '200ms'
+    }
   },
 }
 
@@ -793,6 +918,13 @@ interface NavStyleProps {
     indicators?: Partial<DropdownIndicatorProperties>
     /** Description color override */
     descriptionColor?: string
+    /** Override dropdown item styles */
+    items?: {
+      /** Background colors for dropdown items */
+      background?: Partial<StateProperties<string>>
+      /** Border properties for dropdown items */
+      border?: BorderStyleProps
+    }
   }
   
   /** Override dark mode dropdown styles */
@@ -813,6 +945,13 @@ interface NavStyleProps {
     indicators?: Partial<DropdownIndicatorProperties>
     /** Description color override */
     descriptionColor?: string
+    /** Override dropdown item styles */
+    items?: {
+      /** Background colors for dropdown items */
+      background?: Partial<StateProperties<string>>
+      /** Border properties for dropdown items */
+      border?: BorderStyleProps
+    }
   }
   
   /** 
@@ -833,6 +972,11 @@ interface NavStyleProps {
    * type: 'fade'
    * duration: '200ms'
    * easing: 'ease-in-out'
+   * properties: {
+   *   background: '600ms',
+   *   color: '400ms', 
+   *   border: '300ms'
+   * }
    */
   animation?: Partial<AnimationProperties>
 }
@@ -924,8 +1068,16 @@ function createThemeConfig(props: NavStyleProps = {}): NavThemeConfig {
           minWidth: props.lightDropdown?.layout?.minWidth || DEFAULT_THEME.light.dropdown.layout?.minWidth,
         },
         animation: {
-          duration: props.lightDropdown?.animation?.duration || props.animation?.duration || DEFAULT_THEME.light.dropdown.animation?.duration,
-          easing: props.lightDropdown?.animation?.easing || props.animation?.easing || DEFAULT_THEME.light.dropdown.animation?.easing,
+          type: props.lightDropdown?.animation?.type || DEFAULT_THEME.light.dropdown.animation?.type,
+          duration: props.lightDropdown?.animation?.duration || DEFAULT_THEME.light.dropdown.animation?.duration,
+          easing: props.lightDropdown?.animation?.easing || DEFAULT_THEME.light.dropdown.animation?.easing,
+          properties: {
+            background: props.lightDropdown?.animation?.properties?.background || DEFAULT_THEME.light.dropdown.animation?.properties?.background,
+            color: props.lightDropdown?.animation?.properties?.color || DEFAULT_THEME.light.dropdown.animation?.properties?.color,
+            border: props.lightDropdown?.animation?.properties?.border || DEFAULT_THEME.light.dropdown.animation?.properties?.border,
+            transform: props.lightDropdown?.animation?.properties?.transform || DEFAULT_THEME.light.dropdown.animation?.properties?.transform,
+            opacity: props.lightDropdown?.animation?.properties?.opacity || DEFAULT_THEME.light.dropdown.animation?.properties?.opacity,
+          }
         },
         indicators: {
           showArrow: props.lightDropdown?.indicators?.showArrow !== undefined ? props.lightDropdown.indicators.showArrow : DEFAULT_THEME.light.dropdown.indicators?.showArrow,
@@ -935,6 +1087,29 @@ function createThemeConfig(props: NavStyleProps = {}): NavThemeConfig {
           hoverIndicatorWidth: props.lightDropdown?.indicators?.hoverIndicatorWidth || DEFAULT_THEME.light.dropdown.indicators?.hoverIndicatorWidth,
         },
         descriptionColor: props.lightDropdown?.descriptionColor || DEFAULT_THEME.light.dropdown.descriptionColor,
+        items: {
+          background: {
+            default: props.lightDropdown?.items?.background?.default || DEFAULT_THEME.light.dropdown.items?.background.default,
+            hover: props.lightDropdown?.items?.background?.hover || DEFAULT_THEME.light.dropdown.items?.background.hover,
+            focus: props.lightDropdown?.items?.background?.focus || DEFAULT_THEME.light.dropdown.items?.background.focus,
+            active: props.lightDropdown?.items?.background?.active || DEFAULT_THEME.light.dropdown.items?.background.active,
+          },
+          border: {
+            color: {
+              default: props.lightDropdown?.items?.border?.color?.default || DEFAULT_THEME.light.dropdown.items?.border?.color?.default,
+              hover: props.lightDropdown?.items?.border?.color?.hover || DEFAULT_THEME.light.dropdown.items?.border?.color?.hover,
+              focus: props.lightDropdown?.items?.border?.color?.focus || DEFAULT_THEME.light.dropdown.items?.border?.color?.focus,
+              active: props.lightDropdown?.items?.border?.color?.active || DEFAULT_THEME.light.dropdown.items?.border?.color?.active,
+            },
+            width: {
+              default: props.lightDropdown?.items?.border?.width?.default || DEFAULT_THEME.light.dropdown.items?.border?.width?.default,
+              hover: props.lightDropdown?.items?.border?.width?.hover || DEFAULT_THEME.light.dropdown.items?.border?.width?.hover,
+              focus: props.lightDropdown?.items?.border?.width?.focus || DEFAULT_THEME.light.dropdown.items?.border?.width?.focus,
+              active: props.lightDropdown?.items?.border?.width?.active || DEFAULT_THEME.light.dropdown.items?.border?.width?.active,
+            },
+            radius: props.lightDropdown?.items?.border?.radius || DEFAULT_THEME.light.dropdown.items?.border?.radius,
+          },
+        },
       }
     },
     dark: {
@@ -1019,8 +1194,16 @@ function createThemeConfig(props: NavStyleProps = {}): NavThemeConfig {
           minWidth: props.darkDropdown?.layout?.minWidth || DEFAULT_THEME.dark.dropdown.layout?.minWidth,
         },
         animation: {
-          duration: props.darkDropdown?.animation?.duration || props.animation?.duration || DEFAULT_THEME.dark.dropdown.animation?.duration,
-          easing: props.darkDropdown?.animation?.easing || props.animation?.easing || DEFAULT_THEME.dark.dropdown.animation?.easing,
+          type: props.darkDropdown?.animation?.type || DEFAULT_THEME.dark.dropdown.animation?.type,
+          duration: props.darkDropdown?.animation?.duration || DEFAULT_THEME.dark.dropdown.animation?.duration,
+          easing: props.darkDropdown?.animation?.easing || DEFAULT_THEME.dark.dropdown.animation?.easing,
+          properties: {
+            background: props.darkDropdown?.animation?.properties?.background || DEFAULT_THEME.dark.dropdown.animation?.properties?.background,
+            color: props.darkDropdown?.animation?.properties?.color || DEFAULT_THEME.dark.dropdown.animation?.properties?.color,
+            border: props.darkDropdown?.animation?.properties?.border || DEFAULT_THEME.dark.dropdown.animation?.properties?.border,
+            transform: props.darkDropdown?.animation?.properties?.transform || DEFAULT_THEME.dark.dropdown.animation?.properties?.transform,
+            opacity: props.darkDropdown?.animation?.properties?.opacity || DEFAULT_THEME.dark.dropdown.animation?.properties?.opacity,
+          }
         },
         indicators: {
           showArrow: props.darkDropdown?.indicators?.showArrow !== undefined ? props.darkDropdown.indicators.showArrow : DEFAULT_THEME.dark.dropdown.indicators?.showArrow,
@@ -1030,6 +1213,29 @@ function createThemeConfig(props: NavStyleProps = {}): NavThemeConfig {
           hoverIndicatorWidth: props.darkDropdown?.indicators?.hoverIndicatorWidth || DEFAULT_THEME.dark.dropdown.indicators?.hoverIndicatorWidth,
         },
         descriptionColor: props.darkDropdown?.descriptionColor || DEFAULT_THEME.dark.dropdown.descriptionColor,
+        items: {
+          background: {
+            default: props.darkDropdown?.items?.background?.default || DEFAULT_THEME.dark.dropdown.items?.background.default,
+            hover: props.darkDropdown?.items?.background?.hover || DEFAULT_THEME.dark.dropdown.items?.background.hover,
+            focus: props.darkDropdown?.items?.background?.focus || DEFAULT_THEME.dark.dropdown.items?.background.focus,
+            active: props.darkDropdown?.items?.background?.active || DEFAULT_THEME.dark.dropdown.items?.background.active,
+          },
+          border: {
+            color: {
+              default: props.darkDropdown?.items?.border?.color?.default || DEFAULT_THEME.dark.dropdown.items?.border?.color?.default,
+              hover: props.darkDropdown?.items?.border?.color?.hover || DEFAULT_THEME.dark.dropdown.items?.border?.color?.hover,
+              focus: props.darkDropdown?.items?.border?.color?.focus || DEFAULT_THEME.dark.dropdown.items?.border?.color?.focus,
+              active: props.darkDropdown?.items?.border?.color?.active || DEFAULT_THEME.dark.dropdown.items?.border?.color?.active,
+            },
+            width: {
+              default: props.darkDropdown?.items?.border?.width?.default || DEFAULT_THEME.dark.dropdown.items?.border?.width?.default,
+              hover: props.darkDropdown?.items?.border?.width?.hover || DEFAULT_THEME.dark.dropdown.items?.border?.width?.hover,
+              focus: props.darkDropdown?.items?.border?.width?.focus || DEFAULT_THEME.dark.dropdown.items?.border?.width?.focus,
+              active: props.darkDropdown?.items?.border?.width?.active || DEFAULT_THEME.dark.dropdown.items?.border?.width?.active,
+            },
+            radius: props.darkDropdown?.items?.border?.radius || DEFAULT_THEME.dark.dropdown.items?.border?.radius,
+          },
+        },
       }
     },
     layout: {
@@ -1044,6 +1250,13 @@ function createThemeConfig(props: NavStyleProps = {}): NavThemeConfig {
       type: props.animation?.type || DEFAULT_THEME.animation?.type,
       duration: props.animation?.duration || DEFAULT_THEME.animation?.duration,
       easing: props.animation?.easing || DEFAULT_THEME.animation?.easing,
+      properties: {
+        background: props.animation?.properties?.background || DEFAULT_THEME.animation?.properties?.background,
+        color: props.animation?.properties?.color || DEFAULT_THEME.animation?.properties?.color,
+        border: props.animation?.properties?.border || DEFAULT_THEME.animation?.properties?.border,
+        transform: props.animation?.properties?.transform || DEFAULT_THEME.animation?.properties?.transform,
+        opacity: props.animation?.properties?.opacity || DEFAULT_THEME.animation?.properties?.opacity,
+      }
     }
   }
 }
@@ -1265,6 +1478,16 @@ function NextgenDesktopNavLink({ external, className, children, href, ...props }
   const currentTheme = useThemeStyles()
   const [isPressed, setIsPressed] = React.useState(false)
   
+  // Get animation durations
+  const defaultDuration = "600ms"; // Default longer duration for visibility
+  
+  // Get animation durations for each property
+  const animationConfig = DEFAULT_THEME.animation?.properties || {};
+  const backgroundDuration = animationConfig.background || defaultDuration;
+  const colorDuration = animationConfig.color || defaultDuration;
+  const borderDuration = animationConfig.border || defaultDuration;
+  const transformDuration = animationConfig.transform || defaultDuration;
+  
   // Convert color values to Tailwind-compatible format for hover
   const getHoverBgClass = () => {
     // If it's a variable or transparent, use inline style instead
@@ -1312,6 +1535,9 @@ function NextgenDesktopNavLink({ external, className, children, href, ...props }
   
   const sharedStyles = {
     color: currentTheme.text.color.default,
+    transitionProperty: "background-color, color, border-color, transform",
+    transitionDuration: `${backgroundDuration}, ${colorDuration}, ${borderDuration}, ${transformDuration}`,
+    transitionTimingFunction: "ease-in-out",
   } as React.CSSProperties;
   
   // Add hover and active styles as inline styles if they can't be expressed as Tailwind classes
@@ -1497,6 +1723,13 @@ function NextgenDesktopNavTrigger({ id, className, children, ...props }: Nextgen
   const currentTheme = useThemeStyles()
   const isActive = activeId === id
   
+  // Get animation durations for each property
+  const animationConfig = DEFAULT_THEME.animation?.properties || {};
+  const backgroundDuration = animationConfig.background || '600ms';
+  const colorDuration = animationConfig.color || '400ms';
+  const borderDuration = animationConfig.border || '300ms';
+  const transformDuration = animationConfig.transform || '200ms';
+  
   function handleClick() {
     setActiveId(prev => prev === id ? null : id)
   }
@@ -1521,6 +1754,8 @@ function NextgenDesktopNavTrigger({ id, className, children, ...props }: Nextgen
         '--hover-color': currentTheme.text.color.hover,
         '--focus-bg': currentTheme.background.focus,
         '--focus-color': currentTheme.text.color.focus,
+        transitionProperty: "background-color, color, border-color, transform",
+        transitionDuration: `${backgroundDuration}, ${colorDuration}, ${borderDuration}, ${transformDuration}`,
       } as React.CSSProperties}
       onClick={handleClick}
       aria-expanded={isActive}
@@ -1556,6 +1791,8 @@ function NextgenDesktopNavTrigger({ id, className, children, ...props }: Nextgen
         button:not([aria-expanded="true"]):hover {
           background-color: var(--hover-bg);
           color: var(--hover-color);
+          transition-property: background-color, color, border-color, transform;
+          transition-duration: ${backgroundDuration}, ${colorDuration}, ${borderDuration}, ${transformDuration};
         }
         button:not([aria-expanded="true"]):focus-visible {
           background-color: var(--focus-bg);
@@ -1563,6 +1800,8 @@ function NextgenDesktopNavTrigger({ id, className, children, ...props }: Nextgen
           outline: none;
           ring: 2px;
           ring-offset: 2px;
+          transition-property: background-color, color, border-color, transform;
+          transition-duration: ${backgroundDuration}, ${colorDuration}, ${borderDuration}, ${transformDuration};
         }
       `}</style>
     </button>
@@ -1620,6 +1859,13 @@ function NextgenDesktopNavContent({ id, className, children, ...props }: Nextgen
   const animDuration = dropdownStyle.animation?.duration || '200ms';
   const animEasing = dropdownStyle.animation?.easing || 'ease-in-out';
   
+  // Get animation durations for each property
+  const backgroundDuration = dropdownStyle.animation?.properties?.background || animDuration;
+  const colorDuration = dropdownStyle.animation?.properties?.color || animDuration;
+  const borderDuration = dropdownStyle.animation?.properties?.border || animDuration;
+  const transformDuration = dropdownStyle.animation?.properties?.transform || animDuration;
+  const opacityDuration = dropdownStyle.animation?.properties?.opacity || animDuration;
+  
   // Force style updates whenever relevant props change
   React.useEffect(() => {
     if (!containerRef.current) return;
@@ -1653,7 +1899,27 @@ function NextgenDesktopNavContent({ id, className, children, ...props }: Nextgen
     container.style.setProperty('--dropdown-border-hover', borderHoverColor);
     container.style.setProperty('--dropdown-border-active', borderActiveColor);
     
-  }, [dropdownBackground, dropdownTextColor, dropdownHoverTextColor, dropdownBorderColor, isActive, theme, mode]);
+    // Set transition durations as CSS variables
+    container.style.setProperty('--transition-background', backgroundDuration);
+    container.style.setProperty('--transition-color', colorDuration);
+    container.style.setProperty('--transition-border', borderDuration);
+    container.style.setProperty('--transition-transform', transformDuration);
+    container.style.setProperty('--transition-opacity', opacityDuration);
+    
+  }, [
+    dropdownBackground, 
+    dropdownTextColor, 
+    dropdownHoverTextColor, 
+    dropdownBorderColor, 
+    isActive, 
+    theme, 
+    mode,
+    backgroundDuration,
+    colorDuration,
+    borderDuration,
+    transformDuration,
+    opacityDuration
+  ]);
   
   return (
     <div
@@ -1681,9 +1947,12 @@ function NextgenDesktopNavContent({ id, className, children, ...props }: Nextgen
         backgroundColor: dropdownBackground,
         color: dropdownTextColor,
         borderColor: dropdownBorderColor,
-        transitionDuration: animDuration,
+        // Apply property-specific transition durations
+        transitionProperty: "transform, opacity, background-color, color, border-color",
+        transitionDuration: `${transformDuration}, ${opacityDuration}, ${backgroundDuration}, ${colorDuration}, ${borderDuration}`,
         transitionTimingFunction: animEasing,
         willChange: 'transform, opacity',
+        // CSS variables for use in child elements
         '--dropdown-text': dropdownTextColor,
         '--dropdown-hover-text': dropdownHoverTextColor,
         '--dropdown-border': dropdownBorderColor,
@@ -1693,6 +1962,12 @@ function NextgenDesktopNavContent({ id, className, children, ...props }: Nextgen
         '--dropdown-border-active': mode === 'dark'
           ? theme.light.dropdown.border.color.active
           : theme.dark.dropdown.border.color.active,
+        // Transition duration variables
+        '--transition-background': backgroundDuration,
+        '--transition-color': colorDuration,
+        '--transition-border': borderDuration,
+        '--transition-transform': transformDuration,
+        '--transition-opacity': opacityDuration,
       } as React.CSSProperties}
       role="menu"
       aria-orientation="vertical"
@@ -1756,15 +2031,34 @@ function NextgenDesktopNavDropdownItem({
     ? theme.light.dropdown
     : theme.dark.dropdown;
   
+  // Get item-specific styles
+  const itemStyle = dropdownStyle.items || {
+    background: dropdownStyle.background,
+    border: dropdownStyle.border
+  };
+  
+  // Get animation durations
+  const defaultDuration = dropdownStyle.animation?.duration || "200ms";
+  
+  // Get animation durations for each property
+  const backgroundDuration = dropdownStyle.animation?.properties?.background || defaultDuration;
+  const colorDuration = dropdownStyle.animation?.properties?.color || defaultDuration;
+  const borderDuration = dropdownStyle.animation?.properties?.border || defaultDuration;
+  const transformDuration = dropdownStyle.animation?.properties?.transform || defaultDuration;
+  const opacityDuration = dropdownStyle.animation?.properties?.opacity || defaultDuration;
+  
+  // Animation easing
+  const animEasing = dropdownStyle.animation?.easing || 'ease-in-out';
+  
   // Convert color values to Tailwind-compatible format for hover
   const getHoverBgClass = () => {
     // If it's a variable or transparent, use inline style instead
-    if (dropdownStyle.background.hover.includes('var(') || 
-        dropdownStyle.background.hover.includes('transparent') ||
-        dropdownStyle.background.hover.includes('rgba')) {
+    if (itemStyle.background.hover.includes('var(') || 
+        itemStyle.background.hover.includes('transparent') ||
+        itemStyle.background.hover.includes('rgba')) {
       return '';
     }
-    return `hover:bg-[${dropdownStyle.background.hover}]`;
+    return `hover:bg-[${itemStyle.background.hover}]`;
   }
   
   const getHoverTextClass = () => {
@@ -1778,13 +2072,13 @@ function NextgenDesktopNavDropdownItem({
   // Convert color values to Tailwind-compatible format for active
   const getActiveBgClass = () => {
     // If it's a variable or transparent, use inline style instead
-    if (!dropdownStyle.background.active || 
-        dropdownStyle.background.active.includes('var(') || 
-        dropdownStyle.background.active.includes('transparent') ||
-        dropdownStyle.background.active.includes('rgba')) {
+    if (!itemStyle.background.active || 
+        itemStyle.background.active.includes('var(') || 
+        itemStyle.background.active.includes('transparent') ||
+        itemStyle.background.active.includes('rgba')) {
       return '';
     }
-    return `active:bg-[${dropdownStyle.background.active}]`;
+    return `active:bg-[${itemStyle.background.active}]`;
   }
   
   const getActiveTextClass = () => {
@@ -1860,42 +2154,50 @@ function NextgenDesktopNavDropdownItem({
   
   const sharedStyles = {
     animationDelay: getAnimationDelay(),
+    '--hover-bg': itemStyle.background.hover,
+    '--hover-color': dropdownStyle.text.color.hover,
+    '--active-bg': itemStyle.background.active,
+    '--active-color': dropdownStyle.text.color.active,
+    // Apply property-specific transition durations
+    transitionProperty: "background-color, color, border-color, transform, opacity",
+    transitionDuration: `${backgroundDuration}, ${colorDuration}, ${borderDuration}, ${transformDuration}, ${opacityDuration}`,
+    transitionTimingFunction: animEasing,
   } as React.CSSProperties;
   
   // Add hover styles as inline styles if they can't be expressed as Tailwind classes
   if (hoverBgClass === '' || hoverTextClass === '') {
-    sharedStyles['--hover-bg'] = dropdownStyle.background.hover;
+    sharedStyles['--hover-bg'] = itemStyle.background.hover;
     sharedStyles['--hover-color'] = dropdownStyle.text.color.hover;
   }
   
   // Add active styles as inline styles if they can't be expressed as Tailwind classes
   if (activeBgClass === '' || activeTextClass === '' || isPressed) {
-    sharedStyles['--active-bg'] = dropdownStyle.background.active;
+    sharedStyles['--active-bg'] = itemStyle.background.active;
     sharedStyles['--active-color'] = dropdownStyle.text.color.active;
   }
   
   const sharedClassNames = cn(
     "block rounded px-3.5 py-3 overflow-hidden relative normal-case",
-        "transition-all duration-200 ease-out",
+    "transition-all duration-200 ease-out",
     "animate-[fadeIn_0.2s_ease-in-out_forwards]",
     hoverBgClass,
     hoverTextClass,
     activeBgClass,
     activeTextClass,
     hoverClasses,
-        className
+    className
   );
   
   const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Always apply hover styles on mouseenter, regardless of pressed state
     if (hoverBgClass === '') {
-      e.currentTarget.style.backgroundColor = dropdownStyle.background.hover;
+      e.currentTarget.style.backgroundColor = itemStyle.background.hover;
     }
     
     // Apply hover border styles using CSS variables for reliability
     e.currentTarget.style.borderColor = 'var(--dropdown-border-hover)';
-    if (dropdownStyle.border?.width?.hover) {
-      e.currentTarget.style.borderWidth = dropdownStyle.border.width.hover;
+    if (itemStyle.border?.width?.hover) {
+      e.currentTarget.style.borderWidth = itemStyle.border.width.hover;
     }
     
     // Use CSS variable for color to ensure it gets the latest value
@@ -1908,13 +2210,13 @@ function NextgenDesktopNavDropdownItem({
   const handleMouseLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (isPressed) {
       if (activeBgClass === '') {
-        e.currentTarget.style.backgroundColor = dropdownStyle.background.active || '';
+        e.currentTarget.style.backgroundColor = itemStyle.background.active || '';
       }
       
       // Apply active border styles using CSS variables
       e.currentTarget.style.borderColor = 'var(--dropdown-border-active)';
-      if (dropdownStyle.border?.width?.active) {
-        e.currentTarget.style.borderWidth = dropdownStyle.border.width.active;
+      if (itemStyle.border?.width?.active) {
+        e.currentTarget.style.borderWidth = itemStyle.border.width.active;
       }
       
       // Use CSS variable for active color
@@ -1922,13 +2224,13 @@ function NextgenDesktopNavDropdownItem({
     } else {
       // Reset to default when not pressed
       if (hoverBgClass === '') {
-        e.currentTarget.style.backgroundColor = dropdownStyle.background.default;
+        e.currentTarget.style.backgroundColor = itemStyle.background.default;
       }
       
       // Reset border to default using CSS variables
       e.currentTarget.style.borderColor = 'var(--dropdown-border)';
-      if (dropdownStyle.border?.width?.default) {
-        e.currentTarget.style.borderWidth = dropdownStyle.border.width.default;
+      if (itemStyle.border?.width?.default) {
+        e.currentTarget.style.borderWidth = itemStyle.border.width.default;
       }
       
       // Use CSS variable for default color
@@ -1941,7 +2243,7 @@ function NextgenDesktopNavDropdownItem({
   const handleMouseDown = (e: React.MouseEvent<HTMLAnchorElement>) => {
     setIsPressed(true);
     if (activeBgClass === '') {
-      e.currentTarget.style.backgroundColor = dropdownStyle.background.active || '';
+      e.currentTarget.style.backgroundColor = itemStyle.background.active || '';
     }
     if (activeTextClass === '') {
       e.currentTarget.style.color = dropdownStyle.text.color.active || '';
@@ -1949,8 +2251,8 @@ function NextgenDesktopNavDropdownItem({
     
     // Apply active border styles using CSS variables
     e.currentTarget.style.borderColor = 'var(--dropdown-border-active)';
-    if (dropdownStyle.border?.width?.active) {
-      e.currentTarget.style.borderWidth = dropdownStyle.border.width.active;
+    if (itemStyle.border?.width?.active) {
+      e.currentTarget.style.borderWidth = itemStyle.border.width.active;
     }
     
     // Call the original onMouseDown if it exists
@@ -1968,8 +2270,8 @@ function NextgenDesktopNavDropdownItem({
     
     // Reset border to hover state since we're still hovering, using CSS variables
     e.currentTarget.style.borderColor = 'var(--dropdown-border-hover)';
-    if (dropdownStyle.border?.width?.hover) {
-      e.currentTarget.style.borderWidth = dropdownStyle.border.width.hover;
+    if (itemStyle.border?.width?.hover) {
+      e.currentTarget.style.borderWidth = itemStyle.border.width.hover;
     }
     
     // Call the original onMouseUp if it exists
