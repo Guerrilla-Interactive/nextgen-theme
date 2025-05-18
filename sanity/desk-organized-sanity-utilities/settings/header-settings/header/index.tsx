@@ -1,6 +1,6 @@
 "use client"
 
-import {  useEffect, useLayoutEffect, useRef, useState } from "react";
+import {  useRef, useState } from "react";
 import Link from "next/link";
 
 import DesktopNav from "./desktop-nav";

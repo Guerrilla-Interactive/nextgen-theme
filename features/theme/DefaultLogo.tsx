@@ -8,7 +8,7 @@ type TargetKeyframe = number | "first" | "last";
 
 
 /**
- * Props for the VeitrygghetLogo component.
+ * Props for the DefaultLogo component.
  */
 interface DefaultLogoProps {
   className?: string;
@@ -22,9 +22,9 @@ interface DefaultLogoProps {
    *
    * @default "first"
    * @example
-   * <VeitrygghetLogo activeKeyframe="first" />
-   * <VeitrygghetLogo duration={100} activeKeyframe={darkMode ? "first" : "last"} />
-   * <VeitrygghetLogo activeKeyframe={0} />
+   * <DefaultLogo activeKeyframe="first" />
+   * <DefaultLogo duration={100} activeKeyframe={darkMode ? "first" : "last"} />
+   * <DefaultLogo activeKeyframe={0} />
    */
   activeKeyframe?: TargetKeyframe;
   loop?: boolean;
@@ -32,7 +32,7 @@ interface DefaultLogoProps {
    * The duration of the animation.
    * @default 1000
    * @example
-   * <VeitrygghetLogo duration={100} activeKeyframe={darkMode ? "first" : "last"} />
+   * <DefaultLogo duration={100} activeKeyframe={darkMode ? "first" : "last"} />
    */
   duration?: number;
   ease?: EasingOptions;
