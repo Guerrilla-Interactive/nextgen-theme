@@ -1,9 +1,4 @@
 /**
- * Types for NextGen Desktop Navigation
- */
-import * as React from "react"
-
-/**
  * Theme configuration types
  */
 export type ThemeMode = 'light' | 'dark'
@@ -217,6 +212,31 @@ export interface AnimationProperties {
 }
 
 /**
+ * Base style properties for the navigation system
+ */
+export interface BaseThemeProps {
+  /** 
+   * Background colors for different states 
+   * @examples
+   * Works:
+   * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.05)', 'transparent'
+   * - CSS variables: 'var(--bg-primary)'
+   * 
+   * Doesn't work:
+   * - Tailwind classes: 'bg-white', 'bg-opacity-5'
+   */
+  background: StateProperties<string>
+  /** Typography properties */
+  text: TypographyProperties
+  /** Border properties */
+  border?: BorderProperties
+  /** Spacing properties */
+  spacing?: SpacingProperties
+  /** Dropdown styling */
+  dropdown: DropdownThemeProps
+}
+
+/**
  * Dropdown indicator properties
  */
 export interface DropdownIndicatorProperties {
@@ -322,31 +342,6 @@ export interface DropdownLayoutProperties {
    * - CSS values: '0 4px 6px rgba(0,0,0,0.1)'
    */
   shadow: string
-}
-
-/**
- * Base style properties for the navigation system
- */
-export interface BaseThemeProps {
-  /** 
-   * Background colors for different states 
-   * @examples
-   * Works:
-   * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.05)', 'transparent'
-   * - CSS variables: 'var(--bg-primary)'
-   * 
-   * Doesn't work:
-   * - Tailwind classes: 'bg-white', 'bg-opacity-5'
-   */
-  background: StateProperties<string>
-  /** Typography properties */
-  text: TypographyProperties
-  /** Border properties */
-  border?: BorderProperties
-  /** Spacing properties */
-  spacing?: SpacingProperties
-  /** Dropdown styling */
-  dropdown: DropdownThemeProps
 }
 
 /**
@@ -496,297 +491,299 @@ export interface NavThemeConfig {
  * User-configurable text properties
  */
 export interface TextStyleProps {
-  /** 
-   * Color override for different states 
-   * @examples
-   * Works:
-   * - Tailwind colors: 'text-white', 'text-gray-800'
-   * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.8)'
-   * - CSS variables: 'var(--color-primary)'
-   * 
-   * Doesn't work:
-   * - Without prefix: 'white', 'blue'
-   * - With just hex: 'ffffff' (missing # prefix)
-   */
-  color?: Partial<StateProperties<string>>
-  /** 
-   * Font weight override for different states 
-   * @examples
-   * Works:
-   * - Tailwind only: 'font-normal', 'font-medium', 'font-bold'
-   * 
-   * Doesn't work:
-   * - CSS values: '400', '700'
-   * - Direct values: 'normal', 'bold'
-   */
-  weight?: Partial<StateProperties<string>>
-  /** 
-   * Text transform override for different states 
-   * @examples
-   * Works:
-   * - Tailwind only: 'uppercase', 'lowercase', 'capitalize', 'normal-case'
-   * 
-   * Doesn't work:
-   * - CSS values: 'uppercase', 'lowercase' (without Tailwind prefix)
-   */
-  transform?: Partial<StateProperties<string>>
-  /** 
-   * Font size override 
-   * @examples
-   * Works:
-   * - Tailwind only: 'text-sm', 'text-base', 'text-lg'
-   * 
-   * Doesn't work:
-   * - CSS values: '14px', '1rem'
-   */
-  size?: string
-}
-
-/**
- * User-configurable border properties
- */
-export interface BorderStyleProps {
-  /** 
-   * Border color override for different states 
-   * @examples
-   * Works:
-   * - Tailwind with opacity: 'rgba(255, 255, 255, 0.2)'
-   * - CSS hex: '#ffffff', '#ffffff20'
-   * - CSS variables: 'var(--border-color)'
-   * 
-   * Doesn't work:
-   * - Tailwind color classes: 'border-gray-200' (use raw color values)
-   */
-  color?: Partial<StateProperties<string>>
-  /** 
-   * Border width override for different states 
-   * @examples
-   * Works:
-   * - Tailwind only: 'border', 'border-2', 'border-0'
-   * 
-   * Doesn't work:
-   * - CSS values: '1px', '2px'
-   */
-  width?: Partial<StateProperties<string>>
-  /** 
-   * Border radius override 
-   * @examples
-   * Works:
-   * - Tailwind only: 'rounded', 'rounded-md', 'rounded-none', 'rounded-full'
-   * 
-   * Doesn't work:
-   * - CSS values: '4px', '0.5rem'
-   */
-  radius?: string
-}
-
-/**
- * User-configurable properties for the navigation
- */
-export interface NavStyleProps {
-  /** Override light mode styles */
-  light?: {
     /** 
-     * Background colors override 
+     * Color override for different states 
      * @examples
      * Works:
-     * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.05)', 'transparent'
-     * - CSS variables: 'var(--bg-primary)'
+     * - Tailwind colors: 'text-white', 'text-gray-800'
+     * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.8)'
+     * - CSS variables: 'var(--color-primary)'
      * 
      * Doesn't work:
-     * - Tailwind classes: 'bg-white', 'bg-opacity-5'
+     * - Without prefix: 'white', 'blue'
+     * - With just hex: 'ffffff' (missing # prefix)
      */
-    background?: Partial<StateProperties<string>>
-    /** Text properties override */
-    text?: TextStyleProps
-    /** Border properties override */
-    border?: BorderStyleProps
-    /** Spacing properties override */
-    spacing?: Partial<SpacingProperties>
-  }
-  
-  /** Override dark mode styles */
-  dark?: {
+    color?: Partial<StateProperties<string>>
     /** 
-     * Background colors override 
+     * Font weight override for different states 
      * @examples
      * Works:
-     * - CSS colors: '#ffffff', 'rgba(0, 0, 0, 0.05)', 'transparent'
-     * - CSS variables: 'var(--bg-primary)'
+     * - Tailwind only: 'font-normal', 'font-medium', 'font-bold'
      * 
      * Doesn't work:
-     * - Tailwind classes: 'bg-white', 'bg-opacity-5'
+     * - CSS values: '400', '700'
+     * - Direct values: 'normal', 'bold'
      */
-    background?: Partial<StateProperties<string>>
-    /** Text properties override */
-    text?: TextStyleProps
-    /** Border properties override */
-    border?: BorderStyleProps
-    /** Spacing properties override */
-    spacing?: Partial<SpacingProperties>
+    weight?: Partial<StateProperties<string>>
+    /** 
+     * Text transform override for different states 
+     * @examples
+     * Works:
+     * - Tailwind only: 'uppercase', 'lowercase', 'capitalize', 'normal-case'
+     * 
+     * Doesn't work:
+     * - CSS values: 'uppercase', 'lowercase' (without Tailwind prefix)
+     */
+    transform?: Partial<StateProperties<string>>
+    /** 
+     * Font size override 
+     * @examples
+     * Works:
+     * - Tailwind only: 'text-sm', 'text-base', 'text-lg'
+     * 
+     * Doesn't work:
+     * - CSS values: '14px', '1rem'
+     */
+    size?: string
   }
   
-  /** Override light mode dropdown styles */
-  lightDropdown?: {
-    /** Background colors override */
-    background?: Partial<StateProperties<string>>
-    /** Text properties override */
-    text?: TextStyleProps
-    /** Border properties override */
-    border?: BorderStyleProps
-    /** Spacing properties override */
-    spacing?: Partial<SpacingProperties>
-    /** Animation properties override */
-    animation?: Partial<AnimationProperties>
-    /** Layout properties override */
-    layout?: Partial<DropdownLayoutProperties>
-    /** Indicator properties override */
-    indicators?: Partial<DropdownIndicatorProperties>
-    /** Description color override */
-    descriptionColor?: string
-    /** Override dropdown item styles */
-    items?: {
-      /** Background colors for dropdown items */
-      background?: Partial<StateProperties<string>>
-      /** Border properties for dropdown items */
-      border?: BorderStyleProps
-    }
-  }
-  
-  /** Override dark mode dropdown styles */
-  darkDropdown?: {
-    /** Background colors override */
-    background?: Partial<StateProperties<string>>
-    /** Text properties override */
-    text?: TextStyleProps
-    /** Border properties override */
-    border?: BorderStyleProps
-    /** Spacing properties override */
-    spacing?: Partial<SpacingProperties>
-    /** Animation properties override */
-    animation?: Partial<AnimationProperties>
-    /** Layout properties override */
-    layout?: Partial<DropdownLayoutProperties>
-    /** Indicator properties override */
-    indicators?: Partial<DropdownIndicatorProperties>
-    /** Description color override */
-    descriptionColor?: string
-    /** Override dropdown item styles */
-    items?: {
-      /** Background colors for dropdown items */
-      background?: Partial<StateProperties<string>>
-      /** Border properties for dropdown items */
-      border?: BorderStyleProps
-    }
-  }
-  
-  /** 
-   * Override layout properties 
-   * @examples
-   * fontSize: 'text-sm'
-   * gap: 'gap-6'
-   * height: 'h-16'
-   * maxWidth: 'max-w-screen-xl'
-   * position: 'relative'
-   * zIndex: 50
+  /**
+   * User-configurable border properties
    */
-  layout?: Partial<LayoutProperties>
+  export interface BorderStyleProps {
+    /** 
+     * Border color override for different states 
+     * @examples
+     * Works:
+     * - Tailwind with opacity: 'rgba(255, 255, 255, 0.2)'
+     * - CSS hex: '#ffffff', '#ffffff20'
+     * - CSS variables: 'var(--border-color)'
+     * 
+     * Doesn't work:
+     * - Tailwind color classes: 'border-gray-200' (use raw color values)
+     */
+    color?: Partial<StateProperties<string>>
+    /** 
+     * Border width override for different states 
+     * @examples
+     * Works:
+     * - Tailwind only: 'border', 'border-2', 'border-0'
+     * 
+     * Doesn't work:
+     * - CSS values: '1px', '2px'
+     */
+    width?: Partial<StateProperties<string>>
+    /** 
+     * Border radius override 
+     * @examples
+     * Works:
+     * - Tailwind only: 'rounded', 'rounded-md', 'rounded-none', 'rounded-full'
+     * 
+     * Doesn't work:
+     * - CSS values: '4px', '0.5rem'
+     */
+    radius?: string
+  }
   
-  /** 
-   * Override animation properties 
-   * @examples
-   * type: 'fade'
-   * duration: '200ms'
-   * easing: 'ease-in-out'
-   * properties: {
-   *   background: '600ms',
-   *   color: '400ms', 
-   *   border: '300ms'
-   * }
+  /**
+   * User-configurable properties for the navigation
    */
-  animation?: Partial<AnimationProperties>
-}
-
+  export interface NavStyleProps {
+    /** Override light mode styles */
+    light?: {
+      /** 
+       * Background colors override 
+       * @examples
+       * Works:
+       * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.05)', 'transparent'
+       * - CSS variables: 'var(--bg-primary)'
+       * 
+       * Doesn't work:
+       * - Tailwind classes: 'bg-white', 'bg-opacity-5'
+       */
+      background?: Partial<StateProperties<string>>
+      /** Text properties override */
+      text?: TextStyleProps
+      /** Border properties override */
+      border?: BorderStyleProps
+      /** Spacing properties override */
+      spacing?: Partial<SpacingProperties>
+    }
+    
+    /** Override dark mode styles */
+    dark?: {
+      /** 
+       * Background colors override 
+       * @examples
+       * Works:
+       * - CSS colors: '#ffffff', 'rgba(0, 0, 0, 0.05)', 'transparent'
+       * - CSS variables: 'var(--bg-primary)'
+       * 
+       * Doesn't work:
+       * - Tailwind classes: 'bg-white', 'bg-opacity-5'
+       */
+      background?: Partial<StateProperties<string>>
+      /** Text properties override */
+      text?: TextStyleProps
+      /** Border properties override */
+      border?: BorderStyleProps
+      /** Spacing properties override */
+      spacing?: Partial<SpacingProperties>
+    }
+    
+    /** Override light mode dropdown styles */
+    lightDropdown?: {
+      /** Background colors override */
+      background?: Partial<StateProperties<string>>
+      /** Text properties override */
+      text?: TextStyleProps
+      /** Border properties override */
+      border?: BorderStyleProps
+      /** Spacing properties override */
+      spacing?: Partial<SpacingProperties>
+      /** Animation properties override */
+      animation?: Partial<AnimationProperties>
+      /** Layout properties override */
+      layout?: Partial<DropdownLayoutProperties>
+      /** Indicator properties override */
+      indicators?: Partial<DropdownIndicatorProperties>
+      /** Description color override */
+      descriptionColor?: string
+      /** Override dropdown item styles */
+      items?: {
+        /** Background colors for dropdown items */
+        background?: Partial<StateProperties<string>>
+        /** Border properties for dropdown items */
+        border?: BorderStyleProps
+      }
+    }
+    
+    /** Override dark mode dropdown styles */
+    darkDropdown?: {
+      /** Background colors override */
+      background?: Partial<StateProperties<string>>
+      /** Text properties override */
+      text?: TextStyleProps
+      /** Border properties override */
+      border?: BorderStyleProps
+      /** Spacing properties override */
+      spacing?: Partial<SpacingProperties>
+      /** Animation properties override */
+      animation?: Partial<AnimationProperties>
+      /** Layout properties override */
+      layout?: Partial<DropdownLayoutProperties>
+      /** Indicator properties override */
+      indicators?: Partial<DropdownIndicatorProperties>
+      /** Description color override */
+      descriptionColor?: string
+      /** Override dropdown item styles */
+      items?: {
+        /** Background colors for dropdown items */
+        background?: Partial<StateProperties<string>>
+        /** Border properties for dropdown items */
+        border?: BorderStyleProps
+      }
+    }
+    
+    /** 
+     * Override layout properties 
+     * @examples
+     * fontSize: 'text-sm'
+     * gap: 'gap-6'
+     * height: 'h-16'
+     * maxWidth: 'max-w-screen-xl'
+     * position: 'relative'
+     * zIndex: 50
+     */
+    layout?: Partial<LayoutProperties>
+    
+    /** 
+     * Override animation properties 
+     * @examples
+     * type: 'fade'
+     * duration: '200ms'
+     * easing: 'ease-in-out'
+     * properties: {
+     *   background: '600ms',
+     *   color: '400ms', 
+     *   border: '300ms'
+     * }
+     */
+    animation?: Partial<AnimationProperties>
+  }
+  
 /**
- * Root container for the navigation props
- */
-export interface NextgenDesktopNavProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Whether to use dark mode styling */
-  isTopDark?: boolean
-  /** Children elements */
-  children: React.ReactNode
-  /** Style customization properties */
-  styleProps?: NavStyleProps
-}
-
-/**
- * Container for a nav item and its dropdown props
- */
-export interface NextgenDesktopNavItemProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Unique ID for this item */
-  id: string
-  /** Children elements */
-  children: React.ReactNode
-}
-
-/**
- * Regular navigation link (not a dropdown) props
+ * Regular navigation link (not a dropdown)
  */
 export interface NextgenDesktopNavLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  /** Whether this is an external link */
-  external?: boolean
-  /** Children elements */
-  children: React.ReactNode
-  /** Optional href */
-  href?: string
-}
+    /** Whether this is an external link */
+    external?: boolean
+    /** Children elements */
+    children: React.ReactNode
+    /** Optional href */
+    href?: string
+  }
 
 /**
- * Button that toggles dropdown visibility props
- */
-export interface NextgenDesktopNavTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /** ID for the dropdown this button controls */
-  id: string
-  /** Children elements */
-  children: React.ReactNode
-}
-
-/**
- * Dropdown content container props
- */
-export interface NextgenDesktopNavContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** ID matching the trigger ID */
-  id: string
-  /** Children elements */
-  children: React.ReactNode
-}
-
-/**
- * Navigation dropdown item props
- */
-export interface NextgenDesktopNavDropdownItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  /** Whether this is an external link */
-  external?: boolean
-  /** Optional description text */
-  description?: string
-  /** Item position for animation timing and keyboard navigation */
-  index?: number
-  /** Children elements */
-  children: React.ReactNode
-  /** Optional href */
-  href?: string
-}
-
-/**
- * Navigation Context type
+ * Navigation Context
  */
 export interface NavContextValue {
-  /** Currently active dropdown ID */
-  activeId: string | null
-  /** Set active dropdown ID */
-  setActiveId: React.Dispatch<React.SetStateAction<string | null>>
-  /** Theme configuration */
-  theme: NavThemeConfig
-  /** Current theme mode */
-  mode: ThemeMode
-} 
+    /** Currently active dropdown ID */
+    activeId: string | null
+    /** Set active dropdown ID */
+    setActiveId: React.Dispatch<React.SetStateAction<string | null>>
+    /** Theme configuration */
+    theme: NavThemeConfig
+    /** Current theme mode */
+    mode: ThemeMode
+  }
+  
+/**
+ * Root container for the navigation
+ */
+export interface NextgenDesktopNavProps extends React.HTMLAttributes<HTMLDivElement> {
+    /** Whether to use dark mode styling */
+    isTopDark?: boolean
+    /** Children elements */
+    children: React.ReactNode
+    /** Style customization properties */
+    styleProps?: NavStyleProps
+    /** Content alignment (justify-between, justify-center, etc.) */
+    justifyContent?: string
+  }
+
+/**
+ * Container for a nav item and its dropdown
+ */
+export interface NextgenDesktopNavItemProps extends React.HTMLAttributes<HTMLDivElement> {
+    /** Unique ID for this item */
+    id: string
+    /** Children elements */
+    children: React.ReactNode
+  }
+
+/**
+ * Button that toggles dropdown visibility
+ */
+export interface NextgenDesktopNavTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    /** ID for the dropdown this button controls */
+    id: string
+    /** Children elements */
+    children: React.ReactNode
+  }
+
+/**
+ * Dropdown content container
+ */
+export interface NextgenDesktopNavContentProps extends React.HTMLAttributes<HTMLDivElement> {
+    /** ID matching the trigger ID */
+    id: string
+    /** Children elements */
+    children: React.ReactNode
+  }
+  
+/**
+ * Navigation dropdown item
+ */
+export interface NextgenDesktopNavDropdownItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+    /** Whether this is an external link */
+    external?: boolean
+    /** Optional description text */
+    description?: string
+    /** Item position for animation timing and keyboard navigation */
+    index?: number
+    /** Children elements */
+    children: React.ReactNode
+    /** Optional href */
+    href?: string
+  }

@@ -18,6 +18,12 @@ export const downloadLinkObjectField = defineField({
       },
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "icon",
+      title: "Icon",
+      type: "icon",
+      description: "Icon to display with this link",
+    }),
   ],
   options: {
     collapsible: false,
@@ -28,5 +34,17 @@ export const downloadLinkObjectField = defineField({
   },
   components: {
     annotation: LinkRenderer,
+  },
+  preview: {
+    select: {
+      fileName: "file.asset.originalFilename",
+      icon: "icon",
+    },
+    prepare({ fileName, icon }) {
+      return {
+        title: fileName || "Nedlastingslink",
+        media: icon || Download,
+      };
+    },
   },
 });

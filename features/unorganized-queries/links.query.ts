@@ -13,7 +13,9 @@ const internalLinkQuery = groq`
     "slug": slug.current,
     _type
   }),
-  description
+  description,
+  icon,
+  hideOnMobile
 `;
 // @sanity-typegen-ignore
 const externalLinkQuery = groq`
@@ -24,7 +26,9 @@ const externalLinkQuery = groq`
     href
   ),
   "url": href,
-  description
+  description,
+  icon,
+  hideOnMobile
 `;
 
 // @sanity-typegen-ignore
@@ -36,7 +40,24 @@ const downloadLinkQuery = groq`
       file.asset->originalFilename
     ),
   "url": file.asset->url,
-  description
+  description,
+  icon,
+  hideOnMobile
+`;
+
+// @sanity-typegen-ignore
+const dropdownGroupQuery = groq`
+  "_ts": "DropdownGroupQuery",
+  "linkType": "dropdownGroup",
+  title,
+  icon,
+  hideOnMobile,
+  links[] {
+    _key,
+    _type == "internalLinkObject" => {${internalLinkQuery}},
+    _type == "link" => {${externalLinkQuery}},
+    _type == "downloadLinkObject" => {${downloadLinkQuery}}
+  }
 `;
 
 // @sanity-typegen-ignore
@@ -44,10 +65,14 @@ const linkGroupQuery = groq`
   "_ts": "LinkGroupQuery",
   "linkType": "linkGroup",
   title,
-  links[] {
+  icon,
+  hideOnMobile,
+  items[] {
     _key,
     _type == "internalLinkObject" => {${internalLinkQuery}},
-    _type == "link" => {${externalLinkQuery}}
+    _type == "link" => {${externalLinkQuery}},
+    _type == "downloadLinkObject" => {${downloadLinkQuery}},
+    _type == "dropdownGroup" => {${dropdownGroupQuery}}
   }
 `;
 
@@ -58,8 +83,8 @@ export const linksQuery = groq`
   _type == "internalLinkObject" => {${internalLinkQuery}},
   _type == "link" => {${externalLinkQuery}},
   _type == "downloadLinkObject" => {${downloadLinkQuery}},
+  _type == "dropdownGroup" => {${dropdownGroupQuery}},
   _type == "linkGroup" => {${linkGroupQuery}}
-  
 `;
 
 export type InternalLinkProps = {
@@ -69,6 +94,8 @@ export type InternalLinkProps = {
   _type: any;
   slug?: string | null;
   description?: string | null;
+  icon?: { name: string } | null;
+  hideOnMobile?: boolean;
 };
 
 export type ExternalLinkProps = {
@@ -77,6 +104,8 @@ export type ExternalLinkProps = {
   title?: string | null;
   url: string;
   description?: string | null;
+  icon?: { name: string } | null;
+  hideOnMobile?: boolean;
 };
 
 export type DownloadLinkProps = {
@@ -85,13 +114,26 @@ export type DownloadLinkProps = {
   title?: string | null;
   url: string | null;
   description?: string | null;
+  icon?: { name: string } | null;
+  hideOnMobile?: boolean;
+};
+
+export type DropdownGroupProps = {
+  _key?: string;
+  linkType: "dropdownGroup";
+  title?: string | null;
+  links: Array<InternalLinkProps | ExternalLinkProps | DownloadLinkProps>;
+  icon?: { name: string } | null;
+  hideOnMobile?: boolean;
 };
 
 export type LinkGroupProps = {
   _key?: string;
   linkType: "linkGroup";
   title?: string | null;
-  links: Array<InternalLinkProps | ExternalLinkProps>;
+  items: Array<InternalLinkProps | ExternalLinkProps | DownloadLinkProps | DropdownGroupProps>;
+  icon?: { name: string } | null;
+  hideOnMobile?: boolean;
 };
 
 export type AnchorLinkProps = {
@@ -99,11 +141,14 @@ export type AnchorLinkProps = {
   linkType: "anchor";
   id: string;
   title?: string | null;
+  icon?: { name: string } | null;
+  hideOnMobile?: boolean;
 };
 
 export type LinkProps =
   | InternalLinkProps
   | ExternalLinkProps
   | DownloadLinkProps
+  | DropdownGroupProps
   | LinkGroupProps
   | AnchorLinkProps;

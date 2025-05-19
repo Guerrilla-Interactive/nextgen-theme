@@ -5,7 +5,7 @@
 // Contact info.
 
 import { getSanityPageBuilderBlocks } from "@/features/page-builder-blocks/block-indexer";
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, defineArrayMember } from "sanity";
 import { PanelTop } from "lucide-react";
 // Social media links.
 import { linksField } from "@/sanity/type-organized-schemas/generator-fields/links.field";
@@ -28,77 +28,169 @@ export const headerSettingsSchema = defineType({
       
     }),
 
-    //  object with icon and email
+    // Enable Top Bar Toggle
     defineField({
-      name: "email",
-      title: "Email",
+      name: "enableTopBar",
+      title: "Enable Top Bar",
+      type: "boolean",
+      initialValue: false,
+      description: "Toggle to show or hide the top bar section.",
+    }),
+
+    // Top Bar with Left and Right Columns
+    defineField({
+      name: "topBar",
+      title: "Top Bar Configuration",
       type: "object",
-      options: {
-        columns: 2,
-      },
+      
+    
+      hidden: ({ document }) => !document?.enableTopBar,
       fields: [
         defineField({
-          name: "icon",
-          title: "Icon",
-          type: "icon",
-        }),
-        defineField({
-          name: "email",
-          title: "Email",
+          name: "justifyContent",
+          title: "Global Alignment",
           type: "string",
+          options: {
+            list: [
+              { title: "Space Between", value: "justify-between" },
+              { title: "Space Evenly", value: "justify-evenly" },
+              { title: "Space Around", value: "justify-around" },
+              { title: "Start (Left)", value: "justify-start" },
+              { title: "Center", value: "justify-center" },
+              { title: "End (Right)", value: "justify-end" },
+            ],
+            layout: "radio",
+          },
+          initialValue: "justify-between",
+          description: "How to distribute items across the top bar"
+        }),
+        linksField({
+          name: "items",
+          title: "Top Bar Items",
+          description: "Add items to the top bar above navigation bar",
+          includeInternal: true,
+          includeExternal: true,
+          includeDownload: false,
+          includeLinkGroup: true,
+          includeDropdownGroup: false,
+          includeIcon: true,
+          includeHideOnMobile: true,
+          includeCustomTitle: false,
         }),
       ],
     }),
 
+    // SVGLoop Logo / Light and Dark Logo / Default Logo Options
 
-  //  object with icon and phone number
-  defineField({
-    name: "phoneNumber",
-    title: "Phone Number",
-    type: "object",
-    options: {
-      columns: 3,
-    },
-    fields: [
-      defineField({
-        name: "icon",
-        title: "Icon",
-        type: "icon",
-      }),
-      defineField({
-        name: "phoneNumber",
-        title: "Phone Number",
-        type: "string",
-      }),
-      defineField({
-        name: "additionalText",
-        title: "Additional Text",
-        type: "string",
-      })
+    defineField({
+      name: "logoOptions",
+      title: "Logo Options",
+      type: "object",
+
+      fields: [
+        defineField({
+          name: "logoType",
+          title: "Logo Type",   
+          type: "string",
+          options: {
+            direction: "horizontal",
+            layout: "radio",
+            list: [
+              { title: "SVGLoop", value: "svgloop" },
+              { title: "Light and Dark", value: "lightAndDark" },
+              { title: "Default", value: "default" },
+            ],
+          },
+        }),
+        
+    // SVGLoop is a single JSON object that contains the SVG path data for the logo.
+    defineField({
+      name: "svgloopLogo",
+      title: "SVGLoop Logo",
+      type: "text",
+      hidden: ({ parent }) => parent?.logoType !== "svgloop",
+      description: "This is the SVG path data for the logo.",
+    }),
+
+    defineField({
+      name: "defaultLogo",
+      title: "Default Logo",
+      type: "image",
+      hidden: ({ parent }) => parent?.logoType !== "default",
+      description: "This is the default logo.",
+    }),
+
+    // Light and Dark has option between SVG and Image
+    defineField({
+      name: "lightAndDarkLogo",
+      title: "Light and Dark",
+      type: "object",
+      hidden: ({ parent }) => parent?.logoType !== "lightAndDark",
+      fields: [
+        defineField({
+          name: "logoType",
+          title: "Logo Type",
+          type: "string",
+
+          options: {
+            layout: "radio",
+            direction: "horizontal",
+            list: [
+              { title: "SVG", value: "svg" },
+              { title: "Image", value: "image" },
+            ],
+          },
+        }),
+
+
+        defineField({
+          name: "lightLogo",
+          title: "Light Logo",
+          type: "image",
+        }),
+        defineField({
+          name: "darkLogo",
+          title: "Dark Logo",
+          type: "image",
+        }),
+      ]
+    }),
+
+
+
     ],
   }),
 
-  // light and dark logo
+
+
+  // Default is a single image that contains the default logo.
+
+
+  // Navigation configuration with global alignment
   defineField({
-    name: "logo",
-    title: "Logo",
+    name: "navigationConfig",
+    title: "Navigation Configuration",
     type: "object",
-    options: {
-      columns: 2,
-    },
     fields: [
       defineField({
-        name: "lightLogo",
-        title: "Light Logo",
-        type: "image",
+        name: "justifyContent",
+        title: "Navigation Alignment",
+        type: "string",
+        options: {
+          list: [
+            { title: "Space Between", value: "justify-between" },
+            { title: "Space Evenly", value: "justify-evenly" },
+            { title: "Space Around", value: "justify-around" },
+            { title: "Start (Left)", value: "justify-start" },
+            { title: "Center", value: "justify-center" },
+            { title: "End (Right)", value: "justify-end" },
+          ],
+          layout: "radio",
+        },
+        initialValue: "justify-between",
+        description: "How to distribute navigation items across the header"
       }),
-      defineField({
-        name: "darkLogo",
-        title: "Dark Logo",
-        
-        type: "image",
-      }),
-    ],
+    ]
   }),
 
   // navigation items - using links field for various link types

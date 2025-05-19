@@ -1,4 +1,3 @@
-
 import { LinkRenderer } from "@/sanity/sanity-studio-components/utils/link-renderer.component";
 import { Globe } from "lucide-react";
 import { defineField } from "sanity";
@@ -21,6 +20,12 @@ export const externalLinkObjectField = defineField({
         Rule.required(),
       ],
     }),
+    defineField({
+      name: "icon",
+      title: "Icon",
+      type: "icon",
+      description: "Icon to display with this link",
+    }),
   ],
   options: {
     collapsible: false,
@@ -31,5 +36,17 @@ export const externalLinkObjectField = defineField({
   },
   components: {
     annotation: LinkRenderer,
+  },
+  preview: {
+    select: {
+      href: "href",
+      icon: "icon",
+    },
+    prepare({ href, icon }) {
+      return {
+        title: href || "Ekstern link",
+        media: icon || Globe,
+      };
+    },
   },
 });

@@ -153,7 +153,7 @@
     }
   },
   {
-    "name": "sanity.fileAsset",
+    "name": "route404Settings",
     "type": "document",
     "attributes": {
       "_id": {
@@ -166,7 +166,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "sanity.fileAsset"
+          "value": "route404Settings"
         }
       },
       "_createdAt": {
@@ -187,20 +187,6 @@
           "type": "string"
         }
       },
-      "originalFilename": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "label": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
       "title": {
         "type": "objectAttribute",
         "value": {
@@ -208,81 +194,577 @@
         },
         "optional": true
       },
-      "description": {
+      "subtitle": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
         "optional": true
       },
-      "altText": {
+      "buttonText": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
         "optional": true
       },
-      "sha1hash": {
+      "buttonLink": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
         "optional": true
       },
-      "extension": {
+      "backgroundImage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "asset": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "object",
+                "attributes": {
+                  "_ref": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "_type": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string",
+                      "value": "reference"
+                    }
+                  },
+                  "_weak": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "boolean"
+                    },
+                    "optional": true
+                  }
+                },
+                "dereferencesTo": "sanity.imageAsset"
+              },
+              "optional": true
+            },
+            "hotspot": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageHotspot"
+              },
+              "optional": true
+            },
+            "crop": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageCrop"
+              },
+              "optional": true
+            },
+            "_type": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string",
+                "value": "image"
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "blocks": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "union",
+            "of": [
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "hero-1-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "hero-2-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "hero-3-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "section-header-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "split-row-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "carousel-1-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "carousel-2-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "timeline-row-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "cta-1-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "logo-cloud-1-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "faqs-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "form-newsletter-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "split-content-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "split-cards-list-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "split-image-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "split-info-list-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "grid-card-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "grid-post-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "grid-row-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "pricing-card-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "heading-and-paragraph-centered-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "service-grid-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "cover-map-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "contact-info-and-form-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "our-values-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "course-slider-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "hero-4-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "hero-5-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "custom-contact-form-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "two-column-block"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "seperator-block"
+                }
+              }
+            ]
+          }
+        },
+        "optional": true
+      },
+      "meta_title": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
         "optional": true
       },
-      "mimeType": {
+      "meta_description": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
-        },
-        "optional": true
-      },
-      "size": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "number"
-        },
-        "optional": true
-      },
-      "assetId": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "uploadId": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "path": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "url": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "source": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "sanity.assetSourceData"
         },
         "optional": true
       }
@@ -474,13 +956,6 @@
                     },
                     "optional": true
                   },
-                  "media": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "unknown"
-                    },
-                    "optional": true
-                  },
                   "hotspot": {
                     "type": "objectAttribute",
                     "value": {
@@ -556,23 +1031,972 @@
         },
         "optional": true
       },
-      "email": {
+      "enableTopBar": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "topBar": {
         "type": "objectAttribute",
         "value": {
           "type": "object",
           "attributes": {
-            "icon": {
+            "justifyContent": {
               "type": "objectAttribute",
               "value": {
-                "type": "inline",
-                "name": "icon"
+                "type": "union",
+                "of": [
+                  {
+                    "type": "string",
+                    "value": "justify-between"
+                  },
+                  {
+                    "type": "string",
+                    "value": "justify-evenly"
+                  },
+                  {
+                    "type": "string",
+                    "value": "justify-around"
+                  },
+                  {
+                    "type": "string",
+                    "value": "justify-start"
+                  },
+                  {
+                    "type": "string",
+                    "value": "justify-center"
+                  },
+                  {
+                    "type": "string",
+                    "value": "justify-end"
+                  }
+                ]
               },
               "optional": true
             },
-            "email": {
+            "items": {
               "type": "objectAttribute",
               "value": {
-                "type": "string"
+                "type": "array",
+                "of": {
+                  "type": "union",
+                  "of": [
+                    {
+                      "type": "object",
+                      "attributes": {
+                        "internalLink": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "union",
+                            "of": [
+                              {
+                                "type": "object",
+                                "attributes": {
+                                  "_ref": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "_type": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "string",
+                                      "value": "reference"
+                                    }
+                                  },
+                                  "_weak": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "boolean"
+                                    },
+                                    "optional": true
+                                  }
+                                },
+                                "dereferencesTo": "page-slug"
+                              },
+                              {
+                                "type": "object",
+                                "attributes": {
+                                  "_ref": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "_type": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "string",
+                                      "value": "reference"
+                                    }
+                                  },
+                                  "_weak": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "boolean"
+                                    },
+                                    "optional": true
+                                  }
+                                },
+                                "dereferencesTo": "blog-slug"
+                              },
+                              {
+                                "type": "object",
+                                "attributes": {
+                                  "_ref": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "_type": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "string",
+                                      "value": "reference"
+                                    }
+                                  },
+                                  "_weak": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "boolean"
+                                    },
+                                    "optional": true
+                                  }
+                                },
+                                "dereferencesTo": "service-slug"
+                              },
+                              {
+                                "type": "object",
+                                "attributes": {
+                                  "_ref": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "_type": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "string",
+                                      "value": "reference"
+                                    }
+                                  },
+                                  "_weak": {
+                                    "type": "objectAttribute",
+                                    "value": {
+                                      "type": "boolean"
+                                    },
+                                    "optional": true
+                                  }
+                                },
+                                "dereferencesTo": "course-slug"
+                              }
+                            ]
+                          },
+                          "optional": true
+                        },
+                        "icon": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "inline",
+                            "name": "icon"
+                          },
+                          "optional": true
+                        },
+                        "hideOnMobile": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "boolean"
+                          },
+                          "optional": true
+                        },
+                        "_type": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "string",
+                            "value": "internalLinkObject"
+                          }
+                        }
+                      },
+                      "rest": {
+                        "type": "object",
+                        "attributes": {
+                          "_key": {
+                            "type": "objectAttribute",
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "attributes": {
+                        "href": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "string"
+                          },
+                          "optional": true
+                        },
+                        "icon": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "inline",
+                            "name": "icon"
+                          },
+                          "optional": true
+                        },
+                        "hideOnMobile": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "boolean"
+                          },
+                          "optional": true
+                        },
+                        "_type": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "string",
+                            "value": "link"
+                          }
+                        }
+                      },
+                      "rest": {
+                        "type": "object",
+                        "attributes": {
+                          "_key": {
+                            "type": "objectAttribute",
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "attributes": {
+                        "title": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "string"
+                          },
+                          "optional": true
+                        },
+                        "icon": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "inline",
+                            "name": "icon"
+                          },
+                          "optional": true
+                        },
+                        "items": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "array",
+                            "of": {
+                              "type": "union",
+                              "of": [
+                                {
+                                  "type": "object",
+                                  "attributes": {
+                                    "internalLink": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "union",
+                                        "of": [
+                                          {
+                                            "type": "object",
+                                            "attributes": {
+                                              "_ref": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "string"
+                                                }
+                                              },
+                                              "_type": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "string",
+                                                  "value": "reference"
+                                                }
+                                              },
+                                              "_weak": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "boolean"
+                                                },
+                                                "optional": true
+                                              }
+                                            },
+                                            "dereferencesTo": "page-slug"
+                                          },
+                                          {
+                                            "type": "object",
+                                            "attributes": {
+                                              "_ref": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "string"
+                                                }
+                                              },
+                                              "_type": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "string",
+                                                  "value": "reference"
+                                                }
+                                              },
+                                              "_weak": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "boolean"
+                                                },
+                                                "optional": true
+                                              }
+                                            },
+                                            "dereferencesTo": "blog-slug"
+                                          },
+                                          {
+                                            "type": "object",
+                                            "attributes": {
+                                              "_ref": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "string"
+                                                }
+                                              },
+                                              "_type": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "string",
+                                                  "value": "reference"
+                                                }
+                                              },
+                                              "_weak": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "boolean"
+                                                },
+                                                "optional": true
+                                              }
+                                            },
+                                            "dereferencesTo": "service-slug"
+                                          },
+                                          {
+                                            "type": "object",
+                                            "attributes": {
+                                              "_ref": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "string"
+                                                }
+                                              },
+                                              "_type": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "string",
+                                                  "value": "reference"
+                                                }
+                                              },
+                                              "_weak": {
+                                                "type": "objectAttribute",
+                                                "value": {
+                                                  "type": "boolean"
+                                                },
+                                                "optional": true
+                                              }
+                                            },
+                                            "dereferencesTo": "course-slug"
+                                          }
+                                        ]
+                                      },
+                                      "optional": true
+                                    },
+                                    "icon": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "inline",
+                                        "name": "icon"
+                                      },
+                                      "optional": true
+                                    },
+                                    "customTitle": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "optional": true
+                                    },
+                                    "hideOnMobile": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "boolean"
+                                      },
+                                      "optional": true
+                                    },
+                                    "_type": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string",
+                                        "value": "internalLinkObject"
+                                      }
+                                    }
+                                  },
+                                  "rest": {
+                                    "type": "object",
+                                    "attributes": {
+                                      "_key": {
+                                        "type": "objectAttribute",
+                                        "value": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "attributes": {
+                                    "href": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "optional": true
+                                    },
+                                    "icon": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "inline",
+                                        "name": "icon"
+                                      },
+                                      "optional": true
+                                    },
+                                    "customTitle": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "optional": true
+                                    },
+                                    "hideOnMobile": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "boolean"
+                                      },
+                                      "optional": true
+                                    },
+                                    "_type": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string",
+                                        "value": "link"
+                                      }
+                                    }
+                                  },
+                                  "rest": {
+                                    "type": "object",
+                                    "attributes": {
+                                      "_key": {
+                                        "type": "objectAttribute",
+                                        "value": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "attributes": {
+                                    "file": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "object",
+                                        "attributes": {
+                                          "asset": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "object",
+                                              "attributes": {
+                                                "_ref": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "string"
+                                                  }
+                                                },
+                                                "_type": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "string",
+                                                    "value": "reference"
+                                                  }
+                                                },
+                                                "_weak": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "boolean"
+                                                  },
+                                                  "optional": true
+                                                }
+                                              },
+                                              "dereferencesTo": "sanity.fileAsset"
+                                            },
+                                            "optional": true
+                                          },
+                                          "_type": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string",
+                                              "value": "file"
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "optional": true
+                                    },
+                                    "icon": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "inline",
+                                        "name": "icon"
+                                      },
+                                      "optional": true
+                                    },
+                                    "customTitle": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "optional": true
+                                    },
+                                    "hideOnMobile": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "boolean"
+                                      },
+                                      "optional": true
+                                    },
+                                    "_type": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string",
+                                        "value": "downloadLinkObject"
+                                      }
+                                    }
+                                  },
+                                  "rest": {
+                                    "type": "object",
+                                    "attributes": {
+                                      "_key": {
+                                        "type": "objectAttribute",
+                                        "value": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "object",
+                                  "attributes": {
+                                    "title": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string"
+                                      },
+                                      "optional": true
+                                    },
+                                    "icon": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "inline",
+                                        "name": "icon"
+                                      },
+                                      "optional": true
+                                    },
+                                    "links": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "array",
+                                        "of": {
+                                          "type": "union",
+                                          "of": [
+                                            {
+                                              "type": "object",
+                                              "attributes": {
+                                                "internalLink": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "union",
+                                                    "of": [
+                                                      {
+                                                        "type": "object",
+                                                        "attributes": {
+                                                          "_ref": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "string"
+                                                            }
+                                                          },
+                                                          "_type": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "string",
+                                                              "value": "reference"
+                                                            }
+                                                          },
+                                                          "_weak": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "boolean"
+                                                            },
+                                                            "optional": true
+                                                          }
+                                                        },
+                                                        "dereferencesTo": "page-slug"
+                                                      },
+                                                      {
+                                                        "type": "object",
+                                                        "attributes": {
+                                                          "_ref": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "string"
+                                                            }
+                                                          },
+                                                          "_type": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "string",
+                                                              "value": "reference"
+                                                            }
+                                                          },
+                                                          "_weak": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "boolean"
+                                                            },
+                                                            "optional": true
+                                                          }
+                                                        },
+                                                        "dereferencesTo": "blog-slug"
+                                                      },
+                                                      {
+                                                        "type": "object",
+                                                        "attributes": {
+                                                          "_ref": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "string"
+                                                            }
+                                                          },
+                                                          "_type": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "string",
+                                                              "value": "reference"
+                                                            }
+                                                          },
+                                                          "_weak": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "boolean"
+                                                            },
+                                                            "optional": true
+                                                          }
+                                                        },
+                                                        "dereferencesTo": "service-slug"
+                                                      },
+                                                      {
+                                                        "type": "object",
+                                                        "attributes": {
+                                                          "_ref": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "string"
+                                                            }
+                                                          },
+                                                          "_type": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "string",
+                                                              "value": "reference"
+                                                            }
+                                                          },
+                                                          "_weak": {
+                                                            "type": "objectAttribute",
+                                                            "value": {
+                                                              "type": "boolean"
+                                                            },
+                                                            "optional": true
+                                                          }
+                                                        },
+                                                        "dereferencesTo": "course-slug"
+                                                      }
+                                                    ]
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "icon": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "inline",
+                                                    "name": "icon"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "customTitle": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "string"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "hideOnMobile": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "boolean"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "_type": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "string",
+                                                    "value": "internalLinkObject"
+                                                  }
+                                                }
+                                              },
+                                              "rest": {
+                                                "type": "object",
+                                                "attributes": {
+                                                  "_key": {
+                                                    "type": "objectAttribute",
+                                                    "value": {
+                                                      "type": "string"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            {
+                                              "type": "object",
+                                              "attributes": {
+                                                "href": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "string"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "icon": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "inline",
+                                                    "name": "icon"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "customTitle": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "string"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "hideOnMobile": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "boolean"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "_type": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "string",
+                                                    "value": "link"
+                                                  }
+                                                }
+                                              },
+                                              "rest": {
+                                                "type": "object",
+                                                "attributes": {
+                                                  "_key": {
+                                                    "type": "objectAttribute",
+                                                    "value": {
+                                                      "type": "string"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            {
+                                              "type": "object",
+                                              "attributes": {
+                                                "file": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "object",
+                                                    "attributes": {
+                                                      "asset": {
+                                                        "type": "objectAttribute",
+                                                        "value": {
+                                                          "type": "object",
+                                                          "attributes": {
+                                                            "_ref": {
+                                                              "type": "objectAttribute",
+                                                              "value": {
+                                                                "type": "string"
+                                                              }
+                                                            },
+                                                            "_type": {
+                                                              "type": "objectAttribute",
+                                                              "value": {
+                                                                "type": "string",
+                                                                "value": "reference"
+                                                              }
+                                                            },
+                                                            "_weak": {
+                                                              "type": "objectAttribute",
+                                                              "value": {
+                                                                "type": "boolean"
+                                                              },
+                                                              "optional": true
+                                                            }
+                                                          },
+                                                          "dereferencesTo": "sanity.fileAsset"
+                                                        },
+                                                        "optional": true
+                                                      },
+                                                      "_type": {
+                                                        "type": "objectAttribute",
+                                                        "value": {
+                                                          "type": "string",
+                                                          "value": "file"
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "icon": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "inline",
+                                                    "name": "icon"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "customTitle": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "string"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "hideOnMobile": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "boolean"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "_type": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "string",
+                                                    "value": "downloadLinkObject"
+                                                  }
+                                                }
+                                              },
+                                              "rest": {
+                                                "type": "object",
+                                                "attributes": {
+                                                  "_key": {
+                                                    "type": "objectAttribute",
+                                                    "value": {
+                                                      "type": "string"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "optional": true
+                                    },
+                                    "hideOnMobile": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "boolean"
+                                      },
+                                      "optional": true
+                                    },
+                                    "_type": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string",
+                                        "value": "dropdownGroup"
+                                      }
+                                    }
+                                  },
+                                  "rest": {
+                                    "type": "object",
+                                    "attributes": {
+                                      "_key": {
+                                        "type": "objectAttribute",
+                                        "value": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "optional": true
+                        },
+                        "hideOnMobile": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "boolean"
+                          },
+                          "optional": true
+                        },
+                        "_type": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "string",
+                            "value": "linkGroup"
+                          }
+                        }
+                      },
+                      "rest": {
+                        "type": "object",
+                        "attributes": {
+                          "_key": {
+                            "type": "objectAttribute",
+                            "value": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               },
               "optional": true
             }
@@ -580,43 +2004,40 @@
         },
         "optional": true
       },
-      "phoneNumber": {
+      "logoOptions": {
         "type": "objectAttribute",
         "value": {
           "type": "object",
           "attributes": {
-            "icon": {
+            "logoType": {
               "type": "objectAttribute",
               "value": {
-                "type": "inline",
-                "name": "icon"
+                "type": "union",
+                "of": [
+                  {
+                    "type": "string",
+                    "value": "svgloop"
+                  },
+                  {
+                    "type": "string",
+                    "value": "lightAndDark"
+                  },
+                  {
+                    "type": "string",
+                    "value": "default"
+                  }
+                ]
               },
               "optional": true
             },
-            "phoneNumber": {
+            "svgloopLogo": {
               "type": "objectAttribute",
               "value": {
                 "type": "string"
               },
               "optional": true
             },
-            "additionalText": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "string"
-              },
-              "optional": true
-            }
-          }
-        },
-        "optional": true
-      },
-      "logo": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "object",
-          "attributes": {
-            "lightLogo": {
+            "defaultLogo": {
               "type": "objectAttribute",
               "value": {
                 "type": "object",
@@ -651,13 +2072,6 @@
                     },
                     "optional": true
                   },
-                  "media": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "unknown"
-                    },
-                    "optional": true
-                  },
                   "hotspot": {
                     "type": "objectAttribute",
                     "value": {
@@ -685,72 +2099,195 @@
               },
               "optional": true
             },
-            "darkLogo": {
+            "lightAndDarkLogo": {
               "type": "objectAttribute",
               "value": {
                 "type": "object",
                 "attributes": {
-                  "asset": {
+                  "logoType": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "union",
+                      "of": [
+                        {
+                          "type": "string",
+                          "value": "svg"
+                        },
+                        {
+                          "type": "string",
+                          "value": "image"
+                        }
+                      ]
+                    },
+                    "optional": true
+                  },
+                  "lightLogo": {
                     "type": "objectAttribute",
                     "value": {
                       "type": "object",
                       "attributes": {
-                        "_ref": {
+                        "asset": {
                           "type": "objectAttribute",
                           "value": {
-                            "type": "string"
-                          }
+                            "type": "object",
+                            "attributes": {
+                              "_ref": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "_type": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string",
+                                  "value": "reference"
+                                }
+                              },
+                              "_weak": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "boolean"
+                                },
+                                "optional": true
+                              }
+                            },
+                            "dereferencesTo": "sanity.imageAsset"
+                          },
+                          "optional": true
+                        },
+                        "hotspot": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "inline",
+                            "name": "sanity.imageHotspot"
+                          },
+                          "optional": true
+                        },
+                        "crop": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "inline",
+                            "name": "sanity.imageCrop"
+                          },
+                          "optional": true
                         },
                         "_type": {
                           "type": "objectAttribute",
                           "value": {
                             "type": "string",
-                            "value": "reference"
+                            "value": "image"
                           }
-                        },
-                        "_weak": {
+                        }
+                      }
+                    },
+                    "optional": true
+                  },
+                  "darkLogo": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "object",
+                      "attributes": {
+                        "asset": {
                           "type": "objectAttribute",
                           "value": {
-                            "type": "boolean"
+                            "type": "object",
+                            "attributes": {
+                              "_ref": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "_type": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string",
+                                  "value": "reference"
+                                }
+                              },
+                              "_weak": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "boolean"
+                                },
+                                "optional": true
+                              }
+                            },
+                            "dereferencesTo": "sanity.imageAsset"
                           },
                           "optional": true
+                        },
+                        "hotspot": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "inline",
+                            "name": "sanity.imageHotspot"
+                          },
+                          "optional": true
+                        },
+                        "crop": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "inline",
+                            "name": "sanity.imageCrop"
+                          },
+                          "optional": true
+                        },
+                        "_type": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "string",
+                            "value": "image"
+                          }
                         }
-                      },
-                      "dereferencesTo": "sanity.imageAsset"
+                      }
                     },
                     "optional": true
-                  },
-                  "media": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "unknown"
-                    },
-                    "optional": true
-                  },
-                  "hotspot": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "inline",
-                      "name": "sanity.imageHotspot"
-                    },
-                    "optional": true
-                  },
-                  "crop": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "inline",
-                      "name": "sanity.imageCrop"
-                    },
-                    "optional": true
-                  },
-                  "_type": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "string",
-                      "value": "image"
-                    }
                   }
                 }
+              },
+              "optional": true
+            }
+          }
+        },
+        "optional": true
+      },
+      "navigationConfig": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "justifyContent": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "union",
+                "of": [
+                  {
+                    "type": "string",
+                    "value": "justify-between"
+                  },
+                  {
+                    "type": "string",
+                    "value": "justify-evenly"
+                  },
+                  {
+                    "type": "string",
+                    "value": "justify-around"
+                  },
+                  {
+                    "type": "string",
+                    "value": "justify-start"
+                  },
+                  {
+                    "type": "string",
+                    "value": "justify-center"
+                  },
+                  {
+                    "type": "string",
+                    "value": "justify-end"
+                  }
+                ]
               },
               "optional": true
             }
@@ -763,42 +2300,1308 @@
         "value": {
           "type": "array",
           "of": {
-            "type": "object",
-            "attributes": {
-              "_ref": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              },
-              "_type": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string",
-                  "value": "reference"
-                }
-              },
-              "_weak": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "boolean"
+            "type": "union",
+            "of": [
+              {
+                "type": "object",
+                "attributes": {
+                  "internalLink": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "union",
+                      "of": [
+                        {
+                          "type": "object",
+                          "attributes": {
+                            "_ref": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "_type": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "string",
+                                "value": "reference"
+                              }
+                            },
+                            "_weak": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "boolean"
+                              },
+                              "optional": true
+                            }
+                          },
+                          "dereferencesTo": "page-slug"
+                        },
+                        {
+                          "type": "object",
+                          "attributes": {
+                            "_ref": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "_type": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "string",
+                                "value": "reference"
+                              }
+                            },
+                            "_weak": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "boolean"
+                              },
+                              "optional": true
+                            }
+                          },
+                          "dereferencesTo": "blog-slug"
+                        },
+                        {
+                          "type": "object",
+                          "attributes": {
+                            "_ref": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "_type": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "string",
+                                "value": "reference"
+                              }
+                            },
+                            "_weak": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "boolean"
+                              },
+                              "optional": true
+                            }
+                          },
+                          "dereferencesTo": "service-slug"
+                        },
+                        {
+                          "type": "object",
+                          "attributes": {
+                            "_ref": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "_type": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "string",
+                                "value": "reference"
+                              }
+                            },
+                            "_weak": {
+                              "type": "objectAttribute",
+                              "value": {
+                                "type": "boolean"
+                              },
+                              "optional": true
+                            }
+                          },
+                          "dereferencesTo": "course-slug"
+                        }
+                      ]
+                    },
+                    "optional": true
+                  },
+                  "icon": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "inline",
+                      "name": "icon"
+                    },
+                    "optional": true
+                  },
+                  "customTitle": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    },
+                    "optional": true
+                  },
+                  "_type": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string",
+                      "value": "internalLinkObject"
+                    }
+                  }
                 },
-                "optional": true
-              }
-            },
-            "dereferencesTo": "page-slug",
-            "rest": {
-              "type": "object",
-              "attributes": {
-                "_key": {
-                  "type": "objectAttribute",
-                  "value": {
-                    "type": "string"
+                "rest": {
+                  "type": "object",
+                  "attributes": {
+                    "_key": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "href": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    },
+                    "optional": true
+                  },
+                  "icon": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "inline",
+                      "name": "icon"
+                    },
+                    "optional": true
+                  },
+                  "customTitle": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    },
+                    "optional": true
+                  },
+                  "_type": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string",
+                      "value": "link"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "object",
+                  "attributes": {
+                    "_key": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "title": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    },
+                    "optional": true
+                  },
+                  "links": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "array",
+                      "of": {
+                        "type": "union",
+                        "of": [
+                          {
+                            "type": "object",
+                            "attributes": {
+                              "internalLink": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "union",
+                                  "of": [
+                                    {
+                                      "type": "object",
+                                      "attributes": {
+                                        "_ref": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "_type": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string",
+                                            "value": "reference"
+                                          }
+                                        },
+                                        "_weak": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "boolean"
+                                          },
+                                          "optional": true
+                                        }
+                                      },
+                                      "dereferencesTo": "page-slug"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "attributes": {
+                                        "_ref": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "_type": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string",
+                                            "value": "reference"
+                                          }
+                                        },
+                                        "_weak": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "boolean"
+                                          },
+                                          "optional": true
+                                        }
+                                      },
+                                      "dereferencesTo": "blog-slug"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "attributes": {
+                                        "_ref": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "_type": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string",
+                                            "value": "reference"
+                                          }
+                                        },
+                                        "_weak": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "boolean"
+                                          },
+                                          "optional": true
+                                        }
+                                      },
+                                      "dereferencesTo": "service-slug"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "attributes": {
+                                        "_ref": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "_type": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string",
+                                            "value": "reference"
+                                          }
+                                        },
+                                        "_weak": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "boolean"
+                                          },
+                                          "optional": true
+                                        }
+                                      },
+                                      "dereferencesTo": "course-slug"
+                                    }
+                                  ]
+                                },
+                                "optional": true
+                              },
+                              "icon": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "inline",
+                                  "name": "icon"
+                                },
+                                "optional": true
+                              },
+                              "customTitle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "_type": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string",
+                                  "value": "internalLinkObject"
+                                }
+                              }
+                            },
+                            "rest": {
+                              "type": "object",
+                              "attributes": {
+                                "_key": {
+                                  "type": "objectAttribute",
+                                  "value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "attributes": {
+                              "href": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "icon": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "inline",
+                                  "name": "icon"
+                                },
+                                "optional": true
+                              },
+                              "customTitle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "_type": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string",
+                                  "value": "link"
+                                }
+                              }
+                            },
+                            "rest": {
+                              "type": "object",
+                              "attributes": {
+                                "_key": {
+                                  "type": "objectAttribute",
+                                  "value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "attributes": {
+                              "file": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "object",
+                                  "attributes": {
+                                    "asset": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "object",
+                                        "attributes": {
+                                          "_ref": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "_type": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string",
+                                              "value": "reference"
+                                            }
+                                          },
+                                          "_weak": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "boolean"
+                                            },
+                                            "optional": true
+                                          }
+                                        },
+                                        "dereferencesTo": "sanity.fileAsset"
+                                      },
+                                      "optional": true
+                                    },
+                                    "_type": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string",
+                                        "value": "file"
+                                      }
+                                    }
+                                  }
+                                },
+                                "optional": true
+                              },
+                              "icon": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "inline",
+                                  "name": "icon"
+                                },
+                                "optional": true
+                              },
+                              "customTitle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "_type": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string",
+                                  "value": "downloadLinkObject"
+                                }
+                              }
+                            },
+                            "rest": {
+                              "type": "object",
+                              "attributes": {
+                                "_key": {
+                                  "type": "objectAttribute",
+                                  "value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "optional": true
+                  },
+                  "_type": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string",
+                      "value": "dropdownGroup"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "object",
+                  "attributes": {
+                    "_key": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "title": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    },
+                    "optional": true
+                  },
+                  "items": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "array",
+                      "of": {
+                        "type": "union",
+                        "of": [
+                          {
+                            "type": "object",
+                            "attributes": {
+                              "internalLink": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "union",
+                                  "of": [
+                                    {
+                                      "type": "object",
+                                      "attributes": {
+                                        "_ref": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "_type": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string",
+                                            "value": "reference"
+                                          }
+                                        },
+                                        "_weak": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "boolean"
+                                          },
+                                          "optional": true
+                                        }
+                                      },
+                                      "dereferencesTo": "page-slug"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "attributes": {
+                                        "_ref": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "_type": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string",
+                                            "value": "reference"
+                                          }
+                                        },
+                                        "_weak": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "boolean"
+                                          },
+                                          "optional": true
+                                        }
+                                      },
+                                      "dereferencesTo": "blog-slug"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "attributes": {
+                                        "_ref": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "_type": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string",
+                                            "value": "reference"
+                                          }
+                                        },
+                                        "_weak": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "boolean"
+                                          },
+                                          "optional": true
+                                        }
+                                      },
+                                      "dereferencesTo": "service-slug"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "attributes": {
+                                        "_ref": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "_type": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "string",
+                                            "value": "reference"
+                                          }
+                                        },
+                                        "_weak": {
+                                          "type": "objectAttribute",
+                                          "value": {
+                                            "type": "boolean"
+                                          },
+                                          "optional": true
+                                        }
+                                      },
+                                      "dereferencesTo": "course-slug"
+                                    }
+                                  ]
+                                },
+                                "optional": true
+                              },
+                              "icon": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "inline",
+                                  "name": "icon"
+                                },
+                                "optional": true
+                              },
+                              "customTitle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "_type": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string",
+                                  "value": "internalLinkObject"
+                                }
+                              }
+                            },
+                            "rest": {
+                              "type": "object",
+                              "attributes": {
+                                "_key": {
+                                  "type": "objectAttribute",
+                                  "value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "attributes": {
+                              "href": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "icon": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "inline",
+                                  "name": "icon"
+                                },
+                                "optional": true
+                              },
+                              "customTitle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "_type": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string",
+                                  "value": "link"
+                                }
+                              }
+                            },
+                            "rest": {
+                              "type": "object",
+                              "attributes": {
+                                "_key": {
+                                  "type": "objectAttribute",
+                                  "value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "attributes": {
+                              "file": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "object",
+                                  "attributes": {
+                                    "asset": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "object",
+                                        "attributes": {
+                                          "_ref": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "_type": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string",
+                                              "value": "reference"
+                                            }
+                                          },
+                                          "_weak": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "boolean"
+                                            },
+                                            "optional": true
+                                          }
+                                        },
+                                        "dereferencesTo": "sanity.fileAsset"
+                                      },
+                                      "optional": true
+                                    },
+                                    "_type": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "string",
+                                        "value": "file"
+                                      }
+                                    }
+                                  }
+                                },
+                                "optional": true
+                              },
+                              "icon": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "inline",
+                                  "name": "icon"
+                                },
+                                "optional": true
+                              },
+                              "customTitle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "_type": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string",
+                                  "value": "downloadLinkObject"
+                                }
+                              }
+                            },
+                            "rest": {
+                              "type": "object",
+                              "attributes": {
+                                "_key": {
+                                  "type": "objectAttribute",
+                                  "value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "attributes": {
+                              "title": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "links": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "array",
+                                  "of": {
+                                    "type": "union",
+                                    "of": [
+                                      {
+                                        "type": "object",
+                                        "attributes": {
+                                          "internalLink": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "union",
+                                              "of": [
+                                                {
+                                                  "type": "object",
+                                                  "attributes": {
+                                                    "_ref": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "string"
+                                                      }
+                                                    },
+                                                    "_type": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "string",
+                                                        "value": "reference"
+                                                      }
+                                                    },
+                                                    "_weak": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "boolean"
+                                                      },
+                                                      "optional": true
+                                                    }
+                                                  },
+                                                  "dereferencesTo": "page-slug"
+                                                },
+                                                {
+                                                  "type": "object",
+                                                  "attributes": {
+                                                    "_ref": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "string"
+                                                      }
+                                                    },
+                                                    "_type": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "string",
+                                                        "value": "reference"
+                                                      }
+                                                    },
+                                                    "_weak": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "boolean"
+                                                      },
+                                                      "optional": true
+                                                    }
+                                                  },
+                                                  "dereferencesTo": "blog-slug"
+                                                },
+                                                {
+                                                  "type": "object",
+                                                  "attributes": {
+                                                    "_ref": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "string"
+                                                      }
+                                                    },
+                                                    "_type": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "string",
+                                                        "value": "reference"
+                                                      }
+                                                    },
+                                                    "_weak": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "boolean"
+                                                      },
+                                                      "optional": true
+                                                    }
+                                                  },
+                                                  "dereferencesTo": "service-slug"
+                                                },
+                                                {
+                                                  "type": "object",
+                                                  "attributes": {
+                                                    "_ref": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "string"
+                                                      }
+                                                    },
+                                                    "_type": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "string",
+                                                        "value": "reference"
+                                                      }
+                                                    },
+                                                    "_weak": {
+                                                      "type": "objectAttribute",
+                                                      "value": {
+                                                        "type": "boolean"
+                                                      },
+                                                      "optional": true
+                                                    }
+                                                  },
+                                                  "dereferencesTo": "course-slug"
+                                                }
+                                              ]
+                                            },
+                                            "optional": true
+                                          },
+                                          "icon": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "inline",
+                                              "name": "icon"
+                                            },
+                                            "optional": true
+                                          },
+                                          "customTitle": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string"
+                                            },
+                                            "optional": true
+                                          },
+                                          "_type": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string",
+                                              "value": "internalLinkObject"
+                                            }
+                                          }
+                                        },
+                                        "rest": {
+                                          "type": "object",
+                                          "attributes": {
+                                            "_key": {
+                                              "type": "objectAttribute",
+                                              "value": {
+                                                "type": "string"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "attributes": {
+                                          "href": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string"
+                                            },
+                                            "optional": true
+                                          },
+                                          "icon": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "inline",
+                                              "name": "icon"
+                                            },
+                                            "optional": true
+                                          },
+                                          "customTitle": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string"
+                                            },
+                                            "optional": true
+                                          },
+                                          "_type": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string",
+                                              "value": "link"
+                                            }
+                                          }
+                                        },
+                                        "rest": {
+                                          "type": "object",
+                                          "attributes": {
+                                            "_key": {
+                                              "type": "objectAttribute",
+                                              "value": {
+                                                "type": "string"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "attributes": {
+                                          "file": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "object",
+                                              "attributes": {
+                                                "asset": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "object",
+                                                    "attributes": {
+                                                      "_ref": {
+                                                        "type": "objectAttribute",
+                                                        "value": {
+                                                          "type": "string"
+                                                        }
+                                                      },
+                                                      "_type": {
+                                                        "type": "objectAttribute",
+                                                        "value": {
+                                                          "type": "string",
+                                                          "value": "reference"
+                                                        }
+                                                      },
+                                                      "_weak": {
+                                                        "type": "objectAttribute",
+                                                        "value": {
+                                                          "type": "boolean"
+                                                        },
+                                                        "optional": true
+                                                      }
+                                                    },
+                                                    "dereferencesTo": "sanity.fileAsset"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "_type": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "string",
+                                                    "value": "file"
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "optional": true
+                                          },
+                                          "icon": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "inline",
+                                              "name": "icon"
+                                            },
+                                            "optional": true
+                                          },
+                                          "customTitle": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string"
+                                            },
+                                            "optional": true
+                                          },
+                                          "_type": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "string",
+                                              "value": "downloadLinkObject"
+                                            }
+                                          }
+                                        },
+                                        "rest": {
+                                          "type": "object",
+                                          "attributes": {
+                                            "_key": {
+                                              "type": "objectAttribute",
+                                              "value": {
+                                                "type": "string"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                "optional": true
+                              },
+                              "_type": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "string",
+                                  "value": "dropdownGroup"
+                                }
+                              }
+                            },
+                            "rest": {
+                              "type": "object",
+                              "attributes": {
+                                "_key": {
+                                  "type": "objectAttribute",
+                                  "value": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "optional": true
+                  },
+                  "_type": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string",
+                      "value": "linkGroup"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "object",
+                  "attributes": {
+                    "_key": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }
-            }
+            ]
           }
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "sanity.fileAsset",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "sanity.fileAsset"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "originalFilename": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "label": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "title": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "description": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "altText": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "sha1hash": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "extension": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "mimeType": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "size": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "assetId": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "uploadId": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "path": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "url": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "source": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "sanity.assetSourceData"
         },
         "optional": true
       }
@@ -1622,13 +4425,6 @@
                             },
                             "optional": true
                           },
-                          "media": {
-                            "type": "objectAttribute",
-                            "value": {
-                              "type": "unknown"
-                            },
-                            "optional": true
-                          },
                           "hotspot": {
                             "type": "objectAttribute",
                             "value": {
@@ -1920,13 +4716,6 @@
                             },
                             "optional": true
                           },
-                          "media": {
-                            "type": "objectAttribute",
-                            "value": {
-                              "type": "unknown"
-                            },
-                            "optional": true
-                          },
                           "hotspot": {
                             "type": "objectAttribute",
                             "value": {
@@ -2060,13 +4849,6 @@
                 },
                 "optional": true
               },
-              "media": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "unknown"
-                },
-                "optional": true
-              },
               "hotspot": {
                 "type": "objectAttribute",
                 "value": {
@@ -2156,13 +4938,6 @@
                     }
                   },
                   "dereferencesTo": "sanity.imageAsset"
-                },
-                "optional": true
-              },
-              "media": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "unknown"
                 },
                 "optional": true
               },
@@ -2578,13 +5353,6 @@
                             },
                             "optional": true
                           },
-                          "media": {
-                            "type": "objectAttribute",
-                            "value": {
-                              "type": "unknown"
-                            },
-                            "optional": true
-                          },
                           "hotspot": {
                             "type": "objectAttribute",
                             "value": {
@@ -2898,13 +5666,6 @@
                           }
                         },
                         "dereferencesTo": "sanity.imageAsset"
-                      },
-                      "optional": true
-                    },
-                    "media": {
-                      "type": "objectAttribute",
-                      "value": {
-                        "type": "unknown"
                       },
                       "optional": true
                     },
@@ -3314,13 +6075,6 @@
                 },
                 "optional": true
               },
-              "media": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "unknown"
-                },
-                "optional": true
-              },
               "hotspot": {
                 "type": "objectAttribute",
                 "value": {
@@ -3411,13 +6165,6 @@
                     }
                   },
                   "dereferencesTo": "sanity.imageAsset"
-                },
-                "optional": true
-              },
-              "media": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "unknown"
                 },
                 "optional": true
               },
@@ -3663,13 +6410,6 @@
                           }
                         },
                         "dereferencesTo": "sanity.imageAsset"
-                      },
-                      "optional": true
-                    },
-                    "media": {
-                      "type": "objectAttribute",
-                      "value": {
-                        "type": "unknown"
                       },
                       "optional": true
                     },
@@ -3995,13 +6735,6 @@
                       },
                       "optional": true
                     },
-                    "media": {
-                      "type": "objectAttribute",
-                      "value": {
-                        "type": "unknown"
-                      },
-                      "optional": true
-                    },
                     "hotspot": {
                       "type": "objectAttribute",
                       "value": {
@@ -4166,13 +6899,6 @@
                     }
                   },
                   "dereferencesTo": "sanity.imageAsset"
-                },
-                "optional": true
-              },
-              "media": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "unknown"
                 },
                 "optional": true
               },
@@ -4534,13 +7260,6 @@
                       },
                       "optional": true
                     },
-                    "media": {
-                      "type": "objectAttribute",
-                      "value": {
-                        "type": "unknown"
-                      },
-                      "optional": true
-                    },
                     "hotspot": {
                       "type": "objectAttribute",
                       "value": {
@@ -4828,13 +7547,6 @@
                       }
                     },
                     "dereferencesTo": "sanity.imageAsset"
-                  },
-                  "optional": true
-                },
-                "media": {
-                  "type": "objectAttribute",
-                  "value": {
-                    "type": "unknown"
                   },
                   "optional": true
                 },
@@ -5194,13 +7906,6 @@
                           }
                         },
                         "dereferencesTo": "sanity.imageAsset"
-                      },
-                      "optional": true
-                    },
-                    "media": {
-                      "type": "objectAttribute",
-                      "value": {
-                        "type": "unknown"
                       },
                       "optional": true
                     },
@@ -5632,13 +8337,6 @@
                   },
                   "optional": true
                 },
-                "media": {
-                  "type": "objectAttribute",
-                  "value": {
-                    "type": "unknown"
-                  },
-                  "optional": true
-                },
                 "hotspot": {
                   "type": "objectAttribute",
                   "value": {
@@ -6013,13 +8711,6 @@
                 },
                 "optional": true
               },
-              "media": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "unknown"
-                },
-                "optional": true
-              },
               "hotspot": {
                 "type": "objectAttribute",
                 "value": {
@@ -6051,6 +8742,23 @@
           "type": "objectAttribute",
           "value": {
             "type": "boolean"
+          },
+          "optional": true
+        },
+        "overlayColor": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "dark"
+              },
+              {
+                "type": "string",
+                "value": "light"
+              }
+            ]
           },
           "optional": true
         },
@@ -6313,13 +9021,6 @@
                           }
                         },
                         "dereferencesTo": "sanity.imageAsset"
-                      },
-                      "optional": true
-                    },
-                    "media": {
-                      "type": "objectAttribute",
-                      "value": {
-                        "type": "unknown"
                       },
                       "optional": true
                     },
@@ -6657,13 +9358,6 @@
                       },
                       "optional": true
                     },
-                    "media": {
-                      "type": "objectAttribute",
-                      "value": {
-                        "type": "unknown"
-                      },
-                      "optional": true
-                    },
                     "hotspot": {
                       "type": "objectAttribute",
                       "value": {
@@ -6774,13 +9468,6 @@
                     }
                   },
                   "dereferencesTo": "sanity.imageAsset"
-                },
-                "optional": true
-              },
-              "media": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "unknown"
                 },
                 "optional": true
               },
@@ -7205,14 +9892,6 @@
             "type": "boolean"
           },
           "optional": true
-        },
-        "buttonVariant": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "inline",
-            "name": "button-variant"
-          },
-          "optional": true
         }
       }
     }
@@ -7422,13 +10101,6 @@
                 },
                 "optional": true
               },
-              "media": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "unknown"
-                },
-                "optional": true
-              },
               "hotspot": {
                 "type": "objectAttribute",
                 "value": {
@@ -7588,13 +10260,6 @@
                   }
                 },
                 "dereferencesTo": "sanity.imageAsset"
-              },
-              "optional": true
-            },
-            "media": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "unknown"
               },
               "optional": true
             },
@@ -8071,13 +10736,6 @@
               },
               "optional": true
             },
-            "media": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "unknown"
-              },
-              "optional": true
-            },
             "hotspot": {
               "type": "objectAttribute",
               "value": {
@@ -8324,11 +10982,19 @@
                       },
                       {
                         "type": "string",
+                        "value": "checkboxGroup"
+                      },
+                      {
+                        "type": "string",
                         "value": "select"
                       },
                       {
                         "type": "string",
                         "value": "date"
+                      },
+                      {
+                        "type": "string",
+                        "value": "datetime"
                       },
                       {
                         "type": "string",
@@ -8386,6 +11052,18 @@
                       {
                         "type": "string",
                         "value": "half"
+                      },
+                      {
+                        "type": "string",
+                        "value": "third"
+                      },
+                      {
+                        "type": "string",
+                        "value": "quarter"
+                      },
+                      {
+                        "type": "string",
+                        "value": "remaining"
                       }
                     ]
                   },
@@ -8405,12 +11083,26 @@
                           },
                           "optional": true
                         },
+                        "useUniqueValue": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "boolean"
+                          },
+                          "optional": true
+                        },
                         "value": {
                           "type": "objectAttribute",
                           "value": {
                             "type": "string"
                           },
                           "optional": true
+                        },
+                        "_type": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "string",
+                            "value": "optionItem"
+                          }
                         }
                       },
                       "rest": {
@@ -8446,6 +11138,63 @@
                   "type": "objectAttribute",
                   "value": {
                     "type": "boolean"
+                  },
+                  "optional": true
+                },
+                "conditionalLogic": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "object",
+                    "attributes": {
+                      "enabled": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "boolean"
+                        },
+                        "optional": true
+                      },
+                      "controllerFieldName": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "string"
+                        },
+                        "optional": true
+                      },
+                      "action": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "union",
+                          "of": [
+                            {
+                              "type": "string",
+                              "value": "show"
+                            },
+                            {
+                              "type": "string",
+                              "value": "hide"
+                            }
+                          ]
+                        },
+                        "optional": true
+                      },
+                      "controllerValueChecked": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "union",
+                          "of": [
+                            {
+                              "type": "string",
+                              "value": "true"
+                            },
+                            {
+                              "type": "string",
+                              "value": "false"
+                            }
+                          ]
+                        },
+                        "optional": true
+                      }
+                    }
                   },
                   "optional": true
                 },
@@ -8597,13 +11346,6 @@
               },
               "optional": true
             },
-            "media": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "unknown"
-              },
-              "optional": true
-            },
             "hotspot": {
               "type": "objectAttribute",
               "value": {
@@ -8746,13 +11488,6 @@
               },
               "optional": true
             },
-            "media": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "unknown"
-              },
-              "optional": true
-            },
             "hotspot": {
               "type": "objectAttribute",
               "value": {
@@ -8829,6 +11564,32 @@
         "value": {
           "type": "inline",
           "name": "slug"
+        },
+        "optional": true
+      },
+      "navigationSettings": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "navigationTextColor": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "union",
+                "of": [
+                  {
+                    "type": "string",
+                    "value": "dark"
+                  },
+                  {
+                    "type": "string",
+                    "value": "white"
+                  }
+                ]
+              },
+              "optional": true
+            }
+          }
         },
         "optional": true
       },
@@ -9365,13 +12126,6 @@
               },
               "optional": true
             },
-            "media": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "unknown"
-              },
-              "optional": true
-            },
             "hotspot": {
               "type": "objectAttribute",
               "value": {
@@ -9489,13 +12243,6 @@
                   }
                 },
                 "dereferencesTo": "sanity.imageAsset"
-              },
-              "optional": true
-            },
-            "media": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "unknown"
               },
               "optional": true
             },
@@ -9845,13 +12592,6 @@
                   }
                 },
                 "dereferencesTo": "sanity.imageAsset"
-              },
-              "optional": true
-            },
-            "media": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "unknown"
               },
               "optional": true
             },

@@ -54,7 +54,7 @@ export default defineConfig({
   
       // Filter icons by collection for all Icon fields (this field has typed autocomplete ✨)
       // Defaults to empty array (all collections)
-      collections: [ "mi"],
+      collections: [ "lucide"],
   
       // Shows the selected icon name and collection underneath the icon picker
       // Defaults to false

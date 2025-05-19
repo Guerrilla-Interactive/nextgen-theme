@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from "react";
 import anime, { AnimeTimelineAnimParams, EasingOptions, DirectionOptions } from "animejs";
 
@@ -14,6 +13,7 @@ interface DefaultLogoProps {
   className?: string;
   hoverFrame?: TargetKeyframe;
   clickFrame?: TargetKeyframe;
+  keyframes: Keyframe[] | string | any;
   /**
    * It will freeze at this keyframe.
    * - ActiveKeyframe will cancel the loop.
@@ -43,6 +43,7 @@ interface DefaultLogoProps {
  * Keyframe structure.
  */
 interface Keyframe {
+  id?: string;
   viewBox: string;
   paths: {
     d: string;
@@ -51,11 +52,15 @@ interface Keyframe {
     fill: string;
     strokeLinecap: string;
     strokeLinejoin: string;
+    transform?: string;
+    fillRule?: string;
+    id?: string;
+    originalStroke?: string;
+    originalFill?: string;
   }[];
   keyframeFilter?: Record<string, any>;
 }
 const keyframes: Keyframe[] = [
- 
   {
     "id": "keyframe-1746533367527",
     "viewBox": "0 0 164 22",
@@ -150,7 +155,8 @@ const keyframes: Keyframe[] = [
   },
 ];
 
-const DefaultLogo: React.FC<DefaultLogoProps> = ({
+const SVGLoopLogo: React.FC<DefaultLogoProps> = ({
+  keyframes: keyframesInput,
   className,
   activeKeyframe,
   hoverFrame,
@@ -163,6 +169,11 @@ const DefaultLogo: React.FC<DefaultLogoProps> = ({
   const svgRef = useRef<SVGSVGElement>(null)
   const [isSVGHovered, setIsSVGHovered] = useState(false);
   const [isSVGClicked, setIsSVGClicked] = useState(false);
+
+  // Parse keyframes if input is a string
+  const keyframes: Keyframe[] = typeof keyframesInput === 'string' 
+    ? JSON.parse(keyframesInput) 
+    : keyframesInput;
 
   useEffect(() => {
     if (isSVGHovered) {
@@ -341,4 +352,4 @@ const DefaultLogo: React.FC<DefaultLogoProps> = ({
   );
 };
 
-export default DefaultLogo;
+export default SVGLoopLogo;

@@ -4,7 +4,7 @@ import { defineField } from "sanity";
 import { LinksFieldInput } from "@/sanity/sanity-studio-components/inputs/links-field-input.component";
 
 import type { FieldDef } from "@/sanity/type-organized-schemas/generator-fields/types/field.types";
-import { Folder } from "lucide-react";
+import { Folder, LayoutGrid } from "lucide-react";
 import { internalLinkObjectField } from "./internal-link-object.field";
 import { externalLinkObjectField } from "./external-link-object.field";
 import { downloadLinkObjectField } from "./download-link-object.field";
@@ -12,12 +12,15 @@ import { stringField } from "./string.field";
 
 type LinksFieldProps = Omit<FieldDef<ArrayDefinition>, "of" | "validation"> & {
   includeInternal?: boolean;
+  includeDropdownGroup?: boolean;
   includeLinkGroup?: boolean;
   includeExternal?: boolean;
   includeDownload?: boolean;
   includeCustomTitle?: boolean;
   includeDescription?: boolean;
   includeDescriptionInLinkGroup?: boolean;
+  includeIcon?: boolean;
+  includeHideOnMobile?: boolean;
   max?: number;
 };
 
@@ -34,12 +37,31 @@ const descriptionField = defineField({
   rows: 2,
 });
 
+const iconField = defineField({
+  name: "icon",
+  title: "Icon",
+  type: "icon",
+  description: "Icon to display with this link",
+});
+
+const hideOnMobileField = defineField({
+  name: "hideOnMobile",
+  title: "Hide on Mobile",
+  type: "boolean",
+  initialValue: false,
+  description: "If checked, this item will be hidden on mobile screens."
+});
+
 const internalLink = (props: LinksFieldProps) => {
-  const { includeInternal, includeCustomTitle, includeDescription } = props;
+  const { includeInternal, includeCustomTitle, includeDescription, includeIcon, includeHideOnMobile } = props;
 
   if (!includeInternal) return null;
 
   const fields = [...internalLinkObjectField.fields];
+
+  if (includeIcon) {
+    fields.push(iconField);
+  }
 
   if (includeCustomTitle) {
     fields.push(customTitleField);
@@ -47,6 +69,10 @@ const internalLink = (props: LinksFieldProps) => {
 
   if (includeDescription) {
     fields.push(descriptionField);
+  }
+
+  if (includeHideOnMobile) {
+    fields.push(hideOnMobileField);
   }
 
   return defineField({
@@ -57,10 +83,12 @@ const internalLink = (props: LinksFieldProps) => {
         internalLinkTitle: "internalLink.title",
         internalLinkName: "internalLink.name",
         customTitle: "customTitle",
+        icon: "icon",
       },
-      prepare({ internalLinkTitle, internalLinkName, customTitle }) {
+      prepare({ internalLinkTitle, internalLinkName, customTitle, icon }) {
         return {
           title: customTitle ?? internalLinkTitle ?? internalLinkName,
+          media: icon,
         };
       },
     },
@@ -68,11 +96,15 @@ const internalLink = (props: LinksFieldProps) => {
 };
 
 const externalLink = (props: LinksFieldProps) => {
-  const { includeExternal, includeCustomTitle, includeDescription } = props;
+  const { includeExternal, includeCustomTitle, includeDescription, includeIcon, includeHideOnMobile } = props;
 
   if (!includeExternal) return null;
 
   const fields = [...externalLinkObjectField.fields];
+
+  if (includeIcon) {
+    fields.push(iconField);
+  }
 
   if (includeCustomTitle) {
     fields.push(customTitleField);
@@ -80,6 +112,10 @@ const externalLink = (props: LinksFieldProps) => {
 
   if (includeDescription) {
     fields.push(descriptionField);
+  }
+
+  if (includeHideOnMobile) {
+    fields.push(hideOnMobileField);
   }
 
   return defineField({
@@ -89,10 +125,12 @@ const externalLink = (props: LinksFieldProps) => {
       select: {
         href: "href",
         customTitle: "customTitle",
+        icon: "icon",
       },
-      prepare({ href, customTitle }) {
+      prepare({ href, customTitle, icon }) {
         return {
           title: customTitle ?? href,
+          media: icon,
         };
       },
     },
@@ -100,11 +138,15 @@ const externalLink = (props: LinksFieldProps) => {
 };
 
 const downloadLink = (props: LinksFieldProps) => {
-  const { includeDownload, includeCustomTitle, includeDescription } = props;
+  const { includeDownload, includeCustomTitle, includeDescription, includeIcon, includeHideOnMobile } = props;
 
   if (!includeDownload) return null;
 
   const fields = [...downloadLinkObjectField.fields];
+
+  if (includeIcon) {
+    fields.push(iconField);
+  }
 
   if (includeCustomTitle) {
     fields.push(customTitleField);
@@ -114,6 +156,10 @@ const downloadLink = (props: LinksFieldProps) => {
     fields.push(descriptionField);
   }
 
+  if (includeHideOnMobile) {
+    fields.push(hideOnMobileField);
+  }
+
   return defineField({
     ...downloadLinkObjectField,
     fields,
@@ -121,10 +167,69 @@ const downloadLink = (props: LinksFieldProps) => {
       select: {
         fileName: "file.asset.originalFilename",
         customTitle: "customTitle",
+        icon: "icon",
       },
-      prepare({ fileName, customTitle }) {
+      prepare({ fileName, customTitle, icon }) {
         return {
           title: customTitle ?? fileName,
+          media: icon,
+        };
+      },
+    },
+  });
+};
+
+const dropdownGroup = (props: LinksFieldProps) => {
+  const { includeDropdownGroup, includeDescriptionInLinkGroup, includeIcon, includeHideOnMobile } = props;
+
+  if (!includeDropdownGroup) return null;
+
+  const titleField = defineField({
+    name: "title",
+    title: "Tittel",
+    type: "string",
+    validation: (Rule) => Rule.required(),
+  });
+
+  const nestedLinksField = defineField({
+    name: "links",
+    title: "Linker",
+    type: "array",
+    of: linksField({
+      name: "links",
+      includeExternal: true,
+      includeInternal: true,
+      includeDescription: includeDescriptionInLinkGroup,
+      includeIcon: props.includeIcon,
+      includeHideOnMobile: props.includeHideOnMobile,
+      includeDropdownGroup: false,
+      includeLinkGroup: false
+    }).of,
+    validation: (Rule) => Rule.required(),
+  });
+
+  return defineField({
+    name: "dropdownGroup",
+    title: "Dropdown Gruppe",
+    type: "object",
+    icon: Folder,
+    fields: [
+      titleField,
+      ...(includeIcon ? [iconField] : []),
+      nestedLinksField,
+      ...(includeHideOnMobile ? [hideOnMobileField] : []),
+    ],
+    preview: {
+      select: {
+        title: "title",
+        links: "links",
+        icon: "icon",
+      },
+      prepare({ title, links, icon }) {
+        return {
+          title,
+          subtitle: `Dropdown: ${links?.length ?? 0} link${links?.length !== 1 ? "er" : ""}`,
+          media: icon || Folder,
         };
       },
     },
@@ -132,38 +237,57 @@ const downloadLink = (props: LinksFieldProps) => {
 };
 
 const linkGroup = (props: LinksFieldProps) => {
-  const { includeLinkGroup, includeDescriptionInLinkGroup } = props;
+  const { includeLinkGroup, includeIcon, includeHideOnMobile } = props;
 
   if (!includeLinkGroup) return null;
 
+  const titleField = defineField({
+    name: "title",
+    title: "Gruppe Navn",
+    type: "string",
+    description: "Internal name for this group (not displayed)",
+    validation: (Rule) => Rule.required(),
+  });
+
+  const groupItemsField = defineField({
+    name: "items",
+    title: "Items in Group",
+    type: "array",
+    of: linksField({
+      name: "groupItems",
+      includeExternal: true,
+      includeInternal: true,
+      includeIcon: props.includeIcon,
+      includeHideOnMobile: props.includeHideOnMobile,
+      includeDropdownGroup: true,
+      includeLinkGroup: false,
+    }).of,
+    description: "Links to include in this horizontal group",
+    validation: (Rule) => Rule.required(),
+  });
+
   return defineField({
     name: "linkGroup",
-    title: "Lenkegruppe",
+    title: "Link Gruppe",
     type: "object",
-    icon: Folder,
+    icon: LayoutGrid,
     fields: [
-      stringField({
-        name: "title",
-        title: "Tittel",
-        required: true,
-      }),
-      linksField({
-        name: "links",
-        title: "Linker",
-        includeExternal: true,
-        includeDescription: includeDescriptionInLinkGroup,
-        required: true,
-      }),
+      titleField,
+      ...(includeIcon ? [iconField] : []),
+      groupItemsField,
+      ...(includeHideOnMobile ? [hideOnMobileField] : []),
     ],
     preview: {
       select: {
         title: "title",
-        links: "links",
+        items: "items",
+        icon: "icon",
       },
-      prepare({ title, links }) {
+      prepare({ title, items, icon }) {
         return {
           title,
-          subtitle: `${links?.length ?? 0} link${links?.length !== 1 ? "er" : ""}`,
+          subtitle: `Group: ${items?.length ?? 0} items`,
+          media: icon || LayoutGrid,
         };
       },
     },
@@ -171,18 +295,37 @@ const linkGroup = (props: LinksFieldProps) => {
 };
 
 export const linksField = (props: LinksFieldProps) => {
-  const { includeCustomTitle = true, includeInternal = true, options, required, max } = props;
+  const { 
+    includeCustomTitle = true, 
+    includeInternal = true,
+    includeDropdownGroup = true,
+    includeLinkGroup = false,
+    includeExternal = true,
+    includeDownload = true,
+    includeIcon = false,
+    includeHideOnMobile = false,
+    options,
+    required, 
+    max 
+  } = props;
 
   const realProps = {
     ...props,
     includeInternal,
+    includeExternal,
+    includeDownload,
     includeCustomTitle,
+    includeDropdownGroup,
+    includeLinkGroup,
+    includeIcon,
+    includeHideOnMobile,
   };
 
   const linkTypes: ArrayDefinition["of"] = [
     internalLink(realProps),
     externalLink(realProps),
     downloadLink(realProps),
+    dropdownGroup(realProps),
     linkGroup(realProps),
   ].filter(Boolean) as ArrayDefinition["of"];
 

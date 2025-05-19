@@ -18,6 +18,12 @@ export const internalLinkObjectField = defineField({
       },
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "icon",
+      title: "Icon",
+      type: "icon",
+      description: "Icon to display with this link",
+    }),
   ],
   options: {
     collapsible: false,
@@ -28,5 +34,18 @@ export const internalLinkObjectField = defineField({
   },
   components: {
     annotation: LinkRenderer,
+  },
+  preview: {
+    select: {
+      title: "internalLink.title",
+      name: "internalLink.name",
+      icon: "icon",
+    },
+    prepare({ title, name, icon }) {
+      return {
+        title: title || name || "Intern link",
+        media: icon || Link,
+      };
+    },
   },
 });
