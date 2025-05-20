@@ -13,10 +13,14 @@ import ReadOnlySlugInput from './components/inputs/read-only-slug.input'
 import ColorDisplayInput from './components/inputs/color-display.input'
 
 // Export plugins
-import {colorPreviewPlugin} from './plugins/color-preview-plugin'
+import {
+  colorPlugin,
+  colorPreviewPlugin,
+  colorDisplayPlugin,
+  wcagBadgePlugin
+} from './plugins/color-plugins'
 import {readOnlySlugPlugin} from './plugins/read-only-slug-plugin'
 import {themeWizardPanePlugin} from './plugins/theme-wizard-pane-plugin'
-import {colorDisplayPlugin} from './plugins/color-display-plugin'
 
 // Export structure
 import {designTokensStructure} from './structure/design-tokens.document-structure'
@@ -42,10 +46,12 @@ export {
   ColorDisplayInput,
   
   // Plugins
+  colorPlugin,
   colorPreviewPlugin,
+  colorDisplayPlugin,
+  wcagBadgePlugin,
   readOnlySlugPlugin,
   themeWizardPanePlugin,
-  colorDisplayPlugin,
   
   // Structure
   designTokensStructure,

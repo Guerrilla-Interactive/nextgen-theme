@@ -61,8 +61,11 @@ export default function ThemeWizardPane(props: any) {
       const preset = themePresets.find(p => p.id === presetId)
       if (!preset) throw new Error(`Preset ${presetId} not found`)
       
-      // Show warning that existing values will be overwritten
-      const hasContent = document?.displayed?.primaryColor?.wcagColorPair?.background?.hex
+      // Check if the document already has content
+      const hasContent = 
+        document?.displayed?.primaryColors?.length > 0 || 
+        document?.displayed?.primaryColor?.wcagColorPair?.background?.hex
+      
       if (hasContent) {
         toast.push({
           status: 'warning',
@@ -99,6 +102,17 @@ export default function ThemeWizardPane(props: any) {
         duration: 3000,
       })
       
+      // Show instructions for viewing colors
+      setTimeout(() => {
+        toast.push({
+          status: 'info',
+          title: 'View colors in Basic Settings',
+          description: 'Go to the Basic Settings tab to see your new colors.',
+          closable: true,
+          duration: 5000,
+        })
+      }, 3000)
+      
       setIsProcessing(false)
     } catch (error) {
       console.error('Error applying theme preset:', error)
@@ -121,18 +135,106 @@ export default function ThemeWizardPane(props: any) {
     setIsProcessing(true)
     
     try {
-      // In a real implementation, we would generate a theme from the extracted colors
-      // For now, we'll just simulate it with a timeout
+      // Get document ID
+      const docId = documentId.startsWith('drafts.') 
+        ? documentId 
+        : `drafts.${documentId}`
+      
+      // In a real implementation, we would create a transaction to update colors
+      const tx = client.transaction()
+      
+      // Extract colors from the logo
+      const primaryColor = colors.primary || '#3b82f6'
+      const secondaryColor = colors.secondary || '#f97316'
+      
+      // Set up primaryColors array
+      tx.patch(docId, patch => patch.set({
+        primaryColors: [{
+          colorName: 'Primary (from logo)',
+          wcagColorPair: {
+            background: {
+              hex: primaryColor,
+              alpha: 1
+            },
+            foreground: {
+              hex: '#ffffff', // Default white text
+              alpha: 1
+            }
+          }
+        }]
+      }))
+      
+      // Set up secondaryColors array
+      tx.patch(docId, patch => patch.set({
+        secondaryColors: [{
+          colorName: 'Secondary (from logo)',
+          wcagColorPair: {
+            background: {
+              hex: secondaryColor,
+              alpha: 1
+            },
+            foreground: {
+              hex: '#ffffff', // Default white text
+              alpha: 1
+            }
+          }
+        }]
+      }))
+      
+      // Also update legacy fields for backward compatibility
+      tx.patch(docId, patch => patch.set({
+        primaryColor: {
+          wcagColorPair: {
+            background: {
+              hex: primaryColor,
+              alpha: 1
+            },
+            foreground: {
+              hex: '#ffffff',
+              alpha: 1
+            }
+          }
+        }
+      }))
+      
+      tx.patch(docId, patch => patch.set({
+        secondaryColor: {
+          wcagColorPair: {
+            background: {
+              hex: secondaryColor,
+              alpha: 1
+            },
+            foreground: {
+              hex: '#ffffff',
+              alpha: 1
+            }
+          }
+        }
+      }))
+      
+      // Commit transaction
+      await tx.commit()
+      
+      toast.push({
+        status: 'success',
+        title: 'Colors extracted',
+        description: 'Theme generated from logo colors.',
+        closable: true,
+        duration: 3000,
+      })
+      
+      // Show instructions for viewing colors
       setTimeout(() => {
         toast.push({
-          status: 'success',
-          title: 'Colors extracted',
-          description: 'Theme generated from logo colors.',
+          status: 'info',
+          title: 'View colors in Basic Settings',
+          description: 'Go to the Basic Settings tab to see your new colors.',
           closable: true,
-          duration: 3000,
+          duration: 5000,
         })
-        setIsProcessing(false)
-      }, 1500)
+      }, 3000)
+      
+      setIsProcessing(false)
     } catch (error) {
       console.error('Error processing logo colors:', error)
       

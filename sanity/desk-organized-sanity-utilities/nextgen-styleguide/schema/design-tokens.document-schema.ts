@@ -53,62 +53,114 @@ export const designTokensType = defineType({
 
     // --- BASIC MODE FIELDS ---
     
-    // Primary Color using WCAG color pair field
+    // Primary Colors using WCAG color pair field (now as array)
     defineField({
-      name: 'primaryColor',
-      title: 'Primary Color',
-      description: 'Main brand color and its foreground/text color',
-      type: 'object',
+      name: 'primaryColors',
+      title: 'Primary Colors',
+      description: 'Main brand colors and their foreground/text colors',
+      type: 'array',
       group: 'basic',
-      fields: [
-        wcagColorPairField,
-      ],
-      // Add preview configuration to better display the color
-      preview: {
-        select: {
-          background: 'wcagColorPair.background.hex',
-          foreground: 'wcagColorPair.foreground.hex',
+      of: [{
+        type: 'object',
+        fields: [
+          defineField({
+            name: 'colorName',
+            title: 'Color Name',
+            type: 'string',
+            validation: Rule => Rule.required().error('Color name is required')
+          }),
+          defineField({
+            name: 'wcagColorPair',
+            type: 'object',
+            fields: [wcagColorPairField]
+          })
+        ],
+        preview: {
+          select: {
+            colorName: 'colorName',
+            background: 'wcagColorPair.background.hex',
+            foreground: 'wcagColorPair.foreground.hex',
+          },
+          prepare({colorName, background, foreground}) {
+            return {
+              title: colorName || 'Primary Color',
+              subtitle: background ? `Background: ${background}, Foreground: ${foreground}` : 'Not set',
+              media: () => {
+                // Return a colored circle emoji
+                return '🔵';
+              }
+            };
+          }
         },
-        prepare({background, foreground}) {
-          return {
-            title: 'Primary Color',
-            subtitle: background ? `Background: ${background}, Foreground: ${foreground}` : 'Not set',
-            media: () => {
-              // Return a colored circle emoji instead of JSX
-              return '🔵';
-            }
-          };
-        }
-      },
+      }],
+      validation: Rule => Rule.min(1).error('At least one primary color is required')
     }),
 
-    // Secondary Color using WCAG color pair field
+    // Backward compatibility for legacy primaryColor field
     defineField({
-      name: 'secondaryColor',
-      title: 'Secondary Color',
-      description: 'Secondary brand color and its foreground/text color',
+      name: 'primaryColor',
+      title: 'Legacy Primary Color',
+      description: 'Main brand color (legacy format)',
       type: 'object',
-      group: 'basic',
+      hidden: true, // Hide this field as it's for backward compatibility only
       fields: [
         wcagColorPairField,
       ],
-      // Add preview configuration to better display the color
-      preview: {
-        select: {
-          background: 'wcagColorPair.background.hex',
-          foreground: 'wcagColorPair.foreground.hex',
+    }),
+
+    // Secondary Colors using WCAG color pair field (now as array)
+    defineField({
+      name: 'secondaryColors',
+      title: 'Secondary Colors',
+      description: 'Secondary brand colors and their foreground/text colors',
+      type: 'array',
+      group: 'basic',
+      of: [{
+        type: 'object',
+        fields: [
+          defineField({
+            name: 'colorName',
+            title: 'Color Name',
+            type: 'string',
+            validation: Rule => Rule.required().error('Color name is required')
+          }),
+          defineField({
+            name: 'wcagColorPair',
+            type: 'object',
+            fields: [wcagColorPairField]
+          })
+        ],
+        preview: {
+          select: {
+            colorName: 'colorName',
+            background: 'wcagColorPair.background.hex',
+            foreground: 'wcagColorPair.foreground.hex',
+          },
+          prepare({colorName, background, foreground}) {
+            return {
+              title: colorName || 'Secondary Color',
+              subtitle: background ? `Background: ${background}, Foreground: ${foreground}` : 'Not set',
+              media: () => {
+                // Return a colored circle emoji
+                return '🟠';
+              }
+            };
+          }
         },
-        prepare({background, foreground}) {
-          return {
-            title: 'Secondary Color',
-            subtitle: background ? `Background: ${background}, Foreground: ${foreground}` : 'Not set',
-            media: () => {
-              // Return a colored circle emoji instead of JSX
-              return '🟠';
-            }
-          };
-        }
-      },
+      }],
+      validation: Rule => Rule.min(1).error('At least one secondary color is required')
+    }),
+
+    // Backward compatibility for legacy secondaryColor field
+    defineField({
+      name: 'secondaryColor',
+      title: 'Legacy Secondary Color',
+      description: 'Secondary brand color (legacy format)',
+      type: 'object',
+      hidden: true, // Hide this field as it's for backward compatibility only
+      fields: [
+        wcagColorPairField,
+      ],
     }),
 
     // Color Display - shows a live preview of colors

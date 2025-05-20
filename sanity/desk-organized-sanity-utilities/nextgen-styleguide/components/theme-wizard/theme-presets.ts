@@ -32,6 +32,7 @@ export const themePresets: ThemePreset[] = [
     values: {
       // Basic mode values
       advancedMode: false,
+      // Legacy fields kept for backward compatibility
       primaryColor: {
         wcagColorPair: {
           background: {
@@ -56,6 +57,37 @@ export const themePresets: ThemePreset[] = [
           }
         }
       },
+      // New array-based color fields
+      primaryColors: [
+        {
+          colorName: 'Primary Blue',
+          wcagColorPair: {
+            background: {
+              hex: '#3b82f6',
+              alpha: 1
+            },
+            foreground: {
+              hex: '#ffffff',
+              alpha: 1
+            }
+          }
+        }
+      ],
+      secondaryColors: [
+        {
+          colorName: 'Secondary Orange',
+          wcagColorPair: {
+            background: {
+              hex: '#f97316',
+              alpha: 1
+            },
+            foreground: {
+              hex: '#ffffff',
+              alpha: 1
+            }
+          }
+        }
+      ],
       radius: {
         unit: 'rem',
         value: 0.375
@@ -78,6 +110,7 @@ export const themePresets: ThemePreset[] = [
     values: {
       // Basic mode values
       advancedMode: false,
+      // Legacy fields kept for backward compatibility
       primaryColor: {
         wcagColorPair: {
           background: {
@@ -102,6 +135,37 @@ export const themePresets: ThemePreset[] = [
           }
         }
       },
+      // New array-based color fields
+      primaryColors: [
+        {
+          colorName: 'Primary Indigo',
+          wcagColorPair: {
+            background: {
+              hex: '#818cf8',
+              alpha: 1
+            },
+            foreground: {
+              hex: '#0f172a',
+              alpha: 1
+            }
+          }
+        }
+      ],
+      secondaryColors: [
+        {
+          colorName: 'Secondary Pink',
+          wcagColorPair: {
+            background: {
+              hex: '#fb7185',
+              alpha: 1
+            },
+            foreground: {
+              hex: '#0f172a',
+              alpha: 1
+            }
+          }
+        }
+      ],
       radius: {
         unit: 'rem',
         value: 0.5
@@ -124,6 +188,7 @@ export const themePresets: ThemePreset[] = [
     values: {
       // Basic mode values
       advancedMode: false,
+      // Legacy fields kept for backward compatibility
       primaryColor: {
         wcagColorPair: {
           background: {
@@ -148,6 +213,37 @@ export const themePresets: ThemePreset[] = [
           }
         }
       },
+      // New array-based color fields
+      primaryColors: [
+        {
+          colorName: 'Primary Green',
+          wcagColorPair: {
+            background: {
+              hex: '#10b981',
+              alpha: 1
+            },
+            foreground: {
+              hex: '#ffffff',
+              alpha: 1
+            }
+          }
+        }
+      ],
+      secondaryColors: [
+        {
+          colorName: 'Secondary Purple',
+          wcagColorPair: {
+            background: {
+              hex: '#8b5cf6',
+              alpha: 1
+            },
+            foreground: {
+              hex: '#ffffff',
+              alpha: 1
+            }
+          }
+        }
+      ],
       radius: {
         unit: 'rem',
         value: 0.25
@@ -170,6 +266,7 @@ export const themePresets: ThemePreset[] = [
     values: {
       // Basic mode values
       advancedMode: false,
+      // Legacy fields kept for backward compatibility
       primaryColor: {
         wcagColorPair: {
           background: {
@@ -194,6 +291,37 @@ export const themePresets: ThemePreset[] = [
           }
         }
       },
+      // New array-based color fields
+      primaryColors: [
+        {
+          colorName: 'Primary Black',
+          wcagColorPair: {
+            background: {
+              hex: '#000000',
+              alpha: 1
+            },
+            foreground: {
+              hex: '#ffffff',
+              alpha: 1
+            }
+          }
+        }
+      ],
+      secondaryColors: [
+        {
+          colorName: 'Secondary Blue',
+          wcagColorPair: {
+            background: {
+              hex: '#2563eb',
+              alpha: 1
+            },
+            foreground: {
+              hex: '#ffffff',
+              alpha: 1
+            }
+          }
+        }
+      ],
       radius: {
         unit: 'rem',
         value: 0.25
