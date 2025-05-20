@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "generate-theme": "ts-node sanity/desk-organized-sanity-utilities/nextgen-styleguide/scripts/generateGlobals.ts",
+    "setup-webhook": "ts-node sanity/desk-organized-sanity-utilities/nextgen-styleguide/scripts/setup-webhook.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -32,6 +34,7 @@
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.2",
     "@sanity/code-input": "^5.1.2",
+    "@sanity/color-input": "^4.0.3",
     "@sanity/image-url": "^1.1.0",
     "@sanity/orderable-document-list": "^1.2.3",
     "@sanity/preview-url-secret": "^2.1.4",
@@ -40,8 +43,10 @@
     "@turf/turf": "^7.2.0",
     "@types/animejs": "^3.1.13",
     "animejs": "^3.2.2",
+    "chroma-js": "^2.4.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "embla-carousel-react": "^8.5.2",
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.469.0",
@@ -69,6 +74,7 @@
   "devDependencies": {
     "@sanity/client": "^6.28.0",
     "@tailwindcss/postcss": "^4.0.0",
+    "@types/chroma-js": "^2.4.5",
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
@@ -76,6 +82,7 @@
     "eslint-config-next": "15.1.5",
     "postcss": "^8.5.1",
     "tailwindcss": "^4.0.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
   "description": "This starter is a part of [Schema UI](https://schemaui.com) project, a comprehensive page builder that provides production-ready React components with pre-built Sanity schemas and GROQ queries, enabling rapid development of content-driven websites with Sanity CMS and Next.js.",

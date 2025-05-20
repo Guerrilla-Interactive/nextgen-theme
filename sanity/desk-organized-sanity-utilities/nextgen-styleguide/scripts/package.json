@@ -1,0 +1,28 @@
+{
+  "name": "@nextgen/theme",
+  "version": "0.1.0",
+  "description": "NextGen design tokens and theme variables",
+  "files": [
+    "globals.css",
+    "tailwind.theme.cjs"
+  ],
+  "main": "tailwind.theme.cjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "design-tokens",
+    "theme",
+    "tailwind",
+    "css",
+    "variables"
+  ],
+  "author": "Frikk Jarl",
+  "license": "ISC",
+  "peerDependencies": {
+    "tailwindcss": ">=3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+} 

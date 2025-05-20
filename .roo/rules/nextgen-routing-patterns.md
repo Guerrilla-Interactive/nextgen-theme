@@ -1,0 +1,742 @@
+# NextGen Theme Routing Patterns
+
+This document provides a comprehensive guide to the routing patterns and App Router implementation in the NextGen Theme project. It explains how the app folder is structured, how routes are organized, and how to implement new routes following the project's patterns.
+
+## 1. Next.js App Router Fundamentals
+
+NextGen Theme uses Next.js 15's App Router, which follows these core principles:
+
+- **File-based routing**: Routes are defined by the file structure in the `app` directory
+- **Nested routes**: Folders within the app directory create nested routes
+- **Special files**: Reserved filenames have special meanings:
+  - `page.tsx`: Creates a UI for the route
+  - `layout.tsx`: Creates shared layouts for child routes
+  - `loading.tsx`: Loading UI for the route
+  - `not-found.tsx`: UI for 404 errors
+  - `error.tsx`: Error boundaries for routes
+- **Dynamic routes**: Folders with square brackets (`[param]`) create dynamic routes
+- **Route groups**: Folders with parentheses `(group)` create logical groups without affecting the URL path
+
+## 2. NextGen Theme App Directory Structure
+
+The top-level app directory is organized into several key areas:
+
+```
+app/
+├── api/                 # API routes for backend functionality
+├── studio/             # Sanity Studio embedded configuration
+├── (main)/             # Main application routes (container)
+├── globals.css         # Global CSS styles
+├── layout.tsx          # Root layout (applies to all routes)
+├── robots.ts           # Robots.txt configuration
+└── sitemap.ts          # Sitemap generation
+```
+
+### Root Level Files
+
+- **layout.tsx**: The root layout that wraps all routes, includes global providers and metadata
+- **globals.css**: Global styles for the entire application
+- **sitemap.ts**: Generates the sitemap for SEO
+- **robots.ts**: Controls search_files engine crawler access
+
+## 3. Main Route Container Structure
+
+The `(main)` directory contains the primary content routes and follows a sophisticated organization pattern:
+
+```
+app/
+└── (main)/              # Main route container (doesn't affect URL)
+    ├── (root)/          # Root pages without URL prefix
+    │   ├── (index)/     # Homepage-specific components
+    │   │   ├── page.tsx
+    │   │   └── index.page-component.tsx
+    │   └── [slug]/      # Dynamic general pages
+    │       ├── (page-slug-core-utilities)/
+    │       │   ├── page-slug.desk-structure.ts
+    │       │   ├── page-slug.route-query.ts
+    │       │   ├── page-slug.route-schema.ts
+    │       │   └── page-slug.server-actions.ts
+    │       └── page.tsx
+    ├── blog/            # Blog section (affects URL: /blog/*)
+    │   ├── (index)/     # Blog listing page
+    │   │   ├── blog-index.page-component.tsx
+    │   │   ├── blog-index.route-query.ts
+    │   │   └── page.tsx
+    │   └── [slug]/      # Individual blog post pages
+    │       ├── (blog-slug-core-utilities)/
+    │       │   ├── blog-slug.desk-structure.ts
+    │       │   ├── blog-slug.route-query.ts
+    │       │   ├── blog-slug.route-schema.ts
+    │       │   └── blog-slug.server-actions.ts
+    │       └── page.tsx
+    ├── course/          # Course section (affects URL: /course/*)
+    │   └── [slug]/      # Individual course pages
+    ├── service/         # Service section (affects URL: /service/*)
+    │   └── [slug]/      # Individual service pages
+    ├── all-route-document-schemas.ts  # Central schema registry
+    ├── layout.tsx       # Shared layout for main routes
+    └── not-found.tsx    # Custom 404 page for main routes
+```
+
+## 4. Key Routing Patterns
+
+### Route Group Hierarchy Pattern
+
+NextGen Theme uses a structured approach to route organization:
+
+1. **Container Groups**: The `(main)` folder is a route group container that doesn't affect the URL path but groups related routes
+2. **Root Group**: The `(root)` folder contains pages without a URL prefix
+3. **Content Type Sections**: Non-parenthesized folders (`blog/`, `course/`, `service/`) create URL paths
+4. **Dynamic Routes**: `[slug]` folders handle dynamic content with the same structure
+
+### Core Utilities Encapsulation Pattern
+
+For each content type or dynamic route, core utilities are grouped in parenthesized directories:
+
+```
+[content-type]/[slug]/
+├── ([content-type]-slug-core-utilities)/  # Utilities for this route
+│   ├── [content-type]-slug.desk-structure.ts
+│   ├── [content-type]-slug.route-query.ts
+│   ├── [content-type]-slug.route-schema.ts
+│   └── [content-type]-slug.server-actions.ts
+└── page.tsx
+```
+
+This encapsulation ensures:
+- Related utilities are co-located with the route
+- Clear separation of concerns
+- Consistent pattern across different content types
+- No impact on URL structure for utility folders
+
+### Route Implementation Pattern
+
+Each route follows a consistent implementation pattern:
+
+1. **Page Component**: Handles the main rendering, data fetching, and metadata
+2. **Core Utilities**: Encapsulated in a dedicated folder
+   - **Schema**: Defines the content structure for Sanity
+   - **Queries**: GROQ queries for fetching data
+   - **Server Actions**: Data fetching and operations
+   - **Desk Structure**: Sanity Studio configuration
+
+## 5. Route Implementation Examples
+
+### Example: Standard Dynamic Route Page
+
+```tsx
+// app/(main)/[content-type]/[slug]/page.tsx
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { Blocks } from '@/features/page-builder-blocks/block-component-exporter';
+import { fetchItemBySlug, generateStaticParams } from './([content-type]-slug-core-utilities)/[content-type].server-actions';
+
+// Enable dynamic params (for routes not pre-rendered at build time)
+export const dynamicParams = true;
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const { slug } = params;
+  const data = await fetchItemBySlug(slug);
+  
+  if (!data) return {};
+  
+  return {
+    title: data.title,
+    description: data.description,
+    openGraph: {
+      title: data.title,
+      description: data.description,
+      images: data.mainImage ? [data.mainImage.url] : [],
+    },
+  };
+}
+
+// Generate static paths for all items (for ISR/SSG)
+export async function generateStaticParams() {
+  const paths = await generateStaticParams();
+  return paths;
+}
+
+// The page component itself
+export default async function ItemPage({ params }) {
+  const { slug } = params;
+  const data = await fetchItemBySlug(slug);
+  
+  // Handle 404 if no data found
+  if (!data) {
+    notFound();
+  }
+  
+  return (
+    <main>
+      <div className="container mx-auto py-12">
+        <h1 className="text-4xl font-bold mb-8">{data.title}</h1>
+        {/* Render content blocks if they exist */}
+        {data.blocks && <Blocks blocks={data.blocks} />}
+      </div>
+    </main>
+  );
+}
+```
+
+### Example: Index Route Page
+
+```tsx
+// app/(main)/[content-type]/(index)/page.tsx
+import { Metadata } from 'next';
+import ContentIndexComponent from './content-index.page-component';
+import { fetchAllItems } from './content-index.route-query';
+
+// Static metadata for SEO
+export const metadata: Metadata = {
+  title: 'Content Listing | NextGen Theme',
+  description: 'Browse all content items',
+};
+
+// The page component itself
+export default async function ContentIndexPage() {
+  // Fetch all items for the listing
+  const items = await fetchAllItems();
+  
+  return <ContentIndexComponent items={items} />;
+}
+```
+
+## 6. Data Flow in Routes
+
+NextGen Theme follows a consistent data flow pattern for routes:
+
+```
+Route Request → Page Component → Server Action → GROQ Query → Sanity → Component Rendering
+```
+
+This pattern ensures:
+1. Clean separation between data fetching and rendering
+2. Type-safe data handling
+3. Efficient data fetching with GROQ
+4. Consistent error handling
+
+### Server Action Pattern
+
+```ts
+// app/(main)/[content-type]/[slug]/([content-type]-slug-core-utilities)/[content-type].server-actions.ts
+import { client } from '@/sanity/lib/client';
+import { itemBySlugQuery, allItemsQuery } from './[content-type].route-query';
+
+// Fetch a single item by slug
+export async function fetchItemBySlug(slug: string) {
+  try {
+    const data = await client.fetch(itemBySlugQuery, { slug });
+    return data;
+  } catch (error) {
+    console.error(`Error fetching ${content-type}:`, error);
+    return null;
+  }
+}
+
+// Generate static paths for build time
+export async function generateStaticParams() {
+  try {
+    const items = await client.fetch(allItemsQuery);
+    return items.map((item) => ({
+      slug: item.slug,
+    }));
+  } catch (error) {
+    console.error(`Error generating ${content-type} static params:`, error);
+    return [];
+  }
+}
+```
+
+## 7. Complete Route File Examples
+
+Below are complete examples of each file needed to implement a route for "custom" content type, based on the established NextGen Theme patterns.
+
+### Directory Structure
+
+```
+app/
+└── (main)/
+    └── custom/
+        └── [slug]/
+            ├── (custom-slug-core-utilities)/
+            │   ├── custom-slug.desk-structure.ts
+            │   ├── custom-slug.route-query.ts
+            │   ├── custom-slug.route-schema.ts
+            │   ├── custom-slug.server-actions.ts
+            │   └── custom-slug.translations-and-variables.ts
+            ├── custom-slug.page-component.tsx
+            └── page.tsx
+```
+
+### 1. Desk Structure (custom-slug.desk-structure.ts)
+
+```typescript
+// app/(main)/custom/[slug]/(custom-slug-core-utilities)/custom-slug.desk-structure.ts
+import type { StructureBuilder } from "sanity/structure";
+import { customSlugVariables } from "./custom-slug.translations-and-variables";
+
+export const customSlugDeskStructure = (S: StructureBuilder) => {
+  return S.listItem()
+    .title("Custom Items")
+    .schemaType(customSlugVariables("DOCUMENT_TYPE"))
+    .child(
+      S.documentTypeList(customSlugVariables("DOCUMENT_TYPE"))
+        .title("Custom Items")
+        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
+    );
+};
+```
+
+### 2. Route Queries (custom-slug.route-query.ts)
+
+```typescript
+// app/(main)/custom/[slug]/(custom-slug-core-utilities)/custom-slug.route-query.ts
+import { imageQuery } from "@/features/unorganized-components/image-component/image.query";
+import blockContentQuery from "@/features/page-builder-blocks/shared/shared-schemas/block-content/block-content.query";
+import { groq } from "next-sanity";
+
+// Get all custom items with just slug info for static params
+export const GET_ALL_CUSTOM_ITEMS_QUERY = groq`
+  *[_type == "custom-slug" && defined(slug)]{
+    slug
+  }
+`;
+
+// Get basic list of custom items with essential fields
+export const GET_CUSTOM_ITEMS_LIST_QUERY = groq`
+  *[_type == "custom-slug" && defined(slug)] | order(_createdAt desc){
+    title,
+    slug,
+    excerpt,
+    featuredImage{
+      ${imageQuery}
+    },
+  }
+`;
+
+// Get a single custom item by slug with all details
+export const GET_CUSTOM_ITEM_BY_SLUG_QUERY = groq`
+  *[_type == "custom-slug" && slug.current == $slug][0]{
+    title,
+    customTitle,
+    slug,
+    layout,
+    excerpt,
+    _createdAt,
+    body[]{
+      ${blockContentQuery}
+    },
+    _updatedAt,
+    featuredImage{
+      _type, 
+      ${imageQuery}
+    },
+    // Include any other fields needed for this content type
+  }
+`;
+```
+
+### 3. Route Schema (custom-slug.route-schema.ts)
+
+```typescript
+// app/(main)/custom/[slug]/(custom-slug-core-utilities)/custom-slug.route-schema.ts
+import { defineField, defineType } from "sanity";
+import { Star } from "lucide-react";
+import { customSlugVariables } from "./custom-slug.translations-and-variables";
+
+export default defineType({
+  name: customSlugVariables("DOCUMENT_TYPE"),
+  title: "Custom Item",
+  type: "document",
+  icon: Star,
+  groups: [
+    {
+      name: "content",
+      title: "Content",
+    },
+    {
+      name: "seo",
+      title: "SEO",
+    },
+    {
+      name: "settings",
+      title: "Settings",
+    },
+  ],
+  fields: [
+    defineField({
+      name: "title",
+      title: "Title",
+      type: "string",
+      group: "content",
+      validation: (Rule) => Rule.required(),
+    }),
+    
+    defineField({
+      name: "customTitle",
+      title: "Custom Title",
+      type: "string",
+      group: "settings",
+    }),
+
+    defineField({
+      name: "slug",
+      title: "Slug",
+      type: "slug",
+      group: "settings",
+      options: {
+        source: "title",
+        maxLength: 96,
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+
+    defineField({
+      name: 'layout',
+      title: 'Layout',
+      description: 'Choose the layout for this page',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Standard Layout', value: 'standard' },
+          { title: 'Alternative Layout', value: 'alternative' }
+        ],
+        layout: 'radio'
+      },
+      initialValue: 'standard'
+    }),
+
+    defineField({
+      name: "featuredImage",
+      title: "Featured Image",
+      type: "image",
+      group: "content",
+      options: {
+        hotspot: true,
+      },
+    }),
+
+    defineField({
+      name: "body",
+      title: "Text Content",
+      type: "block-content",
+      group: "content",
+    }),
+    
+    defineField({
+      name: "excerpt",
+      title: "Excerpt",
+      type: "text",
+      group: "content",
+    }),
+  ],
+});
+```
+
+### 4. Server Actions (custom-slug.server-actions.ts)
+
+```typescript
+// app/(main)/custom/[slug]/(custom-slug-core-utilities)/custom-slug.server-actions.ts
+import { sanityFetch } from "@/sanity/lib/live";
+import {
+  GET_ALL_CUSTOM_ITEMS_QUERY,
+  GET_CUSTOM_ITEM_BY_SLUG_QUERY,
+} from "./custom-slug.route-query";
+import { GET_ALL_CUSTOM_ITEMS_QUERYResult, GET_CUSTOM_ITEM_BY_SLUG_QUERYResult } from "@/sanity.types";
+
+// Fetch a full custom item using its slug
+export const fetchCustomItemBySlug = async ({
+  slug,
+}: {
+  slug: string;
+}): Promise<GET_CUSTOM_ITEM_BY_SLUG_QUERYResult> => {
+  const { data } = await sanityFetch({
+    query: GET_CUSTOM_ITEM_BY_SLUG_QUERY,
+    params: { slug },
+  });
+  return data;
+};
+
+// Fetch all custom item slugs for static params generation
+export const fetchCustomItemStaticParams = async (): Promise<GET_ALL_CUSTOM_ITEMS_QUERYResult[]> => {
+  const { data } = await sanityFetch({
+    query: GET_ALL_CUSTOM_ITEMS_QUERY,
+    perspective: "published",
+    stega: false,
+  });
+  return data;
+};
+
+// Fetch all custom items (without extra published options)
+export const fetchAllCustomItems = async (): Promise<GET_ALL_CUSTOM_ITEMS_QUERYResult[]> => {
+  const { data } = await sanityFetch({
+    query: GET_ALL_CUSTOM_ITEMS_QUERY,
+  });
+  return data;
+};
+```
+
+### 5. Translations and Variables (custom-slug.translations-and-variables.ts)
+
+```typescript
+// app/(main)/custom/[slug]/(custom-slug-core-utilities)/custom-slug.translations-and-variables.ts
+/**
+ * Translation helper function
+ */
+function translate<T extends Record<string, any>>(
+  translations: T | undefined | null
+) {
+  return function t<K extends keyof T>(
+    key: K, 
+    fallback?: string
+  ): string {
+    if (!translations) return fallback || String(key);
+    const value = translations[key];
+    return (value !== undefined ? String(value) : fallback || String(key));
+  };
+} 
+
+/**
+ * Variables helper function
+ * Provides a consistent way to access variables with fallbacks
+ */
+function variableStore<T extends Record<string, any>>(
+  vars: T | undefined | null
+) {
+  return function v<K extends keyof T>(
+    key: K,
+    fallback?: any
+  ): T[K] | undefined {
+    if (!vars) return fallback;
+    const value = vars[key];
+    return value !== undefined ? value : fallback;
+  };
+}
+
+const variablesData = {
+  // Schema type identifier
+  DOCUMENT_TYPE: "custom-slug",
+  
+  // Route path for custom pages
+  NEXT_FOLDER_PATH: "/custom",
+  ROUTE_PATH: "/custom-items",
+}
+
+const translationsData = {
+  // Schema metadata
+  schemaTitle: "Custom Item",
+  schemaDescription: "A custom item page with details and configuration.",
+}
+
+export const customSlugTranslations = translate(translationsData);
+export const customSlugVariables = variableStore(variablesData);
+```
+
+### 6. Page Component (custom-slug.page-component.tsx)
+
+```tsx
+// app/(main)/custom/[slug]/custom-slug.page-component.tsx
+"use client";
+
+import { Container, FlexCol, FlexRow, Section } from "@/features/unorganized-components/nextgen-core-ui";
+import PortableTextRenderer from "@/features/unorganized-components/portable-text-renderer";
+import { GET_CUSTOM_ITEM_BY_SLUG_QUERYResult } from "@/sanity.types";
+import { useGlobalContext } from "@/features/context/global-context";
+import { useEffect } from "react";
+
+export default function CustomSlugPageComponent(page: Partial<GET_CUSTOM_ITEM_BY_SLUG_QUERYResult>) {
+  const { sessionStatus } = useGlobalContext();
+  const { setIsTopDark } = sessionStatus;
+  const layout = (page.layout as string | undefined) || 'standard';
+
+  useEffect(() => {
+    setIsTopDark(false);
+  }, [setIsTopDark]);
+
+  return (
+    <>
+      {/* Featured Image Section */}
+      {page.featuredImage && (
+        <Section className="bg-gray-100">
+          <Container>
+            <div className="h-60 md:h-80 relative overflow-hidden rounded-lg">
+              <img 
+                src={page.featuredImage.asset?.url || ''}
+                alt={page.featuredImage.alt || page.title || 'Custom item'}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </Container>
+        </Section>
+      )}
+
+      {/* Main Content Section */}
+      <Section className="mb-12 mt-12">
+        <Container>
+          {layout === 'standard' ? (
+            <FlexCol className="w-full max-w-4xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-bold mb-6">
+                {page.customTitle || page.title}
+              </h1>
+              <div className="prose max-w-none">
+                {page.body && <PortableTextRenderer value={page.body} />}
+              </div>
+            </FlexCol>
+          ) : (
+            <FlexRow className="justify-between gap-8 md:gap-12 lg:gap-16">
+              <FlexCol className="w-full lg:w-8/12">
+                <h1 className="text-3xl md:text-4xl font-bold mb-6">
+                  {page.customTitle || page.title}
+                </h1>
+                <div className="prose max-w-none">
+                  {page.body && <PortableTextRenderer value={page.body} />}
+                </div>
+              </FlexCol>
+              <FlexCol className="w-full lg:w-4/12 bg-gray-50 p-6 rounded-lg">
+                {/* Sidebar content if needed */}
+                <div className="sticky top-8">
+                  <h3 className="text-lg font-medium mb-4">Key Information</h3>
+                  <p>{page.excerpt}</p>
+                </div>
+              </FlexCol>
+            </FlexRow>
+          )}
+        </Container>
+      </Section>
+    </>
+  );
+}
+```
+
+### 7. Page (page.tsx)
+
+```tsx
+// app/(main)/custom/[slug]/page.tsx
+import { notFound } from "next/navigation";
+import { generatePageMetadata } from "@/features/unorganized-utils/metadata";
+import { fetchCustomItemBySlug, fetchCustomItemStaticParams } from "./(custom-slug-core-utilities)/custom-slug.server-actions";
+import CustomSlugPageComponent from "./custom-slug.page-component";
+
+// Add ISR with revalidation every 30 seconds
+export const revalidate = 30;
+
+export async function generateStaticParams() {
+  const items = await fetchCustomItemStaticParams();
+
+  return items.map((item) => ({
+    slug: item.slug?.current,
+  }));
+}
+
+export async function generateMetadata(props: {
+  params: { slug: string };
+}) {
+  const { slug } = props.params;
+  const item = await fetchCustomItemBySlug({ slug });
+
+  if (!item) {
+    notFound();
+  }
+
+  return generatePageMetadata({ 
+    page: item, 
+    slug: `/custom-items/${slug}` 
+  });
+}
+
+export default async function CustomItemPage(props: {
+  params: { slug: string };
+}) {
+  const { slug } = props.params;
+  const item = await fetchCustomItemBySlug({ slug });
+
+  if (!item) {
+    notFound();
+  }
+  
+  return <CustomSlugPageComponent {...item} />;
+}
+```
+
+## 8. Best Practices for NextGen Theme Routing
+
+### When Creating New Routes
+
+1. **Follow the Established Pattern**:
+   - Use the correct folder structure based on URL requirements
+   - Create a dedicated core-utilities folder for each dynamic route
+   - Follow the naming conventions for all files
+
+2. **Implement Required Files**:
+   - `page.tsx`: The route component
+   - `[content-type].route-schema.ts`: Sanity schema definition
+   - `[content-type].route-query.ts`: GROQ queries
+   - `[content-type].server-actions.ts`: Data fetching functions
+
+3. **Register Schemas**:
+   - Add new schemas to `all-route-document-schemas.ts`
+   - Ensure proper desk structure configuration
+
+### Route Organization Guidelines
+
+1. **URL Structure Considerations**:
+   - Use non-parenthesized folders for URL-affecting routes
+   - Use parenthesized folders for logical grouping without URL impact
+   - Keep URL paths clean and SEO-friendly
+
+2. **Content Type Separation**:
+   - Each content type should have its own top-level folder
+   - Consistent implementation across content types
+   - Re-use patterns for similar content types
+
+3. **Route Complexity Management**:
+   - For complex pages, create a dedicated page component file
+   - Use the core-utilities pattern to keep routes maintainable
+   - Create specific components for page sections
+
+## 9. Advanced Routing Features
+
+### Parallel Routes
+
+For advanced layouts with multiple slots, use parallel routes with the `@` notation:
+
+```
+app/
+└── dashboard/
+    ├── layout.tsx       # Main layout with slots
+    ├── page.tsx         # Main content
+    ├── @sidebar/        # Sidebar content slot
+    │   └── page.tsx     # Sidebar content
+    └── @modal/          # Modal content slot
+        └── page.tsx     # Modal content
+```
+
+### Intercepting Routes
+
+For modal patterns or advanced navigation, use route interception with the `(.)` notation:
+
+```
+app/
+└── blog/
+    ├── page.tsx         # Blog listing
+    ├── [slug]/
+    │   └── page.tsx     # Full blog post page
+    └── (.)              # Intercept the same level
+        └── [slug]/      # Show post in a modal
+            └── page.tsx # Modal version of the post
+```
+
+## 10. Conclusion
+
+The NextGen Theme routing architecture provides a sophisticated, scalable approach to route organization. By following these patterns, developers can maintain a consistent, organized codebase that separates concerns appropriately while creating an intuitive URL structure for users.
+
+Key benefits of this approach include:
+- Clear separation of concerns
+- Consistent patterns across content types
+- Optimized data flow
+- SEO-friendly URL structure
+- Easy maintenance and extension
+
+When implementing new routes, always refer to this guide and follow the established patterns to maintain the architectural integrity of the project. 

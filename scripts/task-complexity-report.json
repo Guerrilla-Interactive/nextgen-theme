@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "generatedAt": "2025-05-20T11:54:56.988Z",
+    "tasksAnalyzed": 15,
+    "thresholdScore": 5,
+    "projectName": "Taskmaster",
+    "usedResearch": true
+  },
+  "complexityAnalysis": [
+    {
+      "taskId": 1,
+      "taskTitle": "Create Project Structure",
+      "complexityScore": 2,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Break down the task into: (1) Creating the main directory and subdirectories as specified, (2) Adding placeholder files to each directory, (3) Verifying the structure matches the PRD using a directory tree command.",
+      "reasoning": "This task is straightforward and mostly involves creating folders and files according to a specification. It does not require complex logic or decision-making, but benefits from being split into setup, file creation, and verification steps."
+    },
+    {
+      "taskId": 2,
+      "taskTitle": "Define Design Token Schema",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Expand into: (1) Define the singleton document structure, (2) Implement basic mode fields, (3) Add advanced mode toggle and conditional fields, (4) Implement validation for duplicates and required fields, (5) Make slugs read-only after publish.",
+      "reasoning": "This involves schema design, conditional logic, and custom validation, requiring careful planning and testing to ensure all requirements are met and edge cases are handled."
+    },
+    {
+      "taskId": 3,
+      "taskTitle": "Create WCAG Color Pair Field",
+      "complexityScore": 6,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Expand into: (1) Define the field schema for color pairs, (2) Implement preview logic for color swatches, (3) Add validation for required fields and uniqueness, (4) Test integration with the main schema.",
+      "reasoning": "This task requires creating a reusable field with custom preview and validation logic, which is moderately complex and should be broken down for clarity and testability."
+    },
+    {
+      "taskId": 4,
+      "taskTitle": "Implement WCAG Badge Input Component",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Expand into: (1) Extend the color input component, (2) Implement contrast ratio calculation, (3) Display WCAG compliance badges, (4) Show warnings for insufficient contrast, (5) Register and test the component in Studio.",
+      "reasoning": "Building a custom React input with accessibility logic and real-time feedback is non-trivial and requires both UI and logic work, as well as integration and testing."
+    },
+    {
+      "taskId": 5,
+      "taskTitle": "Create Design Tokens Document Structure",
+      "complexityScore": 5,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Expand into: (1) Define the singleton document structure, (2) Add custom icon, (3) Configure tabs for basic/advanced views, (4) Integrate with main structure.ts.",
+      "reasoning": "This task involves using Sanity's Structure Builder API, which is moderately complex and benefits from being split into logical configuration and integration steps."
+    },
+    {
+      "taskId": 6,
+      "taskTitle": "Implement Live Preview Pane",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Expand into: (1) Build the preview pane component, (2) Integrate Shadcn UI components, (3) Connect to current draft token values, (4) Implement real-time style updates, (5) Add WCAG compliance warning logic, (6) Register as a document view.",
+      "reasoning": "This is a complex UI feature requiring real-time data binding, dynamic styling, accessibility checks, and integration with the Sanity Studio, making it one of the most involved tasks."
+    },
+    {
+      "taskId": 7,
+      "taskTitle": "Create GROQ Queries for Design Tokens",
+      "complexityScore": 4,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Expand into: (1) Write GROQ query for all tokens, (2) Write query for preview pane, (3) Test queries with both basic and advanced modes.",
+      "reasoning": "Writing and testing GROQ queries is relatively straightforward but should be split to ensure coverage of all use cases and proper testing."
+    },
+    {
+      "taskId": 8,
+      "taskTitle": "Implement Token Generator CLI",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Expand into: (1) Set up CLI scaffolding, (2) Implement token fetching logic, (3) Transform tokens to CSS variables, (4) Generate Tailwind config, (5) Add error handling and validation, (6) Test performance and output.",
+      "reasoning": "Building a CLI that interfaces with APIs, transforms data, generates files, and handles errors and performance is a complex engineering task requiring careful breakdown."
+    },
+    {
+      "taskId": 9,
+      "taskTitle": "Set Up CI/CD Pipeline for Theme Generation",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Expand into: (1) Configure Sanity webhook, (2) Set up GitHub Actions workflow, (3) Integrate token generation script, (4) Build and publish npm package, (5) Test end-to-end pipeline timing.",
+      "reasoning": "CI/CD setup involves multiple systems (Sanity, GitHub Actions, npm), automation, and timing requirements, making it a complex but well-defined task."
+    },
+    {
+      "taskId": 10,
+      "taskTitle": "Implement Reference Fields for Component Overrides",
+      "complexityScore": 6,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Expand into: (1) Extend schema with component override section, (2) Implement reference fields with dropdowns, (3) Prevent creation of new tokens in overrides, (4) Update generator to process overrides.",
+      "reasoning": "Adding reference fields with validation and updating downstream generators involves schema changes and logic updates, requiring moderate complexity and clear subtasks."
+    },
+    {
+      "taskId": 11,
+      "taskTitle": "Implement Slug Read-Only Logic",
+      "complexityScore": 5,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Expand into: (1) Create custom slug input component, (2) Integrate publish status check, (3) Register and test across all relevant schema fields.",
+      "reasoning": "This is a focused UI logic task that requires a custom component and integration, but is not highly complex."
+    },
+    {
+      "taskId": 12,
+      "taskTitle": "Implement Validation for Duplicates and Empty Fields",
+      "complexityScore": 5,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Expand into: (1) Implement duplicate slug validation, (2) Add required field checks, (3) Test validation in both basic and advanced modes.",
+      "reasoning": "Schema validation logic is moderately complex and should be split into distinct validation and testing steps."
+    },
+    {
+      "taskId": 13,
+      "taskTitle": "Create Documentation",
+      "complexityScore": 3,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Expand into: (1) Write README.md with all required sections, (2) Add tooltips and field descriptions in schema, (3) Review and test documentation with users.",
+      "reasoning": "Documentation is essential but not technically complex; it benefits from being split into writing, implementation, and review steps."
+    },
+    {
+      "taskId": 14,
+      "taskTitle": "Implement Default WCAG AA Compliant Palette",
+      "complexityScore": 4,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Expand into: (1) Design compliant color pairs, (2) Set as initial values in schema, (3) Test compliance with contrast calculators.",
+      "reasoning": "Designing and implementing a default palette is straightforward but requires careful testing for accessibility compliance."
+    },
+    {
+      "taskId": 15,
+      "taskTitle": "Create Integration Example for Web Applications",
+      "complexityScore": 3,
+      "recommendedSubtasks": 3,
+      "expansionPrompt": "Expand into: (1) Write integration guide for each framework, (2) Create example code for Next.js, React, etc., (3) Test integration in sample applications.",
+      "reasoning": "Providing integration examples is mostly documentation and sample code, which is low in complexity but should be split for clarity and completeness."
+    }
+  ]
+}

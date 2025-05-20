@@ -11,8 +11,6 @@ import { presentationTool } from "sanity/presentation";
 import { media } from "sanity-plugin-media";
 import { iconify } from 'sanity-plugin-iconify';
 
-
-
 // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
 import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schema } from "./sanity/all-schemas-combined";
@@ -20,11 +18,12 @@ import { resolve } from "@/sanity/desk-organized-sanity-utilities/structure-util
 import { structure } from "./sanity/desk-organized-sanity-utilities/structure";
 import AppIcon from "./features/theme/AppIcon";
 import { imageBrightnessPlugin } from "./sanity/plugins/image-brightness-plugin";
-
-
-
-
-
+import {colorInput} from '@sanity/color-input'
+import { 
+  colorPreviewPlugin,
+  colorDisplayPlugin,
+  themeWizardPanePlugin
+} from "./sanity/desk-organized-sanity-utilities/nextgen-styleguide"
 
 export default defineConfig({
   basePath: "/studio",
@@ -35,9 +34,11 @@ export default defineConfig({
   // Add and edit the content schema in the './sanity/schema' folder
   schema,
   plugins: [
-    
-      
     structureTool({ structure }),
+    colorInput(),
+    colorPreviewPlugin,
+    colorDisplayPlugin,
+    themeWizardPanePlugin,
     presentationTool({
       previewUrl: {
         draftMode: {
@@ -51,11 +52,9 @@ export default defineConfig({
     imageBrightnessPlugin(),
     iconify({
       // Optional configuration
-  
       // Filter icons by collection for all Icon fields (this field has typed autocomplete ✨)
       // Defaults to empty array (all collections)
       collections: [ "mdi", "lucide"],
-  
       // Shows the selected icon name and collection underneath the icon picker
       // Defaults to false
       showName: false,
