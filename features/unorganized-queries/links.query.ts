@@ -15,7 +15,8 @@ const internalLinkQuery = groq`
   }),
   description,
   icon,
-  hideOnMobile
+  hideOnMobile,
+  linkStyle
 `;
 // @sanity-typegen-ignore
 const externalLinkQuery = groq`
@@ -28,7 +29,8 @@ const externalLinkQuery = groq`
   "url": href,
   description,
   icon,
-  hideOnMobile
+  hideOnMobile,
+  linkStyle
 `;
 
 // @sanity-typegen-ignore
@@ -42,7 +44,8 @@ const downloadLinkQuery = groq`
   "url": file.asset->url,
   description,
   icon,
-  hideOnMobile
+  hideOnMobile,
+  linkStyle
 `;
 
 // @sanity-typegen-ignore
@@ -96,6 +99,7 @@ export type InternalLinkProps = {
   description?: string | null;
   icon?: { name: string } | null;
   hideOnMobile?: boolean;
+  linkStyle?: "default" | "button";
 };
 
 export type ExternalLinkProps = {
@@ -106,6 +110,7 @@ export type ExternalLinkProps = {
   description?: string | null;
   icon?: { name: string } | null;
   hideOnMobile?: boolean;
+  linkStyle?: "default" | "button";
 };
 
 export type DownloadLinkProps = {
@@ -116,6 +121,7 @@ export type DownloadLinkProps = {
   description?: string | null;
   icon?: { name: string } | null;
   hideOnMobile?: boolean;
+  linkStyle?: "default" | "button";
 };
 
 export type DropdownGroupProps = {
@@ -143,6 +149,7 @@ export type AnchorLinkProps = {
   title?: string | null;
   icon?: { name: string } | null;
   hideOnMobile?: boolean;
+  linkStyle?: "default" | "button";
 };
 
 export type LinkProps =

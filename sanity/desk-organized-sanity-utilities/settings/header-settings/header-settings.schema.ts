@@ -76,6 +76,7 @@ export const headerSettingsSchema = defineType({
           includeIcon: true,
           includeHideOnMobile: true,
           includeCustomTitle: false,
+          includeLinkStyle: true,
         }),
       ],
     }),
@@ -203,6 +204,7 @@ export const headerSettingsSchema = defineType({
     includeLinkGroup: true,
     includeCustomTitle: true,
     includeDescription: false,
+    includeLinkStyle: true,
     required: true,
   })
 

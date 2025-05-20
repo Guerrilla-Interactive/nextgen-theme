@@ -1,5 +1,3 @@
-import { AnimationType } from "../../nextgen-desktop-nav.types";
-
 /**
  * Light theme configuration for the NextGen Desktop Nav
  * 

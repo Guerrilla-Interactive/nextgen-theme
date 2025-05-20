@@ -1214,6 +1214,23 @@
                           },
                           "optional": true
                         },
+                        "linkStyle": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "union",
+                            "of": [
+                              {
+                                "type": "string",
+                                "value": "default"
+                              },
+                              {
+                                "type": "string",
+                                "value": "button"
+                              }
+                            ]
+                          },
+                          "optional": true
+                        },
                         "_type": {
                           "type": "objectAttribute",
                           "value": {
@@ -1256,6 +1273,23 @@
                           "type": "objectAttribute",
                           "value": {
                             "type": "boolean"
+                          },
+                          "optional": true
+                        },
+                        "linkStyle": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "union",
+                            "of": [
+                              {
+                                "type": "string",
+                                "value": "default"
+                              },
+                              {
+                                "type": "string",
+                                "value": "button"
+                              }
+                            ]
                           },
                           "optional": true
                         },
@@ -1442,6 +1476,23 @@
                                       },
                                       "optional": true
                                     },
+                                    "linkStyle": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "union",
+                                        "of": [
+                                          {
+                                            "type": "string",
+                                            "value": "default"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "value": "button"
+                                          }
+                                        ]
+                                      },
+                                      "optional": true
+                                    },
                                     "_type": {
                                       "type": "objectAttribute",
                                       "value": {
@@ -1491,6 +1542,23 @@
                                       "type": "objectAttribute",
                                       "value": {
                                         "type": "boolean"
+                                      },
+                                      "optional": true
+                                    },
+                                    "linkStyle": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "union",
+                                        "of": [
+                                          {
+                                            "type": "string",
+                                            "value": "default"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "value": "button"
+                                          }
+                                        ]
                                       },
                                       "optional": true
                                     },
@@ -1582,6 +1650,23 @@
                                       "type": "objectAttribute",
                                       "value": {
                                         "type": "boolean"
+                                      },
+                                      "optional": true
+                                    },
+                                    "linkStyle": {
+                                      "type": "objectAttribute",
+                                      "value": {
+                                        "type": "union",
+                                        "of": [
+                                          {
+                                            "type": "string",
+                                            "value": "default"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "value": "button"
+                                          }
+                                        ]
                                       },
                                       "optional": true
                                     },
@@ -1768,6 +1853,23 @@
                                                   },
                                                   "optional": true
                                                 },
+                                                "linkStyle": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "union",
+                                                    "of": [
+                                                      {
+                                                        "type": "string",
+                                                        "value": "default"
+                                                      },
+                                                      {
+                                                        "type": "string",
+                                                        "value": "button"
+                                                      }
+                                                    ]
+                                                  },
+                                                  "optional": true
+                                                },
                                                 "_type": {
                                                   "type": "objectAttribute",
                                                   "value": {
@@ -1817,6 +1919,23 @@
                                                   "type": "objectAttribute",
                                                   "value": {
                                                     "type": "boolean"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "linkStyle": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "union",
+                                                    "of": [
+                                                      {
+                                                        "type": "string",
+                                                        "value": "default"
+                                                      },
+                                                      {
+                                                        "type": "string",
+                                                        "value": "button"
+                                                      }
+                                                    ]
                                                   },
                                                   "optional": true
                                                 },
@@ -1908,6 +2027,23 @@
                                                   "type": "objectAttribute",
                                                   "value": {
                                                     "type": "boolean"
+                                                  },
+                                                  "optional": true
+                                                },
+                                                "linkStyle": {
+                                                  "type": "objectAttribute",
+                                                  "value": {
+                                                    "type": "union",
+                                                    "of": [
+                                                      {
+                                                        "type": "string",
+                                                        "value": "default"
+                                                      },
+                                                      {
+                                                        "type": "string",
+                                                        "value": "button"
+                                                      }
+                                                    ]
                                                   },
                                                   "optional": true
                                                 },
@@ -2433,6 +2569,23 @@
                     },
                     "optional": true
                   },
+                  "linkStyle": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "union",
+                      "of": [
+                        {
+                          "type": "string",
+                          "value": "default"
+                        },
+                        {
+                          "type": "string",
+                          "value": "button"
+                        }
+                      ]
+                    },
+                    "optional": true
+                  },
                   "_type": {
                     "type": "objectAttribute",
                     "value": {
@@ -2475,6 +2628,23 @@
                     "type": "objectAttribute",
                     "value": {
                       "type": "string"
+                    },
+                    "optional": true
+                  },
+                  "linkStyle": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "union",
+                      "of": [
+                        {
+                          "type": "string",
+                          "value": "default"
+                        },
+                        {
+                          "type": "string",
+                          "value": "button"
+                        }
+                      ]
                     },
                     "optional": true
                   },
@@ -2646,6 +2816,23 @@
                                 },
                                 "optional": true
                               },
+                              "linkStyle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "union",
+                                  "of": [
+                                    {
+                                      "type": "string",
+                                      "value": "default"
+                                    },
+                                    {
+                                      "type": "string",
+                                      "value": "button"
+                                    }
+                                  ]
+                                },
+                                "optional": true
+                              },
                               "_type": {
                                 "type": "objectAttribute",
                                 "value": {
@@ -2688,6 +2875,23 @@
                                 "type": "objectAttribute",
                                 "value": {
                                   "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "linkStyle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "union",
+                                  "of": [
+                                    {
+                                      "type": "string",
+                                      "value": "default"
+                                    },
+                                    {
+                                      "type": "string",
+                                      "value": "button"
+                                    }
+                                  ]
                                 },
                                 "optional": true
                               },
@@ -2772,6 +2976,23 @@
                                 "type": "objectAttribute",
                                 "value": {
                                   "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "linkStyle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "union",
+                                  "of": [
+                                    {
+                                      "type": "string",
+                                      "value": "default"
+                                    },
+                                    {
+                                      "type": "string",
+                                      "value": "button"
+                                    }
+                                  ]
                                 },
                                 "optional": true
                               },
@@ -2968,6 +3189,23 @@
                                 },
                                 "optional": true
                               },
+                              "linkStyle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "union",
+                                  "of": [
+                                    {
+                                      "type": "string",
+                                      "value": "default"
+                                    },
+                                    {
+                                      "type": "string",
+                                      "value": "button"
+                                    }
+                                  ]
+                                },
+                                "optional": true
+                              },
                               "_type": {
                                 "type": "objectAttribute",
                                 "value": {
@@ -3010,6 +3248,23 @@
                                 "type": "objectAttribute",
                                 "value": {
                                   "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "linkStyle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "union",
+                                  "of": [
+                                    {
+                                      "type": "string",
+                                      "value": "default"
+                                    },
+                                    {
+                                      "type": "string",
+                                      "value": "button"
+                                    }
+                                  ]
                                 },
                                 "optional": true
                               },
@@ -3094,6 +3349,23 @@
                                 "type": "objectAttribute",
                                 "value": {
                                   "type": "string"
+                                },
+                                "optional": true
+                              },
+                              "linkStyle": {
+                                "type": "objectAttribute",
+                                "value": {
+                                  "type": "union",
+                                  "of": [
+                                    {
+                                      "type": "string",
+                                      "value": "default"
+                                    },
+                                    {
+                                      "type": "string",
+                                      "value": "button"
+                                    }
+                                  ]
                                 },
                                 "optional": true
                               },
@@ -3265,6 +3537,23 @@
                                             },
                                             "optional": true
                                           },
+                                          "linkStyle": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "union",
+                                              "of": [
+                                                {
+                                                  "type": "string",
+                                                  "value": "default"
+                                                },
+                                                {
+                                                  "type": "string",
+                                                  "value": "button"
+                                                }
+                                              ]
+                                            },
+                                            "optional": true
+                                          },
                                           "_type": {
                                             "type": "objectAttribute",
                                             "value": {
@@ -3307,6 +3596,23 @@
                                             "type": "objectAttribute",
                                             "value": {
                                               "type": "string"
+                                            },
+                                            "optional": true
+                                          },
+                                          "linkStyle": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "union",
+                                              "of": [
+                                                {
+                                                  "type": "string",
+                                                  "value": "default"
+                                                },
+                                                {
+                                                  "type": "string",
+                                                  "value": "button"
+                                                }
+                                              ]
                                             },
                                             "optional": true
                                           },
@@ -3391,6 +3697,23 @@
                                             "type": "objectAttribute",
                                             "value": {
                                               "type": "string"
+                                            },
+                                            "optional": true
+                                          },
+                                          "linkStyle": {
+                                            "type": "objectAttribute",
+                                            "value": {
+                                              "type": "union",
+                                              "of": [
+                                                {
+                                                  "type": "string",
+                                                  "value": "default"
+                                                },
+                                                {
+                                                  "type": "string",
+                                                  "value": "button"
+                                                }
+                                              ]
                                             },
                                             "optional": true
                                           },

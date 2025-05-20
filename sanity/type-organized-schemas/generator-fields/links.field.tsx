@@ -21,6 +21,7 @@ type LinksFieldProps = Omit<FieldDef<ArrayDefinition>, "of" | "validation"> & {
   includeDescriptionInLinkGroup?: boolean;
   includeIcon?: boolean;
   includeHideOnMobile?: boolean;
+  includeLinkStyle?: boolean;
   max?: number;
 };
 
@@ -52,8 +53,23 @@ const hideOnMobileField = defineField({
   description: "If checked, this item will be hidden on mobile screens."
 });
 
+const linkStyleField = defineField({
+  name: "linkStyle",
+  title: "Link Style",
+  type: "string",
+  options: {
+    list: [
+      { title: "Default", value: "default" },
+      { title: "Button", value: "button" },
+    ],
+    layout: "radio",
+  },
+  initialValue: "default",
+  description: "Select the visual style for this link"
+});
+
 const internalLink = (props: LinksFieldProps) => {
-  const { includeInternal, includeCustomTitle, includeDescription, includeIcon, includeHideOnMobile } = props;
+  const { includeInternal, includeCustomTitle, includeDescription, includeIcon, includeHideOnMobile, includeLinkStyle } = props;
 
   if (!includeInternal) return null;
 
@@ -75,6 +91,10 @@ const internalLink = (props: LinksFieldProps) => {
     fields.push(hideOnMobileField);
   }
 
+  if (includeLinkStyle) {
+    fields.push(linkStyleField);
+  }
+
   return defineField({
     ...internalLinkObjectField,
     fields,
@@ -84,10 +104,12 @@ const internalLink = (props: LinksFieldProps) => {
         internalLinkName: "internalLink.name",
         customTitle: "customTitle",
         icon: "icon",
+        linkStyle: "linkStyle",
       },
-      prepare({ internalLinkTitle, internalLinkName, customTitle, icon }) {
+      prepare({ internalLinkTitle, internalLinkName, customTitle, icon, linkStyle }) {
         return {
           title: customTitle ?? internalLinkTitle ?? internalLinkName,
+          subtitle: linkStyle === "button" ? "Button Style" : undefined,
           media: icon,
         };
       },
@@ -96,7 +118,7 @@ const internalLink = (props: LinksFieldProps) => {
 };
 
 const externalLink = (props: LinksFieldProps) => {
-  const { includeExternal, includeCustomTitle, includeDescription, includeIcon, includeHideOnMobile } = props;
+  const { includeExternal, includeCustomTitle, includeDescription, includeIcon, includeHideOnMobile, includeLinkStyle } = props;
 
   if (!includeExternal) return null;
 
@@ -118,6 +140,10 @@ const externalLink = (props: LinksFieldProps) => {
     fields.push(hideOnMobileField);
   }
 
+  if (includeLinkStyle) {
+    fields.push(linkStyleField);
+  }
+
   return defineField({
     ...externalLinkObjectField,
     fields,
@@ -126,10 +152,12 @@ const externalLink = (props: LinksFieldProps) => {
         href: "href",
         customTitle: "customTitle",
         icon: "icon",
+        linkStyle: "linkStyle",
       },
-      prepare({ href, customTitle, icon }) {
+      prepare({ href, customTitle, icon, linkStyle }) {
         return {
           title: customTitle ?? href,
+          subtitle: linkStyle === "button" ? "Button Style" : undefined,
           media: icon,
         };
       },
@@ -138,7 +166,7 @@ const externalLink = (props: LinksFieldProps) => {
 };
 
 const downloadLink = (props: LinksFieldProps) => {
-  const { includeDownload, includeCustomTitle, includeDescription, includeIcon, includeHideOnMobile } = props;
+  const { includeDownload, includeCustomTitle, includeDescription, includeIcon, includeHideOnMobile, includeLinkStyle } = props;
 
   if (!includeDownload) return null;
 
@@ -160,6 +188,10 @@ const downloadLink = (props: LinksFieldProps) => {
     fields.push(hideOnMobileField);
   }
 
+  if (includeLinkStyle) {
+    fields.push(linkStyleField);
+  }
+
   return defineField({
     ...downloadLinkObjectField,
     fields,
@@ -168,10 +200,12 @@ const downloadLink = (props: LinksFieldProps) => {
         fileName: "file.asset.originalFilename",
         customTitle: "customTitle",
         icon: "icon",
+        linkStyle: "linkStyle",
       },
-      prepare({ fileName, customTitle, icon }) {
+      prepare({ fileName, customTitle, icon, linkStyle }) {
         return {
           title: customTitle ?? fileName,
+          subtitle: linkStyle === "button" ? "Button Style" : undefined,
           media: icon,
         };
       },
@@ -180,7 +214,7 @@ const downloadLink = (props: LinksFieldProps) => {
 };
 
 const dropdownGroup = (props: LinksFieldProps) => {
-  const { includeDropdownGroup, includeDescriptionInLinkGroup, includeIcon, includeHideOnMobile } = props;
+  const { includeDropdownGroup, includeDescriptionInLinkGroup, includeIcon, includeHideOnMobile, includeLinkStyle } = props;
 
   if (!includeDropdownGroup) return null;
 
@@ -202,6 +236,7 @@ const dropdownGroup = (props: LinksFieldProps) => {
       includeDescription: includeDescriptionInLinkGroup,
       includeIcon: props.includeIcon,
       includeHideOnMobile: props.includeHideOnMobile,
+      includeLinkStyle: props.includeLinkStyle,
       includeDropdownGroup: false,
       includeLinkGroup: false
     }).of,
@@ -237,7 +272,7 @@ const dropdownGroup = (props: LinksFieldProps) => {
 };
 
 const linkGroup = (props: LinksFieldProps) => {
-  const { includeLinkGroup, includeIcon, includeHideOnMobile } = props;
+  const { includeLinkGroup, includeIcon, includeHideOnMobile, includeLinkStyle } = props;
 
   if (!includeLinkGroup) return null;
 
@@ -259,6 +294,7 @@ const linkGroup = (props: LinksFieldProps) => {
       includeInternal: true,
       includeIcon: props.includeIcon,
       includeHideOnMobile: props.includeHideOnMobile,
+      includeLinkStyle: props.includeLinkStyle,
       includeDropdownGroup: true,
       includeLinkGroup: false,
     }).of,
@@ -304,6 +340,7 @@ export const linksField = (props: LinksFieldProps) => {
     includeDownload = true,
     includeIcon = false,
     includeHideOnMobile = false,
+    includeLinkStyle = false,
     options,
     required, 
     max 
@@ -319,6 +356,7 @@ export const linksField = (props: LinksFieldProps) => {
     includeLinkGroup,
     includeIcon,
     includeHideOnMobile,
+    includeLinkStyle,
   };
 
   const linkTypes: ArrayDefinition["of"] = [

@@ -466,6 +466,7 @@ export interface StructureStyleProps {
   text?: Partial<TypographyProperties>
   border?: Partial<BorderStyleProperties>
   spacing?: Partial<SpacingProperties>
+  layout?: Partial<LayoutProperties>
   dropdown?: {
     border?: Partial<BorderStyleProperties>
     spacing?: Partial<SpacingProperties>
@@ -485,30 +486,8 @@ export interface NavStyleProps {
   color?: ColorStyleProps
   /** Override structure properties */
   structure?: StructureStyleProps
-  /** 
-   * Override layout properties (for backward compatibility)
-   * @deprecated Use structure.layout instead
-   */
-  layout?: Partial<LayoutProperties>
   /** Override animation properties */
   animation?: Partial<AnimationProperties>
-  
-  /** 
-   * @deprecated Legacy properties for backward compatibility
-   */
-  light?: any
-  /** 
-   * @deprecated Legacy properties for backward compatibility
-   */
-  dark?: any
-  /** 
-   * @deprecated Legacy properties for backward compatibility
-   */
-  lightDropdown?: any
-  /** 
-   * @deprecated Legacy properties for backward compatibility
-   */
-  darkDropdown?: any
 }
 
 /**

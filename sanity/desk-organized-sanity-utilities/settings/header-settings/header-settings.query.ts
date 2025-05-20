@@ -9,7 +9,8 @@ export const headerSettingsQuery = groq`
       items[] {
         ${linksQuery},
         icon,
-        hideOnMobile
+        hideOnMobile,
+        linkStyle
       }
     },
     logoOptions,

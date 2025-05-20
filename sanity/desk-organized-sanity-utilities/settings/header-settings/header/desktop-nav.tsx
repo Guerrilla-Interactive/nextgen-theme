@@ -11,6 +11,11 @@ import {
   NextgenDesktopNavDropdownItem,
   type NavStyleProps,
 } from "./nextgen-desktop-nav/nextgen-desktop-nav.component";
+import { cn } from "@/features/unorganized-utils/utils";
+import { useRouter } from "next/navigation";
+
+// Define types for link styles
+type LinkStyle = "default" | "button";
 
 // Define a utility function to safely check link types
 const hasType = (item: any, type: string): boolean => {
@@ -69,6 +74,47 @@ const renderIcon = (item: any) => {
   );
 };
 
+// Function to get button style classes
+const getButtonStyleClasses = (isTopDark: boolean) => {
+  return isTopDark
+    ? "bg-white text-black hover:bg-gray-200 py-1.5 px-4 rounded-md shadow-sm font-medium cursor-pointer"
+    : "bg-black text-white hover:bg-gray-800 py-1.5 px-4 rounded-md shadow-sm font-medium cursor-pointer";
+};
+
+// Button component for CTAs
+function NavButton({ 
+  href, 
+  isExternal, 
+  children, 
+  className 
+}: { 
+  href: string; 
+  isExternal?: boolean; 
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const router = useRouter();
+  
+  const handleClick = () => {
+    if (isExternal) {
+      window.open(href, '_blank', 'noopener,noreferrer');
+    } else {
+      router.push(href);
+    }
+  };
+  
+  return (
+    <button 
+      onClick={handleClick}
+      className={cn("inline-flex items-center justify-center", className)}
+      aria-label={isExternal ? "Opens in a new window" : undefined}
+    >
+      {children}
+      {isExternal && <span className="sr-only">(opens in new tab)</span>}
+    </button>
+  );
+}
+
 export default function HeaderDesktopNav({ 
   isTopDark,
   navItems,
@@ -99,6 +145,11 @@ export default function HeaderDesktopNav({
           // You may need to implement this in the components
         }
         
+        // Check if this link should use button style
+        const linkStyle = getProperty<LinkStyle>(navItem, 'linkStyle', 'default');
+        const buttonClasses = linkStyle === 'button' ? getButtonStyleClasses(isTopDark) : '';
+        const isButtonStyle = linkStyle === 'button';
+        
         // Handle internal links
         if (hasType(navItem, "internal")) {
           const slug = getProperty(navItem, 'slug', '');
@@ -106,12 +157,22 @@ export default function HeaderDesktopNav({
           
           return (
             <NextgenDesktopNavItem key={navId} id={navId}>
-              <Link href={`/${slug}`} passHref legacyBehavior>
-                <NextgenDesktopNavLink>
+              {isButtonStyle ? (
+                <NavButton 
+                  href={`/${slug}`} 
+                  className={buttonClasses}
+                >
                   {renderIcon(navItem)}
                   {getProperty(navItem, 'title', '')}
-                </NextgenDesktopNavLink>
-              </Link>
+                </NavButton>
+              ) : (
+                <Link href={`/${slug}`} passHref legacyBehavior>
+                  <NextgenDesktopNavLink>
+                    {renderIcon(navItem)}
+                    {getProperty(navItem, 'title', '')}
+                  </NextgenDesktopNavLink>
+                </Link>
+              )}
             </NextgenDesktopNavItem>
           );
         } 
@@ -123,12 +184,23 @@ export default function HeaderDesktopNav({
           
           return (
             <NextgenDesktopNavItem key={navId} id={navId}>
-              <Link href={url} passHref legacyBehavior>
-                <NextgenDesktopNavLink external>
+              {isButtonStyle ? (
+                <NavButton 
+                  href={url} 
+                  isExternal 
+                  className={buttonClasses}
+                >
                   {renderIcon(navItem)}
                   {getProperty(navItem, 'title', '')}
-                </NextgenDesktopNavLink>
-              </Link>
+                </NavButton>
+              ) : (
+                <Link href={url} passHref legacyBehavior>
+                  <NextgenDesktopNavLink external>
+                    {renderIcon(navItem)}
+                    {getProperty(navItem, 'title', '')}
+                  </NextgenDesktopNavLink>
+                </Link>
+              )}
             </NextgenDesktopNavItem>
           );
         }
@@ -140,12 +212,23 @@ export default function HeaderDesktopNav({
           
           return (
             <NextgenDesktopNavItem key={navId} id={navId}>
-              <Link href={url} passHref legacyBehavior>
-                <NextgenDesktopNavLink external>
+              {isButtonStyle ? (
+                <NavButton 
+                  href={url} 
+                  isExternal 
+                  className={buttonClasses}
+                >
                   {renderIcon(navItem)}
                   {getProperty(navItem, 'title', '')}
-                </NextgenDesktopNavLink>
-              </Link>
+                </NavButton>
+              ) : (
+                <Link href={url} passHref legacyBehavior>
+                  <NextgenDesktopNavLink external>
+                    {renderIcon(navItem)}
+                    {getProperty(navItem, 'title', '')}
+                  </NextgenDesktopNavLink>
+                </Link>
+              )}
             </NextgenDesktopNavItem>
           );
         }
@@ -157,7 +240,7 @@ export default function HeaderDesktopNav({
           
           return (
             <NextgenDesktopNavItem key={navId} id={navId}>
-              <NextgenDesktopNavTrigger id={navId}>
+              <NextgenDesktopNavTrigger id={navId} className={buttonClasses}>
                 {renderIcon(navItem)}
                 {getProperty(navItem, 'title', '')}
               </NextgenDesktopNavTrigger>
@@ -169,10 +252,33 @@ export default function HeaderDesktopNav({
                   // Create unique ID for this menu item
                   const itemId = getProperty(link, '_key', `item-${Math.random().toString(36).substring(2, 9)}`);
                   
+                  // Check if this dropdown item should use button style
+                  const itemLinkStyle = getProperty<LinkStyle>(link, 'linkStyle', 'default');
+                  const itemButtonClasses = itemLinkStyle === 'button' ? "bg-accent text-accent-foreground hover:bg-accent/90 py-1 px-3 rounded-md mt-1 mb-1 inline-block" : '';
+                  
                   // Internal link in dropdown
                   if (hasType(link, "internal")) {
                     const slug = getProperty(link, 'slug', '');
                     if (!slug) return null;
+                    
+                    if (itemLinkStyle === 'button') {
+                      return (
+                        <div key={itemId} className="px-3.5 py-3">
+                          <NavButton 
+                            href={`/${slug}`} 
+                            className={itemButtonClasses}
+                          >
+                            {renderIcon(link)}
+                            {getProperty(link, 'title', '')}
+                          </NavButton>
+                          {getProperty(link, 'description', undefined) && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {getProperty(link, 'description', '')}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    }
                     
                     return (
                       <NextgenDesktopNavDropdownItem 
@@ -192,6 +298,26 @@ export default function HeaderDesktopNav({
                     const url = getProperty(link, 'url', '');
                     if (!url) return null;
                     
+                    if (itemLinkStyle === 'button') {
+                      return (
+                        <div key={itemId} className="px-3.5 py-3">
+                          <NavButton 
+                            href={url} 
+                            isExternal 
+                            className={itemButtonClasses}
+                          >
+                            {renderIcon(link)}
+                            {getProperty(link, 'title', '')}
+                          </NavButton>
+                          {getProperty(link, 'description', undefined) && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {getProperty(link, 'description', '')}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    }
+                    
                     return (
                       <NextgenDesktopNavDropdownItem 
                         key={itemId}
@@ -210,6 +336,26 @@ export default function HeaderDesktopNav({
                   if (hasType(link, "download")) {
                     const url = getProperty(link, 'url', '');
                     if (!url) return null;
+                    
+                    if (itemLinkStyle === 'button') {
+                      return (
+                        <div key={itemId} className="px-3.5 py-3">
+                          <NavButton 
+                            href={url} 
+                            isExternal 
+                            className={itemButtonClasses}
+                          >
+                            {renderIcon(link)}
+                            {getProperty(link, 'title', '')}
+                          </NavButton>
+                          {getProperty(link, 'description', undefined) && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {getProperty(link, 'description', '')}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    }
                     
                     return (
                       <NextgenDesktopNavDropdownItem 
@@ -250,6 +396,11 @@ export default function HeaderDesktopNav({
                   `item-${Math.random().toString(36).substring(2, 9)}`
                 );
                 
+                // Check if this group item should use button style
+                const itemLinkStyle = getProperty<LinkStyle>(groupItem, 'linkStyle', 'default');
+                const itemButtonClasses = itemLinkStyle === 'button' ? getButtonStyleClasses(isTopDark) : '';
+                const isItemButtonStyle = itemLinkStyle === 'button';
+                
                 // Internal link in horizontal group
                 if (hasType(groupItem, "internal")) {
                   const slug = getProperty(groupItem, 'slug', '');
@@ -257,12 +408,22 @@ export default function HeaderDesktopNav({
                   
                   return (
                     <NextgenDesktopNavItem key={groupItemId} id={groupItemId}>
-                      <Link href={`/${slug}`} passHref legacyBehavior>
-                        <NextgenDesktopNavLink>
+                      {isItemButtonStyle ? (
+                        <NavButton 
+                          href={`/${slug}`} 
+                          className={itemButtonClasses}
+                        >
                           {renderIcon(groupItem)}
                           {getProperty(groupItem, 'title', '')}
-                        </NextgenDesktopNavLink>
-                      </Link>
+                        </NavButton>
+                      ) : (
+                        <Link href={`/${slug}`} passHref legacyBehavior>
+                          <NextgenDesktopNavLink>
+                            {renderIcon(groupItem)}
+                            {getProperty(groupItem, 'title', '')}
+                          </NextgenDesktopNavLink>
+                        </Link>
+                      )}
                     </NextgenDesktopNavItem>
                   );
                 }
@@ -274,12 +435,23 @@ export default function HeaderDesktopNav({
                   
                   return (
                     <NextgenDesktopNavItem key={groupItemId} id={groupItemId}>
-                      <Link href={url} passHref legacyBehavior>
-                        <NextgenDesktopNavLink external>
+                      {isItemButtonStyle ? (
+                        <NavButton 
+                          href={url} 
+                          isExternal 
+                          className={itemButtonClasses}
+                        >
                           {renderIcon(groupItem)}
                           {getProperty(groupItem, 'title', '')}
-                        </NextgenDesktopNavLink>
-                      </Link>
+                        </NavButton>
+                      ) : (
+                        <Link href={url} passHref legacyBehavior>
+                          <NextgenDesktopNavLink external>
+                            {renderIcon(groupItem)}
+                            {getProperty(groupItem, 'title', '')}
+                          </NextgenDesktopNavLink>
+                        </Link>
+                      )}
                     </NextgenDesktopNavItem>
                   );
                 }
@@ -291,12 +463,23 @@ export default function HeaderDesktopNav({
                   
                   return (
                     <NextgenDesktopNavItem key={groupItemId} id={groupItemId}>
-                      <Link href={url} passHref legacyBehavior>
-                        <NextgenDesktopNavLink external>
+                      {isItemButtonStyle ? (
+                        <NavButton 
+                          href={url} 
+                          isExternal 
+                          className={itemButtonClasses}
+                        >
                           {renderIcon(groupItem)}
                           {getProperty(groupItem, 'title', '')}
-                        </NextgenDesktopNavLink>
-                      </Link>
+                        </NavButton>
+                      ) : (
+                        <Link href={url} passHref legacyBehavior>
+                          <NextgenDesktopNavLink external>
+                            {renderIcon(groupItem)}
+                            {getProperty(groupItem, 'title', '')}
+                          </NextgenDesktopNavLink>
+                        </Link>
+                      )}
                     </NextgenDesktopNavItem>
                   );
                 }
@@ -308,7 +491,7 @@ export default function HeaderDesktopNav({
                   
                   return (
                     <NextgenDesktopNavItem key={groupItemId} id={groupItemId}>
-                      <NextgenDesktopNavTrigger id={groupItemId}>
+                      <NextgenDesktopNavTrigger id={groupItemId} className={itemButtonClasses}>
                         {renderIcon(groupItem)}
                         {getProperty(groupItem, 'title', '')}
                       </NextgenDesktopNavTrigger>
@@ -320,10 +503,33 @@ export default function HeaderDesktopNav({
                           // Create unique ID for this menu item
                           const itemId = getProperty(link, '_key', `item-${Math.random().toString(36).substring(2, 9)}`);
                           
+                          // Check if this dropdown item should use button style
+                          const dropdownItemLinkStyle = getProperty<LinkStyle>(link, 'linkStyle', 'default');
+                          const dropdownItemButtonClasses = dropdownItemLinkStyle === 'button' ? "bg-accent text-accent-foreground hover:bg-accent/90 py-1 px-3 rounded-md mt-1 mb-1 inline-block" : '';
+                          
                           // Internal link in dropdown
                           if (hasType(link, "internal")) {
                             const slug = getProperty(link, 'slug', '');
                             if (!slug) return null;
+                            
+                            if (dropdownItemLinkStyle === 'button') {
+                              return (
+                                <div key={itemId} className="px-3.5 py-3">
+                                  <NavButton 
+                                    href={`/${slug}`} 
+                                    className={dropdownItemButtonClasses}
+                                  >
+                                    {renderIcon(link)}
+                                    {getProperty(link, 'title', '')}
+                                  </NavButton>
+                                  {getProperty(link, 'description', undefined) && (
+                                    <p className="text-sm text-muted-foreground mt-1">
+                                      {getProperty(link, 'description', '')}
+                                    </p>
+                                  )}
+                                </div>
+                              );
+                            }
                             
                             return (
                               <NextgenDesktopNavDropdownItem 
@@ -343,6 +549,26 @@ export default function HeaderDesktopNav({
                             const url = getProperty(link, 'url', '');
                             if (!url) return null;
                             
+                            if (dropdownItemLinkStyle === 'button') {
+                              return (
+                                <div key={itemId} className="px-3.5 py-3">
+                                  <NavButton 
+                                    href={url} 
+                                    isExternal 
+                                    className={dropdownItemButtonClasses}
+                                  >
+                                    {renderIcon(link)}
+                                    {getProperty(link, 'title', '')}
+                                  </NavButton>
+                                  {getProperty(link, 'description', undefined) && (
+                                    <p className="text-sm text-muted-foreground mt-1">
+                                      {getProperty(link, 'description', '')}
+                                    </p>
+                                  )}
+                                </div>
+                              );
+                            }
+                            
                             return (
                               <NextgenDesktopNavDropdownItem 
                                 key={itemId}
@@ -361,6 +587,26 @@ export default function HeaderDesktopNav({
                           if (hasType(link, "download")) {
                             const url = getProperty(link, 'url', '');
                             if (!url) return null;
+                            
+                            if (dropdownItemLinkStyle === 'button') {
+                              return (
+                                <div key={itemId} className="px-3.5 py-3">
+                                  <NavButton 
+                                    href={url} 
+                                    isExternal 
+                                    className={dropdownItemButtonClasses}
+                                  >
+                                    {renderIcon(link)}
+                                    {getProperty(link, 'title', '')}
+                                  </NavButton>
+                                  {getProperty(link, 'description', undefined) && (
+                                    <p className="text-sm text-muted-foreground mt-1">
+                                      {getProperty(link, 'description', '')}
+                                    </p>
+                                  )}
+                                </div>
+                              );
+                            }
                             
                             return (
                               <NextgenDesktopNavDropdownItem 

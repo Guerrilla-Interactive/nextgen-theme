@@ -856,17 +856,7 @@ function NextgenDesktopNavContent({ id, className, children, ...props }: Nextgen
             to { opacity: 1; transform: scale(1); }
           }
           
-          /* Stagger animation timing for each item */
-          // [data-animation-type="${animationType}"][data-state="open"] [role="menuitem"]:nth-child(1) { animation-delay: 0ms; }
-          // [data-animation-type="${animationType}"][data-state="open"] [role="menuitem"]:nth-child(2) { animation-delay: 30ms; }
-          // [data-animation-type="${animationType}"][data-state="open"] [role="menuitem"]:nth-child(3) { animation-delay: 60ms; }
-          // [data-animation-type="${animationType}"][data-state="open"] [role="menuitem"]:nth-child(4) { animation-delay: 90ms; }
-          // [data-animation-type="${animationType}"][data-state="open"] [role="menuitem"]:nth-child(5) { animation-delay: 120ms; }
-          // [data-animation-type="${animationType}"][data-state="open"] [role="menuitem"]:nth-child(6) { animation-delay: 150ms; }
-          // [data-animation-type="${animationType}"][data-state="open"] [role="menuitem"]:nth-child(7) { animation-delay: 180ms; }
-          // [data-animation-type="${animationType}"][data-state="open"] [role="menuitem"]:nth-child(8) { animation-delay: 210ms; }
-          // [data-animation-type="${animationType}"][data-state="open"] [role="menuitem"]:nth-child(9) { animation-delay: 240ms; }
-          // [data-animation-type="${animationType}"][data-state="open"] [role="menuitem"]:nth-child(10) { animation-delay: 270ms; }
+ 
         `}</style>
       )}
     </div>

@@ -11,6 +11,10 @@ import { HeaderSettingsFetchQueryResult } from "@/sanity.types";
 import SVGLoopLogo from "@/features/theme/SVGLoopLogo";
 import { Menu } from "lucide-react";
 import { cn } from "@/features/unorganized-utils/utils";
+import { useRouter } from "next/navigation";
+
+// Define types for link styles
+type LinkStyle = "default" | "button";
 
 // Define utility functions for type-safe property access
 const hasType = (item: any, type: string): boolean => {
@@ -23,6 +27,51 @@ const getProperty = <T,>(item: any, property: string, defaultValue: T): T => {
   }
   return defaultValue;
 };
+
+// Get button style classes based on the parent container background
+const getButtonStyleClasses = () => {
+  // Mobile nav is always on white background, so use dark button style
+  return "bg-black text-white hover:bg-gray-800 py-1.5 px-4 rounded-md shadow-sm font-medium";
+};
+
+// Mobile nav button component
+function MobileNavButton({
+  href,
+  isExternal,
+  children,
+  className,
+  onOpenChange
+}: {
+  href: string;
+  isExternal?: boolean;
+  children: React.ReactNode;
+  className?: string;
+  onOpenChange?: (open: boolean) => void;
+}) {
+  const router = useRouter();
+  
+  const handleClick = () => {
+    if (onOpenChange) {
+      onOpenChange(false);
+    }
+    
+    if (isExternal) {
+      window.open(href, '_blank', 'noopener,noreferrer');
+    } else {
+      router.push(href);
+    }
+  };
+  
+  return (
+    <button 
+      onClick={handleClick}
+      className={cn("inline-flex items-center", className)}
+    >
+      {children}
+      {isExternal && <span className="sr-only">(opens in new tab)</span>}
+    </button>
+  );
+}
 
 export default function MobileNav({ navItems }: { navItems: HeaderSettingsFetchQueryResult["navigationItems"] }) {
   const [open, setOpen] = useState(false);
@@ -53,6 +102,11 @@ export default function MobileNav({ navItems }: { navItems: HeaderSettingsFetchQ
             // Create a unique key for this navigation item
             const navId = getProperty(item, '_key', '');
 
+            // Check if this link should use button style
+            const linkStyle = getProperty<LinkStyle>(item, 'linkStyle', 'default');
+            const buttonClasses = linkStyle === 'button' ? getButtonStyleClasses() : '';
+            const isButtonStyle = linkStyle === 'button';
+
             // Handle regular links (internal or external)
             if (hasType(item, 'internal') || hasType(item, 'external')) {
               const href = hasType(item, 'internal') 
@@ -60,6 +114,23 @@ export default function MobileNav({ navItems }: { navItems: HeaderSettingsFetchQ
                 : getProperty(item, 'url', '');
               
               if (!href) return null;
+              
+              if (isButtonStyle) {
+                return (
+                  <MobileNavButton
+                    key={navId}
+                    href={href}
+                    isExternal={hasType(item, 'external')}
+                    onOpenChange={setOpen}
+                    className={cn(
+                      buttonClasses,
+                      "flex flex-col"
+                    )}
+                  >
+                    {getProperty(item, 'title', '')}
+                  </MobileNavButton>
+                );
+              }
               
               return (
                 <MobileLink
@@ -83,7 +154,7 @@ export default function MobileNav({ navItems }: { navItems: HeaderSettingsFetchQ
               
               return (
                 <div key={navId} className="flex flex-col space-y-2">
-                  <div className="font-medium">{getProperty(item, 'title', '')}</div>
+                  <div className={cn("font-medium", buttonClasses)}>{getProperty(item, 'title', '')}</div>
                   <div className="grid gap-1 pl-4">
                     {links.map((link) => {
                       const linkId = getProperty(link, '_key', '');
@@ -92,6 +163,25 @@ export default function MobileNav({ navItems }: { navItems: HeaderSettingsFetchQ
                         : getProperty(link, 'url', '');
                       
                       if (!href) return null;
+                      
+                      // Check if this dropdown item should use button style
+                      const itemLinkStyle = getProperty<LinkStyle>(link, 'linkStyle', 'default');
+                      const itemButtonClasses = itemLinkStyle === 'button' ? "bg-accent text-accent-foreground hover:bg-accent/90 py-1.5 px-4 rounded-md my-1 inline-block" : '';
+                      const isItemButtonStyle = itemLinkStyle === 'button';
+                      
+                      if (isItemButtonStyle) {
+                        return (
+                          <MobileNavButton
+                            key={linkId}
+                            href={href}
+                            isExternal={hasType(link, 'external')}
+                            onOpenChange={setOpen}
+                            className={itemButtonClasses}
+                          >
+                            {getProperty(link, 'title', '')}
+                          </MobileNavButton>
+                        );
+                      }
                       
                       return (
                         <MobileLink
@@ -116,10 +206,15 @@ export default function MobileNav({ navItems }: { navItems: HeaderSettingsFetchQ
               
               return (
                 <div key={navId} className="flex flex-col space-y-2">
-                  <div className="font-medium">{getProperty(item, 'title', '')}</div>
+                  <div className={cn("font-medium", buttonClasses)}>{getProperty(item, 'title', '')}</div>
                   <div className="grid gap-1 pl-4">
                     {items.map((groupItem) => {
                       const groupItemId = getProperty(groupItem, '_key', '');
+                      
+                      // Check if this group item should use button style
+                      const itemLinkStyle = getProperty<LinkStyle>(groupItem, 'linkStyle', 'default');
+                      const itemButtonClasses = itemLinkStyle === 'button' ? "bg-accent text-accent-foreground hover:bg-accent/90 py-1.5 px-4 rounded-md my-1 inline-block" : '';
+                      const isItemButtonStyle = itemLinkStyle === 'button';
                       
                       // Regular links in group
                       if (hasType(groupItem, 'internal') || hasType(groupItem, 'external')) {
@@ -128,6 +223,20 @@ export default function MobileNav({ navItems }: { navItems: HeaderSettingsFetchQ
                           : getProperty(groupItem, 'url', '');
                         
                         if (!href) return null;
+                        
+                        if (isItemButtonStyle) {
+                          return (
+                            <MobileNavButton
+                              key={groupItemId}
+                              href={href}
+                              isExternal={hasType(groupItem, 'external')}
+                              onOpenChange={setOpen}
+                              className={itemButtonClasses}
+                            >
+                              {getProperty(groupItem, 'title', '')}
+                            </MobileNavButton>
+                          );
+                        }
                         
                         return (
                           <MobileLink
@@ -148,7 +257,7 @@ export default function MobileNav({ navItems }: { navItems: HeaderSettingsFetchQ
                         
                         return (
                           <div key={groupItemId} className="flex flex-col pt-2 pb-1">
-                            <div className="font-medium text-sm mb-1">{getProperty(groupItem, 'title', '')}</div>
+                            <div className={cn("font-medium text-sm mb-1", itemButtonClasses)}>{getProperty(groupItem, 'title', '')}</div>
                             <div className="grid gap-1 pl-3">
                               {links.map((link) => {
                                 const linkId = getProperty(link, '_key', '');
@@ -157,6 +266,25 @@ export default function MobileNav({ navItems }: { navItems: HeaderSettingsFetchQ
                                   : getProperty(link, 'url', '');
                                 
                                 if (!href) return null;
+                                
+                                // Check if this inner dropdown item should use button style
+                                const innerLinkStyle = getProperty<LinkStyle>(link, 'linkStyle', 'default');
+                                const innerButtonClasses = innerLinkStyle === 'button' ? "bg-accent text-accent-foreground hover:bg-accent/90 py-1 px-3 rounded-md my-1 inline-block text-sm" : '';
+                                const isInnerButtonStyle = innerLinkStyle === 'button';
+                                
+                                if (isInnerButtonStyle) {
+                                  return (
+                                    <MobileNavButton
+                                      key={linkId}
+                                      href={href}
+                                      isExternal={hasType(link, 'external')}
+                                      onOpenChange={setOpen}
+                                      className={innerButtonClasses}
+                                    >
+                                      {getProperty(link, 'title', '')}
+                                    </MobileNavButton>
+                                  );
+                                }
                                 
                                 return (
                                   <MobileLink
