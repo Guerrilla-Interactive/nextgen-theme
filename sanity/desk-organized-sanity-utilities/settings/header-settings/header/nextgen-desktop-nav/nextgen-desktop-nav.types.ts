@@ -1,7 +1,14 @@
+import { ReactNode } from "react"
+
 /**
  * Theme configuration types
  */
 export type ThemeMode = 'light' | 'dark'
+
+/**
+ * Valid animation types for dropdowns
+ */
+export type AnimationType = 'fade' | 'slide' | 'scale' | 'none';
 
 /**
  * State-based property configuration
@@ -18,24 +25,48 @@ export interface StateProperties<T> {
 }
 
 /**
+ * Color properties for different states
+ */
+export interface ColorProperties {
+  /** Background color for different states */
+  background: StateProperties<string>;
+  /** Text color for different states */
+  text: StateProperties<string>;
+  /** Border color for different states */
+  border: StateProperties<string>;
+  /** Dropdown-specific colors */
+  dropdown: {
+    /** Background color for dropdown */
+    background: StateProperties<string>;
+    /** Text color for dropdown */
+    text: StateProperties<string>;
+    /** Border color for dropdown */
+    border: StateProperties<string>;
+    /** Description text color */
+    description: string;
+    /** Dropdown items colors */
+    items: {
+      /** Background color for dropdown items */
+      background: StateProperties<string>;
+      /** Border color for dropdown items */
+      border: StateProperties<string>;
+    };
+    /** Indicator colors */
+    indicators: {
+      /** Arrow color */
+      arrow: string;
+      /** Hover indicator color */
+      hover: string;
+    }
+  }
+}
+
+/**
  * Typography related properties
  */
 export interface TypographyProperties {
   /** 
-   * Text color for different states
-   * @examples
-   * Works:
-   * - Tailwind colors: 'text-white', 'text-gray-800'
-   * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.8)'
-   * - CSS variables: 'var(--color-primary)'
-   * 
-   * Doesn't work:
-   * - Without prefix: 'white', 'blue'
-   * - With just hex: 'ffffff' (missing # prefix)
-   */
-  color: StateProperties<string>
-  /** 
-   * Font weight for different states 
+   * Font weight 
    * @examples
    * Works:
    * - Tailwind only: 'font-normal', 'font-medium', 'font-bold'
@@ -44,9 +75,9 @@ export interface TypographyProperties {
    * - CSS values: '400', '700'
    * - Direct values: 'normal', 'bold'
    */
-  weight?: StateProperties<string>
+  weight: string
   /** 
-   * Text transform for different states 
+   * Text transform 
    * @examples
    * Works:
    * - Tailwind only: 'uppercase', 'lowercase', 'capitalize', 'normal-case'
@@ -54,7 +85,7 @@ export interface TypographyProperties {
    * Doesn't work:
    * - CSS values: 'uppercase', 'lowercase' (without Tailwind prefix)
    */
-  transform?: StateProperties<string>
+  transform: string
   /** 
    * Font size (Tailwind class) 
    * @examples
@@ -64,27 +95,15 @@ export interface TypographyProperties {
    * Doesn't work:
    * - CSS values: '14px', '1rem'
    */
-  size?: string
+  size: string
 }
 
 /**
- * Border related properties
+ * Border related properties (excluding color)
  */
-export interface BorderProperties {
+export interface BorderStyleProperties {
   /** 
-   * Border color for different states 
-   * @examples
-   * Works:
-   * - Tailwind with opacity: 'rgba(255, 255, 255, 0.2)'
-   * - CSS hex: '#ffffff', '#ffffff20'
-   * - CSS variables: 'var(--border-color)'
-   * 
-   * Doesn't work:
-   * - Tailwind color classes: 'border-gray-200' (use raw color values)
-   */
-  color: StateProperties<string>
-  /** 
-   * Border width for different states 
+   * Border width 
    * @examples
    * Works:
    * - Tailwind only: 'border', 'border-2', 'border-0'
@@ -92,7 +111,7 @@ export interface BorderProperties {
    * Doesn't work:
    * - CSS values: '1px', '2px'
    */
-  width?: StateProperties<string>
+  width: string
   /** 
    * Border radius 
    * @examples
@@ -102,7 +121,7 @@ export interface BorderProperties {
    * Doesn't work:
    * - CSS values: '4px', '0.5rem'
    */
-  radius?: string
+  radius: string
 }
 
 /**
@@ -119,7 +138,18 @@ export interface SpacingProperties {
    * - CSS values: '16px', '1rem'
    * - Mixed: 'p-4 16px'
    */
-  padding?: string
+  padding: string
+  /** 
+   * Gap between items 
+   * @examples
+   * Works:
+   * - Tailwind only: 'gap-2', 'gap-6'
+   * 
+   * Doesn't work:
+   * - CSS values: 'gap: 16px'
+   * - Direct values: '1rem', '16px'
+   */
+  gap: string
   /** 
    * Spacing between items 
    * @examples
@@ -168,7 +198,29 @@ export interface AnimationProperties {
    * Doesn't work:
    * - Other strings: 'zoom', 'rotate'
    */
-  type?: 'fade' | 'slide' | 'scale' | 'none'
+  type?: AnimationType
+  /** 
+   * Delay before dropdown disappears on mouse leave (hover exit)
+   * @examples
+   * Works:
+   * - CSS time values only: '700ms', '0.5s'
+   * 
+   * Doesn't work:
+   * - Numbers without units: '700', '0.5'
+   * - Tailwind classes: 'duration-700'
+   */
+  hoverExitDelay?: string
+  /** 
+   * Specific duration for dropdown item animations
+   * @examples
+   * Works:
+   * - CSS time values only: '150ms', '0.25s'
+   * 
+   * Doesn't work:
+   * - Numbers without units: '150', '0.25'
+   * - Tailwind classes: 'duration-150'
+   */
+  itemDuration?: string
   /**
    * Property-specific durations
    */
@@ -212,34 +264,59 @@ export interface AnimationProperties {
 }
 
 /**
- * Base style properties for the navigation system
+ * Layout properties for the navigation
  */
-export interface BaseThemeProps {
+export interface LayoutProperties {
   /** 
-   * Background colors for different states 
+   * Height 
    * @examples
    * Works:
-   * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.05)', 'transparent'
-   * - CSS variables: 'var(--bg-primary)'
+   * - Tailwind height: 'h-12', 'h-16', 'h-[64px]'
    * 
    * Doesn't work:
-   * - Tailwind classes: 'bg-white', 'bg-opacity-5'
+   * - CSS values: '3rem', '64px'
+   * - Without prefix: '12', '16'
    */
-  background: StateProperties<string>
-  /** Typography properties */
-  text: TypographyProperties
-  /** Border properties */
-  border?: BorderProperties
-  /** Spacing properties */
-  spacing?: SpacingProperties
-  /** Dropdown styling */
-  dropdown: DropdownThemeProps
+  height: string
+  /** 
+   * Max width 
+   * @examples
+   * Works:
+   * - Tailwind max-width: 'max-w-screen-xl', 'max-w-7xl', 'max-w-[1280px]'
+   * 
+   * Doesn't work:
+   * - CSS values: '1280px', '100%'
+   * - Regular width: 'w-full'
+   */
+  maxWidth: string
+  /** 
+   * Position 
+   * @examples
+   * Works:
+   * - Only these exact values: 'relative', 'absolute', 'fixed', 'sticky'
+   * 
+   * Doesn't work:
+   * - Tailwind classes: 'static', 'position-absolute'
+   * - Other strings: 'top', 'bottom'
+   */
+  position: 'relative' | 'absolute' | 'fixed' | 'sticky'
+  /** 
+   * Z-index 
+   * @examples
+   * Works:
+   * - Numbers only: 10, 50, 100
+   * 
+   * Doesn't work:
+   * - Strings: '10', '50'
+   * - Tailwind classes: 'z-10', 'z-50'
+   */
+  zIndex: number
 }
 
 /**
- * Dropdown indicator properties
+ * Dropdown indicator properties (excluding colors)
  */
-export interface DropdownIndicatorProperties {
+export interface DropdownIndicatorStyleProperties {
   /** 
    * Show dropdown arrow indicator 
    * @examples
@@ -250,7 +327,7 @@ export interface DropdownIndicatorProperties {
    * - Strings: 'true', 'false'
    * - Numbers: 1, 0
    */
-  showArrow?: boolean
+  showArrow: boolean
   /** 
    * Arrow size 
    * @examples
@@ -261,27 +338,7 @@ export interface DropdownIndicatorProperties {
    * - CSS values: '10px', '0.5rem'
    * - Single dimension: 'w-2'
    */
-  arrowSize?: string
-  /** 
-   * Arrow color 
-   * @examples
-   * Works:
-   * - Border color Tailwind class: 'border-border', 'border-gray-200'
-   * 
-   * Doesn't work:
-   * - Direct color values: '#ffffff', 'rgba(255,255,255,0.5)'
-   */
-  arrowColor?: string
-  /** 
-   * Hover indicator color 
-   * @examples
-   * Works:
-   * - Background Tailwind class: 'bg-accent', 'bg-blue-500'
-   * 
-   * Doesn't work:
-   * - Direct color values: '#0000ff', 'blue'
-   */
-  hoverIndicatorColor?: string
+  arrowSize: string
   /** 
    * Hover indicator width 
    * @examples
@@ -291,7 +348,7 @@ export interface DropdownIndicatorProperties {
    * Doesn't work:
    * - CSS values: '3px', '0.25rem'
    */
-  hoverIndicatorWidth?: string
+  hoverIndicatorWidth: string
 }
 
 /**
@@ -308,7 +365,7 @@ export interface DropdownLayoutProperties {
    * - CSS values: '80vh', '400px'
    * - Without max prefix: 'h-[80vh]'
    */
-  maxHeight?: string
+  maxHeight: string
   /** 
    * Dropdown min width 
    * @examples
@@ -319,7 +376,7 @@ export interface DropdownLayoutProperties {
    * - CSS values: '200px', '100%'
    * - Without min prefix: 'w-[200px]'
    */
-  minWidth?: string
+  minWidth: string
   /** 
    * Backdrop blur amount (CSS value) 
    * @examples
@@ -331,7 +388,7 @@ export interface DropdownLayoutProperties {
    * - Tailwind classes: 'blur-sm', 'blur-md'
    * - Without units: '2', '5'
    */
-  blur?: string
+  blur: string
   /** 
    * Dropdown shadow (Tailwind class) 
    * @examples
@@ -345,363 +402,115 @@ export interface DropdownLayoutProperties {
 }
 
 /**
- * Dropdown-specific style properties
+ * Structural properties for dropdown
  */
-export interface DropdownThemeProps {
-  /** 
-   * Background colors for the dropdown container
-   * @examples
-   * Works:
-   * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.05)', 'transparent'
-   * - CSS variables: 'var(--bg-primary)'
-   * 
-   * Doesn't work:
-   * - Tailwind classes: 'bg-white', 'bg-opacity-5'
-   */
-  background: StateProperties<string>
-  /** Typography properties for dropdown */
-  text: TypographyProperties
-  /** Border properties for dropdown */
-  border?: BorderProperties
-  /** Spacing properties for dropdown */
-  spacing?: SpacingProperties
-  /** Animation properties for dropdown */
-  animation?: AnimationProperties
-  /** Layout properties for dropdown */
-  layout?: DropdownLayoutProperties
-  /** Indicator properties for dropdown */
-  indicators?: DropdownIndicatorProperties
-  /** 
-   * Description text color 
-   * @examples
-   * Works:
-   * - Tailwind class: 'text-muted-foreground', 'text-gray-400'
-   * 
-   * Doesn't work:
-   * - CSS values: '#9ca3af'
-   */
-  descriptionColor?: string
-  /**
-   * Individual dropdown item styling
-   */
-  items?: {
-    /** 
-     * Background colors for dropdown items (different states)
-     * @examples
-     * Works:
-     * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.05)', 'transparent'
-     * - CSS variables: 'var(--bg-primary)'
-     * 
-     * Doesn't work:
-     * - Tailwind classes: 'bg-white', 'bg-opacity-5'
-     */
-    background: StateProperties<string>
-    /** Border properties for dropdown items */
-    border?: BorderProperties
+export interface DropdownStructureProperties {
+  /** Border properties (width, radius) */
+  border: BorderStyleProperties
+  /** Spacing properties */
+  spacing: SpacingProperties
+  /** Layout properties */
+  layout: DropdownLayoutProperties
+  /** Indicator properties (excluding colors) */
+  indicators: DropdownIndicatorStyleProperties
+  /** Item structure properties */
+  items: {
+    /** Border properties (width, radius) */
+    border: BorderStyleProperties
   }
 }
 
 /**
- * Layout properties for the navigation
+ * Structure properties for the entire navigation
  */
-export interface LayoutProperties {
-  /** 
-   * Font size (Tailwind class) 
-   * @examples
-   * Works:
-   * - Tailwind text sizes: 'text-sm', 'text-base', 'text-lg'
-   * 
-   * Doesn't work:
-   * - CSS values: '14px', '1rem'
-   * - Without prefix: 'sm', 'base'
-   */
-  fontSize: string
-  /** 
-   * Gap between items (Tailwind class) 
-   * @examples
-   * Works:
-   * - Tailwind gap: 'gap-4', 'gap-6', 'gap-x-2 gap-y-4'
-   * 
-   * Doesn't work:
-   * - CSS values: '16px', '1rem'
-   * - Without prefix: '4', '6'
-   */
-  gap: string
-  /** 
-   * Height 
-   * @examples
-   * Works:
-   * - Tailwind height: 'h-12', 'h-16', 'h-[64px]'
-   * 
-   * Doesn't work:
-   * - CSS values: '3rem', '64px'
-   * - Without prefix: '12', '16'
-   */
-  height?: string
-  /** 
-   * Max width 
-   * @examples
-   * Works:
-   * - Tailwind max-width: 'max-w-screen-xl', 'max-w-7xl', 'max-w-[1280px]'
-   * 
-   * Doesn't work:
-   * - CSS values: '1280px', '100%'
-   * - Regular width: 'w-full'
-   */
-  maxWidth?: string
-  /** 
-   * Position 
-   * @examples
-   * Works:
-   * - Only these exact values: 'relative', 'absolute', 'fixed', 'sticky'
-   * 
-   * Doesn't work:
-   * - Tailwind classes: 'static', 'position-absolute'
-   * - Other strings: 'top', 'bottom'
-   */
-  position?: 'relative' | 'absolute' | 'fixed' | 'sticky'
-  /** 
-   * Z-index 
-   * @examples
-   * Works:
-   * - Numbers only: 10, 50, 100
-   * 
-   * Doesn't work:
-   * - Strings: '10', '50'
-   * - Tailwind classes: 'z-10', 'z-50'
-   */
-  zIndex?: number
+export interface StructureProperties {
+  /** Text style properties (excluding colors) */
+  text: TypographyProperties
+  /** Border properties (excluding colors) */
+  border: BorderStyleProperties
+  /** Spacing properties */
+  spacing: SpacingProperties
+  /** Layout properties */
+  layout: LayoutProperties
+  /** Dropdown structure */
+  dropdown: DropdownStructureProperties
 }
 
 /**
  * Complete theme configuration
  */
 export interface NavThemeConfig {
-  /** Light mode styles */
-  light: BaseThemeProps
-  /** Dark mode styles */
-  dark: BaseThemeProps
-  /** Layout properties */
-  layout: LayoutProperties
+  /** Color properties with light/dark variants */
+  color: {
+    light: ColorProperties
+    dark: ColorProperties
+  }
+  /** Structure properties (no light/dark variants) */
+  structure: StructureProperties
   /** Animation properties */
-  animation?: AnimationProperties
+  animation: AnimationProperties
 }
 
 /**
- * User-configurable text properties
+ * User-configurable properties for the color theme
  */
-export interface TextStyleProps {
-    /** 
-     * Color override for different states 
-     * @examples
-     * Works:
-     * - Tailwind colors: 'text-white', 'text-gray-800'
-     * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.8)'
-     * - CSS variables: 'var(--color-primary)'
-     * 
-     * Doesn't work:
-     * - Without prefix: 'white', 'blue'
-     * - With just hex: 'ffffff' (missing # prefix)
-     */
-    color?: Partial<StateProperties<string>>
-    /** 
-     * Font weight override for different states 
-     * @examples
-     * Works:
-     * - Tailwind only: 'font-normal', 'font-medium', 'font-bold'
-     * 
-     * Doesn't work:
-     * - CSS values: '400', '700'
-     * - Direct values: 'normal', 'bold'
-     */
-    weight?: Partial<StateProperties<string>>
-    /** 
-     * Text transform override for different states 
-     * @examples
-     * Works:
-     * - Tailwind only: 'uppercase', 'lowercase', 'capitalize', 'normal-case'
-     * 
-     * Doesn't work:
-     * - CSS values: 'uppercase', 'lowercase' (without Tailwind prefix)
-     */
-    transform?: Partial<StateProperties<string>>
-    /** 
-     * Font size override 
-     * @examples
-     * Works:
-     * - Tailwind only: 'text-sm', 'text-base', 'text-lg'
-     * 
-     * Doesn't work:
-     * - CSS values: '14px', '1rem'
-     */
-    size?: string
+export interface ColorStyleProps {
+  light?: Partial<ColorProperties>
+  dark?: Partial<ColorProperties>
+}
+
+/**
+ * User-configurable properties for the structure
+ */
+export interface StructureStyleProps {
+  text?: Partial<TypographyProperties>
+  border?: Partial<BorderStyleProperties>
+  spacing?: Partial<SpacingProperties>
+  dropdown?: {
+    border?: Partial<BorderStyleProperties>
+    spacing?: Partial<SpacingProperties>
+    layout?: Partial<DropdownLayoutProperties>
+    indicators?: Partial<DropdownIndicatorStyleProperties>
+    items?: {
+      border?: Partial<BorderStyleProperties>
+    }
   }
-  
-  /**
-   * User-configurable border properties
+}
+
+/**
+ * User-configurable properties for the navigation
+ */
+export interface NavStyleProps {
+  /** Override color properties */
+  color?: ColorStyleProps
+  /** Override structure properties */
+  structure?: StructureStyleProps
+  /** 
+   * Override layout properties (for backward compatibility)
+   * @deprecated Use structure.layout instead
    */
-  export interface BorderStyleProps {
-    /** 
-     * Border color override for different states 
-     * @examples
-     * Works:
-     * - Tailwind with opacity: 'rgba(255, 255, 255, 0.2)'
-     * - CSS hex: '#ffffff', '#ffffff20'
-     * - CSS variables: 'var(--border-color)'
-     * 
-     * Doesn't work:
-     * - Tailwind color classes: 'border-gray-200' (use raw color values)
-     */
-    color?: Partial<StateProperties<string>>
-    /** 
-     * Border width override for different states 
-     * @examples
-     * Works:
-     * - Tailwind only: 'border', 'border-2', 'border-0'
-     * 
-     * Doesn't work:
-     * - CSS values: '1px', '2px'
-     */
-    width?: Partial<StateProperties<string>>
-    /** 
-     * Border radius override 
-     * @examples
-     * Works:
-     * - Tailwind only: 'rounded', 'rounded-md', 'rounded-none', 'rounded-full'
-     * 
-     * Doesn't work:
-     * - CSS values: '4px', '0.5rem'
-     */
-    radius?: string
-  }
+  layout?: Partial<LayoutProperties>
+  /** Override animation properties */
+  animation?: Partial<AnimationProperties>
   
-  /**
-   * User-configurable properties for the navigation
+  /** 
+   * @deprecated Legacy properties for backward compatibility
    */
-  export interface NavStyleProps {
-    /** Override light mode styles */
-    light?: {
-      /** 
-       * Background colors override 
-       * @examples
-       * Works:
-       * - CSS colors: '#ffffff', 'rgba(255, 255, 255, 0.05)', 'transparent'
-       * - CSS variables: 'var(--bg-primary)'
-       * 
-       * Doesn't work:
-       * - Tailwind classes: 'bg-white', 'bg-opacity-5'
-       */
-      background?: Partial<StateProperties<string>>
-      /** Text properties override */
-      text?: TextStyleProps
-      /** Border properties override */
-      border?: BorderStyleProps
-      /** Spacing properties override */
-      spacing?: Partial<SpacingProperties>
-    }
-    
-    /** Override dark mode styles */
-    dark?: {
-      /** 
-       * Background colors override 
-       * @examples
-       * Works:
-       * - CSS colors: '#ffffff', 'rgba(0, 0, 0, 0.05)', 'transparent'
-       * - CSS variables: 'var(--bg-primary)'
-       * 
-       * Doesn't work:
-       * - Tailwind classes: 'bg-white', 'bg-opacity-5'
-       */
-      background?: Partial<StateProperties<string>>
-      /** Text properties override */
-      text?: TextStyleProps
-      /** Border properties override */
-      border?: BorderStyleProps
-      /** Spacing properties override */
-      spacing?: Partial<SpacingProperties>
-    }
-    
-    /** Override light mode dropdown styles */
-    lightDropdown?: {
-      /** Background colors override */
-      background?: Partial<StateProperties<string>>
-      /** Text properties override */
-      text?: TextStyleProps
-      /** Border properties override */
-      border?: BorderStyleProps
-      /** Spacing properties override */
-      spacing?: Partial<SpacingProperties>
-      /** Animation properties override */
-      animation?: Partial<AnimationProperties>
-      /** Layout properties override */
-      layout?: Partial<DropdownLayoutProperties>
-      /** Indicator properties override */
-      indicators?: Partial<DropdownIndicatorProperties>
-      /** Description color override */
-      descriptionColor?: string
-      /** Override dropdown item styles */
-      items?: {
-        /** Background colors for dropdown items */
-        background?: Partial<StateProperties<string>>
-        /** Border properties for dropdown items */
-        border?: BorderStyleProps
-      }
-    }
-    
-    /** Override dark mode dropdown styles */
-    darkDropdown?: {
-      /** Background colors override */
-      background?: Partial<StateProperties<string>>
-      /** Text properties override */
-      text?: TextStyleProps
-      /** Border properties override */
-      border?: BorderStyleProps
-      /** Spacing properties override */
-      spacing?: Partial<SpacingProperties>
-      /** Animation properties override */
-      animation?: Partial<AnimationProperties>
-      /** Layout properties override */
-      layout?: Partial<DropdownLayoutProperties>
-      /** Indicator properties override */
-      indicators?: Partial<DropdownIndicatorProperties>
-      /** Description color override */
-      descriptionColor?: string
-      /** Override dropdown item styles */
-      items?: {
-        /** Background colors for dropdown items */
-        background?: Partial<StateProperties<string>>
-        /** Border properties for dropdown items */
-        border?: BorderStyleProps
-      }
-    }
-    
-    /** 
-     * Override layout properties 
-     * @examples
-     * fontSize: 'text-sm'
-     * gap: 'gap-6'
-     * height: 'h-16'
-     * maxWidth: 'max-w-screen-xl'
-     * position: 'relative'
-     * zIndex: 50
-     */
-    layout?: Partial<LayoutProperties>
-    
-    /** 
-     * Override animation properties 
-     * @examples
-     * type: 'fade'
-     * duration: '200ms'
-     * easing: 'ease-in-out'
-     * properties: {
-     *   background: '600ms',
-     *   color: '400ms', 
-     *   border: '300ms'
-     * }
-     */
-    animation?: Partial<AnimationProperties>
-  }
-  
+  light?: any
+  /** 
+   * @deprecated Legacy properties for backward compatibility
+   */
+  dark?: any
+  /** 
+   * @deprecated Legacy properties for backward compatibility
+   */
+  lightDropdown?: any
+  /** 
+   * @deprecated Legacy properties for backward compatibility
+   */
+  darkDropdown?: any
+}
+
 /**
  * Regular navigation link (not a dropdown)
  */

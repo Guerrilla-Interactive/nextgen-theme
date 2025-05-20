@@ -28,7 +28,7 @@ export const NextgenLogo = ({
   logoOptions, 
   logo, 
   isTopDark, 
-  className = "w-52 h-full",
+  className = "w-52 px-6 h-full",
   onLoaded 
 }: NextgenLogoProps) => {
   const logoRef = useRef<HTMLDivElement>(null);

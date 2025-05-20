@@ -21,7 +21,7 @@ export default function Header(props: any) {
     <>
       <header
         className={cn(
-          "absolute top-0 w-full border-border/40 z-50 transition-opacity",
+          "absolute top-4 w-full border-border/40 z-50 transition-opacity",
           !isTopDark ? "text-black" : "text-white",
           iconLoaded && !sessionLoaded && "animate-fade-down-slow",
           iconLoaded ? "opacity-100" : "opacity-0"
@@ -37,7 +37,7 @@ export default function Header(props: any) {
             />
           )}
 
-          <div className="flex items-center justify-between h-14">
+          <div className="flex items-center   p-2  backdrop-blur-sm border  border-solid border-white/5  rounded-lg justify-between h-16">
             <Link href="/" aria-label="Home page">
               <NextgenLogo 
                 logoOptions={props.logoOptions}
