@@ -45,6 +45,7 @@
     "@turf/turf": "^7.2.0",
     "@types/animejs": "^3.1.13",
     "animejs": "^3.2.2",
+    "chroma-js": "^3.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.5.2",
