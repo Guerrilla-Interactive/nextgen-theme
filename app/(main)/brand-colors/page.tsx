@@ -156,6 +156,7 @@ function TokenShowcase({ vars }: { vars: Record<string, string> }) {
 
   return (
     <div className="grid container mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <UseClientConfigs navigationTextColor="white"/>
       {groups.map(
         (group) =>
           group.tokens.length > 0 && (
