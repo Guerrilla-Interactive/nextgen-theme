@@ -28,7 +28,7 @@ export const DEFAULT_THEME: NavThemeConfig = {
     text: {
       weight: 'font-medium',
       transform: '',
-      size: 'text-[18px]',
+      size: 'text-[12px]',
     },
     // Border properties
     border: {
@@ -50,6 +50,8 @@ export const DEFAULT_THEME: NavThemeConfig = {
     // Dropdown structure
     dropdown: {
       // Border properties
+
+
       border: {
         width: 'border',
         radius: 'rounded-md',
@@ -78,7 +80,7 @@ export const DEFAULT_THEME: NavThemeConfig = {
         border: {
           width: 'border',
           radius: 'rounded',
-        }
+        },
       }
     }
   },

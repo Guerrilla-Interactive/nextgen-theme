@@ -8,6 +8,7 @@
 
 # testing
 /coverage
+.env
 
 # next.js
 /.next/
@@ -36,25 +37,3 @@ yarn-error.log*
 next-env.d.ts
 .vercel
 .env*.local
-
-# Added by Claude Task Master
-# Logs
-logs
-*.log
-dev-debug.log
-# Dependency directories
-node_modules/
-# Environment variables
-.env
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-# OS specific
-# Task files
-tasks.json
-tasks/ 
