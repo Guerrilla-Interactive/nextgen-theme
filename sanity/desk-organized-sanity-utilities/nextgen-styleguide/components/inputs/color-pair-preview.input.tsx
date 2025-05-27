@@ -86,33 +86,53 @@ export default function ColorPairPreviewInput(props: ColorPairPreviewInputProps)
     return renderDefault(props)
   }
 
-  // Extract last segments to determine path context
-  const fieldName = props.path[props.path.length - 1]
-  const parentFieldName = props.path[props.path.length - 2]
+  // Extract path segments to determine context
+  const pathSegments = props.path || []
+  const fieldName = pathSegments[pathSegments.length - 1] || ''
   
-  // Support both legacy wcagColorPair and new array structure
-  const isColorField = props.schemaType.name === 'color';
-  const isInWcagPair = parentFieldName === 'wcagColorPair';
-  const isInArrayItem = 
-    props.path.length >= 4 && 
-    ['primaryColors', 'secondaryColors'].includes(props.path[props.path.length - 4]);
+  // Try to determine parent context by examining the path
+  let isColorField = false
+  let isInWcagPair = false
+  let parentValue: Record<string, any> | null = null
   
-  // Only render preview for foreground field in color pairs
+  // Check if we're in a colorPair field structure
+  for (let i = 0; i < pathSegments.length; i++) {
+    if (pathSegments[i] === 'colorPair') {
+      isInWcagPair = true
+      break
+    }
+  }
+  
+  // Check if we're in a color field
+  isColorField = props.schemaType?.name === 'color' || fieldName === 'background' || fieldName === 'foreground'
+  
+  // Only render preview for color fields in color pairs
   if (!isColorField || !isInWcagPair || fieldName !== 'foreground') {
     return renderDefault(props)
   }
   
-  // Get paired color values from the parent object
-  const parentValue = props.parent as Record<string, any>
-  const background = parentValue?.background?.hex
-  const foreground = parentValue?.foreground?.hex
+  try {
+    // Get color values from the parent object
+    parentValue = props.parent as Record<string, any>
+    
+    // Safely extract color values
+    const background = parentValue?.background?.hex
+    const foreground = parentValue?.foreground?.hex
+    
+    // Only render preview if we have valid colors
+    if (background && foreground) {
+      return (
+        <Stack space={2}>
+          {renderDefault(props)}
+          
+          <ColorPreview background={background} foreground={foreground} />
+        </Stack>
+      )
+    }
+  } catch (err) {
+    console.error('Error rendering color preview:', err)
+  }
   
-  // Create preview with color samples
-  return (
-    <Stack space={2}>
-      {renderDefault(props)}
-      
-      <ColorPreview background={background} foreground={foreground} />
-    </Stack>
-  )
+  // If we can't get valid colors or encounter an error, just render the default
+  return renderDefault(props)
 } 

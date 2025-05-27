@@ -53,7 +53,7 @@ async function migrateColorValues() {
         let hasChanges = false
         
         // Migrate primary color if it exists
-        if (doc.primaryColor?.wcagColorPair?.background?.hex) {
+        if (doc.primaryColor?.colorPair?.background?.hex) {
           console.log(`Migrating primary color for ${docId}`)
           
           // Create the primaryColors array with the existing value
@@ -61,7 +61,7 @@ async function migrateColorValues() {
             set: {
               primaryColors: [{
                 colorName: 'Primary',
-                wcagColorPair: doc.primaryColor.wcagColorPair
+                colorPair: doc.primaryColor.colorPair
               }]
             }
           })
@@ -70,7 +70,7 @@ async function migrateColorValues() {
         }
         
         // Migrate secondary color if it exists
-        if (doc.secondaryColor?.wcagColorPair?.background?.hex) {
+        if (doc.secondaryColor?.colorPair?.background?.hex) {
           console.log(`Migrating secondary color for ${docId}`)
           
           // Create the secondaryColors array with the existing value
@@ -78,7 +78,7 @@ async function migrateColorValues() {
             set: {
               secondaryColors: [{
                 colorName: 'Secondary',
-                wcagColorPair: doc.secondaryColor.wcagColorPair
+                colorPair: doc.secondaryColor.colorPair
               }]
             }
           })

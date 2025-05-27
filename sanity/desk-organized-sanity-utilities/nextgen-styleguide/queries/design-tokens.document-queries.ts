@@ -8,60 +8,55 @@ import {groq} from 'next-sanity'
  */
 export const DESIGN_TOKENS_QUERY = groq`
   *[_type == "designTokens"][0] {
-    advancedMode,
     "colors": {
-      "primary": primaryColor.wcagColorPair,
-      "secondary": secondaryColor.wcagColorPair,
-      // Only include colorPalette if advancedMode is true
-      ...(advancedMode && colorPalette != null && {
-        "palette": colorPalette[] {
+      "primary": primaryColor.colorPair,
+      "secondary": secondaryColor.colorPair,
+      "primaryColors": primaryColors[] {
+        colorName,
+        colorPair
+      },
+      "secondaryColors": secondaryColors[] {
+        colorName,
+        colorPair
+      },
+      "palette": colorPalette[] {
+        name,
+        "slug": slug.current,
+        "value": colorPair.background.hex,
+        "foreground": colorPair.foreground.hex,
+        "shades": shades[] {
           name,
-          "slug": slug.current,
-          "value": wcagColorPair.background.hex,
-          "foreground": wcagColorPair.foreground.hex,
-          "shades": shades[] {
-            name,
-            "value": value.hex
-          }
+          "value": value.hex
         }
-      })
+      }
     },
     "typography": {
       "fontFamily": {
         "heading": fontFamily.heading,
         "body": fontFamily.body
       },
-      // Only include typographyScale if advancedMode is true
-      ...(advancedMode && typographyScale != null && {
-        "scale": typographyScale[] {
-          name,
-          "slug": slug.current,
-          fontSize,
-          lineHeight
-        }
-      })
+      "scale": typographyScale[] {
+        name,
+        "slug": slug.current,
+        fontSize,
+        lineHeight
+      }
     },
     "borderRadius": {
       "value": radius.value,
       "unit": radius.unit
     },
-    // Only include spacingScale if advancedMode is true
-    ...(advancedMode && spacingScale != null && {
-      "spacing": spacingScale[] {
-        name,
-        "slug": slug.current,
-        value
-      }
-    }),
-    // Only include componentOverrides if advancedMode is true
-    ...(advancedMode && componentOverrides != null && {
-      "components": componentOverrides[] {
-        component,
-        "slug": slug.current,
-        "radius": radiusOverride,
-        "colorOverrides": colorOverrides[]->
-      }
-    }),
+    "spacing": spacingScale[] {
+      name,
+      "slug": slug.current,
+      value
+    },
+    "components": componentOverrides[] {
+      component,
+      "slug": slug.current,
+      "radius": radiusOverride,
+      "colorOverrides": colorOverrides[]->
+    },
     _updatedAt
   }
 `
@@ -72,33 +67,34 @@ export const DESIGN_TOKENS_QUERY = groq`
  */
 export const DESIGN_TOKENS_PREVIEW_QUERY = groq`
   *[_type == "designTokens" && _id == $id][0] {
-    advancedMode,
     "colors": {
-      "primary": primaryColor.wcagColorPair,
-      "secondary": secondaryColor.wcagColorPair,
-      // Only include colorPalette if advancedMode is true
-      ...(advancedMode && colorPalette != null && {
-        "palette": colorPalette[] {
-          name,
-          "slug": slug.current,
-          "value": wcagColorPair.background.hex,
-          "foreground": wcagColorPair.foreground.hex
-        }
-      })
+      "primary": primaryColor.colorPair,
+      "secondary": secondaryColor.colorPair,
+      "primaryColors": primaryColors[] {
+        colorName,
+        colorPair
+      },
+      "secondaryColors": secondaryColors[] {
+        colorName,
+        colorPair
+      },
+      "palette": colorPalette[] {
+        name,
+        "slug": slug.current,
+        "value": colorPair.background.hex,
+        "foreground": colorPair.foreground.hex
+      }
     },
     "typography": {
       "fontFamily": {
         "heading": fontFamily.heading,
         "body": fontFamily.body
       },
-      // Only include typographyScale if advancedMode is true
-      ...(advancedMode && typographyScale != null && {
-        "scale": typographyScale[] {
-          name,
-          fontSize,
-          lineHeight
-        }
-      })
+      "scale": typographyScale[] {
+        name,
+        fontSize,
+        lineHeight
+      }
     },
     "borderRadius": {
       "value": radius.value,

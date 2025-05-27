@@ -20,7 +20,6 @@ import AppIcon from "./features/theme/AppIcon";
 import { imageBrightnessPlugin } from "./sanity/plugins/image-brightness-plugin";
 import {colorInput} from '@sanity/color-input'
 import { 
-  colorPlugin,
   themeWizardPanePlugin
 } from "./sanity/desk-organized-sanity-utilities/nextgen-styleguide"
 
@@ -35,7 +34,6 @@ export default defineConfig({
   plugins: [
     structureTool({ structure }),
     colorInput(),
-    colorPlugin,
     themeWizardPanePlugin,
     presentationTool({
       previewUrl: {

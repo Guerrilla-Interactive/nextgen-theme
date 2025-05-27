@@ -15,7 +15,7 @@ The color system has been updated to support multiple primary and secondary colo
 primaryColors: [
   {
     colorName: 'Primary Blue',
-    wcagColorPair: {
+    colorPair: {
       background: { hex: '#3b82f6', alpha: 1 },
       foreground: { hex: '#ffffff', alpha: 1 }
     }
@@ -27,7 +27,7 @@ primaryColors: [
 secondaryColors: [
   {
     colorName: 'Secondary Orange',
-    wcagColorPair: {
+    colorPair: {
       background: { hex: '#f97316', alpha: 1 },
       foreground: { hex: '#ffffff', alpha: 1 }
     }
@@ -43,7 +43,7 @@ For backward compatibility, the system maintains the original single-value field
 ```ts
 // Legacy Primary Color
 primaryColor: {
-  wcagColorPair: {
+  colorPair: {
     background: { hex: '#3b82f6', alpha: 1 },
     foreground: { hex: '#ffffff', alpha: 1 }
   }
@@ -51,7 +51,7 @@ primaryColor: {
 
 // Legacy Secondary Color
 secondaryColor: {
-  wcagColorPair: {
+  colorPair: {
     background: { hex: '#f97316', alpha: 1 },
     foreground: { hex: '#ffffff', alpha: 1 }
   }
@@ -138,11 +138,11 @@ When querying colors, remember to handle both array and legacy formats:
 *[_type == "designTokens"][0]{
   primaryColors[]{
     colorName,
-    wcagColorPair
+    colorPair
   },
   secondaryColors[]{
     colorName,
-    wcagColorPair
+    colorPair
   },
   // Legacy fallbacks
   primaryColor,
@@ -157,13 +157,13 @@ When implementing the colors in your frontend, use this pattern to handle both f
 ```tsx
 // Get the first primary color, falling back to legacy format if needed
 const primaryColor = document.primaryColors && document.primaryColors.length > 0
-  ? document.primaryColors[0].wcagColorPair.background.hex
-  : document.primaryColor.wcagColorPair.background.hex;
+  ? document.primaryColors[0].colorPair.background.hex
+  : document.primaryColor.colorPair.background.hex;
 
 // Get all primary colors when available
 const allPrimaryColors = document.primaryColors 
-  ? document.primaryColors.map(c => c.wcagColorPair.background.hex)
-  : [document.primaryColor.wcagColorPair.background.hex];
+  ? document.primaryColors.map(c => c.colorPair.background.hex)
+  : [document.primaryColor.colorPair.background.hex];
 ```
 
 ## Troubleshooting

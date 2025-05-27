@@ -5,6 +5,8 @@ import {PaletteIcon} from 'lucide-react'
 
 // Import the token preview component
 import TokenPreview from '../components/preview-pane/TokenPreview'
+// Import the theme wizard pane component
+import ThemeWizardPane from '../components/theme-wizard/theme-wizard-pane'
 
 /**
  * Design Tokens Document Structure
@@ -35,7 +37,13 @@ export const designTokensStructure = (S: StructureBuilder) => {
           S.view
             .component(TokenPreview)
             .id('preview')
-            .title('Preview')
+            .title('Preview'),
+            
+          // Theme Wizard - for applying theme presets
+          S.view
+            .component(ThemeWizardPane)
+            .id('theme-wizard')
+            .title('Theme Wizard')
         ])
     )
 } 

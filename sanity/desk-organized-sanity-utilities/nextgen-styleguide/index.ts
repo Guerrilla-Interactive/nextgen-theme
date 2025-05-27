@@ -3,23 +3,14 @@
 
 // Export schemas
 import {nextgenStyleguideSchemas} from './schema'
-import {colorPairField} from './schema/fields/color-pair.field'
-import {wcagColorPairField} from './schema/fields/wcag-color-pair.field'
+
 import {colorDisplayField} from './schema/fields/color-display.field'
 
 // Export custom input components
 import ColorPairPreviewInput from './components/inputs/color-pair-preview.input'
-import ReadOnlySlugInput from './components/inputs/read-only-slug.input'
 import ColorDisplayInput from './components/inputs/color-display.input'
 
 // Export plugins
-import {
-  colorPlugin,
-  colorPreviewPlugin,
-  colorDisplayPlugin,
-  wcagBadgePlugin
-} from './plugins/color-plugins'
-import {readOnlySlugPlugin} from './plugins/read-only-slug-plugin'
 import {themeWizardPanePlugin} from './plugins/theme-wizard-pane-plugin'
 
 // Export structure
@@ -32,25 +23,20 @@ import {
   DESIGN_TOKENS_EXISTS_QUERY
 } from './queries'
 
+import { colorPairField } from './schema/fields/color-pair-field'
+
 // Main exports
 export {
   // Schemas
   nextgenStyleguideSchemas,
   colorPairField,
-  wcagColorPairField,
   colorDisplayField,
   
   // Components
   ColorPairPreviewInput,
-  ReadOnlySlugInput,
   ColorDisplayInput,
   
   // Plugins
-  colorPlugin,
-  colorPreviewPlugin,
-  colorDisplayPlugin,
-  wcagBadgePlugin,
-  readOnlySlugPlugin,
   themeWizardPanePlugin,
   
   // Structure

@@ -7,7 +7,12 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "bg-card text-card-foreground rounded-xl border shadow-sm",
+        "bg-[var(--page-card-bg,var(--card))] text-[var(--page-card-foreground,var(--foreground))]",
+        "border-[var(--page-card-border-width,var(--border-width-default))]",
+        "border-[style:var(--page-card-border-style,var(--border-style))]",
+        "border-[color:var(--page-card-border-color,var(--border-color-default))]",
+        "[border-radius:var(--page-card-radius,var(--radius-lg))]",
+        "shadow-[var(--page-card-shadow,var(--shadow-sm))]",
         className
       )}
       {...props}

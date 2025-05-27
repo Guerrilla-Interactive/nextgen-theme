@@ -4,7 +4,7 @@ import React from 'react'
 import {defineField, defineType} from 'sanity'
 
 // Import field definitions
-import {wcagColorPairField} from './fields/wcag-color-pair.field'
+import {colorPairField} from './fields/color-pair-field'
 import {ReadOnlySlugInput} from '../../../plugins/read-only-slug-plugin'
 import {colorDisplayField} from './fields/color-display.field'
 
@@ -41,16 +41,6 @@ export const designTokensType = defineType({
     },
   ],
   fields: [
-    // Toggle for Advanced Mode
-    defineField({
-      name: 'advancedMode',
-      title: 'Advanced Mode',
-      description: 'Toggle to reveal all token arrays and advanced options',
-      type: 'boolean',
-      initialValue: false,
-      group: 'basic',
-    }),
-
     // --- BASIC MODE FIELDS ---
     
     // Primary Colors using WCAG color pair field (now as array)
@@ -69,17 +59,13 @@ export const designTokensType = defineType({
             type: 'string',
             validation: Rule => Rule.required().error('Color name is required')
           }),
-          defineField({
-            name: 'wcagColorPair',
-            type: 'object',
-            fields: [wcagColorPairField]
-          })
+          colorPairField
         ],
         preview: {
           select: {
             colorName: 'colorName',
-            background: 'wcagColorPair.background.hex',
-            foreground: 'wcagColorPair.foreground.hex',
+            background: 'colorPair.background.hex',
+            foreground: 'colorPair.foreground.hex',
           },
           prepare({colorName, background, foreground}) {
             return {
@@ -104,7 +90,7 @@ export const designTokensType = defineType({
       type: 'object',
       hidden: true, // Hide this field as it's for backward compatibility only
       fields: [
-        wcagColorPairField,
+        colorPairField,
       ],
     }),
 
@@ -124,17 +110,13 @@ export const designTokensType = defineType({
             type: 'string',
             validation: Rule => Rule.required().error('Color name is required')
           }),
-          defineField({
-            name: 'wcagColorPair',
-            type: 'object',
-            fields: [wcagColorPairField]
-          })
+          colorPairField
         ],
         preview: {
           select: {
             colorName: 'colorName',
-            background: 'wcagColorPair.background.hex',
-            foreground: 'wcagColorPair.foreground.hex',
+            background: 'colorPair.background.hex',
+            foreground: 'colorPair.foreground.hex',
           },
           prepare({colorName, background, foreground}) {
             return {
@@ -159,7 +141,7 @@ export const designTokensType = defineType({
       type: 'object',
       hidden: true, // Hide this field as it's for backward compatibility only
       fields: [
-        wcagColorPairField,
+        colorPairField,
       ],
     }),
 
@@ -269,7 +251,7 @@ export const designTokensType = defineType({
               },
               validation: Rule => Rule.required().error('Slug is required for CSS variable generation'),
             }),
-            wcagColorPairField,
+            colorPairField,
             defineField({
               name: 'shades',
               title: 'Shades',
@@ -300,7 +282,6 @@ export const designTokensType = defineType({
           ],
         },
       ],
-      hidden: ({document}) => !document?.advancedMode,
       group: 'colors',
     }),
 
@@ -352,7 +333,6 @@ export const designTokensType = defineType({
           ],
         },
       ],
-      hidden: ({document}) => !document?.advancedMode,
       group: 'typography',
     }),
 
@@ -398,7 +378,6 @@ export const designTokensType = defineType({
           ],
         },
       ],
-      hidden: ({document}) => !document?.advancedMode,
       group: 'spacing',
     }),
 
@@ -473,7 +452,6 @@ export const designTokensType = defineType({
           ],
         },
       ],
-      hidden: ({document}) => !document?.advancedMode,
       group: 'components',
     }),
   ],

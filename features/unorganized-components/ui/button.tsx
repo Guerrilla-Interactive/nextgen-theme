@@ -11,15 +11,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
+          "bg-[var(--button-bg,var(--brand-main))] text-[var(--button-foreground,var(--brand-on))] shadow-[var(--button-shadow,var(--shadow-sm))] hover:bg-[var(--button-hover-bg,var(--brand-secondary))]",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90",
+          "bg-[var(--button-destructive-bg,var(--semantic-destructive))] text-[var(--button-destructive-foreground,var(--background))] shadow-[var(--button-destructive-shadow,var(--shadow-xs))]",
         outline:
-          "border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
+          "border-[var(--button-outline-border-width,var(--border-width-default))] border-[style:var(--button-outline-border-style,var(--border-style))] border-[color:var(--button-outline-border-color,var(--border-color-default))] bg-[var(--button-outline-bg,var(--surface-card))] shadow-[var(--button-outline-shadow,var(--shadow-xs))] hover:bg-[var(--button-outline-hover-bg,var(--surface-muted))] hover:text-[var(--button-outline-hover-text,var(--surface-on))]",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-[var(--button-secondary-bg,var(--surface-card))] text-[var(--button-secondary-foreground,var(--surface-on))] shadow-[var(--button-secondary-shadow,var(--shadow-xs))] hover:bg-[var(--button-secondary-hover-bg,var(--surface-muted))]",
+        ghost:
+          "hover:bg-[var(--button-ghost-hover-bg,var(--surface-muted))] hover:text-[var(--button-ghost-hover-text,var(--surface-on))]",
+        link:
+          "text-[var(--button-link-text,var(--brand-main))] underline-offset-4 hover:underline",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

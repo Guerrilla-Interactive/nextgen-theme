@@ -3,7 +3,8 @@
  * Handles logo upload and color extraction for theme generation
  */
 import React, {useState, useCallback} from 'react'
-import {Box, Card, Text, Button, Stack, Flex, Grid} from '@sanity/ui'
+import {Box, Card, Text, Button, Stack, Flex, Grid, useToast} from '@sanity/ui'
+import {useClient} from 'sanity'
 // Using inline SVG for icons to avoid dependency on @sanity/icons
 const ImageIcon = () => (
   <svg width="24" height="24" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -26,14 +27,37 @@ const RefreshIcon = () => (
 interface LogoExtractorProps {
   onExtract: (colors: Record<string, string>) => void
   onCancel: () => void
+  documentId?: string // Document ID for Sanity operations
+}
+
+/**
+ * Simple function to determine a contrasting color (white or black)
+ */
+function determineContrastColor(hexColor: string): string {
+  // Remove the # if it exists
+  hexColor = hexColor.replace('#', '');
+  
+  // Convert hex to RGB
+  const r = parseInt(hexColor.substr(0, 2), 16);
+  const g = parseInt(hexColor.substr(2, 2), 16);
+  const b = parseInt(hexColor.substr(4, 2), 16);
+  
+  // Calculate perceived brightness (YIQ formula)
+  const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+  
+  // Return black for bright colors, white for dark colors
+  return yiq >= 128 ? '#000000' : '#ffffff';
 }
 
 /**
  * Component for uploading a logo and extracting its color palette
  */
-export default function LogoExtractor({onExtract, onCancel}: LogoExtractorProps) {
+export default function LogoExtractor({onExtract, onCancel, documentId}: LogoExtractorProps) {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [extractedColors, setExtractedColors] = useState<Record<string, string> | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const client = useClient({apiVersion: '2023-01-01'})
+  const toast = useToast()
   
   // Handle file upload
   const handleFileChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,10 +91,195 @@ export default function LogoExtractor({onExtract, onCancel}: LogoExtractorProps)
     }, 1500)
   }
   
+  // Handle logo color extraction and theme generation
+  const handleLogoExtraction = async (colors: Record<string, string>) => {
+    setIsProcessing(true);
+    
+    try {
+      // Get document ID
+      const docId = documentId.startsWith('drafts.') 
+        ? documentId 
+        : `drafts.${documentId}`;
+      
+      // Create a transaction to update colors
+      const tx = client.transaction();
+      
+      // Extract colors from the logo
+      const primaryColor = colors.primary || '#3b82f6';
+      const secondaryColor = colors.secondary || '#f97316';
+      
+      // Calculate contrasting foreground colors
+      const primaryForeground = determineContrastColor(primaryColor);
+      const secondaryForeground = determineContrastColor(secondaryColor);
+      
+      // Generate unique keys for array items
+      const generateKey = () => Math.random().toString(36).substring(2, 15);
+      
+      // Update legacy fields for backward compatibility
+      tx.patch(docId, patch => 
+        patch.set({
+          primaryColor: {
+            colorPair: {
+              title: 'Primary Color',
+              background: { hex: primaryColor, alpha: 1 },
+              foreground: { hex: primaryForeground, alpha: 1 }
+            }
+          },
+          secondaryColor: {
+            colorPair: {
+              title: 'Secondary Color',
+              background: { hex: secondaryColor, alpha: 1 },
+              foreground: { hex: secondaryForeground, alpha: 1 }
+            }
+          }
+        })
+      );
+      
+      // Create array-based color fields with the correct nested structure
+      const primaryColorObj = {
+        _key: generateKey(),
+        colorName: 'Primary Color',
+        colorPair: {
+          title: 'Primary Color',
+          background: { hex: primaryColor, alpha: 1 },
+          foreground: { hex: primaryForeground, alpha: 1 }
+        }
+      };
+      
+      const secondaryColorObj = {
+        _key: generateKey(),
+        colorName: 'Secondary Color',
+        colorPair: {
+          title: 'Secondary Color',
+          background: { hex: secondaryColor, alpha: 1 },
+          foreground: { hex: secondaryForeground, alpha: 1 }
+        }
+      };
+      
+      // Set arrays (preserving any existing items)
+      tx.patch(docId, patch => {
+        return patch
+          .setIfMissing({ primaryColors: [] })
+          .setIfMissing({ secondaryColors: [] })
+          .insert('replace', 'primaryColors[0]', [primaryColorObj])
+          .insert('replace', 'secondaryColors[0]', [secondaryColorObj]);
+      });
+      
+      // Also generate a color palette with shades
+      const generateShades = (baseColor: string) => {
+        // Convert hex to RGB
+        const r = parseInt(baseColor.slice(1, 3), 16);
+        const g = parseInt(baseColor.slice(3, 5), 16);
+        const b = parseInt(baseColor.slice(5, 7), 16);
+        
+        // Generate shades by adjusting lightness
+        const shades = [
+          { name: '50', factor: 0.9 },
+          { name: '100', factor: 0.8 },
+          { name: '200', factor: 0.6 },
+          { name: '300', factor: 0.4 },
+          { name: '400', factor: 0.2 },
+          { name: '500', factor: 0 },
+          { name: '600', factor: -0.15 },
+          { name: '700', factor: -0.3 },
+          { name: '800', factor: -0.45 },
+          { name: '900', factor: -0.6 },
+          { name: '950', factor: -0.75 }
+        ];
+        
+        return shades.map(shade => {
+          const factor = shade.factor;
+          let newR, newG, newB;
+          
+          if (factor > 0) {
+            // Lighten
+            newR = Math.min(255, r + (255 - r) * factor);
+            newG = Math.min(255, g + (255 - g) * factor);
+            newB = Math.min(255, b + (255 - b) * factor);
+          } else {
+            // Darken
+            newR = Math.max(0, r * (1 + factor));
+            newG = Math.max(0, g * (1 + factor));
+            newB = Math.max(0, b * (1 + factor));
+          }
+          
+          // Convert back to hex
+          const hex = '#' + 
+            Math.round(newR).toString(16).padStart(2, '0') + 
+            Math.round(newG).toString(16).padStart(2, '0') + 
+            Math.round(newB).toString(16).padStart(2, '0');
+          
+          return {
+            _key: generateKey(),
+            name: shade.name,
+            value: {
+              hex,
+              alpha: 1
+            }
+          };
+        });
+      };
+      
+      // Add a color palette
+      tx.patch(docId, patch => patch.set({
+        colorPalette: [
+          {
+            _key: generateKey(),
+            name: 'Primary',
+            slug: { _type: 'slug', current: 'primary' },
+            colorPair: {
+              title: 'Primary',
+              background: { hex: primaryColor, alpha: 1 },
+              foreground: { hex: primaryForeground, alpha: 1 }
+            },
+            shades: generateShades(primaryColor)
+          },
+          {
+            _key: generateKey(),
+            name: 'Secondary',
+            slug: { _type: 'slug', current: 'secondary' },
+            colorPair: {
+              title: 'Secondary',
+              background: { hex: secondaryColor, alpha: 1 },
+              foreground: { hex: secondaryForeground, alpha: 1 }
+            },
+            shades: generateShades(secondaryColor)
+          }
+        ]
+      }));
+      
+      // Commit all changes
+      await tx.commit();
+      
+      // Show success message
+      toast.push({
+        status: 'success',
+        title: 'Colors Extracted',
+        description: 'Theme colors have been extracted from your logo',
+        closable: true,
+      });
+      
+      // Notify parent
+      if (onExtract) {
+        onExtract({ primary: primaryColor, secondary: secondaryColor });
+      }
+    } catch (error) {
+      console.error('Error extracting colors:', error);
+      toast.push({
+        status: 'error',
+        title: 'Error',
+        description: 'Failed to extract colors from the logo',
+        closable: true,
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  
   // Use the extracted colors to generate a theme
   const handleUseColors = () => {
     if (extractedColors) {
-      onExtract(extractedColors)
+      handleLogoExtraction(extractedColors)
     }
   }
   
@@ -177,6 +386,8 @@ export default function LogoExtractor({onExtract, onCancel}: LogoExtractorProps)
               tone="positive" 
               onClick={handleUseColors}
               style={{marginTop: '0.5rem'}}
+              disabled={isProcessing}
+              loading={isProcessing}
             />
           </Stack>
         </Card>
@@ -187,6 +398,7 @@ export default function LogoExtractor({onExtract, onCancel}: LogoExtractorProps)
           mode="ghost"
           text="Back to presets"
           onClick={onCancel}
+          disabled={isProcessing}
         />
       </Flex>
     </Stack>

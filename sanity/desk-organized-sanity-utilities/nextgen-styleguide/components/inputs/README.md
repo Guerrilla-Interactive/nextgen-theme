@@ -15,7 +15,7 @@ The Color Pair Preview Input Component (`color-pair-preview.input.tsx`) extends 
 - Visual color swatches for both background and foreground
 - Live preview of text appearance with the selected colors
 - Simple, visual interface for designers to make color decisions
-- Works with both new `colorPair` fields and existing `wcagColorPair` fields for compatibility
+- Works with both new `colorPair` fields and existing `colorPair` fields for compatibility
 
 ### Implementation Details
 
@@ -36,7 +36,7 @@ form: {
       if (props.schemaType.name === 'color' && 
           props.path.length >= 2 && 
           (props.path[props.path.length - 2] === 'colorPair' ||
-           props.path[props.path.length - 2] === 'wcagColorPair')) {
+           props.path[props.path.length - 2] === 'colorPair')) {
         return <ColorPairPreviewInput {...props} />
       }
       return props.renderDefault(props)
