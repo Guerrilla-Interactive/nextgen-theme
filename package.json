@@ -47,11 +47,6 @@
     "animejs": "^3.2.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-<<<<<<< HEAD
-    "cmdk": "^1.1.1",
-    "dotenv": "^16.4.5",
-=======
->>>>>>> parent of 496e285 (Clean up theme wizard components, removing unused files and keeping only theme-wizard-pane functionality)
     "embla-carousel-react": "^8.5.2",
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.469.0",
