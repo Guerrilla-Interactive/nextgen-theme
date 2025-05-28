@@ -16,14 +16,10 @@ import {themeWizardPanePlugin} from './plugins/theme-wizard-pane-plugin'
 // Export structure
 import {designTokensStructure} from './structure/design-tokens.document-structure'
 
-// Export queries
-import {
-  DESIGN_TOKENS_QUERY,
-  DESIGN_TOKENS_PREVIEW_QUERY,
-  DESIGN_TOKENS_EXISTS_QUERY
-} from './queries'
+
 
 import { colorPairField } from './schema/fields/color-pair-field'
+import { DESIGN_TOKENS_EXISTS_QUERY, DESIGN_TOKENS_PREVIEW_QUERY, DESIGN_TOKENS_QUERY } from './queries/design-tokens.document-queries'
 
 // Main exports
 export {

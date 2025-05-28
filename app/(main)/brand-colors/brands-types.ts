@@ -1,4 +1,3 @@
-
 export interface ComponentStateStyles {
     background?: string;
     backgroundImage?: string;
@@ -17,6 +16,18 @@ export interface ComponentStateStyles {
     fontSize?: string;
     transform?: string;
     fontFamily?: string; // Added to base
+    cursor?: string;
+    opacity?: number;
+    minHeight?: string;
+    display?: string;
+    alignItems?: string;
+    justifyContent?: string;
+    whiteSpace?: string;
+    lineHeight?: string | number;
+    border?: string;
+    backdropFilter?: string;
+    textDecoration?: string;
+    textUnderlineOffset?: string;
   }
   
   export interface ButtonVariantStyles {
@@ -34,13 +45,18 @@ export interface ComponentStateStyles {
     destructive?: ButtonVariantStyles;
     outline?: ButtonVariantStyles;
     link?: ButtonVariantStyles;
+    tertiary?: ButtonVariantStyles;    // Added for Nintendo theme
+    quaternary?: ButtonVariantStyles;  // Added for Nintendo theme
+    disabled?: ButtonVariantStyles;    // Added for Nintendo theme
     fontFamily?: string;
     fontSize?: string;
   }
   
   export interface InputStyles extends ComponentStateStyles {
-    placeholderColor?: string;
     focus?: ComponentStateStyles;
+    error?: ComponentStateStyles;
+    disabled?: ComponentStateStyles;
+    placeholderColor?: string;
     fontFamily?: string;
     fontSize?: string;
   }
@@ -82,10 +98,15 @@ export interface ComponentStateStyles {
     textColorActive?: string;
     backgroundActive?: string;
     boxShadowActive?: string;
+    textColor?: string; // Added for Nintendo theme
+    borderColor?: string;
     // fontFamily?: string; // Covered by ComponentStateStyles
   }
   export interface OverviewCardStyles extends ComponentStateStyles {}
-  export interface BrandPickerContainerStyle extends ComponentStateStyles {}
+  export interface BrandPickerContainerStyle extends ComponentStateStyles {
+    marginTop?: string;
+    marginBottom?: string;
+  }
   export interface TooltipStyles extends ComponentStateStyles { 
       backdropFilter?: string;
       // fontFamily?: string; // Covered by ComponentStateStyles
@@ -138,21 +159,73 @@ export interface ComponentStateStyles {
     overlays?: ComponentShowcaseItem[];
   }
   
+  // New Interface for a single set of surface properties
+  export interface SurfaceSet {
+    background: string;
+    card: string;
+    popover: string;
+    on: string;
+    muted: string;
+    mutedForeground: string;
+    brandSubtle?: string;
+    textMuted?: string;
+  }
+  
   export interface BrandDefinition {
     name: string;
     id: string;
     description: string;
+    brandColors: 
+      {
+        name: string; // e.g. "Nextgen Orange"
+        hex: string; // e.g. "#FF3600"
+        variableName: string; // e.g. "nextgen-orange"
+        shades: {
+          "50"?: {
+            hex: string;
+            variableName: string;
+          },
+          "100"?: {
+            hex: string;
+            variableName: string;
+          },
+          "200"?: {
+            hex: string;
+            variableName: string;
+          },
+          "300"?: {
+            hex: string;
+            variableName: string;
+          },
+          "400"?: {
+            hex: string;
+            variableName: string;
+          },
+          "500"?: {
+            hex: string;
+            variableName: string;
+          },
+          "600"?: {
+            hex: string;
+            variableName: string;
+          },
+          "700"?: {
+            hex: string;
+            variableName: string;
+          },
+          "800"?: {
+            hex: string;
+            variableName: string;
+          },
+          "900"? : {
+            hex: string;
+            variableName: string;
+          },
+        }
+      }[]
+    
     brand: { main: ColorFormat; on: string; secondary: ColorFormat };
-    surface: {
-      background: string;
-      card: string;
-      popover: string;
-      on: string;
-      muted: string;
-      mutedForeground: string;
-      brandSubtle?: string;
-      textMuted?: string;
-    };
+    surface: SurfaceSet; // Use the new SurfaceSet interface
     semantic: {
       destructive: string;
       success: string;
@@ -171,6 +244,7 @@ export interface ComponentStateStyles {
       fontDisplay?: string;
       fontSans?: string;
       fontMono?: string;
+      weightLight?: string; // Added for Nintendo theme
       weightNormal?: string;
       weightMedium?: string;
       weightSemibold?: string;
@@ -272,5 +346,8 @@ export interface ComponentStateStyles {
     componentShowcase?: ComponentShowcaseDefinition; // Updated to use the new definition
     supplementaryChartColors?: string[];
     supportPalette?: ColorFormat[];
+    additionalSurfaceSets?: { // New optional property for alternative surface sets
+      [setName: string]: SurfaceSet;
+    };
   }
   

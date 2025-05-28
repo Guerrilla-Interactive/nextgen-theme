@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Stick_No_Bills, Barlow_Condensed, Tomorrow } from "next/font/google";
+import { Syne, Inter, Tomorrow } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/features/unorganized-utils/utils";
 import { ThemeProvider } from "@/features/theme/theme-provider";
@@ -31,16 +31,16 @@ export const metadata: Metadata = {
 };
 
 // Import 3 fonts with custom CSS variable names
-const titleFont = Stick_No_Bills({
+const syneFont = Syne({
   subsets: ["latin"],
-  weight: ["600", "800"],
-  variable: "--font-title",
+  weight: ["800"],
+  variable: "--font-syne",
 });
 
-const generalFont = Barlow_Condensed({
+const interFont = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-general",
+  weight: ["300"],
+  variable: "--font-inter",
 });
 
 const supplementFont = Tomorrow({
@@ -62,8 +62,8 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased overscroll-none",
-          titleFont.variable,
-          generalFont.variable,
+          syneFont.variable,
+          interFont.variable,
           supplementFont.variable
         )}
       >

@@ -4,7 +4,7 @@ import {StructureBuilder} from 'sanity/desk'
 import {PaletteIcon} from 'lucide-react'
 
 // Import the token preview component
-import TokenPreview from '../components/preview-pane/TokenPreview'
+
 // Import the theme wizard pane component
 import ThemeWizardPane from '../components/theme-wizard/theme-wizard-pane'
 
@@ -33,11 +33,6 @@ export const designTokensStructure = (S: StructureBuilder) => {
             .id('advanced-form')
             .title('Advanced'),
           
-          // Preview - shows components styled with the current tokens
-          S.view
-            .component(TokenPreview)
-            .id('preview')
-            .title('Preview'),
             
           // Theme Wizard - for applying theme presets
           S.view

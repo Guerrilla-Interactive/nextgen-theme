@@ -1,10 +1,64 @@
 import { hexToRgbString, rgbToCmykString } from "../brands";
+import { BrandDefinition } from "../brands-types";
 
-export const RAZER_THEME = {
+export const RAZER_THEME: BrandDefinition = {
     name: "Razer",
     id: "razer",
     description:
       "Global gaming hardware manufacturing company, known for its iconic green logo and high-performance peripherals.",
+    brandColors: [
+      {
+        name: "Razer Green",
+        hex: "#00FF00",
+        variableName: "brand-green-primary",
+        shades: {
+          "50": { hex: "#E6FFE6", variableName: "brand-green-50" },
+          "100": { hex: "#CCFFCC", variableName: "brand-green-100" },
+          "200": { hex: "#99FF99", variableName: "brand-green-200" },
+          "300": { hex: "#66FF66", variableName: "brand-green-300" },
+          "400": { hex: "#33FF33", variableName: "brand-green-400" },
+          "500": { hex: "#00FF00", variableName: "brand-green-500" },
+          "600": { hex: "#00CC00", variableName: "brand-green-600" },
+          "700": { hex: "#009900", variableName: "brand-green-700" },
+          "800": { hex: "#006600", variableName: "brand-green-800" },
+          "900": { hex: "#003300", variableName: "brand-green-900" },
+        }
+      },
+      {
+        name: "Razer Dark",
+        hex: "#1A1A1A",
+        variableName: "brand-dark-primary",
+        shades: {
+          "50": { hex: "#2C2C2C", variableName: "brand-dark-50" },
+          "100": { hex: "#252525", variableName: "brand-dark-100" },
+          "200": { hex: "#1E1E1E", variableName: "brand-dark-200" },
+          "300": { hex: "#1B1B1B", variableName: "brand-dark-300" },
+          "400": { hex: "#1A1A1A", variableName: "brand-dark-400" },
+          "500": { hex: "#1A1A1A", variableName: "brand-dark-500" },
+          "600": { hex: "#171717", variableName: "brand-dark-600" },
+          "700": { hex: "#131313", variableName: "brand-dark-700" },
+          "800": { hex: "#101010", variableName: "brand-dark-800" },
+          "900": { hex: "#0A0A0A", variableName: "brand-dark-900" },
+        }
+      },
+      {
+        name: "Razer Gray",
+        hex: "#808080",
+        variableName: "brand-gray-neutral",
+        shades: {
+          "50": { hex: "#F5F5F5", variableName: "brand-gray-50" },
+          "100": { hex: "#EAEAEA", variableName: "brand-gray-100" },
+          "200": { hex: "#D3D3D3", variableName: "brand-gray-200" },
+          "300": { hex: "#B0B0B0", variableName: "brand-gray-300" },
+          "400": { hex: "#A0A0A0", variableName: "brand-gray-400" },
+          "500": { hex: "#808080", variableName: "brand-gray-500" },
+          "600": { hex: "#777777", variableName: "brand-gray-600" },
+          "700": { hex: "#555555", variableName: "brand-gray-700" },
+          "800": { hex: "#3A3A3A", variableName: "brand-gray-800" },
+          "900": { hex: "#1C1C1C", variableName: "brand-gray-900" },
+        }
+      }
+    ],
     brand: {
       main: {
         name: "Razer Green (Primary)",

@@ -50,6 +50,8 @@ export interface ColorProperties {
       background: StateProperties<string>;
       /** Border color for dropdown items */
       border: StateProperties<string>;
+      /** Text style properties (excluding colors) */
+      text: TypographyProperties;
     };
     /** Indicator colors */
     indicators: {
@@ -417,6 +419,8 @@ export interface DropdownStructureProperties {
   items: {
     /** Border properties (width, radius) */
     border: BorderStyleProperties
+    /** Text style properties (excluding colors) */
+    text: TypographyProperties
   }
 }
 
@@ -473,6 +477,7 @@ export interface StructureStyleProps {
     layout?: Partial<DropdownLayoutProperties>
     indicators?: Partial<DropdownIndicatorStyleProperties>
     items?: {
+      text?: Partial<TypographyProperties>
       border?: Partial<BorderStyleProperties>
     }
   }

@@ -1,11 +1,64 @@
 import { hexToRgbString, rgbToCmykString } from "../brands";
+import { BrandDefinition } from "../brands-types";
 
-
-export const AIRBNB_THEME = {
+export const AIRBNB_THEME: BrandDefinition = {
     name: "Airbnb",
     id: "airbnb",
     description:
       "Global hospitality company that operates an online marketplace for lodging, primarily homestays, or tourism experiences.",
+    brandColors: [
+      {
+        name: "Airbnb Pink",
+        hex: "#FF5A5F",
+        variableName: "brand-pink-primary",
+        shades: {
+          "50": { hex: "#FFE6E6", variableName: "brand-pink-50" },
+          "100": { hex: "#FFCCCC", variableName: "brand-pink-100" },
+          "200": { hex: "#FF9999", variableName: "brand-pink-200" },
+          "300": { hex: "#FF6666", variableName: "brand-pink-300" },
+          "400": { hex: "#FF5A5F", variableName: "brand-pink-400" },
+          "500": { hex: "#FF5A5F", variableName: "brand-pink-500" },
+          "600": { hex: "#E6444A", variableName: "brand-pink-600" },
+          "700": { hex: "#CC2F35", variableName: "brand-pink-700" },
+          "800": { hex: "#B31A20", variableName: "brand-pink-800" },
+          "900": { hex: "#99050B", variableName: "brand-pink-900" },
+        }
+      },
+      {
+        name: "Airbnb Blue",
+        hex: "#00A699",
+        variableName: "brand-blue-secondary",
+        shades: {
+          "50": { hex: "#E0F7F6", variableName: "brand-blue-50" },
+          "100": { hex: "#B3EBE7", variableName: "brand-blue-100" },
+          "200": { hex: "#80DDD9", variableName: "brand-blue-200" },
+          "300": { hex: "#4DCFCB", variableName: "brand-blue-300" },
+          "400": { hex: "#1AC2BD", variableName: "brand-blue-400" },
+          "500": { hex: "#00A699", variableName: "brand-blue-500" },
+          "600": { hex: "#009285", variableName: "brand-blue-600" },
+          "700": { hex: "#007E72", variableName: "brand-blue-700" },
+          "800": { hex: "#006A5F", variableName: "brand-blue-800" },
+          "900": { hex: "#00564C", variableName: "brand-blue-900" },
+        }
+      },
+      {
+        name: "Airbnb Gray",
+        hex: "#767676",
+        variableName: "brand-gray-neutral",
+        shades: {
+          "50": { hex: "#F7F7F7", variableName: "brand-gray-50" },
+          "100": { hex: "#E8E8ED", variableName: "brand-gray-100" },
+          "200": { hex: "#D2D2D7", variableName: "brand-gray-200" },
+          "300": { hex: "#BDBDBD", variableName: "brand-gray-300" },
+          "400": { hex: "#999999", variableName: "brand-gray-400" },
+          "500": { hex: "#767676", variableName: "brand-gray-500" },
+          "600": { hex: "#5E5E5E", variableName: "brand-gray-600" },
+          "700": { hex: "#484848", variableName: "brand-gray-700" },
+          "800": { hex: "#333333", variableName: "brand-gray-800" },
+          "900": { hex: "#222222", variableName: "brand-gray-900" },
+        }
+      }
+    ],
     brand: {
       main: {
         name: "Airbnb Pink (Primary)",
@@ -243,14 +296,14 @@ export const AIRBNB_THEME = {
       button: {
         primary: {
           default: {
-            background: "var(--brand-main, #FF5A5F)", // Use var with fallback
+            background: "var(--brand-main, #FF5A5F)",
             color: "var(--brand-on, #FFFFFF)",
-            borderRadius: "var(--radius-md, 8px)", // Airbnb often uses slightly rounded corners
-            padding: "0.75rem 1.5rem", // Generous padding
+            borderRadius: "var(--radius-md, 8px)",
+            padding: "0.75rem 1.5rem",
             fontWeight: "var(--font-weight-semibold, 600)",
-            boxShadow: "var(--shadow-sm, 0 2px 5px rgba(0,0,0,0.07))", // Subtle shadow
+            boxShadow: "var(--shadow-sm, 0 2px 5px rgba(0,0,0,0.07))",
             borderWidth: "0px",
-            letterSpacing: "normal", // Default letter spacing
+            letterSpacing: "normal",
           },
           hover: {
             background: "color-mix(in srgb, #FF5A5F 90%, #000 10%)",
@@ -268,8 +321,8 @@ export const AIRBNB_THEME = {
           default: {
             background: "var(--surface-bg, #FFFFFF)",
             color: "var(--brand-main, #FF5A5F)",
-            borderColor: "var(--brand-main, #FF5A5F)", // Border matching brand color
-            borderWidth: "1.5px", // Slightly thicker border for secondary
+            borderColor: "var(--brand-main, #FF5A5F)",
+            borderWidth: "1.5px",
             borderRadius: "var(--radius-md, 8px)",
             padding: "calc(0.75rem - 1.5px) calc(1.5rem - 1.5px)",
             fontWeight: "var(--font-weight-semibold, 600)",
@@ -288,18 +341,18 @@ export const AIRBNB_THEME = {
           }
         },
         fontFamily: "'Airbnb Cereal App', 'Helvetica Neue', sans-serif",
-        fontSize: "0.9375rem", // 15px
+        fontSize: "0.9375rem",
       },
       input: {
         background: "var(--surface-bg, #FFFFFF)",
         color: "var(--surface-on, #484848)",
         borderColor: "var(--border-color-default, #DCE0E0)",
-        borderRadius: "var(--radius-sm, 4px)", // Airbnb inputs often have smaller radius
-        padding: "0.875rem 1rem", // 14px padding
-            borderWidth: "1px",
-        boxShadow: "var(--shadow-xs, 0 1px 2px rgba(0,0,0,0.03))", // Very subtle shadow
+        borderRadius: "var(--radius-sm, 4px)",
+        padding: "0.875rem 1rem",
+        borderWidth: "1px",
+        boxShadow: "var(--shadow-xs, 0 1px 2px rgba(0,0,0,0.03))",
         focus: {
-          borderColor: "var(--brand-secondary, #00A699)", // Focus with secondary color
+          borderColor: "var(--brand-secondary, #00A699)",
           boxShadow: "0 0 0 3px color-mix(in srgb, var(--brand-secondary, #00A699) 25%, transparent)",
         },
         placeholderColor: "var(--surface-muted-fg, #767676)",
@@ -308,42 +361,42 @@ export const AIRBNB_THEME = {
       },
       card: {
         background: "var(--surface-card, #FFFFFF)",
-        borderColor: "var(--border-color-subtle, #F0F0F0)", // Softer border for cards
+        borderColor: "var(--border-color-subtle, #F0F0F0)",
         borderWidth: "1px",
         borderRadius: "var(--radius-lg, 12px)", 
         boxShadow: "var(--shadow-md, 0 4px 12px rgba(0,0,0,0.08))", 
         padding: "1.5rem",
         header: {
-          padding: "1.25rem 1.5rem 0.75rem", // Adjusted padding
+          padding: "1.25rem 1.5rem 0.75rem",
           titleColor: "var(--surface-on, #222222)",
           descriptionColor: "var(--surface-muted-fg, #767676)",
         },
         fontFamily: "'Airbnb Cereal App', 'Helvetica Neue', sans-serif",
       },
-      badge: { // Added default badge styles for Airbnb
+      badge: {
         variantDefault: {
           background: "var(--surface-muted, #F7F7F7)",
           color: "var(--surface-on, #222222)",
           borderRadius: "var(--radius-full)",
           padding: "0.3rem 0.7rem",
           fontSize: "0.75rem", 
-            fontWeight: 500,
-          },
+          fontWeight: 500,
+        },
         variantDestructive: {
-          background: "color-mix(in srgb, var(--semantic-destructive, #FF171F) 85%, #FFF 15%)", // Slightly lighter red
+          background: "color-mix(in srgb, var(--semantic-destructive, #FF171F) 85%, #FFF 15%)",
           color: "var(--semantic-destructive, #FF171F)",
           borderColor: "var(--semantic-destructive, #FF171F)",
           borderWidth: "1px",
           borderRadius: "var(--radius-full)",
           padding: "0.3rem 0.7rem",
           fontSize: "0.75rem",
-            fontWeight: 500,
-          },
+          fontWeight: 500,
+        },
         variantSuccess: {
-          background: "color-mix(in srgb, var(--semantic-success, #008A0E) 15%, transparent)", // Green subtle fill
+          background: "color-mix(in srgb, var(--semantic-success, #008A0E) 15%, transparent)",
           color: "var(--semantic-success, #008A0E)",
           borderColor: "var(--semantic-success, #008A0E)",
-        borderWidth: "1px",
+          borderWidth: "1px",
           borderRadius: "var(--radius-full)",
           padding: "0.3rem 0.7rem",
           fontSize: "0.75rem",
@@ -351,14 +404,14 @@ export const AIRBNB_THEME = {
         },
       },
       tooltip: {
-        background: "rgba(34, 34, 34, 0.95)", // Dark tooltip, common for Airbnb
+        background: "rgba(34, 34, 34, 0.95)",
         color: "#FFFFFF",
         borderColor: "transparent",
         borderWidth: "0px",
-        borderRadius: "var(--radius-md, 8px)", // Consistent with buttons
-        padding: "0.5rem 0.875rem", // Slightly more padding
-        boxShadow: "var(--shadow-lg, 0 10px 15px rgba(0,0,0,0.1))", // Softer but larger shadow
-        fontSize: "0.8125rem", // 13px
+        borderRadius: "var(--radius-md, 8px)",
+        padding: "0.5rem 0.875rem",
+        boxShadow: "var(--shadow-lg, 0 10px 15px rgba(0,0,0,0.1))",
+        fontSize: "0.8125rem",
         backdropFilter: "blur(8px)",
       },
       charts: {

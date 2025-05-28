@@ -1,10 +1,62 @@
+import { BrandDefinition } from "../brands-types";
 import { rgbToCmykString, hexToRgbString } from "../brands";
 
-export const GOOGLE_THEME =  {
+export const GOOGLE_THEME: BrandDefinition =  {
     name: "Google",
     id: "google",
     description:
       "Global technology leader specializing in internet-related services, renowned for its clean, intuitive design language and vibrant branding.",
+    brandColors: [
+      {
+        name: "Google Blue",
+        hex: "#4285F4",
+        variableName: "brand-blue-primary",
+        shades: {
+          // Assuming 500 is the main hex, other shades would be derived if available
+          // For now, only 500 is listed unless specific shades are known for Google Blue
+          "500": { hex: "#4285F4", variableName: "brand-blue-500" }
+        }
+      },
+      {
+        name: "Google Red",
+        hex: "#EA4335", // As used in destructive semantic and supportPalette
+        variableName: "brand-red-primary",
+        shades: {
+          "500": { hex: "#EA4335", variableName: "brand-red-500" }
+        }
+      },
+      {
+        name: "Google Green",
+        hex: "#34A853", // As used in success semantic and supportPalette
+        variableName: "brand-green-primary",
+        shades: {
+          "500": { hex: "#34A853", variableName: "brand-green-500" }
+        }
+      },
+      {
+        name: "Google Yellow",
+        hex: "#FBBC05", // As used in warning semantic and supportPalette
+        variableName: "brand-yellow-primary",
+        shades: {
+          "500": { hex: "#FBBC05", variableName: "brand-yellow-500" }
+        }
+      },
+      {
+        name: "Google Grey",
+        hex: "#5F6368", // Based on mutedForeground / text colors
+        variableName: "brand-grey-primary",
+        shades: {
+          "50":  { hex: "#F8F9FA", variableName: "brand-grey-50" },    // surface.muted
+          "100": { hex: "#E8EAED", variableName: "brand-grey-100" }, // borderStyles.subtleColor
+          "200": { hex: "#DADCE0", variableName: "brand-grey-200" }, // borderStyles.defaultColor
+          "300": { hex: "#BDC1C6", variableName: "brand-grey-300" }, // borderStyles.strongColor
+          "400": { hex: "#9AA0A6", variableName: "brand-grey-400" }, // Common darker grey (e.g., icons)
+          "500": { hex: "#5F6368", variableName: "brand-grey-500" }, // surface.mutedForeground, common text
+          "600": { hex: "#3C4043", variableName: "brand-grey-600" }, // Darker text/elements
+          "700": { hex: "#202124", variableName: "brand-grey-700" }  // surface.on (main text, near black)
+        }
+      }
+    ],
     brand: {
       main: {
         name: "Google Blue (Primary)",

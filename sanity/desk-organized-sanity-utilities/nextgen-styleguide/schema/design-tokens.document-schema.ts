@@ -5,7 +5,7 @@ import {defineField, defineType} from 'sanity'
 
 // Import field definitions
 import {colorPairField} from './fields/color-pair-field'
-import {ReadOnlySlugInput} from '../../../plugins/read-only-slug-plugin'
+
 import {colorDisplayField} from './fields/color-display.field'
 
 /**
@@ -246,9 +246,7 @@ export const designTokensType = defineType({
                 source: 'colorPalette[].name',
                 maxLength: 30,
               },
-              components: {
-                input: ReadOnlySlugInput
-              },
+  
               validation: Rule => Rule.required().error('Slug is required for CSS variable generation'),
             }),
             colorPairField,
@@ -313,9 +311,7 @@ export const designTokensType = defineType({
                 source: 'typographyScale[].name',
                 maxLength: 30,
               },
-              components: {
-                input: ReadOnlySlugInput
-              },
+     
               validation: Rule => Rule.required().error('Slug is required for CSS variable generation'),
             }),
             defineField({
@@ -364,9 +360,7 @@ export const designTokensType = defineType({
                 source: 'spacingScale[].name',
                 maxLength: 30,
               },
-              components: {
-                input: ReadOnlySlugInput
-              },
+    
               validation: Rule => Rule.required().error('Slug is required for CSS variable generation'),
             }),
             defineField({
@@ -409,9 +403,6 @@ export const designTokensType = defineType({
               options: {
                 source: 'componentOverrides[].component',
                 maxLength: 30,
-              },
-              components: {
-                input: ReadOnlySlugInput
               },
               validation: Rule => Rule.required().error('Slug is required for CSS variable generation'),
             }),

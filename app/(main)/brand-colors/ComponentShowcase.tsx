@@ -5,11 +5,12 @@ import {
   ComponentStateStyles,
   ButtonStyles,
   InputStyles,
-  CardComponentStyles
-} from './brands';
+  CardComponentStyles,
+  ButtonVariantStyles
+} from './brands-types';
 
 import { Badge } from "@/features/unorganized-components/ui/badge";
-import { Button as ShadcnButton } from "@/features/unorganized-components/ui/button";
+import { Button, Button as ShadcnButton } from "@/features/unorganized-components/ui/button";
 import { Card as ShadcnCard, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/features/unorganized-components/ui/card";
 import { Input as ShadcnInput } from "@/features/unorganized-components/ui/input";
 import { Progress } from "@/features/unorganized-components/ui/progress";
@@ -30,6 +31,7 @@ const STATIC_SHOWCASE_ITEMS: Array<ComponentShowcaseItem & { componentType: 'but
   { id: 'button-ghost', name: 'Ghost Button', description: 'Subtle, often for links.', displayComponent: 'Ghost Action', componentType: 'button', variant: 'ghost', state: 'default' },
   { id: 'button-destructive', name: 'Destructive Button', description: 'For dangerous actions.', displayComponent: 'Delete Action', componentType: 'button', variant: 'destructive', state: 'default' },
   { id: 'button-link', name: 'Link Button', description: 'Styled as a link.', displayComponent: 'Learn More', componentType: 'button', variant: 'link', state: 'default' },
+  { id: 'button-outline-secondary', name: 'Outline Secondary Button', description: 'Neutral outline action.', displayComponent: 'More Options', componentType: 'button', variant: 'outline-secondary', state: 'default' },
   // Inputs
   { id: 'input-default', name: 'Default Input', description: 'Standard text input.', displayComponent: 'Enter text...', componentType: 'input', variant: 'default' },
   { id: 'input-focus', name: 'Focused Input', description: 'Input in focus state.', displayComponent: 'Focused input...', componentType: 'input', variant: 'focus' },
@@ -77,24 +79,46 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
   ) => {
     switch (item.componentType) {
       case 'button':
+        // Map showcase item variant to ShadcnButton CVA variant
+        let cvaButtonVariant: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "outline-secondary" = "default";
+        const itemButtonVariant = item.variant as string;
+
+        if (["destructive", "outline", "secondary", "ghost", "link", "outline-secondary"].includes(itemButtonVariant)) {
+          cvaButtonVariant = itemButtonVariant as "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "outline-secondary";
+        } else if (itemButtonVariant === "primary") {
+          cvaButtonVariant = "default"; // Showcase "primary" uses CVA "default"
+        }
+        // else it remains "default"
+
         return (
-          <StyledButton 
-            variant={item.variant as keyof ButtonStyles || 'primary'} 
-            state={item.state || 'default'} 
-            brand={currentBrand}
-            disabled={item.state === 'disabled'}
+          <Button
+            variant={cvaButtonVariant}
           >
             {item.displayComponent}
-          </StyledButton>
+          </Button>
         );
       case 'input':
+        let forceStateValue: 'focus' | 'error' | undefined = undefined;
+        if (item.variant === 'focus') {
+          forceStateValue = 'focus';
+        } else if (item.variant === 'error') {
+          forceStateValue = 'error';
+        }
+
         return (
-          <StyledInput 
-            variant={item.variant as 'default' | 'focus' | 'error' | 'disabled' || 'default'} 
-            brand={currentBrand} 
-            placeholder={item.displayComponent} 
-            className="w-full" 
-          />
+          <div className="w-full relative">
+            <ShadcnInput 
+              placeholder={item.displayComponent} 
+              className="w-full"
+              disabled={item.variant === 'disabled'}
+              forceState={forceStateValue}
+            />
+            <div className="absolute inset-0 pointer-events-none">
+              <span className="text-xs absolute top-0 right-0 bg-muted px-1 rounded-bl opacity-60">
+                {item.variant || 'default'}
+              </span>
+            </div>
+          </div>
         );
       case 'card':
         return (
@@ -171,163 +195,33 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
 // --- Styled Components (ensure these correctly use brand.componentStyles) ---
 
 const StyledButton: React.FC<{
-  variant: keyof ButtonStyles | 'default';
-  state: 'default' | 'hover' | 'focus' | 'active';
-  brand: BrandDefinition;
+  cvaVariant: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | null; // Maps to ShadcnButton CVA
+  displayVariantName: string; // For the text tag (e.g., "primary", "destructive")
+  stateForDisplay?: 'default' | 'hover' | 'focus' | 'active' | 'disabled';
   className?: string;
   children?: React.ReactNode;
   disabled?: boolean;
-}> = ({ variant, state, brand, className = "", children, disabled }) => {
-  const safeVariant = variant === 'default' ? 'primary' : variant as string; // Ensure safeVariant is a string for use in var()
-  const buttonStyles = brand.componentStyles?.button;
-
-  const defaultComponentStyle = { // Sensible defaults for a button
-    background: 'transparent',
-    color: 'inherit',
-    borderColor: 'currentColor',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderRadius: 'var(--radius, 4px)',
-    boxShadow: 'none',
-    padding: '0.5rem 1rem',
-    fontWeight: '500',
-    letterSpacing: 'normal',
-    textTransform: 'none',
-    opacity: 1,
-    cursor: 'pointer',
-    transform: 'none',
-    minHeight: '36px',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    whiteSpace: 'nowrap',
-  };
-
-  const baseStateStyle: ComponentStateStyles = buttonStyles?.[safeVariant as keyof ButtonStyles]?.default || {};
-  const currentStateStyle: ComponentStateStyles = buttonStyles?.[safeVariant as keyof ButtonStyles]?.[state] || {};
-  const disabledStateStyle: ComponentStateStyles = buttonStyles?.[safeVariant as keyof ButtonStyles]?.disabled || {};
-
-  const actualStyleToApply: ComponentStateStyles = disabled 
-    ? { ...defaultComponentStyle, ...baseStateStyle, ...disabledStateStyle } 
-    : { ...defaultComponentStyle, ...baseStateStyle, ...currentStateStyle };
-
-  // Override opacity and cursor for disabled state more directly
-  if (disabled) {
-    actualStyleToApply.opacity = actualStyleToApply.opacity === 1 ? 0.6 : actualStyleToApply.opacity; // Only default if not specified
-    actualStyleToApply.cursor = 'not-allowed';
-  }
+}> = ({ cvaVariant, displayVariantName, stateForDisplay, className = "", children, disabled }) => {
   
+  // StyledButton no longer sets CSS variables. It assumes they are globally set by the theme.
+  // It directly renders ShadcnButton, which picks up styles from global CSS vars via its CVA.
   return (
-    <ShadcnButton
-      variant={null} 
-      size={null}   
-      className={`${className}  text-center transition-all`}
-      style={{
-        background: actualStyleToApply.background,
-        color: actualStyleToApply.color,
-        borderColor: actualStyleToApply.borderColor,
-        borderWidth: actualStyleToApply.borderWidth,
-        borderStyle: actualStyleToApply.borderStyle,
-        borderRadius: actualStyleToApply.borderRadius,
-        boxShadow: actualStyleToApply.boxShadow,
-        padding: actualStyleToApply.padding,
-        fontWeight: actualStyleToApply.fontWeight,
-        letterSpacing: actualStyleToApply.letterSpacing,
-        textTransform: actualStyleToApply.textTransform as React.CSSProperties['textTransform'], // Cast for safety
-        opacity: actualStyleToApply.opacity,
-        cursor: actualStyleToApply.cursor,
-        transform: actualStyleToApply.transform,
-        minHeight: actualStyleToApply.minHeight,
-        display: actualStyleToApply.display,
-        alignItems: actualStyleToApply.alignItems,
-        justifyContent: actualStyleToApply.justifyContent,
-        whiteSpace: actualStyleToApply.whiteSpace,
-      }}
-      disabled={disabled}
-    >
-      {children}
-      <div className="absolute inset-0 pointer-events-none">
-        <span className="text-xs absolute top-0 right-0 bg-muted px-1 rounded-bl opacity-60">
-          {disabled ? "disabled" : state} / {safeVariant}
-        </span>
-      </div>
-    </ShadcnButton>
-  );
-};
-
-const StyledInput: React.FC<{
-  variant: 'default' | 'focus' | 'error' | 'disabled';
-  brand: BrandDefinition;
-  className?: string;
-  placeholder?: string;
-}> = ({ variant, brand, className = "", placeholder }) => {
-  const inputComponentStyles = brand.componentStyles?.input;
-  
-  const defaultComponentStyle: ComponentStateStyles = { // Sensible defaults for an input
-    background: 'var(--input-background, var(--surface-card))',
-    color: 'var(--input-color, var(--foreground))',
-    borderColor: 'var(--input-bordercolor, var(--border-color-default))',
-    borderRadius: 'var(--input-borderradius, var(--radius))',
-    padding: 'var(--input-padding, 0.5rem 0.75rem)',
-    borderWidth: 'var(--input-borderwidth, 1px)',
-    borderStyle: 'solid',
-    boxShadow: 'var(--input-boxshadow, none)',
-    fontFamily: 'var(--input-fontfamily, var(--font-sans))',
-    fontSize: 'var(--input-fontsize, inherit)',
-    opacity: 1,
-    cursor: 'text',
-  };
-
-  const baseStateStyles: ComponentStateStyles = inputComponentStyles || {};
-  const focusStateStyles: ComponentStateStyles = inputComponentStyles?.focus || {};
-  const disabledStateStyles: ComponentStateStyles = inputComponentStyles?.disabled || {};
-  const errorStateStyles: ComponentStateStyles = inputComponentStyles?.error || {};
-  
-  let actualStyleToApply: ComponentStateStyles = { ...defaultComponentStyle, ...baseStateStyles };
-  let effectivePlaceholder = placeholder || "Enter text...";
-
-  if (variant === "disabled") {
-    actualStyleToApply = { ...actualStyleToApply, ...disabledStateStyles };
-    effectivePlaceholder = placeholder || "Disabled input";
-    actualStyleToApply.cursor = actualStyleToApply.cursor === 'text' ? 'not-allowed' : actualStyleToApply.cursor;
-    actualStyleToApply.opacity = actualStyleToApply.opacity === 1 ? 0.6 : actualStyleToApply.opacity;
-  } else if (variant === "focus") {
-    actualStyleToApply = { ...actualStyleToApply, ...focusStateStyles };
-    effectivePlaceholder = placeholder || "Focused input";
-  } else if (variant === "error") {
-    actualStyleToApply = { ...actualStyleToApply, ...errorStateStyles };
-    effectivePlaceholder = placeholder || "Error input";
-    actualStyleToApply.borderColor = actualStyleToApply.borderColor || "var(--semantic-destructive)";
-  }
-
-  return (
-    <div className={`${className} w-full`}>
-      <ShadcnInput
-        type="text"
-        placeholder={effectivePlaceholder}
-        disabled={variant === "disabled"}
-        className="w-full"
-        style={{
-          background: actualStyleToApply.background,
-          color: actualStyleToApply.color,
-          borderColor: actualStyleToApply.borderColor,
-          borderRadius: actualStyleToApply.borderRadius,
-          padding: actualStyleToApply.padding,
-          borderWidth: actualStyleToApply.borderWidth,
-          borderStyle: actualStyleToApply.borderStyle as React.CSSProperties['borderStyle'], // Cast for safety
-          boxShadow: actualStyleToApply.boxShadow,
-          fontFamily: actualStyleToApply.fontFamily,
-          fontSize: actualStyleToApply.fontSize,
-          opacity: actualStyleToApply.opacity,
-          cursor: actualStyleToApply.cursor,
-        }}
-      />
-      <div className="absolute inset-0 pointer-events-none">
-        <span className="text-xs absolute top-0 right-0 bg-muted px-1 rounded-bl opacity-60">
-          {variant}
-        </span>
-      </div>
-    </div>
+      <ShadcnButton
+        variant={cvaVariant} 
+        size={null} // Assuming size is handled by global CSS or not showcased here for variation
+        className={`${className} text-center`} // Base classes
+        disabled={disabled}
+        // For simulated hover/focus states in the showcase, you might need to add specific classes
+        // if Tailwind's hover: focus: prefixes in CVA are not enough for *visual demonstration* without interaction.
+        // However, the actual component styling for real interaction relies on CVA's hover:/focus: using CSS vars.
+      >
+        {children}
+        <div className="absolute inset-0 pointer-events-none">
+          <span className="text-xs absolute top-0 right-0 bg-muted px-1 rounded-bl opacity-60">
+            {disabled ? "disabled" : stateForDisplay || 'default'} / {displayVariantName}
+          </span>
+        </div>
+      </ShadcnButton>
   );
 };
 
@@ -392,6 +286,7 @@ const StyledBadge: React.FC<{
     fontWeight: 500,
     fontSize: '0.75rem',
     lineHeight: '1.2',
+    opacity: 1,
   };
   
   const baseStyle = badgeStyles || {};
@@ -420,10 +315,11 @@ const StyledBadge: React.FC<{
         borderRadius: actualStyleToApply.borderRadius,
         borderWidth: actualStyleToApply.borderWidth,
         borderColor: actualStyleToApply.borderColor,
-        borderStyle: actualStyleToApply.borderStyle as React.CSSProperties['borderStyle'], // Cast for safety
-        fontWeight: actualStyleToApply.fontWeight as React.CSSProperties['fontWeight'], // Cast for safety
+        borderStyle: actualStyleToApply.borderStyle as React.CSSProperties['borderStyle'],
+        fontWeight: actualStyleToApply.fontWeight as React.CSSProperties['fontWeight'],
         fontSize: actualStyleToApply.fontSize,
         lineHeight: actualStyleToApply.lineHeight,
+        opacity: actualStyleToApply.opacity,
       }}
     >
       {children || variant.charAt(0).toUpperCase() + variant.slice(1)}
@@ -451,9 +347,11 @@ const StyledLoadingIndicator: React.FC<{
   const defaultComponentStyle: ComponentStateStyles = { // Sensible defaults
     background: "var(--surface-muted)",
     color: "var(--brand-main)", 
-    textColor: "var(--muted-foreground)",
+    fontFamily: "var(--font-family-sans)",
+    opacity: 1,
   };
   const actualStyleToApply = {...defaultComponentStyle, ...indicatorStyles};
+  const actualTextColor = indicatorStyles?.color || "var(--muted-foreground)";
 
   return (
     <div className={`${className} space-y-2 relative w-full max-w-xs mx-auto`}>
@@ -462,10 +360,10 @@ const StyledLoadingIndicator: React.FC<{
         className="h-2"
         style={{
           backgroundColor: actualStyleToApply.background,
-          '--progress-color': actualStyleToApply.color, 
+          '--progress-color': actualStyleToApply.color,
         } as React.CSSProperties}
       />
-      <p className="text-xs text-center text-muted-foreground" style={{ color: actualStyleToApply.textColor }}>Loading...</p>
+      <p className="text-xs text-center text-muted-foreground" style={{ color: actualTextColor }}>Loading...</p>
       <div className="absolute inset-0 pointer-events-none">
         <span className="text-xs absolute top-0 right-0 bg-muted px-1 rounded-bl opacity-60">
           loading

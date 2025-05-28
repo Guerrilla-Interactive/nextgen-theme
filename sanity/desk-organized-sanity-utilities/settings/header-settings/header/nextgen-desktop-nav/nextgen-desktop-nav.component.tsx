@@ -76,7 +76,7 @@ function NextgenDesktopNav({
     <NavContext.Provider value={{ activeId, setActiveId, theme, mode }}>
       <nav 
         className={cn(
-          "hidden md:flex items-center w-full font-supplement", 
+          "hidden md:flex items-center w-full font-[var(--font-family-display)] ", 
           theme.structure.spacing.gap,
           theme.structure.text.size,
           theme.structure.text.transform,
@@ -89,6 +89,7 @@ function NextgenDesktopNav({
         style={{
           backgroundColor: currentTheme.background.default,
           color: currentTheme.text.default,
+          fontFamily: "var(--font-family-display)",
           position: theme.structure.layout.position,
           zIndex: theme.structure.layout.zIndex,
         }}
@@ -531,7 +532,11 @@ function NextgenDesktopNavContent({ id, className, children, ...props }: Nextgen
   const dropdownTextColor = mode === 'dark' 
     ? theme.color.light.dropdown.text.default 
     : theme.color.dark.dropdown.text.default;
-  
+
+  const dropdownTextSize = theme.structure.dropdown.items.text.size || 'text-[10px]';
+  const dropdownTextWeight = theme.structure.dropdown.items.text.weight || 'font-medium';
+  const dropdownTextTransform = theme.structure.dropdown.items.text.transform || '';
+
   const dropdownHoverTextColor = mode === 'dark'
     ? theme.color.light.dropdown.text.hover
     : theme.color.dark.dropdown.text.hover;
@@ -664,12 +669,18 @@ function NextgenDesktopNavContent({ id, className, children, ...props }: Nextgen
     const container = containerRef.current;
     container.style.backgroundColor = dropdownBackground;
     container.style.color = dropdownTextColor;
+    container.style.fontSize = dropdownTextSize;
+    container.style.fontWeight = dropdownTextWeight;
+    container.style.textTransform = dropdownTextTransform;
     container.style.borderColor = dropdownBorderColor;
     
     // Apply styles to all menu items
     const menuItems = container.querySelectorAll('[role="menuitem"]');
     menuItems.forEach(item => {
       (item as HTMLElement).style.color = dropdownTextColor;
+      (item as HTMLElement).style.fontSize = dropdownTextSize;
+      (item as HTMLElement).style.fontWeight = dropdownTextWeight;
+      (item as HTMLElement).style.textTransform = dropdownTextTransform;
     });
     
     // Set custom properties for hover effects
@@ -882,10 +893,15 @@ function NextgenDesktopNavDropdownItem({
     ? theme.color.light.dropdown
     : theme.color.dark.dropdown;
   
-  // Get item-specific styles
+  // Get item-specific styles - ensure animation variables from above are in scope
   const itemStyle = dropdownStyle.items || {
     background: dropdownStyle.background,
-    border: dropdownStyle.border
+    border: dropdownStyle.border,
+    text: { // Ensure text property exists for fallback
+      size: theme.structure.dropdown.items.text.size || 'text-[10px]',
+      weight: theme.structure.dropdown.items.text.weight || 'font-medium',
+      transform: theme.structure.dropdown.items.text.transform || '',
+    }
   };
   
   // Get animation settings
@@ -963,22 +979,19 @@ function NextgenDesktopNavDropdownItem({
   const activeBgClass = getActiveBgClass();
   const activeTextClass = getActiveTextClass();
   
-  const textSizes = {
-    'text-xs': { title: 'text-xs', description: 'text-[10px]' },
-    'text-sm': { title: 'text-sm', description: 'text-xs' },
-    'text-base': { title: 'text-base', description: 'text-sm' },
-    'text-lg': { title: 'text-base', description: 'text-sm' },
-    'text-xl': { title: 'text-lg', description: 'text-base' },
-    'text-2xl': { title: 'text-xl', description: 'text-lg' },
-  }
-  
-  const sizeKey = Object.keys(textSizes).includes(theme.structure.text.size) 
-    ? theme.structure.text.size as keyof typeof textSizes
-    : 'text-sm'
-  
-  const titleSize = textSizes[sizeKey].title
-  const descriptionSize = textSizes[sizeKey].description
-  
+  // Determine title and description sizes based on dropdown item text settings
+  const titleActualSize = itemStyle.text.size;
+  const titleActualWeight = itemStyle.text.weight;
+
+  let descriptionActualSize = 'text-[10px]'; // Default smaller size for description
+  if (titleActualSize === 'text-xs') {
+    descriptionActualSize = 'text-[10px]'; 
+  } else if (titleActualSize === 'text-sm') {
+    descriptionActualSize = 'text-xs';
+  } else if (titleActualSize === 'text-base') {
+    descriptionActualSize = 'text-sm';
+  } // Add more conditions if other sizes are used for titles
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLAnchorElement>) {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {
       e.preventDefault()
@@ -1017,6 +1030,7 @@ function NextgenDesktopNavDropdownItem({
     '--hover-color': dropdownStyle.text.hover,
     '--active-bg': itemStyle.background.active,
     '--active-color': dropdownStyle.text.active,
+
     // Apply property-specific transition durations
     transitionProperty: "background-color, color, border-color, transform, opacity",
     transitionDuration: `${backgroundDuration}, ${colorDuration}, ${borderDuration}, ${transformDuration}, ${opacityDuration}`,
@@ -1068,6 +1082,7 @@ function NextgenDesktopNavDropdownItem({
     
     // Use CSS variable for color to ensure it gets the latest value
     e.currentTarget.style.setProperty('color', 'var(--dropdown-hover-text)', 'important');
+    
     
     // Call the original onMouseEnter if it exists
     props.onMouseEnter?.(e);
@@ -1136,8 +1151,9 @@ function NextgenDesktopNavDropdownItem({
   
   const titleComponent = (
     <span className={cn(
-      "block font-medium mb-1 transition-all duration-200 ease-out flex items-center",
-      titleSize
+      "block mb-1 transition-all duration-200 ease-out flex items-center",
+      titleActualSize, // Use determined title size
+      titleActualWeight // Use determined title weight
     )}>
         {children}
         {external && (
@@ -1166,8 +1182,8 @@ function NextgenDesktopNavDropdownItem({
   const descriptionComponent = description && (
     <span className={cn(
       "block leading-relaxed transition-all duration-200 ease-out",
-      descriptionSize,
-      dropdownStyle.description
+      descriptionActualSize, // Use determined description size
+      dropdownStyle.description // This is for color, keep it if needed
     )}>
       {description}
     </span>

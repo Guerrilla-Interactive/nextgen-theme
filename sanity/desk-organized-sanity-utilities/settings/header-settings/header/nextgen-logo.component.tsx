@@ -4,6 +4,9 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import SVGLoopLogo from "@/features/theme/SVGLoopLogo";
 import { cn } from "@/features/unorganized-utils/utils";
+import { useGlobalContext } from "@/features/context/global-context";
+
+
 
 type LogoOptionsType = {
   logoType?: "svgloop" | "default" | "lightAndDark";
@@ -18,26 +21,31 @@ type LogoOptionsType = {
 
 type NextgenLogoProps = {
   logoOptions: LogoOptionsType;
-  logo: any; // This could be the SVG data, image asset, or the light/dark object
-  isTopDark: boolean;
+  // logo: any; // This prop is no longer used directly for rendering
+  isTopDark: boolean; // This prop is used as a fallback if global context is not available
   className?: string;
   onLoaded?: () => void;
 };
 
 export const NextgenLogo = ({ 
   logoOptions, 
-  logo, 
-  isTopDark, 
+  // logo, // Removed unused prop
   className = "w-52 px-6 h-full",
   onLoaded 
 }: NextgenLogoProps) => {
   const logoRef = useRef<HTMLDivElement>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  const { sessionStatus } = useGlobalContext();
+  const isDark = sessionStatus?.isTopDark !== undefined ? sessionStatus.isTopDark : false;
+
   // Call the onLoaded callback when component mounts or image loads
   useEffect(() => {
     // For SVGLoop, we'll call onLoaded immediately since we can't hook into its loading
     if (logoOptions?.logoType === "svgloop" && onLoaded) {
+      onLoaded();
+    }
+    if (logoOptions?.logoType === "default" && onLoaded) {
       onLoaded();
     }
     
@@ -57,53 +65,72 @@ export const NextgenLogo = ({
   }
 
   // SVGLoop logo type
-  if (logoOptions.logoType === "svgloop" && logo) {
+  if (logoOptions.logoType === "svgloop" && logoOptions.svgloopLogo) {
     return (
       <div ref={logoRef} className={className}>
         <SVGLoopLogo 
           duration={600} 
-          keyframes={logo} 
-          activeKeyframe={isTopDark ? "first" : "last"} 
+          keyframes={logoOptions.svgloopLogo}
+          activeKeyframe={isDark ? "first" : "last"}
         />
       </div>
     );
   }
 
   // Default logo type
-  if (logoOptions.logoType === "default" && logo) {
+  if (logoOptions.logoType === "default" && logoOptions.defaultLogo) {
     return (
-      <div ref={logoRef} className={cn(className, "relative")}>
-        <Image 
-          src={logo.url} 
-          alt="Logo"
-          fill
-          className="object-contain"
-          onLoad={handleImageLoad} 
-        />
-      </div>
+      <div ref={logoRef} className={className}>
+      <svg width="164" height="22" viewBox="0 0 164 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M98.1919 0.0739593H69.3509C66.9799 0.0739593 64.6308 0.887512 62.7307 2.3667L55.3876 8.09001L48.0446 2.3667C46.1445 0.887512 43.7954 0.0739593 41.4244 0.0739593H8.87626L24.4604 11.2361C25.8512 12.2317 27.4775 12.7608 29.1695 12.7608H40.6742C41.282 12.7608 41.8789 12.5503 42.3662 12.1748L44.2773 10.6843L42.3662 9.19371C41.8789 8.81822 41.282 8.60772 40.6742 8.60772H29.5857C28.4851 8.60772 27.4282 8.26637 26.5247 7.61781L21.7882 4.22706H41.0575C42.8043 4.22706 44.5401 4.82442 45.9364 5.91674L52.0529 10.6843L45.9364 15.4518C44.5401 16.5441 42.8043 17.1415 41.0575 17.1415H27.0395C25.4186 17.1415 23.8526 16.6465 22.5055 15.7078L0 0V21.2946H3.99733V7.71452L20.4357 19.3148C22.27 20.6119 24.4166 21.2946 26.6343 21.2946H41.4189C43.7899 21.2946 46.139 20.481 48.0391 19.0019L55.3822 13.2785L65.6657 21.2946H72.3352L58.7169 10.6843L64.8334 5.91674C66.2297 4.82442 67.9655 4.22706 69.7123 4.22706H75.2921V21.2946H79.2895V4.22706H92.8585L98.1919 0.0739593Z"
+        fill="var(--text-primary)"
+      />
+      <path
+        d="M159.975 0.0738854V13.9498L138.198 0.0852637L138.072 0.00561523V17.1414H118.524V12.7608H134.184V8.60767H114.526V21.2945H142.069V7.47553L163.973 21.3628V0.0738854H159.975Z"
+        fill="var(--brand-main)"
+      />
+      <path
+        d="M105.606 9.19374L101.028 12.7608H106.86V17.1415H88.3514L102.759 5.91677C104.155 4.82444 105.891 4.22707 107.638 4.22707H134.184V4.14174C134.184 1.9002 132.427 0.0739746 130.269 0.0739746H107.271C104.9 0.0739746 102.551 0.887527 100.651 2.36671L83.1275 16.0207C82.1419 16.7888 81.7531 18.0745 82.1419 19.292C82.5307 20.5095 83.582 21.2946 84.8196 21.2946H110.857V8.60775H107.298C106.69 8.60775 106.094 8.81825 105.606 9.19374Z"
+        fill="var(--brand-main)"
+      />
+    </svg>
+    </div>
+    
     );
   }
 
   // Light and Dark logo type
-  if (logoOptions.logoType === "lightAndDark" && logo) {
+  if (logoOptions.logoType === "lightAndDark" && logoOptions.lightAndDarkLogo) {
     // Determine which logo to show based on isDark
-    const currentLogo = isTopDark ? logo.darkLogo : logo.lightLogo;
+    const currentLogoAsset = isDark ? logoOptions.lightAndDarkLogo.darkLogo : logoOptions.lightAndDarkLogo.lightLogo;
     
-    if (!currentLogo) {
+    if (!currentLogoAsset) {
       return <div ref={logoRef} className={className} />;
     }
 
-    return (
-      <div ref={logoRef} className={cn(className, "relative")}>
-        <Image 
-          src={currentLogo.url} 
-          alt="Logo"
-          fill
-          className="object-contain"
-          onLoad={handleImageLoad} 
-        />
-      </div>
-    );
+    // Assuming lightAndDarkLogo can also specify svg content directly
+    if (logoOptions.lightAndDarkLogo.logoType === 'svg' && typeof currentLogoAsset === 'string') {
+      return (
+        <div ref={logoRef} className={className} dangerouslySetInnerHTML={{ __html: currentLogoAsset }} />
+      );
+    }
+
+    // Fallback to image if not SVG or if it's an image asset
+    if (currentLogoAsset.url) {
+      return (
+        <div ref={logoRef} className={cn(className, "relative")}>
+          <Image 
+            src={currentLogoAsset.url} 
+            alt="Logo"
+            fill
+            className="object-contain"
+            onLoad={handleImageLoad} 
+          />
+        </div>
+      );
+    }
+    return <div ref={logoRef} className={className} />;
   }
 
   // Fallback empty div

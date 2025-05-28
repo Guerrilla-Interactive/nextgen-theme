@@ -20,18 +20,11 @@ import { resolve } from "@/sanity/desk-organized-sanity-utilities/structure-util
 import { structure } from "./sanity/desk-organized-sanity-utilities/structure";
 import AppIcon from "./features/theme/AppIcon";
 import { imageBrightnessPlugin } from "./sanity/plugins/image-brightness-plugin";
-<<<<<<< HEAD
 import {colorInput} from '@sanity/color-input'
+
 import { 
   themeWizardPanePlugin
 } from "./sanity/desk-organized-sanity-utilities/nextgen-styleguide"
-=======
-
-
-
-
-
->>>>>>> parent of 496e285 (Clean up theme wizard components, removing unused files and keeping only theme-wizard-pane functionality)
 
 export default defineConfig({
   basePath: "/studio",
@@ -45,11 +38,8 @@ export default defineConfig({
     
       
     structureTool({ structure }),
-<<<<<<< HEAD
     colorInput(),
     themeWizardPanePlugin,
-=======
->>>>>>> parent of 496e285 (Clean up theme wizard components, removing unused files and keeping only theme-wizard-pane functionality)
     presentationTool({
       previewUrl: {
         draftMode: {

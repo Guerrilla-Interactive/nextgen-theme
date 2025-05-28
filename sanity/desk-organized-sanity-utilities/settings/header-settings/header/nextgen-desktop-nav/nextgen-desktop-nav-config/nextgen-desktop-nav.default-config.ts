@@ -20,7 +20,36 @@ import { nextgenDesktopNavLightConfig } from "./themes/nextgen-desktop-nav.light
 
 
 export const DEFAULT_THEME: NavThemeConfig = {
-  color: nextgenDesktopNavColorProperties,
+  color: {
+    light: {
+      ...nextgenDesktopNavColorProperties.light,
+      dropdown: {
+        ...nextgenDesktopNavColorProperties.light.dropdown,
+        items: {
+          ...nextgenDesktopNavColorProperties.light.dropdown.items,
+          text: { 
+            size: 'text-xxs',
+            weight: 'font-medium',
+            transform: '',
+          },
+        },
+      },
+    },
+    dark: {
+      ...nextgenDesktopNavColorProperties.dark,
+      dropdown: {
+        ...nextgenDesktopNavColorProperties.dark.dropdown,
+        items: {
+          ...nextgenDesktopNavColorProperties.dark.dropdown.items,
+          text: {
+            size: 'text-xxs',
+            weight: 'font-medium',
+            transform: '',
+          },
+        },
+      },
+    },
+  },
   // Structure properties (no light/dark variants)
   // Define these directly instead of pulling from light/dark themes
   structure: {
@@ -50,7 +79,7 @@ export const DEFAULT_THEME: NavThemeConfig = {
     // Dropdown structure
     dropdown: {
       // Border properties
-
+ 
 
       border: {
         width: 'border',
@@ -77,11 +106,19 @@ export const DEFAULT_THEME: NavThemeConfig = {
       },
       // Item structure
       items: {
+        
         border: {
           width: 'border',
           radius: 'rounded',
         },
-      }
+        text: {
+          size: 'text-[10px]',
+          weight: 'font-medium',
+          transform: '',
+        },
+   
+
+      }   
     }
   },
   
@@ -177,9 +214,15 @@ export function createThemeConfig(props: NavStyleProps = {}): NavThemeConfig {
         hoverIndicatorWidth: props.structure?.dropdown?.indicators?.hoverIndicatorWidth || DEFAULT_THEME.structure.dropdown.indicators.hoverIndicatorWidth,
       },
       items: {
+ 
         border: {
           width: props.structure?.dropdown?.items?.border?.width || DEFAULT_THEME.structure.dropdown.items.border.width,
           radius: props.structure?.dropdown?.items?.border?.radius || DEFAULT_THEME.structure.dropdown.items.border.radius,
+        },
+        text: {
+          size: props.structure?.dropdown?.items?.text?.size || DEFAULT_THEME.structure.dropdown.items.text.size,
+          weight: props.structure?.dropdown?.items?.text?.weight || DEFAULT_THEME.structure.dropdown.items.text.weight,
+          transform: props.structure?.dropdown?.items?.text?.transform || DEFAULT_THEME.structure.dropdown.items.text.transform,
         },
       }
     }
@@ -238,6 +281,12 @@ export function createThemeConfig(props: NavStyleProps = {}): NavThemeConfig {
           focus: props.color?.light?.dropdown?.items?.border?.focus || DEFAULT_THEME.color.light.dropdown.items.border.focus,
           active: props.color?.light?.dropdown?.items?.border?.active || DEFAULT_THEME.color.light.dropdown.items.border.active,
         },
+        // Ensure text property is handled for light theme
+        text: {
+          size: props.color?.light?.dropdown?.items?.text?.size || DEFAULT_THEME.color.light.dropdown.items.text.size,
+          weight: props.color?.light?.dropdown?.items?.text?.weight || DEFAULT_THEME.color.light.dropdown.items.text.weight,
+          transform: props.color?.light?.dropdown?.items?.text?.transform || DEFAULT_THEME.color.light.dropdown.items.text.transform,
+        },
       },
       indicators: {
         arrow: props.color?.light?.dropdown?.indicators?.arrow || DEFAULT_THEME.color.light.dropdown.indicators.arrow,
@@ -293,11 +342,18 @@ export function createThemeConfig(props: NavStyleProps = {}): NavThemeConfig {
           focus: props.color?.dark?.dropdown?.items?.background?.focus || DEFAULT_THEME.color.dark.dropdown.items.background.focus,
           active: props.color?.dark?.dropdown?.items?.background?.active || DEFAULT_THEME.color.dark.dropdown.items.background.active,
         },
+        
         border: {
           default: props.color?.dark?.dropdown?.items?.border?.default || DEFAULT_THEME.color.dark.dropdown.items.border.default,
           hover: props.color?.dark?.dropdown?.items?.border?.hover || DEFAULT_THEME.color.dark.dropdown.items.border.hover,
           focus: props.color?.dark?.dropdown?.items?.border?.focus || DEFAULT_THEME.color.dark.dropdown.items.border.focus,
           active: props.color?.dark?.dropdown?.items?.border?.active || DEFAULT_THEME.color.dark.dropdown.items.border.active,
+        },
+        // Ensure text property is handled for dark theme
+        text: {
+            size: props.color?.dark?.dropdown?.items?.text?.size || DEFAULT_THEME.color.dark.dropdown.items.text.size,
+            weight: props.color?.dark?.dropdown?.items?.text?.weight || DEFAULT_THEME.color.dark.dropdown.items.text.weight,
+            transform: props.color?.dark?.dropdown?.items?.text?.transform || DEFAULT_THEME.color.dark.dropdown.items.text.transform,
         },
       },
       indicators: {
