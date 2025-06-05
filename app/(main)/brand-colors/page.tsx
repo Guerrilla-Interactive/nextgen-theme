@@ -4,18 +4,14 @@ import React, { useMemo, useState, useEffect } from "react";
 import { Inter, Roboto, Roboto_Mono, Syne, Titillium_Web } from 'next/font/google';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/features/unorganized-components/ui/select";
 import { Button } from "@/features/unorganized-components/ui/button";
-import { Card,  } from "@/features/unorganized-components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/features/unorganized-components/ui/card";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/features/unorganized-components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/features/unorganized-components/ui/tooltip";
 import { toast } from "sonner";
-
 import { Badge } from "@/features/unorganized-components/ui/badge";
-
-
 import { Label } from "@/features/unorganized-components/ui/label";
-
+import { parseColorString as parseColorStringFromBrands } from "@/features/unorganized-utils/color-stuff";
 import {
-
   BracketsIcon as Spacing,
   Settings,
   Download,
@@ -26,6 +22,18 @@ import {
   Monitor,
   Tablet,
 } from "lucide-react";
+
+// Ensure these imports are present and correct
+import { ColorPicker } from "./ColorPicker"; // Added import for the new ColorPicker
+import { ChartShowcase } from './ChartShowcase';
+import { ComponentShowcase } from './ComponentShowcase';
+import {
+  BRANDS,
+  makeCssVars,
+} from "./brands";
+import type { BrandDefinition } from "./brands-types";
+import { UseClientConfigs } from "../(root)/[slug]/_page-slug-core-utilities/use-client-configs";
+import { srgbToOklch } from "@/features/unorganized-utils/color-stuff";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -59,23 +67,44 @@ const titillium_web = Titillium_Web({
 
 // Helper functions to identify token types
 function isColorToken(key: string): boolean {
+  const cleanKey = key.startsWith('--') ? key.substring(2) : key;
+  const lowerKey = cleanKey.toLowerCase();
   return (
-    key.includes("color") ||
-    key.includes("bg") ||
-    key.includes("text") ||
-    key.startsWith("brand-") ||
-    key.startsWith("surface-") ||
-    key.startsWith("semantic-") ||
-    key === "primary" ||
-    key === "secondary" ||
-    key === "muted" ||
-    key === "card" ||
-    key === "popover" ||
-    key === "destructive" ||
-    key === "success" ||
-    key === "warning" ||
-    key === "info" ||
-    key === "brand-subtle"
+    lowerKey.includes("color") ||
+    lowerKey.includes("bg") || // Backgrounds are often colors
+    lowerKey.includes("text") || // Text colors
+    lowerKey.includes("fill") || // SVG fills
+    lowerKey.includes("stroke") || // SVG strokes
+    lowerKey.startsWith("brand-") ||
+    lowerKey.startsWith("surface-") ||
+    lowerKey.startsWith("semantic-") ||
+    lowerKey.startsWith("chart-") || // Chart colors
+    // ShadCN/Tailwind specific color names
+    lowerKey === "primary" ||
+    lowerKey === "secondary" ||
+    lowerKey === "muted" ||
+    lowerKey === "accent" ||
+    lowerKey === "destructive" ||
+    lowerKey === "success" ||
+    lowerKey === "warning" ||
+    lowerKey === "info" ||
+    lowerKey === "background" ||
+    lowerKey === "foreground" ||
+    lowerKey === "card" ||
+    lowerKey === "card-foreground" ||
+    lowerKey === "popover" ||
+    lowerKey === "popover-foreground" ||
+    lowerKey === "primary-foreground" ||
+    lowerKey === "secondary-foreground" ||
+    lowerKey === "muted-foreground" ||
+    lowerKey === "accent-foreground" ||
+    lowerKey === "destructive-foreground" ||
+    lowerKey === "success-foreground" ||
+    lowerKey === "warning-foreground" ||
+    lowerKey === "info-foreground" ||
+    lowerKey.endsWith("-from") || // Gradient from
+    lowerKey.endsWith("-to") || // Gradient to
+    lowerKey.endsWith("-accent") // Gradient accent (often a color)
   );
 }
 
@@ -89,6 +118,31 @@ function parseColorString(colorStr: string): { r: number; g: number; b: number; 
   }
 
   let match;
+
+  // OKLCH: oklch(L C H) or oklch(L C H / A) - Handles space or comma separators
+  // Example: oklch(0.5 0.15 120) or oklch(50% 0.15 120 / 0.5)
+  match = colorStr.match(/^oklch\(\s*([\d.]+%?)\s+([\d.]+%?)\s+([\d.]+%?)(?:\s*(?:\/|,)\s*([\d.]+%?))?\s*\)$/i);
+  if (match) {
+    // For identification & sorting, we don't need perfect conversion to RGB here.
+    // Just returning a consistent placeholder is enough for valueIsLikelyColor.
+    // Alpha defaults to 1 if not present.
+    const alphaStr = match[4] || '1'; // Corrected index for alpha based on typical regex group capture for optional groups
+    const alpha = alphaStr.endsWith('%') ? parseFloat(alphaStr) / 100 : parseFloat(alphaStr);
+    return { r: 0, g: 0, b: 1, a: isNaN(alpha) ? 1 : alpha }; // Placeholder (e.g., blue), with parsed alpha
+  }
+  
+  // HSL: hsl(H,S%,L%) or hsla(H,S%,L%,A) - Handles with/without commas, with/without 'a'
+  // Example: hsl(120, 50%, 50%) or hsla(120, 50%, 50%, 0.5)
+  match = colorStr.match(/^hsl(?:a)?\(\s*([\d.]+)\s*,?\s*([\d.]+)%\s*,?\s*([\d.]+)%(?:\s*,?\s*([\d.]+))?\s*\)$/i);
+  if (match) {
+    const alphaStr = match[4] || '1'; // Corrected index for alpha
+    // Alpha in HSL can be unitless or percentage. Assuming unitless if not explicitly %
+    // CSS Color 4: alpha is <number> | <percentage>
+    // For simplicity, this regex expects number for alpha if present.
+    const alpha = parseFloat(alphaStr); // No % expected by this regex for alpha here, adjust if needed
+    return { r: 0, g: 1, b: 0, a: isNaN(alpha) ? 1 : alpha }; // Placeholder (e.g., green), with parsed alpha
+  }
+
   // HEX: #RRGGBB or #RGB
   match = colorStr.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
   if (match) {
@@ -151,13 +205,180 @@ function isBorderToken(key: string): boolean {
   return key.startsWith("border-");
 }
 
-// Helper component for rendering individual token previews
-interface TokenPreviewItemProps {
-  tokenKeys: string[];
-  tokenValue: string;
+function isTypographyToken(key: string): boolean {
+  return key.startsWith("font-") || key.startsWith("letter-") || key.startsWith("line-") || key.startsWith("text-") || key.startsWith("weight-") || key.startsWith("leading-") || key.startsWith("tracking-");
 }
 
-const TokenPreviewItem: React.FC<TokenPreviewItemProps> = ({ tokenKeys, tokenValue }) => {
+function isSpacingToken(key: string): boolean {
+  return key.startsWith("space-") || key.startsWith("padding-");
+}
+
+function isGradientToken(key: string): boolean {
+  return key.startsWith("gradient-");
+}
+
+function isMotionToken(key: string): boolean {
+  return key.startsWith("motion-") || key.startsWith("ease-");
+}
+
+// New helper function to classify tokens
+function getTokenType(tokenName: string): 'foundation' | 'semantic' | 'component' | 'unknown' {
+  const t = tokenName.replace(/^--/, ''); // Remove leading --
+
+  // Order of checks matters. Be specific first.
+
+  // FOUNDATION
+  // 1. Specific brand color shades (e.g., brand-orange-500, brand-neutral-100, brand-light-blue-50)
+  if (t.match(/^brand-(?:[a-z]+-)*[a-z]+-\d{2,3}$/i)) {
+    return 'foundation';
+  }
+  // 2. Other explicit foundation tokens (typography, spacing, radius, etc.)
+  //    Excludes things like 'shadow-brand-sm' which are semantic.
+  const foundationPrimitivesRegex = /^(font-family|font-size|font-weight|line-height|letter-spacing|radius|motion|ease|shadow-(xs|sm|md|lg|xl)$|spacing-unit|space-\d+|border-width|border-style)/i;
+  if (foundationPrimitivesRegex.test(t) && !t.startsWith("shadow-brand-")) { 
+    return 'foundation';
+  }
+
+  // SEMANTIC
+  // 1. Core brand semantic aliases for roles
+  if (['brand-main', 'brand-secondary', 'brand-on'].includes(t)) {
+    return 'semantic';
+  }
+  // 2. Brand color group aliases (e.g., brand-orange-primary, brand-neutral-primary)
+  //    These are aliases to the canonical (e.g., 500) shade of that color group.
+  if (t.match(/^brand-(?:[a-z]+-)*[a-z]+-primary$/i)) {
+    return 'semantic';
+  }
+  // 3. Other semantic tokens (contextual roles, standard aliases)
+  if (
+    t.startsWith("surface-") ||
+    t.startsWith("text-") ||
+    t.startsWith("border-color-") || 
+    t.startsWith("semantic-") ||     
+    t.startsWith("bg-") ||           
+    t.startsWith("shadow-brand-") || 
+    t.startsWith("gradient-") ||
+    t.startsWith("chart-") ||
+    [ // ShadCN style aliases
+      "background", "foreground", "card", "card-foreground", "popover", "popover-foreground",
+      "primary", "primary-foreground", "secondary", "secondary-foreground", "muted", "muted-foreground",
+      "accent", "accent-foreground", "destructive", "destructive-foreground", "success", "success-foreground",
+      "warning", "warning-foreground", "info", "info-foreground", "border", "input", "ring"
+    ].includes(t) ||
+    // Specific semantic padding tokens (representing roles)
+    t.startsWith("padding-input") || t.startsWith("padding-button") || t.startsWith("padding-card") || t.startsWith("padding-compact")
+  ) {
+    return 'semantic';
+  }
+
+  // COMPONENT
+  // Specific overrides for UI components
+  if (
+    t.startsWith("button-") ||
+    t.startsWith("nav-") ||
+    t.startsWith("hero-") ||
+    t.startsWith("tabs-") ||
+    t.startsWith("overview-card-") ||
+    t.startsWith("chart-showcase-") ||
+    t.startsWith("component-showcase-") ||
+    t.startsWith("brand-picker-") ||
+    t.startsWith("token-group-card-") ||
+    t.startsWith("tooltip-") ||
+    (t.startsWith("input-") && !["input"].includes(t)) || // e.g. input-background, but not the semantic alias 'input'
+    (t.startsWith("card-") && !["card", "card-foreground"].includes(t)) || // e.g. card-padding, but not semantic aliases
+    t.startsWith("badge-") ||
+    t.startsWith("loading-indicator-") ||
+    t.startsWith("page-card-") ||
+    t.startsWith("surface-set-") // Component-level surface sets
+  ) {
+    return 'component';
+  }
+  
+  return 'unknown'; // Fallback for anything not caught
+}
+
+// New helper function for SUB-CATEGORIZATION within layers
+function getTokenSubCategory(tokenName: string, layer: 'foundation' | 'semantic' | 'component'): string {
+  const t = tokenName.replace(/^--/, ''); // Remove leading --
+
+  if (layer === 'foundation') {
+    if (t.match(/^brand-(?:[a-z]+-)*[a-z]+-\d{2,3}$/i)) return 'Brand Color Shades';
+    if (t.startsWith('font-family')) return 'Font Families';
+    if (t.startsWith('font-size')) return 'Font Sizes';
+    if (t.startsWith('font-weight')) return 'Font Weights';
+    if (t.startsWith('line-height') || t.startsWith('leading')) return 'Line Heights';
+    if (t.startsWith('letter-spacing') || t.startsWith('tracking')) return 'Letter Spacings';
+    if (t.startsWith('radius')) return 'Radii';
+    if (t.startsWith('space-') || t === 'spacing-unit') return 'Spacing Units';
+    if (t.startsWith('motion-')) return 'Motion Durations';
+    if (t.startsWith('ease-')) return 'Motion Easings';
+    if (t.startsWith('shadow-') && !t.startsWith('shadow-brand-')) return 'Shadows (Primitive)';
+    if (t.startsWith('border-width')) return 'Border Widths';
+    if (t.startsWith('border-style')) return 'Border Styles';
+    return 'Other Foundation';
+  }
+
+  if (layer === 'semantic') {
+    if (['brand-main', 'brand-secondary', 'brand-on'].includes(t) || t.match(/^brand-(?:[a-z]+-)*[a-z]+-primary$/i)) return 'Brand Role Aliases';
+    if (t.startsWith('surface-')) return 'Surface Colors';
+    if (t.startsWith('text-')) return 'Text Colors';
+    if (t.startsWith('border-color-')) return 'Border Colors';
+    if (t.startsWith('semantic-') || ['success', 'destructive', 'warning', 'info'].some(s => t.startsWith(s))) return 'Status & Feedback Colors';
+    if (t.startsWith('bg-') || t === 'background') return 'Background Colors';
+    if (t === 'foreground') return 'Foreground Colors';
+    if (['card', 'card-foreground', 'popover', 'popover-foreground', 'primary', 'primary-foreground', 'secondary', 'secondary-foreground', 'muted', 'muted-foreground', 'accent', 'accent-foreground'].includes(t)) return 'ShadCN UI Aliases';
+    if (t.startsWith('shadow-brand-')) return 'Brand Shadows (Semantic)';
+    if (t.startsWith('gradient-')) return 'Gradients';
+    if (t.startsWith('chart-')) return 'Chart Colors';
+    if (t === 'ring') return 'Focus Ring Color';
+    if (t === 'border' || t === 'input') return 'Border & Input Aliases';
+    if (t.startsWith("padding-input") || t.startsWith("padding-button") || t.startsWith("padding-card") || t.startsWith("padding-compact")) return 'Semantic Padding Roles';
+    return 'Other Semantic';
+  }
+
+  if (layer === 'component') {
+    if (t.startsWith('button-')) return 'Button Styles';
+    if (t.startsWith('nav-')) return 'Navigation Styles';
+    if (t.startsWith('hero-')) return 'Hero Styles';
+    if (t.startsWith('tabs-')) return 'Tabs Styles';
+    if (t.startsWith('overview-card-')) return 'Overview Card Styles';
+    if (t.startsWith('chart-showcase-')) return 'Chart Showcase Styles';
+    if (t.startsWith('component-showcase-')) return 'Component Showcase Styles';
+    if (t.startsWith('brand-picker-')) return 'Brand Picker Styles';
+    if (t.startsWith('token-group-card-')) return 'Token Group Card Styles';
+    if (t.startsWith('tooltip-')) return 'Tooltip Styles';
+    if (t.startsWith('input-') && t !== 'input') return 'Input Component Styles';
+    if (t.startsWith("card-") && !["card", "card-foreground"].includes(t)) return 'Card Component Styles';
+    if (t.startsWith('badge-')) return 'Badge Styles';
+    if (t.startsWith('loading-indicator-')) return 'Loading Indicator Styles';
+    if (t.startsWith('page-card-')) return 'Page Card Styles';
+    if (t.startsWith('surface-set-')) return 'Surface Set Styles';
+    return 'Other Component Styles';
+  }
+
+  return 'Uncategorized';
+}
+
+// Helper component for rendering individual token previews
+interface TokenPreviewItemProps {
+  tokenKeys: string[]; // The CSS variable name(s), e.g., ["brand-main", "primary"]
+  tokenName: string; // The primary CSS variable name, e.g., "--brand-main"
+  tokenValue: string; // The current computed value of the token
+  codeStyle: React.CSSProperties;
+  onInteractiveTokenChange: (tokenName: string, newValue: string) => void;
+  referencedBy?: string[]; // New: List of tokens that reference this one
+  referencesTo?: string;  // New: The token this one references (if any, direct var() only for now)
+}
+
+const TokenPreviewItem: React.FC<TokenPreviewItemProps> = ({ 
+  tokenKeys, 
+  tokenName, 
+  tokenValue, 
+  codeStyle, 
+  onInteractiveTokenChange,
+  referencedBy, // New
+  referencesTo  // New
+}) => {
   const handleColorCopy = async () => {
     try {
       await navigator.clipboard.writeText(tokenValue);
@@ -168,22 +389,89 @@ const TokenPreviewItem: React.FC<TokenPreviewItemProps> = ({ tokenKeys, tokenVal
     }
   };
 
+  const previewBoxBaseStyle: React.CSSProperties = {
+    width: "var(--token-preview-size, 2.5rem)", 
+    height: "var(--token-preview-size, 2.5rem)",
+    borderRadius: "var(--token-preview-radius, var(--radius-sm, 0.375rem))",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: "var(--token-preview-border-width, 1px)",
+    borderStyle: "var(--token-preview-border-style, solid)",
+    borderColor: "var(--token-preview-border-color, var(--border-color-subtle, #555))",
+    backgroundColor: "var(--token-preview-item-bg, var(--surface-card, #222))",
+  };
+
+  // Enhanced check: Prioritize key, then check value if key doesn't indicate color explicitly
+  let valueIsLikelyColor = false;
   if (isColorToken(tokenKeys[0])) {
+    valueIsLikelyColor = true;
+  } else {
+    // If key isn't a color token, check if the value itself is a color
+    if (parseColorString(tokenValue) !== null) {
+      valueIsLikelyColor = true;
+    } else if (tokenValue && tokenValue.startsWith("var(")) {
+      const innerVar = tokenValue.slice(4, -1); // Extracts --some-token
+      if (isColorToken(innerVar)) {
+        valueIsLikelyColor = true;
+      }
+    }
+  }
+
+  if (valueIsLikelyColor) {
+    const isVeryLight = tokenValue.toLowerCase() === "#ffffff" || tokenValue.toLowerCase() === "white";
+    const isTransparent = tokenValue.startsWith("rgba(") && tokenValue.endsWith(", 0)");
+    
     return (
       <TooltipProvider delayDuration={100}>
         <Tooltip>
           <TooltipTrigger asChild>
             <div
-              className="w-12 h-12 rounded-lg cursor-pointer hover:cursor-copy transition-all duration-150 ease-in-out hover:scale-110 hover:shadow-xl border-2 border-transparent hover:border-white/30 focus:outline-none focus:border-brand-main focus:ring-2 focus:ring-brand-main/50"
-              style={{ backgroundColor: tokenValue }}
+              className="cursor-pointer hover:cursor-copy transition-all duration-150 ease-in-out hover:scale-110 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[var(--brand-main)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
+              style={{
+                ...previewBoxBaseStyle,
+                backgroundColor: tokenValue,
+                // Ensure border is visible for very light/transparent swatches
+                borderColor: (isVeryLight || isTransparent) 
+                               ? "var(--token-preview-light-border-color, var(--border-color-default, #444))" 
+                               : "transparent",
+              }}
               onClick={handleColorCopy}
               tabIndex={0}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleColorCopy(); }}
             />
           </TooltipTrigger>
-          <TooltipContent className="bg-background border border-border shadow-xl rounded-md px-3 py-2 text-xs">
-            {tokenKeys.map(key => <p key={key} className="font-bold text-foreground">--{key}</p>)}
-            <p className="text-muted-foreground">{tokenValue}</p>
+          <TooltipContent 
+            className="bg-[var(--tooltip-background)] text-[var(--tooltip-primary)] border-[var(--tooltip-border-color,var(--border))] shadow-xl rounded-md px-3 py-2 text-xs"
+
+          >
+            {tokenKeys.map(key => 
+              <p key={key} 
+                 className="font-bold"
+                 style={{ color: "var(--tooltip-color, var(--brand-on, var(--tooltip-foreground)))" }} >
+                {key}
+              </p>)}
+            <p 
+             className="text-[var(--surface-on)]"
+            >
+              {tokenValue}
+            </p>
+            {referencesTo && (
+              <p className="mt-1 pt-1 border-t border-[var(--tooltip-border-color,var(--border))] border-opacity-50 text-xs">
+                <span className="font-semibold" style={{ color: "var(--tooltip-key-color, var(--brand-on, var(--tooltip-foreground)))" }}>References:</span>
+                <span style={{ color: "var(--tooltip-value-color, color-mix(in srgb, var(--brand-on, #FFF) 70%, transparent))" }}> {referencesTo}</span>
+              </p>
+            )}
+            {referencedBy && referencedBy.length > 0 && (
+              <div className="mt-1 pt-1 border-t border-[var(--tooltip-border-color,var(--border))] border-opacity-50 text-xs">
+                <p className="font-semibold" style={{ color: "var(--tooltip-key-color, var(--brand-on, var(--tooltip-foreground)))" }}>Referenced By:</p>
+                <ul className="list-disc list-inside max-h-20 overflow-y-auto">
+                  {referencedBy.map(ref => (
+                    <li key={ref} style={{ color: "var(--tooltip-value-color, color-mix(in srgb, var(--brand-on, #FFF) 70%, transparent))" }}>{ref}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -192,29 +480,15 @@ const TokenPreviewItem: React.FC<TokenPreviewItemProps> = ({ tokenKeys, tokenVal
 
   if (isShadowToken(tokenKeys[0])) {
     return (
-      <div className="flex items-center gap-2 w-full">
+      <div className="flex items-center gap-2 w-full"> {/* Reduced gap */}
         <div
-          className="w-12 h-12 rounded-md bg-background border"
           style={{
+            ...previewBoxBaseStyle,
             boxShadow: tokenValue,
-            width: "var(--token-shadow-preview-size, 3rem)",
-            height: "var(--token-shadow-preview-size, 3rem)",
-            borderRadius: "var(--token-shadow-preview-radius, var(--radius-md, 0.375rem))",
-            backgroundColor: "var(--token-shadow-preview-bg, var(--background))",
-            borderWidth: "var(--token-shadow-preview-border-width, 1px)",
-            borderColor: "var(--token-shadow-preview-border-color, var(--border-color-subtle, var(--border)))"
+            backgroundColor: "var(--token-shadow-preview-bg, var(--card, #333))",
           }}
         ></div>
-        <code
-          className="text-xs flex-1 font-mono bg-muted/30 px-2 py-1 rounded truncate"
-          style={{
-            fontSize: "var(--token-value-size, var(--font-size-xs, 0.75rem))",
-            fontFamily: "var(--font-family-mono)",
-            backgroundColor: "var(--token-value-bg, color-mix(in srgb, var(--muted) 30%, transparent))",
-            padding: "var(--token-value-padding, 0.25rem 0.5rem)",
-            borderRadius: "var(--token-value-radius, var(--radius-sm, 0.25rem))"
-          }}
-        >
+        <code style={codeStyle} className="flex-1 truncate">
           {tokenValue}
         </code>
       </div>
@@ -223,38 +497,147 @@ const TokenPreviewItem: React.FC<TokenPreviewItemProps> = ({ tokenKeys, tokenVal
 
   if (isRadiusToken(tokenKeys[0])) {
     return (
-      <div className="flex items-center gap-2 w-full">
+      <div className="flex items-center gap-2 w-full"> {/* Reduced gap */}
         <div
-          className="w-12 h-12 bg-primary/20 border"
           style={{
+            ...previewBoxBaseStyle,
             borderRadius: tokenValue,
-            width: "var(--token-radius-preview-size, 3rem)",
-            height: "var(--token-radius-preview-size, 3rem)",
-            backgroundColor: "color-mix(in srgb, var(--brand-main) 20%, transparent)",
-            borderWidth: "var(--token-radius-preview-border-width, 1px)",
-            borderColor: "var(--token-radius-preview-border-color, var(--border-color-subtle, var(--border)))"
+            backgroundColor: "var(--token-radius-preview-bg, color-mix(in srgb, var(--brand-main, #F00) 25%, transparent))",
           }}
         ></div>
-        <code
-          className="text-xs flex-1 font-mono bg-muted/30 px-2 py-1 rounded"
-          style={{
-            fontSize: "var(--token-value-size, var(--font-size-xs, 0.75rem))",
-            fontFamily: "var(--font-family-mono)",
-            backgroundColor: "var(--token-value-bg, color-mix(in srgb, var(--muted) 30%, transparent))",
-            padding: "var(--token-value-padding, 0.25rem 0.5rem)",
-            borderRadius: "var(--token-value-radius, var(--radius-sm, 0.25rem))"
-          }}
-        >
+        <code style={codeStyle} className="flex-1 truncate">
           {tokenValue}
         </code>
       </div>
     );
   }
 
+  if (isBorderToken(tokenKeys[0])) {
+    return (
+      <div className="flex items-center gap-2 w-full"> {/* Reduced gap */}
+        <div
+          style={{
+            ...previewBoxBaseStyle,
+            width: "var(--token-border-preview-width, 4rem)", // Slightly reduced width
+            borderWidth: tokenKeys[0].includes("width") ? tokenValue : "var(--border-width-default, 1px)",
+            borderStyle: tokenKeys[0].includes("style") ? tokenValue : "var(--border-style-default, solid)",
+            borderColor: tokenKeys[0].includes("color") ? tokenValue : "var(--border-color-default, #444)",
+            backgroundColor: "var(--token-border-preview-bg, var(--surface-bg, #111))",
+          }}
+        >
+          <span 
+            className="text-xs"
+            style={{ color: "var(--token-border-preview-text-color, var(--muted-foreground, #999))" }}
+          >
+            Preview
+          </span>
+        </div>
+        <code style={codeStyle} className="flex-1 truncate">
+          {tokenValue}
+        </code>
+      </div>
+    );
+  }
+
+  if (isGradientToken(tokenKeys[0])) {
+    return (
+      <div className="flex items-center gap-2 w-full"> {/* Reduced gap */}
+        <div
+          style={{
+            ...previewBoxBaseStyle,
+            // Use a generic gradient as specific from/to vars are not directly available here
+            background: `linear-gradient(45deg, var(--surface-muted, #CCCCCC), var(--surface-muted-fg, #999999))`,
+          }}
+        ></div>
+        <code style={codeStyle} className="flex-1 truncate">
+          {tokenValue} <span className="text-[color:var(--muted-foreground)] text-opacity-70">(complex value)</span>
+        </code>
+      </div>
+    );
+  }
+
+  if (isTypographyToken(tokenKeys[0])) {
+    const typoStyle: React.CSSProperties = { ...previewBoxBaseStyle };
+    typoStyle.width = "auto";
+    typoStyle.minWidth = "var(--token-preview-size, 2.5rem)"; // Adjusted minWidth
+    typoStyle.height = "auto";
+    typoStyle.minHeight = "var(--token-preview-size, 2.5rem)"; // Adjusted minHeight
+    typoStyle.padding = "var(--token-typography-preview-padding, 0.3rem)"; // Reduced padding
+    typoStyle.backgroundColor = "var(--token-typography-preview-bg, var(--surface-card, #222))";
+
+    const textSpanStyle: React.CSSProperties = { 
+      color: "var(--token-typography-preview-text-color, var(--foreground, #FFF))" 
+    };
+    if (tokenKeys[0].startsWith("font-family")) textSpanStyle.fontFamily = tokenValue;
+    if (tokenKeys[0].startsWith("font-size")) textSpanStyle.fontSize = tokenValue;
+    if (tokenKeys[0].startsWith("font-weight")) textSpanStyle.fontWeight = tokenValue;
+    if (tokenKeys[0].startsWith("line-height") || tokenKeys[0].startsWith("leading")) textSpanStyle.lineHeight = tokenValue;
+    if (tokenKeys[0].startsWith("letter-spacing") || tokenKeys[0].startsWith("tracking")) textSpanStyle.letterSpacing = tokenValue;
+    if (tokenKeys[0].startsWith("text-transform")) textSpanStyle.textTransform = tokenValue as any;
+
+    return (
+      <div className="flex items-center gap-3 w-full">
+        <div style={typoStyle}>
+          <span style={textSpanStyle}>
+            Aa Bb Cc
+          </span>
+        </div>
+        <code style={codeStyle} className="flex-1 truncate">
+          {tokenValue}
+        </code>
+      </div>
+    );
+  }
+
+  if (isSpacingToken(tokenKeys[0])) {
+    return (
+      <div className="flex items-center gap-3 w-full">
+        <div
+          style={{
+            // ...previewBoxBaseStyle, // Don't use full base for this one
+            height: "var(--token-spacing-preview-height, 2rem)",
+            width: tokenValue, 
+            minWidth: "0.25rem", 
+            backgroundColor: "var(--token-spacing-preview-bg, color-mix(in srgb, var(--brand-main, #F00) 30%, transparent))",
+            borderWidth: "var(--token-spacing-preview-border-width, 1px)",
+            borderStyle: "var(--token-spacing-preview-border-style, dashed)",
+            borderColor: "var(--token-spacing-preview-border-color, var(--brand-main, #F00))",
+            borderRadius: "var(--token-spacing-preview-radius, var(--radius-xs, 0.125rem))",
+            opacity: "var(--token-spacing-preview-opacity, 0.7)",
+          }}
+          title={`Space: ${tokenValue}`}
+        ></div>
+        <code style={codeStyle} className="flex-1 truncate">
+          {tokenValue}
+        </code>
+      </div>
+    );
+  }
+  
+  if (isMotionToken(tokenKeys[0])) {
+    return (
+      <div className="flex items-center gap-3 w-full">
+         <div 
+          style={{
+            ...previewBoxBaseStyle,
+            backgroundColor: "var(--token-motion-preview-bg, var(--surface-muted, #333))",
+          }}
+        >
+          <Spacing 
+            className="w-5 h-5"
+            style={{ color: "var(--token-motion-preview-icon-color, var(--foreground, #FFF))" }}
+          />
+        </div>
+        <code style={codeStyle} className="flex-1 truncate">
+          {tokenValue}
+        </code>
+      </div>
+    );
+  }
+
+  // Default fallback for other token types (should be rare now)
   return (
-    <code
-      className="flex-1 font-mono text-xs [font-size:var(--token-value-size,var(--font-size-xs,0.75rem))] bg-[var(--token-value-bg,color-mix(in_srgb,var(--muted)_30%25,transparent))] p-[var(--token-value-padding,0.25rem_0.5rem)] rounded-[var(--token-value-radius,var(--radius-sm,0.25rem))] truncate block max-w-full"
-    >
+    <code style={codeStyle} className="flex-1 font-mono text-xs truncate block max-w-full">
       {tokenValue}
     </code>
   );
@@ -269,282 +652,272 @@ const TokenPreviewItem: React.FC<TokenPreviewItemProps> = ({ tokenKeys, tokenVal
 
 
 
-function TokenShowcase({ vars }: { vars: Record<string, string> }) {
-  // Organize tokens into semantic groups
-  const groups = [
-    {
-      name: "Brand Colors",
-      tokens: [
-        ["brand-main", vars["--brand-main"] || "#FF3600"],
-        ["brand-on", vars["--brand-on"] || "#FFFFFF"],
-        ["brand-secondary", vars["--brand-secondary"] || "#1A1A1A"],
-        ["bg-brand", vars["--bg-brand"] || vars["--brand-main"] || "#FF3600"],
-        ["bg-brand-subtle", vars["--bg-brand-subtle"] || "rgba(255, 54, 0, 0.07)"],
-        ["text-brand", vars["--text-brand"] || vars["--brand-main"] || "#FF3600"],
-        ["text-on-brand", vars["--text-on-brand"] || vars["--brand-on"] || "#FFFFFF"],
-      ],
-    },
-    {
-      name: "Surface",
-      tokens: [
-        ["surface-bg", vars["--surface-bg"] || "#101010"],
-        ["surface-card", vars["--surface-card"] || "#1C1C1C"],
-        ["surface-popover", vars["--surface-popover"] || "#282828"],
-        ["surface-on", vars["--surface-on"] || "#FFFFFF"],
-        ["surface-muted", vars["--surface-muted"] || "#3A3A3A"],
-        ["surface-muted-fg", vars["--surface-muted-fg"] || "#E0E0E0"],
-        ["bg-primary", vars["--bg-primary"] || vars["--surface-bg"] || "#101010"],
-        ["bg-secondary", vars["--bg-secondary"] || vars["--surface-card"] || "#1C1C1C"],
-        ["bg-muted", vars["--bg-muted"] || vars["--surface-muted"] || "#3A3A3A"],
-        ["bg-popover", vars["--bg-popover"] || vars["--surface-popover"] || "#282828"],
-        ["bg-transparent", vars["--bg-transparent"] || "transparent"],
-      ],
-    },
-    {
-      name: "Text",
-      tokens: [
-        ["text-primary", vars["--text-primary"] || vars["--surface-on"] || "#FFFFFF"],
-        ["text-secondary", vars["--text-secondary"] || vars["--surface-muted-fg"] || "#E0E0E0"],
-        ["text-muted", vars["--text-muted"] || "#777777"],
-      ],
-    },
-    {
-      name: "Semantic Colors",
-      tokens: [
-        ["semantic-destructive", vars["--semantic-destructive"] || "#D32F2F"],
-        ["semantic-success", vars["--semantic-success"] || "#FF3600"],
-        ["semantic-warning", vars["--semantic-warning"] || "#FFA000"],
-        ["semantic-info", vars["--semantic-info"] || "#1976D2"],
-      ],
-    },
-    {
-      name: "Borders",
-      tokens: [
-        ["border-color-default", vars["--border-color-default"] || "#444444"],
-        ["border-color-subtle", vars["--border-color-subtle"] || "#333333"],
-        ["border-color-strong", vars["--border-color-strong"] || "#555555"],
-        ["border-color-brand", vars["--border-color-brand"] || vars["--brand-main"] || "#FF3600"],
-        ["border-width-none", vars["--border-width-none"] || "0px"],
-        ["border-width-thin", vars["--border-width-thin"] || "0.5px"],
-        ["border-width-default", vars["--border-width-default"] || "1px"],
-        ["border-width-thick", vars["--border-width-thick"] || "2px"],
-        ["border-style", vars["--border-style"] || "solid"],
-      ],
-    },
-    {
-      name: "Shadows",
-      tokens: [
-        ["shadow-none", vars["--shadow-none"] || "none"],
-        ["shadow-xs", vars["--shadow-xs"] || "0 1px 2px rgba(0,0,0,0.2)"],
-        ["shadow-sm", vars["--shadow-sm"] || "0 2px 4px rgba(0,0,0,0.3)"],
-        ["shadow-md", vars["--shadow-md"] || "0 4px 8px rgba(0,0,0,0.4)"],
-        ["shadow-lg", vars["--shadow-lg"] || "0 8px 16px rgba(0,0,0,0.4)"],
-        ["shadow-xl", vars["--shadow-xl"] || "0 12px 24px rgba(0,0,0,0.5)"],
-        ["shadow-brand-sm", vars["--shadow-brand-sm"] || "0 2px 6px rgba(255, 54, 0, 0.2)"],
-        ["shadow-brand-md", vars["--shadow-brand-md"] || "0 4px 10px rgba(255, 54, 0, 0.25)"],
-        ["shadow-brand-lg", vars["--shadow-brand-lg"] || "0 8px 18px rgba(255, 54, 0, 0.3)"],
-      ],
-    },
-    {
-      name: "Border Radius",
-      tokens: [
-        ["radius-none", vars["--radius-none"] || "0"],
-        ["radius-xs", vars["--radius-xs"] || "2px"],
-        ["radius-sm", vars["--radius-sm"] || "4px"],
-        ["radius-md", vars["--radius-md"] || "6px"],
-        ["radius-lg", vars["--radius-lg"] || "8px"],
-        ["radius-xl", vars["--radius-xl"] || "12px"],
-        ["radius-full", vars["--radius-full"] || "9999px"],
-      ],
-    },
-  ];
+function TokenShowcase({ 
+  vars, 
+  interactiveTokenValues, 
+  onInteractiveTokenChange 
+}: { 
+  vars: Record<string, string>; 
+  interactiveTokenValues: Record<string, string>;
+  onInteractiveTokenChange: (tokenName: string, newValue: string) => void;
+}) {
+  const codeStyle: React.CSSProperties = {
+    fontSize: "var(--token-value-font-size, var(--font-size-xs, 0.75rem))",
+    fontFamily: "var(--token-value-font-family, var(--font-family-mono))",
+    backgroundColor: "var(--token-value-bg, color-mix(in srgb, var(--surface-muted, #333) 30%, transparent))",
+    padding: "var(--token-value-padding, 0.25rem 0.5rem)", 
+    borderRadius: "var(--token-value-radius, var(--radius-sm, 0.25rem))",
+    color: "var(--token-value-color, var(--foreground))",
+    lineHeight: "var(--token-value-line-height, 1.3)", 
+  };
+
+  // Group tokens first by main layer, then by sub-category
+  const groupedTokens: Record<string, Record<string, [string, string][]>> = {
+    foundation: {},
+    semantic: {},
+    component: {},
+    unknown: { 'Uncategorized': [] }, // Default sub-category for unknown
+  };
+
+  Object.entries(vars).forEach(([key, value]) => {
+    const layer = getTokenType(key) || 'unknown';
+    const subCategory = getTokenSubCategory(key, layer as any) || 'Uncategorized'; 
+
+    if (!groupedTokens[layer]) {
+      groupedTokens[layer] = {};
+    }
+    if (!groupedTokens[layer][subCategory]) {
+      groupedTokens[layer][subCategory] = [];
+    }
+    groupedTokens[layer][subCategory].push([key, value]);
+  });
+
+  // Sort tokens within each sub-category
+  for (const layer in groupedTokens) {
+    for (const subCategory in groupedTokens[layer]) {
+      groupedTokens[layer][subCategory].sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
+    }
+  }
+
+  const layerOrder: (keyof typeof groupedTokens)[] = ['foundation', 'semantic', 'component', 'unknown'];
+  const layerDisplayNames: Record<keyof typeof groupedTokens, string> = {
+    foundation: "Foundation Tokens",
+    semantic: "Semantic Tokens",
+    component: "Component Tokens",
+    unknown: "Unknown/Uncategorized Tokens",
+  };
+
+  // Calculate references
+  const referencesToMap: Record<string, string> = {}; // tokenName -> referencedTokenName
+  const referencedByMap: Record<string, string[]> = {}; // tokenName -> list of tokens referencing it
+
+  Object.entries(vars).forEach(([key, value]) => {
+    if (!referencedByMap[key]) referencedByMap[key] = [];
+    const match = typeof value === 'string' ? value.match(/var\\((--[^\\)]+)\\)/) : null;
+    if (match && match[1]) {
+      const referencedToken = match[1];
+      referencesToMap[key] = referencedToken;
+      if (!referencedByMap[referencedToken]) {
+        referencedByMap[referencedToken] = [];
+      }
+      if (!referencedByMap[referencedToken].includes(key)) {
+        referencedByMap[referencedToken].push(key);
+      }
+    }
+  });
 
   return (
-    <div className="container mx-auto flex flex-wrap gap-8 space-y-8">
-      {groups.map((group) => {
-        const colorTokens = group.tokens.filter(([key]) => isColorToken(key));
-        const otherTokens = group.tokens.filter(([key]) => !isColorToken(key));
+    <div className="container mx-auto flex flex-wrap gap-4 space-y-4"> 
+      {layerOrder.map((layerKey) => {
+        const subCategories = groupedTokens[layerKey];
+        const layerName = layerDisplayNames[layerKey];
+        const totalTokensInLayer = Object.values(subCategories).reduce((sum, tokens) => sum + tokens.length, 0);
+
+        if (totalTokensInLayer === 0 && layerKey !== 'unknown') return null;
+        if (layerKey === 'unknown' && totalTokensInLayer === 0) return null;
 
         return (
-          (colorTokens.length > 0 || otherTokens.length > 0) && (
-            <div
-              key={group.name}
-              className="p-4 rounded-lg bg-[var(--token-card-bg,var(--card))] bg-[image:var(--token-card-overlay,none)] border-[var(--token-card-border-width,var(--border-width-default,1px))] border-[style:var(--token-card-border-style,var(--border-style,solid))] border-[color:var(--token-card-border-color,var(--border-color-default,var(--border)))] [border-radius:var(--token-card-radius,var(--radius-lg,0.75rem))] shadow-[var(--token-card-shadow,var(--shadow-sm,none))] [padding:var(--token-card-padding,var(--padding-card,1rem))]"
+            <Card // Changed div to Card
+            key={layerName}
+            className="p-3 rounded-lg w-full" // Existing classes, p-3 might be redundant if CardContent adds padding
+              style={{
+                backgroundColor: "var(--token-group-card-bg, var(--card))",
+                backgroundImage: "var(--token-group-card-bg-image, none)", 
+                borderWidth: "var(--token-group-card-border-width, var(--border-width-default, 1px))",
+                borderStyle: "var(--token-group-card-border-style, var(--border-style-default, solid))",
+                borderColor: "var(--token-group-card-border-color, var(--border-color-default, var(--border)))",
+                borderRadius: "var(--token-group-card-radius, var(--radius-lg, 0.75rem))",
+                boxShadow: "var(--token-group-card-shadow, var(--shadow-md, none))",
+                padding: "var(--token-group-card-padding, var(--space-md, 1rem))", // This padding might conflict with CardContent, review needed
+              }}
             >
-              <h3
-                className="text-[var(--token-card-title-size,var(--font-size-base,1rem))] [font-weight:var(--token-card-title-weight,var(--font-weight-semibold,600))] text-[var(--token-card-title-color,var(--foreground))] mb-4 [margin-bottom:var(--token-card-title-margin,1rem)]"
-              >
-                {group.name}
-              </h3>
+              <CardHeader> {/* Added CardHeader */}
+                <CardTitle /* Changed h3 to CardTitle */
+                className="mb-4 text-lg font-semibold tracking-tight" 
+                  style={{
+                    color: "var(--token-group-title-color, var(--foreground))",
+                    fontSize: "var(--token-group-title-font-size, var(--font-size-lg, 1.125rem))", 
+                    fontWeight: "var(--token-group-title-font-weight, var(--font-weight-semibold, 600))",
+                    marginBottom: "var(--token-group-title-margin-bottom, var(--space-sm, 0.75rem))", 
+                    borderBottom: "var(--token-group-title-border-bottom, 1px solid var(--border-color-subtle))",
+                    paddingBottom: "var(--token-group-title-padding-bottom, var(--space-xs, 0.375rem))", 
+                  }}
+                >
+                {layerName}
+                </CardTitle>
+              </CardHeader>
+              <CardContent> {/* Added CardContent to wrap the rest */} 
+                {Object.entries(subCategories).sort(([subA], [subB]) => subA.localeCompare(subB)).map(([subCategoryName, tokensInSubCategory]) => {
+                  if (tokensInSubCategory.length === 0) return null;
 
-              {/* Render Color Tokens as a Row of Swatches */}
-              {colorTokens.length > 0 && (
-                <div className="flex flex-wrap gap-3 mb-6">
-                  {(() => {
-                    const tokensByValue: Record<string, string[]> = {};
-                    colorTokens.forEach(([key, value]) => {
-                      if (!tokensByValue[value]) {
-                        tokensByValue[value] = [];
-                      }
-                      tokensByValue[value].push(key);
-                    });
+                  const colorTokens = tokensInSubCategory.filter(([key]) => isColorToken(key));
+                  const otherTokens = tokensInSubCategory.filter(([key]) => !isColorToken(key));
 
-                    const sortedColorEntries = Object.entries(tokensByValue).sort(([valueA], [valueB]) => {
-                      const colorA = parseColorString(valueA);
-                      const colorB = parseColorString(valueB);
+                  return (
+                    <div key={subCategoryName} className="mb-6"> {/* Add margin bottom for sub-category sections */}
+                      <h4 
+                        className="mb-3 text-base font-medium tracking-tight" // Slightly smaller than main layer title
+                        style={{
+                            color: "var(--token-subgroup-title-color, var(--muted-foreground))",
+                            fontSize: "var(--token-subgroup-title-font-size, var(--font-size-base, 1rem))",
+                            fontWeight: "var(--token-subgroup-title-font-weight, var(--font-weight-medium, 500))",
+                            borderBottom: "var(--token-subgroup-title-border-bottom, 1px dashed var(--border-color-subtle))",
+                            paddingBottom: "var(--token-subgroup-title-padding-bottom, var(--space-xxs, 0.25rem))",
+                            marginTop: "var(--token-subgroup-title-margin-top, var(--space-sm, 0.75rem))", // Add some top margin if not the first sub-category
+                        }}
+                      >
+                        {subCategoryName}
+                      </h4>
 
-                      // Handle cases where colors can't be parsed or are transparent
-                      // Push unparseable/transparent to the end, or handle as you see fit
-                      if (!colorA && !colorB) return 0;
-                      if (!colorA) return 1; // colorA is unparseable, put it after colorB
-                      if (!colorB) return -1; // colorB is unparseable, put it after colorA
-                      if (colorA.a === 0 && colorB.a !== 0) return 1; // colorA is transparent, colorB is not
-                      if (colorB.a === 0 && colorA.a !== 0) return -1; // colorB is transparent, colorA is not
-                      if (colorA.a === 0 && colorB.a === 0) return 0; // both transparent
+                  {/* Render Color Tokens as a Row of Swatches */}
+                  {colorTokens.length > 0 && (
+                        <div className="flex flex-wrap gap-x-2 gap-y-3 mb-4">
+                      {(() => {
+                        const tokensByValue: Record<string, string[]> = {};
+                        colorTokens.forEach(([key, value]) => {
+                          if (!tokensByValue[value]) {
+                            tokensByValue[value] = [];
+                          }
+                          tokensByValue[value].push(key);
+                        });
 
-                      const hslA = rgbToHsl(colorA.r, colorA.g, colorA.b);
-                      const hslB = rgbToHsl(colorB.r, colorB.g, colorB.b);
+                        const sortedColorEntries = Object.entries(tokensByValue).sort(([valueA], [valueB]) => {
+                          const colorA = parseColorString(valueA);
+                          const colorB = parseColorString(valueB);
+                          if (!colorA && !colorB) return 0;
+                          if (!colorA) return 1;
+                          if (!colorB) return -1;
+                          if (colorA.a === 0 && colorB.a !== 0) return 1;
+                          if (colorB.a === 0 && colorA.a !== 0) return -1;
+                          if (colorA.a === 0 && colorB.a === 0) return 0;
+                          const hslA = rgbToHsl(colorA.r, colorA.g, colorA.b);
+                          const hslB = rgbToHsl(colorB.r, colorB.g, colorB.b);
+                          if (hslA.l !== hslB.l) return hslA.l - hslB.l;
+                          if (hslA.s !== hslB.s) return hslB.s - hslA.s;
+                          return hslA.h - hslB.h;
+                        });
 
-                      // Sort by lightness (ascending - lighter first)
-                      if (hslA.l !== hslB.l) {
-                        return hslA.l - hslB.l;
-                      }
-                      // Then by saturation (descending - more saturated first, can make groups look more distinct)
-                      if (hslA.s !== hslB.s) {
-                        return hslB.s - hslA.s;
-                      }
-                      // Then by hue (ascending)
-                      return hslA.h - hslB.h;
-                    });
-
-                    return sortedColorEntries.map(([value, keys]) => (
-                      <TokenPreviewItem key={value} tokenKeys={keys} tokenValue={value} />
-                    ));
-                  })()}
-                      </div>
-              )}
-
-              {/* Render Other Tokens as a List */}
-              {otherTokens.length > 0 && (
-                <div className="space-y-3 columns-1 sm:columns-2 lg:columns-2 xl:columns-3 gap-x-6">
-                  {otherTokens.map(([key, value]) => (
-                    <div key={key} className="space-y-1 mb-3 break-inside-avoid">
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-2">
-                          {/* Original rendering logic for non-color tokens */}
-                          {isShadowToken(key) ? (
-                        <div className="flex items-center gap-2 w-full">
-                          <div
-                            className="w-12 h-12 rounded-md bg-background border"
-                            style={{ 
-                              boxShadow: value,
-                              width: "var(--token-shadow-preview-size, 3rem)", 
-                              height: "var(--token-shadow-preview-size, 3rem)",
-                              borderRadius: "var(--token-shadow-preview-radius, var(--radius-md, 0.375rem))",
-                              backgroundColor: "var(--token-shadow-preview-bg, var(--background))",
-                              borderWidth: "var(--token-shadow-preview-border-width, 1px)",
-                              borderColor: "var(--token-shadow-preview-border-color, var(--border-color-subtle, var(--border)))"
-                            }}
-                      ></div>
-                          <code 
-                            className="text-xs flex-1 font-mono bg-muted/30 px-2 py-1 rounded truncate"
-                            style={{
-                              fontSize: "var(--token-value-size, var(--font-size-xs, 0.75rem))",
-                              fontFamily: "var(--font-family-mono)",
-                              backgroundColor: "var(--token-value-bg, color-mix(in srgb, var(--muted) 30%, transparent))",
-                              padding: "var(--token-value-padding, 0.25rem 0.5rem)",
-                              borderRadius: "var(--token-value-radius, var(--radius-sm, 0.25rem))"
-                            }}
-                          >
-                            {value}
-                          </code>
-                        </div>
-                    ) : isRadiusToken(key) ? (
-                        <div className="flex items-center gap-2 w-full">
-                          <div
-                            className="w-12 h-12 bg-primary/20 border"
-                            style={{ 
-                              borderRadius: value,
-                              width: "var(--token-radius-preview-size, 3rem)", 
-                              height: "var(--token-radius-preview-size, 3rem)",
-                              backgroundColor: "color-mix(in srgb, var(--brand-main) 20%, transparent)",
-                              borderWidth: "var(--token-radius-preview-border-width, 1px)",
-                              borderColor: "var(--token-radius-preview-border-color, var(--border-color-subtle, var(--border)))"
-                            }}
-                      ></div>
-                          <code 
-                            className="text-xs flex-1 font-mono bg-muted/30 px-2 py-1 rounded"
-                            style={{
-                              fontSize: "var(--token-value-size, var(--font-size-xs, 0.75rem))",
-                              fontFamily: "var(--font-family-mono)",
-                              backgroundColor: "var(--token-value-bg, color-mix(in srgb, var(--muted) 30%, transparent))",
-                              padding: "var(--token-value-padding, 0.25rem 0.5rem)",
-                              borderRadius: "var(--token-value-radius, var(--radius-sm, 0.25rem))"
-                            }}
-                          >
-                            {value}
-                          </code>
-                        </div>
-                          ) : isBorderToken(key) ? (
-                            <div className="flex items-center gap-3 w-full">
-                              <div
-                                className="w-20 h-12 bg-background/50 flex items-center justify-center text-xs text-muted-foreground"
-                                style={{
-                                  borderWidth: key.includes("width") ? value : "var(--border-width-default, 1px)",
-                                  borderStyle: key.includes("style") ? value : "var(--border-style, solid)",
-                                  borderColor: key.includes("color") ? value : "var(--border-color-default, #444444)",
-                                  borderRadius: "var(--radius-sm)"
-                                }}
-                              >
-                                Preview
-                              </div>
-                        <code
-                                className="text-xs flex-1 font-mono bg-muted/30 px-2 py-1 rounded truncate"
-                                style={{
-                                  fontSize: "var(--token-value-size, var(--font-size-xs, 0.75rem))",
-                                  fontFamily: "var(--font-family-mono)",
-                                  backgroundColor: "var(--token-value-bg, color-mix(in srgb, var(--muted) 30%, transparent))",
-                                  padding: "var(--token-value-padding, 0.25rem 0.5rem)",
-                                  borderRadius: "var(--token-value-radius, var(--radius-sm, 0.25rem))"
-                                }}
-                        >
-                      {value}
-                    </code>
-                            </div>
-                          ) : (
-                            <TokenPreviewItem tokenKeys={[key]} tokenValue={value} />
-                      )}
-                        </div>
+                            return sortedColorEntries.map(([value, keys]) => {
+                              const primaryKey = keys[0]; 
+                              const tokenNameWithHyphens = `--${primaryKey}`;
+                              const currentValue = interactiveTokenValues[tokenNameWithHyphens] || value; 
+                              return (
+                                <TokenPreviewItem 
+                                  key={primaryKey} 
+                                  tokenKeys={keys} 
+                                  tokenName={tokenNameWithHyphens} 
+                                  tokenValue={currentValue} 
+                                  codeStyle={codeStyle} 
+                                  onInteractiveTokenChange={onInteractiveTokenChange} 
+                                  referencedBy={referencedByMap[tokenNameWithHyphens]}
+                                  referencesTo={referencesToMap[tokenNameWithHyphens]}
+                                />
+                              );
+                            });
+                      })()}
                     </div>
-                  </div>
-                ))}
-              </div>
-              )}
-            </div>
-          )
+                  )}
+
+                  {/* Render Other Tokens as a List */}
+                  {otherTokens.length > 0 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-3">
+                          {otherTokens.map(([key, value]) => {
+                            const tokenNameWithHyphens = `${key}`;
+                            const currentValue = interactiveTokenValues[tokenNameWithHyphens] || value || ""; 
+                            return (
+                            <div key={key} className="space-y-0.5 break-inside-avoid">
+                        <span 
+                          className="text-xs font-medium text-[var(--token-key-color,var(--muted-foreground))]"
+                          style={{
+                            fontFamily: "var(--token-key-font-family, var(--font-family-mono))",
+                            display: 'block', 
+                                marginBottom: 'var(--token-key-margin-bottom, 0.125rem)', 
+                          }}
+                        >
+                                  {tokenNameWithHyphens} 
+                        </span>
+                            <div className="flex items-center gap-1.5">
+                                  <TokenPreviewItem 
+                                    tokenKeys={[key]} 
+                                    tokenName={tokenNameWithHyphens} 
+                                    tokenValue={currentValue} 
+                                    codeStyle={codeStyle} 
+                                    onInteractiveTokenChange={onInteractiveTokenChange} 
+                                    referencedBy={referencedByMap[tokenNameWithHyphens]}
+                                    referencesTo={referencesToMap[tokenNameWithHyphens]}
+                                  />
+                                  <input 
+                                    type="text" 
+                                    value={currentValue} 
+                                    onChange={(e) => onInteractiveTokenChange(tokenNameWithHyphens, e.target.value)} 
+                                    className="ml-2 p-1 text-xs border rounded bg-[var(--input-bg,var(--surface-muted))] text-[var(--input-fg,var(--foreground))] border-[var(--input-border,var(--border))] focus:ring-1 focus:ring-[var(--ring)] w-full min-w-0"
+                                    style={{ flexGrow: 1}}
+                                  />
+                            </div>
+                        </div>
+                            );
+                          })}
+                    </div>
+                  )}
+                </div>
+                  );
+                })}
+              </CardContent> {/* Closed CardContent */}
+            </Card> // Closed Card
         );
       })}
     </div>
   );
 }
 
-// Added named imports for ChartShowcase and ComponentShowcase
-import { ChartShowcase } from './ChartShowcase';
-import { ComponentShowcase } from './ComponentShowcase';
-
-import {
-  BRANDS,
-  makeCssVars,
-} from "./brands";
-import type { BrandDefinition } from "./brands-types";
-import { UseClientConfigs } from "../(root)/[slug]/_page-slug-core-utilities/use-client-configs";
+interface InteractiveTokenConfig {
+  tokenName: string; // e.g., "--brand-orange-primary"
+  label: string;   // e.g., "Nextgen Orange Primary"
+  type: 'color' | 'slider-rem' | 'slider-px' | 'slider-unitless'; // slider-px for things like border-width if needed
+  min?: number;
+  max?: number;
+  step?: number;
+  defaultValue: string; // The default/initial value from baseCssVars
+}
 
 interface HeroSectionProps {
   brand: BrandDefinition;
   heroShowOverlay?: boolean;
+  interactiveTokensConfig: InteractiveTokenConfig[];
+  interactiveTokenValues: Record<string, string>; // Current values of all interactive tokens
+  onInteractiveTokenChange: (tokenName: string, newValue: string) => void;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ brand, heroShowOverlay }) => {
+const HeroSection: React.FC<HeroSectionProps> = ({
+  brand,
+  heroShowOverlay,
+  interactiveTokensConfig,
+  interactiveTokenValues,
+  onInteractiveTokenChange,
+ }) => {
+  // console.log("HeroSection props: interactiveFontSizeBase =", interactiveFontSizeBase);
+  // console.log("HeroSection local: fontSizeBase =", fontSizeBase);
+
   return (
       <div
         className="relative min-h-[300px] mt-30 rounded-xl p-8 py-22 flex flex-col justify-center items-center text-center overflow-hidden bg-[var(--hero-bg,var(--background))] bg-[image:var(--hero-bg-image,none)] bg-[size:var(--hero-bg-size,cover)] bg-[position:var(--hero-bg-position,center)] border-[var(--hero-border-width,0)] border-[style:var(--hero-border-style,solid)] border-[color:var(--hero-border-color,transparent)] shadow-[var(--hero-shadow,none)] [font-family:var(--font-family-sans)]"
@@ -594,6 +967,76 @@ const HeroSection: React.FC<HeroSectionProps> = ({ brand, heroShowOverlay }) => 
                 ? "Read Docs" 
                 : "Documentation"}
             </Button>
+          </div>
+        </div>
+
+        {/* Interactive Token Controls - Dynamically Rendered */}
+        <div className="mt-8 p-6 bg-[var(--surface-card)] rounded-lg shadow-[var(--shadow-lg)] border border-[var(--border-color-default)] relative z-20 w-full max-w-4xl">
+          <h3 className="text-xl font-semibold mb-6 text-center text-[var(--text-primary)]">Live Token Playground</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+            {interactiveTokensConfig.map((config) => {
+              const currentValue = interactiveTokenValues[config.tokenName] || config.defaultValue;
+
+              if (config.type === 'color') {
+                return (
+                  <div key={config.tokenName} className="space-y-2  rounded-lg bg-[var(--surface-card)] text-left">
+                    <Label htmlFor={`interactive-${config.tokenName}`} className="text-xs font-semibold text-[var(--text-primary)]">
+                      {config.label} (`{config.tokenName}`)
+                    </Label>
+                    {/* Simplified wrapper: removed bg, border, shadow from here */}
+                    <div className="flex items-center gap-3 pt-1">
+                      <ColorPicker
+                        value={currentValue}
+                        onChange={(newColor) => onInteractiveTokenChange(config.tokenName, newColor)}
+                        // className applied to the Button trigger inside ColorPicker
+                        // We can pass additional specific classes if needed,
+                        // but the base styling is already good from ColorPicker.tsx
+                      />
+                    </div>
+                  </div>
+                );
+              } else if (config.type === 'slider-rem' || config.type === 'slider-px' || config.type === 'slider-unitless') {
+                const unit = config.type === 'slider-rem' ? 'rem' : config.type === 'slider-px' ? 'px' : '';
+                const numericValue = parseFloat(currentValue.replace(unit, ''));
+
+                return (
+                  <div key={config.tokenName} className="space-y-2 text-left  rounded-lg bg-[var(--surface-card)] ">
+                    <Label htmlFor={`interactive-${config.tokenName}`} className="text-xs font-semibold text-[var(--text-primary)]">
+                      {config.label} (`{config.tokenName}`)
+                    </Label>
+                    <div className="flex items-center gap-3 pt-1">
+                      <input
+                        type="range"
+                        id={`interactive-${config.tokenName}`}
+                        min={config.min}
+                        max={config.max}
+                        step={config.step}
+                        value={numericValue}
+                        onChange={(e) => onInteractiveTokenChange(config.tokenName, parseFloat(e.target.value).toFixed(config.step && String(config.step).includes('.') ? String(config.step).split('.')[1].length : 2) + unit)}
+                        className="w-full h-2 bg-[var(--border-color-strong)] rounded-lg appearance-none cursor-pointer
+                                   [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--brand-main)] [&::-webkit-slider-thumb]:cursor-pointer
+                                   [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[var(--brand-main)] [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-none"
+                      />
+                      <input 
+                        type="text"
+                        value={currentValue} 
+                        onChange={(e) => {
+                          let val = e.target.value;
+                          // Attempt to parse and re-format to ensure consistency, especially with unit
+                          const parsed = parseFloat(val);
+                          if (!isNaN(parsed)) {
+                            val = parsed.toFixed(config.step && String(config.step).includes('.') ? String(config.step).split('.')[1].length : 2) + unit;
+                          }
+                          onInteractiveTokenChange(config.tokenName, val);
+                        }}
+                        className="w-24 h-10 px-3 py-2 bg-[var(--input-bg,var(--surface-input))] text-[var(--input-fg,var(--foreground))] text-xs rounded-md border border-[var(--input-border,var(--border-color-default))] font-mono text-right tabular-nums placeholder:text-[var(--muted-foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--input-bg,var(--surface-input))] transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium"
+                      />
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })}
           </div>
         </div>
       </div>
@@ -684,12 +1127,12 @@ const OverviewSection: React.FC<OverviewSectionProps> = ({ brand, overviewCardSh
                   <div className="relative p-3 border border-[var(--border-color-subtle)] rounded-[var(--radius-md)] bg-[var(--surface-card)]">
                     <div
                       className="w-full h-16 mb-2 flex items-end shadow-[var(--overview-card-color-shadow,var(--shadow-sm))] [border-radius:var(--overview-card-color-radius,var(--radius-md))]"
-                      style={{ backgroundColor: brand.brand.main.hex }}
+                      style={{ backgroundColor: 'var(--brand-main)' }} // Use CSS var
                     >
                       <div
                         className="text-xs font-mono p-1 inline-flex items-center bg-[var(--overview-card-color-label-bg,rgba(0,0,0,0.5))] text-[var(--overview-card-color-label-text,white)] [border-bottom-right-radius:var(--overview-card-color-radius,var(--radius-md))] [border-top-left-radius:var(--overview-card-color-radius,var(--radius-md))]"
                       >
-                        {brand.brand.main.hex}
+                        {brand.brand.main.hex} {/* Keep displaying the raw hex */}
                       </div>
                     </div>
                     <p className="text-sm font-medium mb-1">{brand.brand.main.name}</p>
@@ -704,12 +1147,12 @@ const OverviewSection: React.FC<OverviewSectionProps> = ({ brand, overviewCardSh
                   <div className="relative p-3 border border-[var(--border-color-subtle)] rounded-[var(--radius-md)] bg-[var(--surface-card)]">
                     <div
                       className="w-full h-12 mb-2 flex items-end shadow-[var(--overview-card-color-shadow,var(--shadow-sm))] [border-radius:var(--overview-card-color-radius,var(--radius-md))]"
-                      style={{ backgroundColor: brand.brand.secondary.hex }}
+                      style={{ backgroundColor: 'var(--brand-secondary)' }} // Use CSS var
                     >
                       <div
                         className="text-xs font-mono p-1 inline-flex items-center bg-[var(--overview-card-color-label-bg,rgba(0,0,0,0.5))] text-[var(--overview-card-color-label-text,white)] [border-bottom-right-radius:var(--overview-card-color-radius,var(--radius-md))] [border-top-left-radius:var(--overview-card-color-radius,var(--radius-md))]"
                       >
-                        {brand.brand.secondary.hex}
+                        {brand.brand.secondary.hex} {/* Keep displaying the raw hex */}
                       </div>
                     </div>
                     <p className="text-sm font-medium mb-1">{brand.brand.secondary.name}</p>
@@ -758,12 +1201,12 @@ const OverviewSection: React.FC<OverviewSectionProps> = ({ brand, overviewCardSh
               <div>
                     <h4 className="text-sm font-medium mb-2">Display</h4>
                     <div className="p-3 bg-surface-card/50 border border-[var(--border-color-subtle)] [border-radius:var(--radius-md)]">
-                      <p className="text-2xl mb-1 truncate [font-family:var(--font-family-display)] text-[var(--brand-main)]">
+                      <p className="text-2xl mb-1 truncate text-[var(--brand-main)]" style={{ fontFamily: 'var(--font-family-display)'}}> {/* Use CSS var for font and color */}
                         {brand.name} Display
                       </p>
                       <div className="flex justify-between items-center">
                         <span className="text-xs text-muted-foreground">
-                  {brand.typography?.fontDisplay || "System Default"}
+                          {brand.typography?.fontDisplay || "System Default"} {/* Informational text */}
                         </span>
                         <span className="text-xs px-2 py-0.5 rounded bg-[var(--overview-card-tag-bg,var(--surface-muted))] text-[var(--overview-card-tag-text,var(--surface-muted-fg))]">
                           --font-family-display
@@ -776,24 +1219,22 @@ const OverviewSection: React.FC<OverviewSectionProps> = ({ brand, overviewCardSh
               <div>
                       <h4 className="text-sm font-medium mb-2">Text</h4>
                       <div className="p-3 bg-surface-card/50 border h-full border-[var(--border-color-subtle)] [border-radius:var(--radius-md)]">
-                <p
-                          className="text-sm mb-1 [font-family:var(--font-family-sans)]"
-                >
+                        <p className="text-sm mb-1" style={{ fontFamily: 'var(--font-family-sans)' }}> {/* Use CSS var */}
                           The quick brown fox jumps over the lazy dog.
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
-                  {brand.typography?.fontSans || "System Default"}
+                          {brand.typography?.fontSans || "System Default"} {/* Informational text */}
                 </p>
                       </div>
               </div>
               <div>
                       <h4 className="text-sm font-medium mb-2">Mono</h4>
                       <div className="p-3 bg-surface-card/50 border h-full border-[var(--border-color-subtle)] [border-radius:var(--radius-md)]">
-                        <code className="text-sm mb-1 block [font-family:var(--font-family-mono)]">
+                        <code className="text-sm mb-1 block" style={{ fontFamily: 'var(--font-family-mono)' }}> {/* Use CSS var */}
                           const brand = '{brand.name}';
                         </code>
                         <p className="text-xs text-muted-foreground truncate">
-                  {brand.typography?.fontMono || "System Default"}
+                          {brand.typography?.fontMono || "System Default"} {/* Informational text */}
                 </p>
               </div>
             </div>
@@ -968,7 +1409,20 @@ const NavSection: React.FC<NavSectionProps> = ({ brand, navShowOverlay }) => {
   );
 };
 
-const Preview = ({ vars, brand }: { vars: Record<string, string>; brand: BrandDefinition }) => {
+const Preview = ({
+  vars,
+  brand,
+  // Replace old props with new config prop for HeroSection
+  interactiveTokensConfig, // New prop
+  interactiveTokenValues,
+  onInteractiveTokenChange,
+}: {
+  vars: Record<string, string>;
+  brand: BrandDefinition;
+  interactiveTokensConfig: InteractiveTokenConfig[]; // New prop type
+  interactiveTokenValues: Record<string, string>;
+  onInteractiveTokenChange: (tokenName: string, newValue: string) => void;
+ }) => {
   const [activeTab, setActiveTab] = useState("overview");
   
   const navShowOverlay = brand.componentStyles?.nav?.showOverlay;
@@ -978,7 +1432,8 @@ const Preview = ({ vars, brand }: { vars: Record<string, string>; brand: BrandDe
 
   const surfaceBgColor = vars['--surface-bg']?.toLowerCase();
   const isLightBackground = surfaceBgColor === '#ffffff' || surfaceBgColor === 'white';
-  const dynamicNavTextColor = isLightBackground ? 'black' : 'white';
+  // Use CSS variable for dynamic text color, falling back to a sensible default if the var isn't defined.
+  const dynamicNavTextColor = isLightBackground ? "var(--nav-text-color-light, var(--text-primary))" : "var(--nav-text-color-dark, var(--text-primary))";
 
   
 
@@ -990,14 +1445,25 @@ const Preview = ({ vars, brand }: { vars: Record<string, string>; brand: BrandDe
       <NavSection brand={brand} navShowOverlay={navShowOverlay} />
 
       {/* Hero */}
-      <HeroSection brand={brand} heroShowOverlay={heroShowOverlay} />
+      <HeroSection
+        brand={brand}
+        heroShowOverlay={heroShowOverlay}
+        // Pass the new config and generic handlers
+        interactiveTokensConfig={interactiveTokensConfig} // Pass down
+        interactiveTokenValues={interactiveTokenValues}
+        onInteractiveTokenChange={onInteractiveTokenChange}
+      />
 
       {/* Overview */}
       <OverviewSection brand={brand} overviewCardShowOverlay={overviewCardShowOverlay} />
 
       {/* Token Showcase */}
       <div className="mt-12">
-        <TokenShowcase vars={vars} />
+        <TokenShowcase 
+          vars={vars} // Pass the computed designTokens 
+          interactiveTokenValues={interactiveTokenValues} 
+          onInteractiveTokenChange={onInteractiveTokenChange} 
+        />
       </div>
 
       {/* Component Showcase - NEW SECTION */}
@@ -1082,201 +1548,251 @@ const BrandPickerSection: React.FC<BrandPickerSectionProps> = ({ brand, brandPic
 export default function EnhancedBrandPlayground() {
     const [slug, setSlug] = useState<string>("razer");
     const brand = BRANDS.find((b) => b.id === slug) ?? BRANDS[0];
-    const cssVars = useMemo(() => {
+    
+    const baseCssVars = useMemo(() => {
       if (typeof makeCssVars === 'function') {
         return makeCssVars(brand);
       }
       return {};
     }, [brand]);
 
-    // Create a set of design token control variables to consolidate naming patterns
-    // This allows us to more consistently apply our CSS variables throughout the app
-    const designTokens = useMemo(() => {
-      // Define default values for all the design tokens
-      const tokens = {
-        // Brand colors - These should generally come from cssVars if a brand is selected
-        '--brand-main': cssVars['--brand-main'] || 'var(--nextgen-brand-orange-500, #FF3600)',
-        '--brand-on': cssVars['--brand-on'] || '#FFFFFF',
-        '--brand-secondary': cssVars['--brand-secondary'] || 'var(--nextgen-brand-dark-primary, #1A1A1A)',
-        '--bg-brand': cssVars['--bg-brand'] || 'var(--brand-main)',
-        '--bg-brand-subtle': cssVars['--bg-brand-subtle'] || 'color-mix(in srgb, var(--brand-main) 7%, transparent)', // Updated from rgba
-        '--text-brand': cssVars['--text-brand'] || 'var(--brand-main)',
-        '--text-on-brand': cssVars['--text-on-brand'] || 'var(--brand-on)',
-        
-        // Surface - Aligning with Nextgen Neutral and Dark families
-        '--surface-bg': cssVars['--surface-bg'] || 'var(--nextgen-brand-dark-800, #101010)',
-        '--surface-card': cssVars['--surface-card'] || 'var(--nextgen-brand-neutral-800, #1C1C1C)', // Corrected from 850 based on brands.ts final mapping
-        '--surface-popover': cssVars['--surface-popover'] || 'var(--nextgen-brand-neutral-700, #282828)',
-        '--surface-on': cssVars['--surface-on'] || '#FFFFFF', // This typically stays white or a very light color
-        '--surface-muted': cssVars['--surface-muted'] || 'var(--nextgen-brand-neutral-500, #3A3A3A)',
-        '--surface-muted-fg': cssVars['--surface-muted-fg'] || 'var(--nextgen-brand-neutral-50, #E0E0E0)', // Updated from #A0A0A0 (brand-neutral-100)
-        
-        // Background aliases for surface
-        '--bg-primary': cssVars['--bg-primary'] || 'var(--surface-bg)',
-        '--bg-secondary': cssVars['--bg-secondary'] || 'var(--surface-card)',
-        '--bg-muted': cssVars['--bg-muted'] || 'var(--surface-muted)',
-        '--bg-popover': cssVars['--bg-popover'] || 'var(--surface-popover)',
-        '--bg-transparent': cssVars['--bg-transparent'] || 'transparent',
-        
-        // Text colors - Aliasing surface and neutral families
-        '--text-primary': cssVars['--text-primary'] || 'var(--surface-on)',
-        '--text-secondary': cssVars['--text-secondary'] || 'var(--surface-muted-fg)',
-        '--text-muted': cssVars['--text-muted'] || 'var(--nextgen-brand-neutral-200, #777777)',
-        
-        // Semantic colors - Pointing to Nextgen brand color primary aliases
-        '--semantic-destructive': cssVars['--semantic-destructive'] || 'var(--nextgen-brand-red-primary, #D32F2F)',
-        '--semantic-success': cssVars['--semantic-success'] || 'var(--nextgen-brand-orange-primary, #FF3600)',
-        '--semantic-warning': cssVars['--semantic-warning'] || 'var(--nextgen-brand-amber-primary, #FFA000)',
-        '--semantic-info': cssVars['--semantic-info'] || 'var(--nextgen-brand-blue-primary, #03A9F4)', // Updated info color to match nextgen blue
-        
-        // Border properties - Aligning with Nextgen Neutral family
-        '--border-color-default': cssVars['--border-color-default'] || 'var(--nextgen-brand-neutral-400, #444444)',
-        '--border-color-subtle': cssVars['--border-color-subtle'] || 'var(--nextgen-brand-neutral-600, #333333)',
-        '--border-color-strong': cssVars['--border-color-strong'] || 'var(--nextgen-brand-neutral-300, #555555)',
-        '--border-color-brand': cssVars['--border-color-brand'] || 'var(--brand-main)',
-        '--border-width-none': cssVars['--border-width-none'] || '0px',
-        '--border-width-thin': cssVars['--border-width-thin'] || '1px', // common default for thin
-        '--border-width-default': cssVars['--border-width-default'] || '1px',
-        '--border-width-thick': cssVars['--border-width-thick'] || '2px',
-        '--border-style': cssVars['--border-style'] || 'solid',
-        
-        // Shadows (mostly unchanged, relies on var values from makeCssVars)
-        '--shadow-none': cssVars['--shadow-none'] || 'none',
-        '--shadow-xs': cssVars['--shadow-xs'] || '0 1px 2px rgba(0,0,0,0.2)',
-        '--shadow-sm': cssVars['--shadow-sm'] || '0 2px 4px rgba(0,0,0,0.3)',
-        '--shadow-md': cssVars['--shadow-md'] || '0 4px 8px rgba(0,0,0,0.4)',
-        '--shadow-lg': cssVars['--shadow-lg'] || '0 8px 16px rgba(0,0,0,0.4)',
-        '--shadow-xl': cssVars['--shadow-xl'] || '0 12px 24px rgba(0,0,0,0.5)',
-        '--shadow-brand-sm': cssVars['--shadow-brand-sm'] || '0 2px 6px color-mix(in srgb, var(--brand-main) 20%, transparent)',
-        '--shadow-brand-md': cssVars['--shadow-brand-md'] || '0 4px 10px color-mix(in srgb, var(--brand-main) 25%, transparent)',
-        '--shadow-brand-lg': cssVars['--shadow-brand-lg'] || '0 8px 18px color-mix(in srgb, var(--brand-main) 30%, transparent)',
-        
-        // Border radius (unchanged)
-        '--radius-none': cssVars['--radius-none'] || '0',
-        '--radius-xs': cssVars['--radius-xs'] || '2px',
-        '--radius-sm': cssVars['--radius-sm'] || '4px',
-        '--radius-md': cssVars['--radius-md'] || '6px',
-        '--radius-lg': cssVars['--radius-lg'] || '8px',
-        '--radius-xl': cssVars['--radius-xl'] || '12px',
-        '--radius-full': cssVars['--radius-full'] || '9999px',
-        
-        // Font families (mostly unchanged, relies on var values from makeCssVars)
-        '--font-family-sans': cssVars['--font-family-sans'] || 'var(--font-inter), var(--font-titillium-web), var(--font-roboto), sans-serif',
-        '--font-family-display': cssVars['--font-family-display'] || 'var(--font-syne), var(--font-titillium-web), var(--font-roboto), sans-serif',
-        '--font-family-mono': cssVars['--font-family-mono'] || 'var(--font-roboto-mono), Consolas, monospace',
-        
-        // Gradients - Pointing to Nextgen brand color aliases
-        '--gradient-from': cssVars['--gradient-from'] || 'var(--nextgen-brand-orange-primary, #FF3600)',
-        '--gradient-to': cssVars['--gradient-to'] || 'var(--nextgen-brand-orange-600, #CC2B00)',
-        '--gradient-accent': cssVars['--gradient-accent'] || 'var(--nextgen-brand-orange-400, #FF5700)',
-        
-        // UI component styling (mostly unchanged, rely on cascading vars)
-        '--token-card-bg': cssVars['--token-card-bg'] || 'var(--surface-card)',
-        '--token-card-overlay': cssVars['--token-card-overlay'] || 'none',
-        '--token-card-border-color': cssVars['--token-card-border-color'] || 'var(--border-color-default)',
-        '--token-card-border-width': cssVars['--token-card-border-width'] || 'var(--border-width-default)',
-        '--token-card-border-style': cssVars['--token-card-border-style'] || 'var(--border-style)',
-        '--token-card-shadow': cssVars['--token-card-shadow'] || 'var(--shadow-sm)',
-        '--token-card-padding': cssVars['--token-card-padding'] || '1rem',
-        
-        // Token visualization
-        '--token-value-size': cssVars['--token-value-size'] || '0.75rem',
-        '--token-value-bg': cssVars['--token-value-bg'] || 'color-mix(in srgb, var(--surface-muted) 30%, transparent)',
-        '--token-value-padding': cssVars['--token-value-padding'] || '0.25rem 0.5rem',
-        '--token-value-radius': cssVars['--token-value-radius'] || 'var(--radius-sm)',
-        
-        // Color token previews
-        '--token-color-preview-size': cssVars['--token-color-preview-size'] || '2rem',
-        '--token-color-preview-radius': cssVars['--token-color-preview-radius'] || 'var(--radius-md)',
-        '--token-color-preview-border-width': cssVars['--token-color-preview-border-width'] || '1px',
-        '--token-color-preview-border-color': cssVars['--token-color-preview-border-color'] || 'var(--border-color-subtle)',
-        
-        // Shadow token previews
-        '--token-shadow-preview-size': cssVars['--token-shadow-preview-size'] || '3rem',
-        '--token-shadow-preview-radius': cssVars['--token-shadow-preview-radius'] || 'var(--radius-md)',
-        '--token-shadow-preview-bg': cssVars['--token-shadow-preview-bg'] || 'var(--surface-bg)',
-        '--token-shadow-preview-border-width': cssVars['--token-shadow-preview-border-width'] || '1px',
-        '--token-shadow-preview-border-color': cssVars['--token-shadow-preview-border-color'] || 'var(--border-color-subtle)',
-        
-        // Radius token previews
-        '--token-radius-preview-size': cssVars['--token-radius-preview-size'] || '3rem',
-        '--token-radius-preview-bg': cssVars['--token-radius-preview-bg'] || 'color-mix(in srgb, var(--brand-main) 20%, transparent)',
-        '--token-radius-preview-border-width': cssVars['--token-radius-preview-border-width'] || '1px',
-        '--token-radius-preview-border-color': cssVars['--token-radius-preview-border-color'] || 'var(--border-color-subtle)',
-        
-        // Component containers (mostly unchanged, rely on cascading vars)
-        '--overview-card-bg': cssVars['--overview-card-bg'] || 'var(--surface-card)',
-        '--overview-card-bg-image': cssVars['--overview-card-bg-image'] || 'none',
-        '--overview-card-overlay': cssVars['--overview-card-overlay'] || 'none',
-        '--overview-card-shadow': cssVars['--overview-card-shadow'] || 'var(--shadow-md)',
-        
-        // Enhanced brand overview styling
-        '--overview-card-header-bg': cssVars['--overview-card-header-bg'] || 'var(--brand-main)',
-        '--overview-card-header-text-color': cssVars['--overview-card-header-text-color'] || 'var(--brand-on)',
-        '--overview-card-header-description-color': cssVars['--overview-card-header-description-color'] || 'var(--brand-on, rgba(255,255,255,0.9))',
-        '--overview-card-header-border-color': cssVars['--overview-card-header-border-color'] || 'var(--border-color-subtle)',
-        '--overview-card-header-border-width': cssVars['--overview-card-header-border-width'] || '1px',
-        '--overview-card-header-border-style': cssVars['--overview-card-header-border-style'] || 'solid',
-        '--overview-card-header-padding': cssVars['--overview-card-header-padding'] || '2rem',
-        '--overview-card-header-pattern': cssVars['--overview-card-header-pattern'] || 'none',
-        '--overview-card-header-pattern-size': cssVars['--overview-card-header-pattern-size'] || '300px',
-        '--overview-card-header-font-weight': cssVars['--overview-card-header-font-weight'] || '700',
-        '--overview-card-header-letter-spacing': cssVars['--overview-card-header-letter-spacing'] || 'normal',
-        '--overview-card-header-text-transform': cssVars['--overview-card-header-text-transform'] || 'none',
-        '--overview-card-header-description-font-weight': cssVars['--overview-card-header-description-font-weight'] || 'normal',
-        '--overview-card-header-description-line-height': cssVars['--overview-card-header-description-line-height'] || '1.5',
-        '--overview-card-header-description-max-width': cssVars['--overview-card-header-description-max-width'] || '32rem',
-        
-        '--overview-card-logo-bg': cssVars['--overview-card-logo-bg'] || 'rgba(255,255,255,0.1)',
-        '--overview-card-logo-backdrop-filter': cssVars['--overview-card-logo-backdrop-filter'] || 'blur(8px)',
-        '--overview-card-logo-shadow': cssVars['--overview-card-logo-shadow'] || '0 4px 20px rgba(0,0,0,0.15)',
-        '--overview-card-logo-text-color': cssVars['--overview-card-logo-text-color'] || 'var(--brand-on)',
-        
-        '--overview-card-content-padding': cssVars['--overview-card-content-padding'] || '2rem',
-        '--overview-card-section-title-color': cssVars['--overview-card-section-title-color'] || 'var(--foreground)',
-        '--overview-card-section-title-weight': cssVars['--overview-card-section-title-weight'] || '600',
-        '--overview-card-section-border-color': cssVars['--overview-card-section-border-color'] || 'var(--border-color-subtle)',
-        
-        '--overview-card-color-shadow': cssVars['--overview-card-color-shadow'] || 'var(--shadow-sm)',
-        '--overview-card-color-radius': cssVars['--overview-card-color-radius'] || 'var(--radius-md)',
-        '--overview-card-color-label-bg': cssVars['--overview-card-color-label-bg'] || 'rgba(0,0,0,0.5)',
-        '--overview-card-color-label-text': cssVars['--overview-card-color-label-text'] || 'white',
-        
-        '--overview-card-tag-bg': cssVars['--overview-card-tag-bg'] || 'var(--surface-muted)',
-        '--overview-card-tag-text': cssVars['--overview-card-tag-text'] || 'var(--surface-muted-fg)',
-        
-        // Component specific backgrounds - aligning with Nextgen brand colors
-        '--hero-bg': cssVars['--hero-background'] || 'var(--nextgen-brand-dark-900, #0A0A0A)', // Changed cssVars key from '--hero-bg' to '--hero-background'
-        '--hero-bg-image': cssVars['--hero-background-image'] || 'radial-gradient(circle, color-mix(in srgb, var(--brand-main) 5%, transparent) 0%, transparent 60%)', // Uses brand-main for tint
-        '--hero-overlay': cssVars['--hero-overlay'] || 'none',
-        '--nav-bg': cssVars['--nav-background'] || 'color-mix(in srgb, var(--nextgen-brand-dark-800, #101010) 85%, transparent)', // From rgba(16,16,16,0.85)
-        '--nav-color': cssVars['--nav-color'] || 'var(--nextgen-brand-neutral-50, #E0E0E0)', // Specific nav text color
-        '--nav-overlay': cssVars['--nav-overlay'] || 'none',
-        '--tabs-list-background': cssVars['--tabs-list-background'] || 'color-mix(in srgb, var(--nextgen-brand-neutral-900, #222222) 80%, transparent)', // From rgba(34,34,34,0.8)
-        
-        // Brand Picker Container Styles - Sourcing from componentStyles via cssVars
-        '--brand-picker-container-background': cssVars['--brand-picker-container-background'] || 'color-mix(in srgb, var(--nextgen-brand-dark-800, #101010) 70%, transparent)',
-        '--brand-picker-container-color': cssVars['--brand-picker-container-color'] || 'var(--text-primary)', // Default to primary text color
-        '--brand-picker-container-padding': cssVars['--brand-picker-container-padding'] || '1.5rem',
-        '--brand-picker-container-border-radius': cssVars['--brand-picker-container-border-radius'] || 'var(--radius-lg)',
-        '--brand-picker-container-box-shadow': cssVars['--brand-picker-container-box-shadow'] || 'var(--shadow-md)',
-        '--brand-picker-container-margin-top': cssVars['--brand-picker-container-margin-top'] || '2.5rem',
-        '--brand-picker-container-margin-bottom': cssVars['--brand-picker-container-margin-bottom'] || '0',
-        '--brand-picker-container-background-image': cssVars['--brand-picker-container-background-image'] || 'none', // For potential overlay in cssVars
-        '--brand-picker-overlay': cssVars['--brand-picker-overlay'] || 'none', // Kept for direct overlay image if needed
-        
-        '--tooltip-background': cssVars['--tooltip-background'] || 'color-mix(in srgb, var(--nextgen-brand-dark-900, #0A0A0A) 92%, transparent)', // From rgba(10,10,10,0.92)
-      };
+    // Centralized state for all interactive token overrides
+    const [interactiveTokenValues, setInteractiveTokenValues] = useState<Record<string, string>>({});
+
+    // Handler to update a specific interactive token
+    const handleInteractiveTokenChange = (tokenName: string, newValue: string) => {
+      setInteractiveTokenValues(prev => ({ ...prev, [tokenName]: newValue }));
+    };
+    
+    // Determine the configuration for interactive tokens
+    const interactiveTokensConfig = useMemo((): InteractiveTokenConfig[] => {
+      const config: InteractiveTokenConfig[] = [];
+      if (!brand || !baseCssVars) return config;
+
+      // 1. Primary Brand Colors
+      brand.brandColors?.forEach(bc => {
+        const tokenName = `--${bc.variableName}`;
+        config.push({
+          tokenName: tokenName,
+          label: bc.name, // e.g., "Nextgen Orange"
+          type: 'color',
+          defaultValue: baseCssVars[tokenName] || bc.color, // Fallback to definition color
+        });
+      });
+
+      // 2. --brand-on
+      if (baseCssVars['--brand-on']) {
+        config.push({
+          tokenName: '--brand-on',
+          label: 'Brand "On" Color',
+          type: 'color',
+          defaultValue: baseCssVars['--brand-on'],
+        });
+      }
       
-      // Override with any values from the brand
-      for (const [key, value] of Object.entries(cssVars)) {
-        if (key.startsWith('--')) {
-          tokens[key] = value;
+      // 3. --font-size-base
+      if (baseCssVars['--font-size-base']) {
+        config.push({
+          tokenName: '--font-size-base',
+          label: 'Base Font Size',
+          type: 'slider-rem',
+          min: 0.75,
+          max: 1.5,
+          step: 0.01,
+          defaultValue: baseCssVars['--font-size-base'],
+        });
+      }
+
+      // 4. --radius
+      if (baseCssVars['--radius']) {
+        config.push({
+          tokenName: '--radius',
+          label: 'Base Radius',
+          type: 'slider-rem',
+          min: 0,
+          max: 2,
+          step: 0.05,
+          defaultValue: baseCssVars['--radius'],
+        });
+      }
+      
+      // 5. --spacing-unit
+      if (baseCssVars['--spacing-unit']) {
+        config.push({
+          tokenName: '--spacing-unit',
+          label: 'Base Spacing Unit',
+          type: 'slider-rem',
+          min: 0.1,
+          max: 1,
+          step: 0.05,
+          defaultValue: baseCssVars['--spacing-unit'],
+        });
+      }
+
+      // 6. Semantic Colors (only if direct hex, not var())
+      const semanticTokenNames: { name: string; label: string }[] = [
+        { name: '--semantic-success', label: 'Success Color' },
+        { name: '--semantic-destructive', label: 'Destructive Color' },
+        { name: '--semantic-warning', label: 'Warning Color' },
+        { name: '--semantic-info', label: 'Info Color' },
+      ];
+
+      semanticTokenNames.forEach(sem => {
+        const baseValue = baseCssVars[sem.name];
+        if (baseValue && !baseValue.startsWith('var(')) { // Only include if it's a direct value
+          config.push({
+            tokenName: sem.name,
+            label: sem.label,
+            type: 'color',
+            defaultValue: baseValue,
+          });
+        }
+      });
+      
+      // Sort order (example, can be refined)
+      const sortOrder: Record<string, number> = { /* ... define sort order if needed ... */ };
+      // For now, the order of addition above will dictate the order.
+      // To implement the influence order, we'd sort `config` here.
+      // Example:
+      // config.sort((a, b) => (sortOrder[a.tokenName] || 99) - (sortOrder[b.tokenName] || 99));
+
+      // Reorder: colors first, then sliders
+      const colorConfigs = config.filter(c => c.type === 'color');
+      const sliderConfigs = config.filter(c => c.type !== 'color');
+      
+      return [...colorConfigs, ...sliderConfigs];
+    }, [brand, baseCssVars]);
+
+
+    // Initialize/reset interactiveTokenValues when brand or baseCssVars change
+    useEffect(() => {
+      const initialValues: Record<string, string> = {};
+      interactiveTokensConfig.forEach(conf => {
+        initialValues[conf.tokenName] = conf.defaultValue;
+      });
+      // Preserve any existing user edits for tokens that still exist in the new config
+      const persistedValues: Record<string, string> = {};
+      interactiveTokensConfig.forEach(conf => {
+        if (interactiveTokenValues[conf.tokenName] !== undefined) {
+            // Check if the previous value is substantially different from new default
+            // This is tricky because types might change (e.g. slider to color if config changes)
+            // For now, let's naively persist if the token name is the same.
+            persistedValues[conf.tokenName] = interactiveTokenValues[conf.tokenName];
+        }
+      });
+
+      setInteractiveTokenValues({ ...initialValues, ...persistedValues });
+
+    }, [interactiveTokensConfig]); // Depend on the generated config
+
+
+    // Consolidate all design tokens (base + interactive overrides + aliases)
+    const designTokens = useMemo(() => {
+      // Start with baseCssVars, then overlay interactiveTokenValues
+      const mergedTokens: Record<string, string> = {
+        ...baseCssVars,
+        ...interactiveTokenValues
+      };
+
+      // If any interactiveTokenValue is a primary brand color that has changed,
+      // we need to recalculate its L, C, H components and add/update those vars too.
+      interactiveTokensConfig.forEach(config => {
+        if (config.type === 'color' && config.tokenName.endsWith('-primary')) { // Heuristic: primary brand colors end with -primary
+          const currentHexValue = interactiveTokenValues[config.tokenName];
+          const baseHexValue = baseCssVars[config.tokenName];
+          
+          // Check if the value has actually changed from its base or has an interactive value
+          if (currentHexValue && currentHexValue !== baseHexValue) {
+            const rgb = parseColorStringFromBrands(currentHexValue); // Use imported and aliased function
+            if (rgb) {
+              const oklch = srgbToOklch(rgb.r, rgb.g, rgb.b); // Use imported function
+              mergedTokens[`${config.tokenName}-oklch-l`] = oklch.l.toFixed(5);
+              mergedTokens[`${config.tokenName}-oklch-c`] = oklch.c.toFixed(5);
+              mergedTokens[`${config.tokenName}-oklch-h`] = oklch.h.toFixed(2);
+            } else {
+              // If hex is invalid, clear or revert LCH vars to ensure no stale values
+              delete mergedTokens[`${config.tokenName}-oklch-l`];
+              delete mergedTokens[`${config.tokenName}-oklch-c`];
+              delete mergedTokens[`${config.tokenName}-oklch-h`];
+            }
+          } else if (!currentHexValue && baseHexValue) {
+            // If interactive value was cleared, ensure LCH from base are used/re-set
+            // This happens if baseCssVars already includes these from makeCssVars initial run
+            const rgbBase = parseColorStringFromBrands(baseHexValue); // Use imported and aliased function
+            if (rgbBase) {
+              const oklchBase = srgbToOklch(rgbBase.r, rgbBase.g, rgbBase.b); // Use imported function
+              mergedTokens[`${config.tokenName}-oklch-l`] = oklchBase.l.toFixed(5);
+              mergedTokens[`${config.tokenName}-oklch-c`] = oklchBase.c.toFixed(5);
+              mergedTokens[`${config.tokenName}-oklch-h`] = oklchBase.h.toFixed(2);
+            }
+          }
+        }
+      });
+
+      // Critical fallbacks (only apply if a token is still undefined after base and interactive)
+      const criticalFallbacks: Record<string, string> = {
+        '--surface-bg': '#121212',
+        '--surface-card': '#1E1E1E',
+        '--surface-popover': '#242424',
+        '--surface-on': '#FFFFFF',
+        '--surface-muted': '#333333',
+        '--surface-muted-fg': '#AAAAAA',
+        '--text-primary': 'var(--surface-on)',
+        '--text-secondary': 'var(--surface-muted-fg)',
+        '--text-muted': '#777777',
+        '--border-color-default': '#444444',
+        '--shadow-md': '0 2px 6px rgba(0,0,0,0.06)',
+        '--font-family-sans': 'Inter, Roboto, "Helvetica Neue", Arial, sans-serif',
+      };
+
+      for (const key in criticalFallbacks) {
+        if (mergedTokens[key] === undefined) { // Corrected: mergedTokens
+          mergedTokens[key] = criticalFallbacks[key]; // Corrected: mergedTokens
         }
       }
       
-      return tokens;
-    }, [cssVars]);
+      // Standard Aliases (ShadCN like names) - These MUST pull from the mergedTokens
+      mergedTokens['--background'] = mergedTokens['--surface-bg'];
+      mergedTokens['--foreground'] = mergedTokens['--surface-on'];
+      mergedTokens['--card'] = mergedTokens['--surface-card'];
+      mergedTokens['--card-foreground'] = mergedTokens['--surface-on'];
+      mergedTokens['--popover'] = mergedTokens['--surface-popover'];
+      mergedTokens['--popover-foreground'] = mergedTokens['--surface-on'];
+      mergedTokens['--muted'] = mergedTokens['--surface-muted'];
+      mergedTokens['--muted-foreground'] = mergedTokens['--surface-muted-fg'];
+
+      mergedTokens['--primary'] = mergedTokens['--brand-main'];
+      mergedTokens['--primary-foreground'] = mergedTokens['--brand-on'];
+      mergedTokens['--secondary'] = mergedTokens['--brand-secondary'];
+      mergedTokens['--secondary-foreground'] = mergedTokens['--brand-on'];
+      mergedTokens['--accent'] = mergedTokens['--brand-main'];
+      mergedTokens['--accent-foreground'] = mergedTokens['--brand-on'];
+      mergedTokens['--ring'] = mergedTokens['--brand-main'];
+
+      mergedTokens['--success'] = mergedTokens['--semantic-success'];
+      mergedTokens['--success-foreground'] = mergedTokens['--brand-on'];
+      mergedTokens['--destructive'] = mergedTokens['--semantic-destructive'];
+      mergedTokens['--destructive-foreground'] = mergedTokens['--brand-on'];
+      mergedTokens['--warning'] = mergedTokens['--semantic-warning'];
+      mergedTokens['--warning-foreground'] = mergedTokens['--brand-on'];
+      mergedTokens['--info'] = mergedTokens['--semantic-info'];
+      mergedTokens['--info-foreground'] = mergedTokens['--brand-on'];
+
+      mergedTokens['--border'] = mergedTokens['--border-color-default'];
+      mergedTokens['--input'] = mergedTokens['--border-color-default'];
+      
+      const finalTokens: Record<string, string> = {};
+      for (const [key, value] of Object.entries(mergedTokens)) { // Corrected: mergedTokens
+        if (value !== undefined) {
+        finalTokens[key] = String(value);
+      }
+      }
+      return finalTokens;
+    }, [
+      baseCssVars, 
+      interactiveTokenValues, // Now depends on the whole object
+      interactiveTokensConfig, // Added baseCssVars as a dependency because we compare against it for LCH updates
+    ]);
 
     useEffect(() => {
       const root = document.documentElement;
@@ -1285,17 +1801,19 @@ export default function EnhancedBrandPlayground() {
       // Apply new styles and store previous values
       Object.entries(designTokens).forEach(([key, value]) => {
         previousStyles[key] = root.style.getPropertyValue(key);
-        root.style.setProperty(key, String(value));
+        root.style.setProperty(key, String(value)); // Ensure value is string
       });
 
       // Cleanup function to revert to previous styles or remove added ones
       return () => {
-        Object.entries(designTokens).forEach(([key]) => {
+        // Iterate over the keys that were actually set or modified by *this* effect run
+        Object.keys(previousStyles).forEach((key) => {
           const previousValue = previousStyles[key];
-          if (previousValue !== null && previousValue !== undefined && previousValue !== "") {
-            root.style.setProperty(key, previousValue);
+          if (previousValue !== null && previousValue !== "" && previousValue !== undefined) {
+            root.style.setProperty(key, previousValue); // Restore previous value
           } else {
-            root.style.removeProperty(key);
+            // If there was no previous value (or it was empty string), it means this effect added it
+            root.style.removeProperty(key); // So, remove it on cleanup
           }
         });
       };
@@ -1343,12 +1861,19 @@ export default function EnhancedBrandPlayground() {
           <Card 
             className="p-3 max-w-xs bg-[var(--page-card-bg,var(--card))] hidden border-[color:var(--page-card-border-color,var(--border))] [border-radius:var(--page-card-radius,var(--radius-lg))] shadow-[var(--page-card-shadow,var(--shadow-md))]"
           >
-            <p className="text-xs text-muted-foreground">{brand.description}</p>
+            <p className="text-xs  text-[var(--brand-orange-primary)]">{brand.description}</p>
           </Card>
         </div>
         
         
-        <Preview vars={designTokens} brand={brand} />
+        <Preview 
+          vars={designTokens} 
+          brand={brand}
+          // Pass the new config and generic handlers
+          interactiveTokensConfig={interactiveTokensConfig} // Pass down
+          interactiveTokenValues={interactiveTokenValues}
+          onInteractiveTokenChange={handleInteractiveTokenChange}
+        />
       </div>
     );
   }

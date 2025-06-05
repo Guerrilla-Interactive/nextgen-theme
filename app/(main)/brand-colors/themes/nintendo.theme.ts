@@ -8,53 +8,53 @@ export const NINTENDO_THEME: BrandDefinition = {
     brandColors: [
       {
         name: "Nintendo Red", // Primary
-        hex: "#e60012",
+        color: "#e60012",
         variableName: "brand-red-primary",
         shades: {
-          "50":  { hex: "#fde6e7", variableName: "brand-red-50" },  // primaryLight
-          "100": { hex: "#facdd1", variableName: "brand-red-100" }, // Lighter version of 50
-          "200": { hex: "#f599a2", variableName: "brand-red-200" },
-          "300": { hex: "#f06672", variableName: "brand-red-300" },
-          "400": { hex: "#eb3343", variableName: "brand-red-400" },
-          "500": { hex: "#e60012", variableName: "brand-red-500" },  // primary
-          "600": { hex: "#ac000d", variableName: "brand-red-600" },  // primaryHover
-          "700": { hex: "#8B000A", variableName: "brand-red-700" },  // Darker
-          "800": { hex: "#650008", variableName: "brand-red-800" },
-          "900": { hex: "#3E0005", variableName: "brand-red-900" },
+          "50":  { color: "#fde6e7", variableName: "brand-red-50" },  // primaryLight
+          "100": { color: "#facdd1", variableName: "brand-red-100" }, // Lighter version of 50
+          "200": { color: "#f599a2", variableName: "brand-red-200" },
+          "300": { color: "#f06672", variableName: "brand-red-300" },
+          "400": { color: "#eb3343", variableName: "brand-red-400" },
+          "500": { color: "#e60012", variableName: "brand-red-500" },  // primary
+          "600": { color: "#ac000d", variableName: "brand-red-600" },  // primaryHover
+          "700": { color: "#8B000A", variableName: "brand-red-700" },  // Darker
+          "800": { color: "#650008", variableName: "brand-red-800" },
+          "900": { color: "#3E0005", variableName: "brand-red-900" },
         }
       },
       {
         name: "Nintendo Blue", // Secondary
-        hex: "#3946a0",
+        color: "#3946a0",
         variableName: "brand-blue-primary",
         shades: {
-          "50":  { hex: "#bdc3e8", variableName: "brand-blue-50" },  // secondaryLight
-          "100": { hex: "#a7b0df", variableName: "brand-blue-100" },
-          "200": { hex: "#7e8ccd", variableName: "brand-blue-200" },
-          "300": { hex: "#5567ba", variableName: "brand-blue-300" },
-          "400": { hex: "#4255AD", variableName: "brand-blue-400" },
-          "500": { hex: "#3946a0", variableName: "brand-blue-500" },  // secondary
-          "600": { hex: "#2a3477", variableName: "brand-blue-600" },  // secondaryHover
-          "700": { hex: "#21295F", variableName: "brand-blue-700" },
-          "800": { hex: "#181F47", variableName: "brand-blue-800" },
-          "900": { hex: "#0F142F", variableName: "brand-blue-900" },
+          "50":  { color: "#bdc3e8", variableName: "brand-blue-50" },  // secondaryLight
+          "100": { color: "#a7b0df", variableName: "brand-blue-100" },
+          "200": { color: "#7e8ccd", variableName: "brand-blue-200" },
+          "300": { color: "#5567ba", variableName: "brand-blue-300" },
+          "400": { color: "#4255AD", variableName: "brand-blue-400" },
+          "500": { color: "#3946a0", variableName: "brand-blue-500" },  // secondary
+          "600": { color: "#2a3477", variableName: "brand-blue-600" },  // secondaryHover
+          "700": { color: "#21295F", variableName: "brand-blue-700" },
+          "800": { color: "#181F47", variableName: "brand-blue-800" },
+          "900": { color: "#0F142F", variableName: "brand-blue-900" },
         }
       },
       {
         name: "Nintendo Gray", // Neutral Family
-        hex: "#727272", // Using darkGray3 as a representative mid-tone
+        color: "#727272", // Using darkGray3 as a representative mid-tone
         variableName: "brand-gray-neutral", // Changed variableName for clarity
         shades: {
-          "50":  { hex: "#ffffff", variableName: "brand-gray-50" },    // white, ui-bgMain
-          "100": { hex: "#f8f8f8", variableName: "brand-gray-100" },   // lightGray4, ui-bgAccent
-          "200": { hex: "#efefef", variableName: "brand-gray-200" },   // lightGray3
-          "300": { hex: "#dadada", variableName: "brand-gray-300" },   // lightGray2, ui-line, button-disabled-bg
-          "400": { hex: "#c8c8c8", variableName: "brand-gray-400" },   // lightGray1
-          "500": { hex: "#969696", variableName: "brand-gray-500" },   // darkGray4
-          "600": { hex: "#727272", variableName: "brand-gray-600" },   // darkGray3
-          "700": { hex: "#484848", variableName: "brand-gray-700" },   // darkGray2, text-standard, icon-standard
-          "800": { hex: "#242424", variableName: "brand-gray-800" },   // darkGray1
-          "900": { hex: "#000000", variableName: "brand-gray-900" },   // black
+          "50":  { color: "#ffffff", variableName: "brand-gray-50" },    // white, ui-bgMain
+          "100": { color: "#f8f8f8", variableName: "brand-gray-100" },   // lightGray4, ui-bgAccent
+          "200": { color: "#efefef", variableName: "brand-gray-200" },   // lightGray3
+          "300": { color: "#dadada", variableName: "brand-gray-300" },   // lightGray2, ui-line, button-disabled-bg
+          "400": { color: "#c8c8c8", variableName: "brand-gray-400" },   // lightGray1
+          "500": { color: "#969696", variableName: "brand-gray-500" },   // darkGray4
+          "600": { color: "#727272", variableName: "brand-gray-600" },   // darkGray3
+          "700": { color: "#484848", variableName: "brand-gray-700" },   // darkGray2, text-standard, icon-standard
+          "800": { color: "#242424", variableName: "brand-gray-800" },   // darkGray1
+          "900": { color: "#000000", variableName: "brand-gray-900" },   // black
         }
       }
     ],

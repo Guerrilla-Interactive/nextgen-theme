@@ -178,47 +178,47 @@ export interface ComponentStateStyles {
     brandColors: 
       {
         name: string; // e.g. "Nextgen Orange"
-        hex: string; // e.g. "#FF3600"
+        color: string; // e.g. "#FF3600"
         variableName: string; // e.g. "nextgen-orange"
         shades: {
           "50"?: {
-            hex: string;
+            color: string;
             variableName: string;
           },
           "100"?: {
-            hex: string;
+            color: string;
             variableName: string;
           },
           "200"?: {
-            hex: string;
+            color: string;
             variableName: string;
           },
           "300"?: {
-            hex: string;
+            color: string;
             variableName: string;
           },
           "400"?: {
-            hex: string;
+            color: string;
             variableName: string;
           },
           "500"?: {
-            hex: string;
+            color: string;
             variableName: string;
           },
           "600"?: {
-            hex: string;
+            color: string;
             variableName: string;
           },
           "700"?: {
-            hex: string;
+            color: string;
             variableName: string;
           },
           "800"?: {
-            hex: string;
+            color: string;
             variableName: string;
           },
           "900"? : {
-            hex: string;
+            color: string;
             variableName: string;
           },
         }
@@ -340,6 +340,7 @@ export interface ComponentStateStyles {
       charts?: ChartStyling;
       loadingIndicator?: LoadingIndicatorStyles; // Added loadingIndicator
       badge?: BadgeStyles; // Added BadgeStyles
+      tokenGroupCard?: ComponentStateStyles; // Added for token group cards
     };
   
     chartShowcase?: {}; // Consider defining a proper type like ComponentShowcaseDefinition if needed

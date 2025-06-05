@@ -82,6 +82,7 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
         // Map showcase item variant to ShadcnButton CVA variant
         let cvaButtonVariant: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "outline-secondary" = "default";
         const itemButtonVariant = item.variant as string;
+        const itemButtonState = item.state || 'default';
 
         if (["destructive", "outline", "secondary", "ghost", "link", "outline-secondary"].includes(itemButtonVariant)) {
           cvaButtonVariant = itemButtonVariant as "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "outline-secondary";
@@ -91,11 +92,19 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
         // else it remains "default"
 
         return (
-          <Button
-            variant={cvaButtonVariant}
-          >
-            {item.displayComponent}
-          </Button>
+          <div className="relative w-full flex justify-center"> {/* Wrapper for positioning the tag */}
+            <Button
+              variant={cvaButtonVariant}
+              disabled={itemButtonState === 'disabled'} // Assuming 'disabled' state implies disabled prop
+            >
+              {item.displayComponent}
+            </Button>
+            <div className="absolute inset-0 pointer-events-none">
+              <span className="text-xs absolute top-0 right-0 bg-muted px-1 rounded-bl opacity-60">
+                {`${itemButtonVariant} / ${itemButtonState}`}
+              </span>
+            </div>
+          </div>
         );
       case 'input':
         let forceStateValue: 'focus' | 'error' | undefined = undefined;
@@ -193,37 +202,6 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
 };
 
 // --- Styled Components (ensure these correctly use brand.componentStyles) ---
-
-const StyledButton: React.FC<{
-  cvaVariant: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | null; // Maps to ShadcnButton CVA
-  displayVariantName: string; // For the text tag (e.g., "primary", "destructive")
-  stateForDisplay?: 'default' | 'hover' | 'focus' | 'active' | 'disabled';
-  className?: string;
-  children?: React.ReactNode;
-  disabled?: boolean;
-}> = ({ cvaVariant, displayVariantName, stateForDisplay, className = "", children, disabled }) => {
-  
-  // StyledButton no longer sets CSS variables. It assumes they are globally set by the theme.
-  // It directly renders ShadcnButton, which picks up styles from global CSS vars via its CVA.
-  return (
-      <ShadcnButton
-        variant={cvaVariant} 
-        size={null} // Assuming size is handled by global CSS or not showcased here for variation
-        className={`${className} text-center`} // Base classes
-        disabled={disabled}
-        // For simulated hover/focus states in the showcase, you might need to add specific classes
-        // if Tailwind's hover: focus: prefixes in CVA are not enough for *visual demonstration* without interaction.
-        // However, the actual component styling for real interaction relies on CVA's hover:/focus: using CSS vars.
-      >
-        {children}
-        <div className="absolute inset-0 pointer-events-none">
-          <span className="text-xs absolute top-0 right-0 bg-muted px-1 rounded-bl opacity-60">
-            {disabled ? "disabled" : stateForDisplay || 'default'} / {displayVariantName}
-          </span>
-        </div>
-      </ShadcnButton>
-  );
-};
 
 const StyledCard: React.FC<{
   variant: 'default' | 'elevated' | 'subtle';

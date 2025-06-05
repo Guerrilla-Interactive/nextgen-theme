@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Syne, Inter, Tomorrow } from "next/font/google";
+import { Syne, Inter, Tomorrow, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/features/unorganized-utils/utils";
 import { ThemeProvider } from "@/features/theme/theme-provider";
@@ -33,13 +33,13 @@ export const metadata: Metadata = {
 // Import 3 fonts with custom CSS variable names
 const syneFont = Syne({
   subsets: ["latin"],
-  weight: ["800"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-syne",
 });
 
 const interFont = Inter({
   subsets: ["latin"],
-  weight: ["300"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-inter",
 });
 
@@ -47,6 +47,12 @@ const supplementFont = Tomorrow({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-supplement",
+});
+
+const robotoMonoFont = Roboto_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-roboto-mono",
 });
 
 export default function RootLayout({
@@ -64,7 +70,8 @@ export default function RootLayout({
           "min-h-screen bg-background font-sans antialiased overscroll-none",
           syneFont.variable,
           interFont.variable,
-          supplementFont.variable
+          supplementFont.variable,
+          robotoMonoFont.variable
         )}
       >
           

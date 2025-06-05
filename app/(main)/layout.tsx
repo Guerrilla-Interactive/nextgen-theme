@@ -23,7 +23,7 @@ export default async function MainLayout({
   
   return (
     <>
-      <Header {...settings.data.headerSettings}/>
+      {/* <Header {...settings.data.headerSettings}/> */}
       <main>{children}</main>
       <SanityLive />
       {(await draftMode()).isEnabled && (

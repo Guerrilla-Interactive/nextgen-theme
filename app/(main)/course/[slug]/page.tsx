@@ -9,10 +9,11 @@ import { courseSlugVariables } from "./_course-slug-core-utilities/course-slug.t
 export const revalidate = 30;
 
 export async function generateStaticParams() {
-  const pages = await fetchSanityCourseStaticParams();
+  const staticParamsResults = await fetchSanityCourseStaticParams();
 
-  return pages.map((page) => ({
-    slug: page.slug.current,
+  // Assuming staticParamsResults is an array of slug strings
+  return staticParamsResults.map((slugString) => ({
+    slug: slugString,
   }));
 }
 
@@ -20,25 +21,29 @@ export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await props.params;
-  const page = await fetchSanityCourseBySlug({ slug });
+  const courseDataArray = await fetchSanityCourseBySlug({ slug });
+  const page = courseDataArray?.[0]; 
 
   if (!page) {
     notFound();
   }
 
-  return generatePageMetadata({ page, slug: `${courseSlugVariables("ROUTE_PATH")}/${slug}` });
+  // Cast to any as a temporary measure; underlying fetch/type needs to include all fields.
+  return generatePageMetadata({ page: page as any, slug: `${courseSlugVariables("ROUTE_PATH")}/${slug}` });
 }
 
 export default async function Course(props: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await props.params;
-  const page = await fetchSanityCourseBySlug({ slug });
+  const courseDataArray = await fetchSanityCourseBySlug({ slug });
+  const page = courseDataArray?.[0]; 
 
   if (!page) {
     notFound();
   }
   return (
-    <CourseSlugPageComponent {...page} />
+    // Cast to any as a temporary measure; underlying fetch/type needs to include all fields.
+    <CourseSlugPageComponent {...page as any} />
   );
 }
