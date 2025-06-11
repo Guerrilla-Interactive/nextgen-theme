@@ -49,7 +49,8 @@ const ROLE_DESCRIPTIONS: Record<Role, string> = {
     border: "Standard border color for component boundaries",
     default: "Default fallback color for unspecified use cases",
     "surface-muted": "Alternative muted surface color",
-    "text-brand": "Brand-colored text for emphasis",
+    "text-brand": "Brand color for text, often used for headings or highlights.",
+
     "chart-outline": "Outline color for chart elements"
 };
 

@@ -36,6 +36,7 @@ import { terracottaOrchidBrand } from "./themes/terracota.theme";
 import { violetAbyssBrand } from "./themes/violet-abyss.theme";
 import { lilacDaylightBrand } from "./themes/lilac-daylight.theme";
 import { vercelMinimalBrand } from "./themes/vercel.theme";
+import { neonPopBrand } from "./themes/neon-pop.theme";
 
 
 // All original type definitions (Role, NumericShadeLevel, FunctionalShadeKey, ShadeKey, Shade, ColorToken, FontToken, 
@@ -69,7 +70,8 @@ export const themes: Record<string, Brand> = {
   "terracotta": terracottaOrchidBrand,
   "violetAbyss": violetAbyssBrand,
   "lilacDaylight": lilacDaylightBrand,
-  "vercel": vercelMinimalBrand
+  "vercel": vercelMinimalBrand,
+  "neonPop": neonPopBrand
   
 };
 
@@ -95,7 +97,8 @@ export const ALL_BRANDS = [
   elegantLuxuryBrand,
   terracottaOrchidBrand,
     violetAbyssBrand,
-  lilacDaylightBrand
+  lilacDaylightBrand,
+  neonPopBrand
 
 ].sort((a, b) => a.name.localeCompare(b.name));
   

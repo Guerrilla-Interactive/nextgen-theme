@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ColorPicker } from '../brand-colors/ColorPicker';
 import { formatHex, converter, parseHex, formatOklch } from 'culori';
 import { ComponentShowcase } from './components/component-showcase.component';
-import { Redo2Icon, Undo2Icon } from 'lucide-react';
+import { Redo2Icon, Undo2Icon, Palette, MousePointerClick, Square, Info, BarChart, Type, Puzzle, Package } from 'lucide-react';
 import { ThemeRoleAssignmentGrid } from './components/theme-role-assignment-grid.component';
 import { getHighContrastTextColor } from './brand-utils';
 import { ColorRoleDetailCard } from './components/color-role-detail-card.component';
@@ -75,7 +75,38 @@ const roleToCategoryMap: Record<Role, string> = {
   border: "Structural & Decorative",
   default: "Default & General Use",
   'surface-muted': "Component Surfaces",
+
   'chart-outline': "Charts & Data Visualization",
+};
+
+const categoryIcons: Record<string, React.ElementType> = {
+  "Core Theming": Palette,
+  "Primary Interaction": MousePointerClick,
+  "Component Surfaces": Square,
+  "Feedback & State": Info,
+  "Charts & Data Visualization": BarChart,
+  "Text & Muted Content": Type,
+  "Structural & Decorative": Puzzle,
+  "Default & General Use": Package,
+};
+
+const categoryDescriptions: Record<string, string> = {
+  "Core Theming": "Fundamental colors that define the overall look and feel of the application, including base background and text colors.",
+  "Primary Interaction": "Colors used for the main interactive elements, such as primary buttons, links, and active states.",
+  "Component Surfaces": "Defines the background colors for various components like cards, popovers, and input fields.",
+  "Feedback & State": "Colors used to convey system status to the user, such as success, error, warning, and information states.",
+  "Charts & Data Visualization": "A dedicated palette for charts and graphs to ensure data is clear and visually distinct.",
+  "Text & Muted Content": "Colors for less prominent text and content that should recede into the background.",
+  "Structural & Decorative": "Colors for borders, dividers, and other decorative elements that structure the layout.",
+  "Default & General Use": "Fallback colors for elements that don't fit into other categories.",
+  secondary: "Secondary",
+  "secondary-foreground": "Secondary",
+  accent: "Accent",
+  "accent-foreground": "Accent",
+
+  card: "Card",
+  "card-foreground": "Card",
+  popover: "Popover",
 };
 
 const roleToSubCategoryMap: Record<Role, string> = {
@@ -87,7 +118,7 @@ const roleToSubCategoryMap: Record<Role, string> = {
   "secondary-foreground": "Secondary",
   accent: "Accent",
   "accent-foreground": "Accent",
-  'text-brand': "Accent",
+
   card: "Card",
   "card-foreground": "Card",
   popover: "Popover",
@@ -105,16 +136,46 @@ const roleToSubCategoryMap: Record<Role, string> = {
   warning: "Warning",
   "warning-foreground": "Warning",
   ring: "Interaction State",
-  'chart-1': "Chart Series 1",
-  'chart-2': "Chart Series 2",
-  'chart-3': "Chart Series 3",
-  'chart-4': "Chart Series 4",
-  'chart-5': "Chart Series 5",
-  'chart-outline': "Chart Structural",
+  'chart-1': "Chart Palette",
+  'chart-2': "Chart Palette",
+  'chart-3': "Chart Palette",
+  'chart-4': "Chart Palette",
+  'chart-5': "Chart Palette",
+  'chart-outline': "Chart Palette",
   muted: "Muted Content",
   'muted-foreground': "Muted Content",
   border: "Structural",
   default: "General",
+};
+
+const rolePairs: Partial<Record<Role, Role>> = {
+  background: 'foreground',
+  primary: 'primary-foreground',
+  secondary: 'secondary-foreground',
+  accent: 'accent-foreground',
+  card: 'card-foreground',
+  popover: 'popover-foreground',
+  destructive: 'destructive-foreground',
+  success: 'success-foreground',
+  info: 'info-foreground',
+  warning: 'warning-foreground',
+  muted: 'muted-foreground',
+  input: 'input-foreground',
+};
+
+const rolePairDescriptions: Partial<Record<Role, string>> = {
+  background: 'Defines the primary background and text color for the entire application. These roles have the broadest impact on the UI.',
+  primary: 'Used for the most important interactive elements, such as the main call-to-action buttons. Designed to stand out.',
+  secondary: 'Provides an alternative for less critical interactive elements, offering a more subdued option than primary.',
+  accent: 'Highlights secondary information or actions, often used for links, icons, or to draw attention to specific features.',
+  card: 'Sets the background and text color for card-like container components, creating a distinct surface for content.',
+  popover: 'Specifies the look of temporary pop-up elements like menus and dialogs, ensuring they are legible over other content.',
+  destructive: 'Reserved for actions that result in data loss or other significant, irreversible changes. Typically red.',
+  success: 'Indicates a successful operation or positive status. Usually green.',
+  info: 'Used for displaying neutral, informative messages or content.',
+  warning: 'Alerts the user to a potential issue or a condition that requires attention. Often yellow or orange.',
+  muted: 'For de-emphasized content or text that should be less prominent than the main foreground color.',
+  input: 'Defines the appearance of text input fields, ensuring readability and a clear interactive state.',
 };
 
 // This component will now consume the context
@@ -505,7 +566,7 @@ const BrandGuideContent = () => {
 
   // New memoized value for categorized roles with UI data
   const categorizedRoleUiData = useMemo(() => {
-    const categories: Record<string, Record<string, Array<{
+    type RoleUIItem = {
       role: Role;
       statusLabel: string;
       baseClasses: string;
@@ -516,27 +577,17 @@ const BrandGuideContent = () => {
       assignedByColorName: string | null;
       accessibleTextColor: OklchString;
       statusIndicatorAccessibleTextColor: OklchString;
-    }>>> = {};
+    };
 
-    const mode = selectedRole ? 'role' : 'color';
+    const categories: Record<string, Record<string, Array<RoleGroupItem>>> = {};
 
-    let selectedRoleAssignedColor: ProcessedColorToken | null = null;
-    if (mode === 'role' && selectedRole) {
-      selectedRoleAssignedColor = enrichedAndSortedColors.find(c => c.roles?.includes(selectedRole)) || null;
-    }
-
-    allPossibleRoles.forEach(role => {
-      const categoryName = roleToCategoryMap[role] || "Default & General Use";
-      const subCategoryName = roleToSubCategoryMap[role] || "General";
-
-      if (!categories[categoryName]) {
-        categories[categoryName] = {};
-      }
-      if (!categories[categoryName][subCategoryName]) {
-        categories[categoryName][subCategoryName] = [];
+    const getRoleUIData = (role: Role): RoleUIItem => {
+      const mode = selectedRole ? 'role' : 'color';
+      let selectedRoleAssignedColor: ProcessedColorToken | null = null;
+      if (mode === 'role' && selectedRole) {
+        selectedRoleAssignedColor = enrichedAndSortedColors.find(c => c.roles?.includes(selectedRole)) || null;
       }
 
-      // Existing logic to determine visual state of the role button
       let statusLabel: string;
       let baseClasses: string;
       let buttonTitle: string;
@@ -603,7 +654,7 @@ const BrandGuideContent = () => {
         }
       }
 
-      categories[categoryName][subCategoryName].push({
+      return {
         role,
         statusLabel,
         baseClasses,
@@ -613,8 +664,72 @@ const BrandGuideContent = () => {
         assignedColorHex,
         assignedByColorName,
         accessibleTextColor,
-        statusIndicatorAccessibleTextColor
+        statusIndicatorAccessibleTextColor,
+      };
+    };
+
+    type RoleGroupItem = {
+      type: 'group';
+      subCategoryName: string;
+      description: string | null;
+      roles: RoleUIItem[];
+    };
+
+    const processedRoles = new Set<Role>();
+
+    // Special handling for chart roles
+    const chartRoles = allPossibleRoles.filter(role => role.startsWith('chart-'));
+    if (chartRoles.length > 0) {
+      const categoryName = roleToCategoryMap[chartRoles[0]];
+      const subCategoryName = roleToSubCategoryMap[chartRoles[0]];
+
+      if (!categories[categoryName]) categories[categoryName] = {};
+      if (!categories[categoryName][subCategoryName]) categories[categoryName][subCategoryName] = [];
+
+      const chartRoleItems = chartRoles.map(getRoleUIData);
+
+      categories[categoryName][subCategoryName].push({
+        type: 'group',
+        subCategoryName,
+        description: "The complete palette for data visualization.",
+        roles: chartRoleItems,
       });
+
+      chartRoles.forEach(role => processedRoles.add(role));
+    }
+
+    allPossibleRoles.forEach(role => {
+      if (processedRoles.has(role)) return;
+
+      const categoryName = roleToCategoryMap[role] || "Default & General Use";
+      const subCategoryName = roleToSubCategoryMap[role] || "General";
+
+      if (!categories[categoryName]) categories[categoryName] = {};
+      if (!categories[categoryName][subCategoryName]) categories[categoryName][subCategoryName] = [];
+
+      const pairFgRole = rolePairs[role];
+      if (pairFgRole && allPossibleRoles.includes(pairFgRole)) {
+        const bgRoleData = getRoleUIData(role);
+        const fgRoleData = getRoleUIData(pairFgRole);
+
+        categories[categoryName][subCategoryName].push({
+          type: 'group',
+          subCategoryName,
+          description: rolePairDescriptions[role] || null,
+          roles: [bgRoleData, fgRoleData],
+        });
+
+        processedRoles.add(role);
+        processedRoles.add(pairFgRole);
+      } else {
+        categories[categoryName][subCategoryName].push({
+          type: 'group',
+          subCategoryName,
+          description: null,
+          roles: [getRoleUIData(role)],
+        });
+        processedRoles.add(role);
+      }
     });
 
     // Transform the hierarchical object into a sorted array for rendering
@@ -623,6 +738,8 @@ const BrandGuideContent = () => {
         if (!categories[catName]) return null;
         return {
           categoryName: catName,
+          icon: categoryIcons[catName] || Package,
+          description: categoryDescriptions[catName] || "No description available.",
           subCategories: Object.keys(categories[catName])
             .sort() // Sort subcategories alphabetically
             .map(subCatName => ({
