@@ -7,7 +7,7 @@ import {
   InputStyles,
   CardComponentStyles,
   ButtonVariantStyles
-} from './brands-types';
+} from '../../brand-colors/brands-types';
 
 import { Badge } from "@/features/unorganized-components/ui/badge";
 import { Button, Button as ShadcnButton } from "@/features/unorganized-components/ui/button";
@@ -67,7 +67,7 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
     textTransform: 'var(--component-showcase-title-text-transform, none)' as React.CSSProperties['textTransform'],
     fontSize: 'var(--component-showcase-title-font-size, 1.5rem)', // Fallback added
   };
-  
+
   const cardOverlayStyle: React.CSSProperties = {
     backgroundImage: 'var(--component-showcase-card-overlay-image)',
   };
@@ -116,8 +116,8 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
 
         return (
           <div className="w-full relative">
-            <ShadcnInput 
-              placeholder={item.displayComponent} 
+            <ShadcnInput
+              placeholder={item.displayComponent}
               className="w-full"
               disabled={item.variant === 'disabled'}
               forceState={forceStateValue}
@@ -131,9 +131,9 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
         );
       case 'card':
         return (
-          <StyledCard 
+          <StyledCard
             variant={item.variant as 'default' | 'elevated' | 'subtle' || 'default'}
-            brand={currentBrand} 
+            brand={currentBrand}
             className="w-full max-w-sm"
           >
             <div className="p-4">
@@ -145,8 +145,8 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
         );
       case 'badge':
         return (
-          <StyledBadge 
-            variant={item.variant as 'default' | 'destructive' | 'warning' | 'success' | 'info' || 'default'} 
+          <StyledBadge
+            variant={item.variant as 'default' | 'destructive' | 'warning' | 'success' | 'info' || 'default'}
             brand={currentBrand}
           >
             {item.displayComponent}
@@ -178,7 +178,7 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {STATIC_SHOWCASE_ITEMS.map((item) => (
                   <ShadcnCard key={item.id} style={cardStyle} className=" overflow-hidden flex flex-col group">
-                    {(brand.stylingPreferences?.applySpecialLayout && cardOverlayStyle.backgroundImage && cardOverlayStyle.backgroundImage !== 'none') && 
+                    {(brand.stylingPreferences?.applySpecialLayout && cardOverlayStyle.backgroundImage && cardOverlayStyle.backgroundImage !== 'none') &&
                       <div className="absolute inset-0 pointer-events-none opacity-70 mix-blend-color-dodge group-hover:opacity-100 transition-opacity duration-300" style={cardOverlayStyle}></div>
                     }
                     <CardHeader className="pb-3">
@@ -186,7 +186,7 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
                       <CardDescription style={{ color: 'var(--muted-foreground)', fontSize: '0.85rem' }}>{item.description}</CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow flex flex-col items-center justify-center p-6 pt-3 min-h-[120px]">
-                      <div className="w-full flex items-center justify-center bg-muted/20 relative dark:bg-muted/10 p-4 rounded-md border border-dashed min-h-[80px]" style={{borderColor: 'var(--border-color-subtle, var(--border))'}}>
+                      <div className="w-full flex items-center justify-center bg-muted/20 relative dark:bg-muted/10 p-4 rounded-md border border-dashed min-h-[80px]" style={{ borderColor: 'var(--border-color-subtle, var(--border))' }}>
                         {renderDisplayComponent(item, brand)}
                       </div>
                     </CardContent>
@@ -254,7 +254,7 @@ const StyledBadge: React.FC<{
   children?: React.ReactNode;
 }> = ({ variant, brand, className = "", children }) => {
   const badgeStyles = brand.componentStyles?.badge as (ComponentStateStyles & { [key in typeof variant]?: ComponentStateStyles }) | undefined;
-  
+
   const defaultComponentStyle: ComponentStateStyles = { // Sensible defaults for a badge
     padding: "0.25rem 0.6rem",
     borderRadius: "9999px",
@@ -266,14 +266,14 @@ const StyledBadge: React.FC<{
     lineHeight: '1.2',
     opacity: 1,
   };
-  
+
   const baseStyle = badgeStyles || {};
   const variantStyle = badgeStyles?.[variant] || {};
   let actualStyleToApply: ComponentStateStyles = { ...defaultComponentStyle, ...baseStyle, ...variantStyle };
 
   // Fallbacks for background/color if not defined in theme
   if (!actualStyleToApply.background) {
-    switch(variant) {
+    switch (variant) {
       case "destructive": actualStyleToApply.background = 'var(--semantic-destructive)'; actualStyleToApply.color = 'var(--destructive-foreground, #fff)'; break;
       case "success": actualStyleToApply.background = 'var(--semantic-success)'; actualStyleToApply.color = 'var(--success-foreground, #fff)'; break;
       case "warning": actualStyleToApply.background = 'var(--semantic-warning)'; actualStyleToApply.color = 'var(--warning-foreground, var(--foreground))'; break;
@@ -281,7 +281,7 @@ const StyledBadge: React.FC<{
       default: actualStyleToApply.background = 'var(--surface-muted)'; actualStyleToApply.color = 'var(--muted-foreground)'; break;
     }
   }
-  
+
   return (
     <Badge
       variant={null}
@@ -324,17 +324,17 @@ const StyledLoadingIndicator: React.FC<{
   const indicatorStyles = brand.componentStyles?.loadingIndicator || {};
   const defaultComponentStyle: ComponentStateStyles = { // Sensible defaults
     background: "var(--surface-muted)",
-    color: "var(--brand-main)", 
+    color: "var(--brand-main)",
     fontFamily: "var(--font-family-sans)",
     opacity: 1,
   };
-  const actualStyleToApply = {...defaultComponentStyle, ...indicatorStyles};
+  const actualStyleToApply = { ...defaultComponentStyle, ...indicatorStyles };
   const actualTextColor = indicatorStyles?.color || "var(--muted-foreground)";
 
   return (
     <div className={`${className} space-y-2 relative w-full max-w-xs mx-auto`}>
-      <Progress 
-        value={progress} 
+      <Progress
+        value={progress}
         className="h-2"
         style={{
           backgroundColor: actualStyleToApply.background,

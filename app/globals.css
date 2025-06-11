@@ -119,6 +119,11 @@
   --font-sans: var(--font-inter);
   --font-heading: var(--font-syne);
   --font-supplement: var(--font-supplement);
+  
+  /* Standardized font role variables */
+  --font-body: var(--font-body, var(--font-sans));
+  --font-display: var(--font-display, var(--font-heading));
+  --font-code: var(--font-code, var(--font-mono, ui-monospace));
 
   /* Border radius */
   --radius-lg: var(--radius);
@@ -334,4 +339,17 @@ html {
 
 body {
   scroll-behavior: smooth;
+}
+
+/* Font role utility classes */
+@utility font-body {
+  font-family: var(--font-body, var(--font-sans, sans-serif));
+}
+
+@utility font-display {
+  font-family: var(--font-display, var(--font-heading, var(--font-sans, sans-serif)));
+}
+
+@utility font-code {
+  font-family: var(--font-code, var(--font-mono, ui-monospace, monospace));
 }

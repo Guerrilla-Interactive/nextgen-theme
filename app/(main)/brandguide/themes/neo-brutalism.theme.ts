@@ -203,27 +203,19 @@ export const neoBrutalismBrand: Brand = {
     {
       name: "DM Sans",
       distributor: "Google Fonts",
-      description: "Default sans-serif font.",
+      description: "Clean sans-serif for body text and paragraphs.",
       family: "'DM Sans', sans-serif",
-      roles: ["body", "default", "sans"],
-      weights: { regular: 400, medium: 500, bold: 700 }
+      roles: ["body", "default", "sans", "p", "a", "li", "display", "h1", "h2", "h3", "h4", "h5", "h6", "hero-title", "serif"],
+      weights: { regular: 400, medium: 500, bold: 700, extrabold: 800, black: 900 }
     },
     {
       name: "Space Mono",
       distributor: "Google Fonts",
-      description: "Default monospaced font.",
+      description: "Monospaced font for code and technical content.",
       family: "'Space Mono', monospace",
       roles: ["code", "mono"],
       weights: { regular: 400, bold: 700 }
     },
-    {
-      name: "UI Serif Fallback",
-      distributor: "System",
-      description: "Default serif font.",
-      family: "ui-serif, Georgia, Cambria, \"Times New Roman\", Times, serif",
-      roles: ["serif"],
-      weights: { regular: 400, bold: 700 }
-    }
   ],
   style: neoBrutalismThemeDefinition.styleGuide,
   themeCssVariables: createThemeCssVars(

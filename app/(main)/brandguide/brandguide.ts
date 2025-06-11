@@ -25,6 +25,17 @@ import { summerBrand } from "./themes/summer.theme";
 import { nintendoBrand } from "./themes/nintendo.theme";
 import { ikeaBrand } from "./themes/ikea.theme";
 import { gucciBrand } from "./themes/gucci.theme";
+import { fordBrand } from './themes/ford.theme';
+import { peachParfaitBrand } from "./themes/peach.theme";
+import { cyberPulseBrand } from "./themes/cyberpulse.theme";
+import { primaryPlayBrand } from "./themes/primaryplay.theme";
+import { monochromeClarityBrand } from "./themes/monochromeclarity.theme";
+import { sageMeadowBrand } from "./themes/sagemeadow.theme";
+import { elegantLuxuryBrand } from "./themes/elegant-luxury.theme";
+import { terracottaOrchidBrand } from "./themes/terracota.theme";
+import { violetAbyssBrand } from "./themes/violet-abyss.theme";
+import { lilacDaylightBrand } from "./themes/lilac-daylight.theme";
+import { vercelMinimalBrand } from "./themes/vercel.theme";
 
 
 // All original type definitions (Role, NumericShadeLevel, FunctionalShadeKey, ShadeKey, Shade, ColorToken, FontToken, 
@@ -48,9 +59,43 @@ export const themes: Record<string, Brand> = {
   "nintendo": nintendoBrand,
   "ikea": ikeaBrand,
   "gucci": gucciBrand,
+  "ford": fordBrand,
+  "peach": peachParfaitBrand,
+  "cyberPulse": cyberPulseBrand,
+  "primaryPlay": primaryPlayBrand,
+  "monochromeClarity": monochromeClarityBrand,
+  "sageMeadow": sageMeadowBrand,
+  "elegantLuxury": elegantLuxuryBrand,
+  "terracotta": terracottaOrchidBrand,
+  "violetAbyss": violetAbyssBrand,
+  "lilacDaylight": lilacDaylightBrand,
+  "vercel": vercelMinimalBrand
   
 };
 
 // Update the default export if necessary, or page.tsx will pick a default from 'themes'
 export default nextgenBrand; // Keep nextgen as the default for now if something imports it directly
+
+export const ALL_BRANDS = [
+  nextgenBrand,
+  gucciBrand,
+  ikeaBrand,
+  marvelBrand,
+  neoBrutalismBrand,
+  nintendoBrand,
+  razerBrand,
+  summerBrand,
+  violetSkyBrand,
+  fordBrand,
+  peachParfaitBrand,
+  cyberPulseBrand,
+  primaryPlayBrand,
+  monochromeClarityBrand,
+  sageMeadowBrand,
+  elegantLuxuryBrand,
+  terracottaOrchidBrand,
+    violetAbyssBrand,
+  lilacDaylightBrand
+
+].sort((a, b) => a.name.localeCompare(b.name));
   

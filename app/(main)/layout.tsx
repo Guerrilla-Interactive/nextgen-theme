@@ -17,13 +17,13 @@ export default async function MainLayout({
   children: React.ReactNode;
 }) {
   const settings = await fetchSettings();
-  
-  
 
-  
+
+
+
   return (
     <>
-      {/* <Header {...settings.data.headerSettings}/> */}
+      <Header {...settings.data.headerSettings} />
       <main>{children}</main>
       <SanityLive />
       {(await draftMode()).isEnabled && (

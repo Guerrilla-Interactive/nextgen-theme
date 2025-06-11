@@ -17,7 +17,7 @@ export default function PostCard({
   return (
     <div
       className={cn(
-        "flex w-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-4 hover:border-primary",
+        "flex w-full flex-col justify-between overflow-hidden transition ease-in-out group border border-border rounded-3xl p-4 hover:border-primary",
         className
       )}
     >
@@ -45,7 +45,7 @@ export default function PostCard({
         )}
         {excerpt && <p>{excerpt}</p>}
       </div>
-      <div className="mt-3 xl:mt-6 w-10 h-10 border rounded-full flex items-center justify-center group-hover:border-primary">
+      <div className="mt-3 xl:mt-6 w-10 h-10 border border-border rounded-full flex items-center justify-center group-hover:border-primary">
         <ChevronRight
           className="text-border group-hover:text-primary"
           size={24}

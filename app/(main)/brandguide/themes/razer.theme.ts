@@ -250,28 +250,28 @@ import {
     colors: razerBrandColors,
     fonts: [
       {
-        name: "Titillium Web", // Good choice
+        name: "Rajdhani",
         distributor: "Google Fonts",
-        description: "Primary display and body font. Modern and slightly condensed.",
-        family: "'Titillium Web', 'Exo 2', 'Roboto', sans-serif",
-        roles: ["display", "body", "sans"],
-        weights: { regular: 400, medium: 500, bold: 700, black: 900 }, // Added medium and black
+        description: "Sharp, tech-inspired sans-serif perfect for gaming interfaces.",
+        family: "'Rajdhani', 'Exo 2', system-ui, sans-serif",
+        roles: ["body", "default", "sans", "p", "a", "li", "button-label", "form-input", "serif"],
+        weights: { light: 300, regular: 400, medium: 500, semibold: 600, bold: 700 },
       },
       {
-        name: "Exo 2", // Alternative modern font
+        name: "Orbitron",
         distributor: "Google Fonts",
-        description: "Secondary modern sans-serif font.",
-        family: "'Exo 2', 'Titillium Web', 'Roboto', sans-serif",
-        roles: ["sans-alt"],
-        weights: { regular: 400, medium: 500, bold: 700 },
+        description: "Futuristic display font perfect for Razer's cutting-edge gaming brand.",
+        family: "'Orbitron', 'Rajdhani', sans-serif",
+        roles: ["display", "h1", "h2", "h3", "h4", "h5", "h6", "hero-title"],
+        weights: { regular: 400, medium: 500, semibold: 600, bold: 700, extrabold: 800, black: 900 },
       },
       {
-        name: "Roboto Mono",
+        name: "Fira Code",
         distributor: "Google Fonts",
-        description: "Monospaced font for code and technical details.",
-        family: "'Roboto Mono', Consolas, monospace",
-        roles: ["mono", "code"],
-        weights: { regular: 400, medium: 500, bold: 700 }, // Added medium
+        description: "Developer-focused monospaced font perfect for gaming tech code.",
+        family: "'Fira Code', 'JetBrains Mono', Consolas, monospace",
+        roles: ["code", "mono"],
+        weights: { light: 300, regular: 400, medium: 500, semibold: 600, bold: 700 },
       },
     ],
     style: razerThemeDefinition.styleGuide,

@@ -13,21 +13,24 @@ import {
 import { Input } from '@/features/unorganized-components/ui/input';
 import { useForwardedRef } from '@/features/unorganized-utils/use-forwarded-ref';
 
+interface ColorSwatch {
+  color: string;
+  name: string;
+}
+
 interface ColorPickerProps {
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
+  swatches?: ColorSwatch[];
 }
-
-
-
 
 const ColorPicker = forwardRef<
   HTMLInputElement,
   Omit<React.ComponentPropsWithRef<typeof Button>, 'value' | 'onChange' | 'onBlur'> & ColorPickerProps
 >(
   (
-    { disabled, value, onChange, onBlur, name, className, ...props },
+    { disabled, value, onChange, onBlur, name, className, swatches, ...props },
     forwardedRef
   ) => {
     const ref = useForwardedRef(forwardedRef);
@@ -60,11 +63,28 @@ const ColorPicker = forwardRef<
           </Button>
         </PopoverTrigger>
         <PopoverContent className='w-auto p-4 bg-[var(--popover)] border-[var(--border)] rounded-md shadow-lg'>
-          <HexColorPicker 
+          <HexColorPicker
             className="!w-[280px] !h-auto aspect-[16/10]"
-            color={parsedValue} 
-            onChange={onChange} 
+            color={parsedValue}
+            onChange={onChange}
           />
+          {swatches && swatches.length > 0 && (
+            <div className='mt-4'>
+              <p className="mb-2 text-xs font-medium text-[var(--muted-foreground)]">Theme Colors</p>
+              <div className="grid grid-cols-8 gap-2">
+                {swatches.map((swatch) => (
+                  <button
+                    key={swatch.name}
+                    type="button"
+                    title={swatch.name}
+                    className="h-6 w-6 cursor-pointer rounded-md border border-[var(--border)]/50 transition-all hover:ring-1 hover:ring-[var(--ring)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-2 focus:ring-offset-[var(--popover)]"
+                    style={{ backgroundColor: swatch.color }}
+                    onClick={() => onChange(swatch.color)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           <Input
             className="mt-4 h-10 px-3 py-2 bg-[var(--input-bg,var(--surface-input))] text-[var(--input-fg,var(--foreground))] text-sm rounded-md border border-[var(--input-border,var(--border-color-default))] font-mono placeholder:text-[var(--muted-foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--input-bg,var(--surface-input))] transition-colors"
             maxLength={7}

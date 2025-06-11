@@ -1,6 +1,7 @@
-/**
+/*Mak
  * Shared types and utility functions for brand definitions.
  */
+import { wcagContrast } from 'culori/fn';
 
 export const influenceHierarchy = {
     /** Primary actionable hue or surface */                            primary: 10,
@@ -1020,4 +1021,33 @@ export const generateGlobalCss = (brand: Brand): string => {
   addLine("}");
 
   return cssString;
+};
+
+/**
+ * Calculates the WCAG contrast ratio between two colors.
+ * Note: This is a simplified luminance-based calculation. For more advanced
+ * accessibility, especially for text, consider using an APCA-based method if possible.
+ * @param fgColor - The foreground color (text color).
+ * @param bgColor - The background color.
+ * @returns The contrast ratio.
+ */
+
+/**
+ * A simple utility to get a high-contrast text color (black or white) for a given background color.
+ * @param backgroundColor - The background color in any format culori can parse (e.g., hex, oklch).
+ * @returns 'oklch(0.15 0 0)' (near-black) or 'oklch(0.98 0 0)' (near-white).
+ */
+export const getHighContrastTextColor = (backgroundColor: string): OklchString => {
+  try {
+    const onWhiteContrast = wcagContrast(backgroundColor, 'white');
+    const onBlackContrast = wcagContrast(backgroundColor, 'black');
+
+    // Return the color that provides higher contrast.
+    // Using near-black and near-white for a less harsh look.
+    return onWhiteContrast > onBlackContrast ? 'oklch(0.98 0 0)' : 'oklch(0.15 0 0)';
+  } catch (e) {
+    // If parsing fails, default to a safe value
+    console.error("Failed to parse color for contrast check:", backgroundColor, e);
+    return 'oklch(0.15 0 0)';
+  }
 };

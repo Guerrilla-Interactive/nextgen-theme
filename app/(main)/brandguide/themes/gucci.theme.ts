@@ -327,9 +327,9 @@ import {
       sidebarRing:              "Gucci Red", // Match sidebar primary
 
       // Fonts (Removed from here, defined in fonts array below)
-      // fontSans:  "EB Garamond, serif",
-      // fontSerif: "Playfair Display, serif",
-      // fontMono:  "Courier Prime, monospace",
+      fontSans:  "EB Garamond, serif",
+      fontSerif: "Playfair Display, serif",
+      fontMono:  "Courier Prime, monospace",
     },
   };
 
@@ -355,17 +355,17 @@ import {
       {
         name: "EB Garamond",
         distributor: "Google Fonts",
-        description: "Primary elegant serif font for body text and some headings.",
+        description: "Primary elegant serif font for body text and paragraphs.",
         family: "'EB Garamond', serif",
-        roles: ["body", "default", "sans", "h3", "h4", "h5", "h6"], // Using serif as primary sans
+        roles: ["body", "default", "sans", "p", "a", "li", "h3", "h4", "h5", "h6", "button-label", "form-input", "caption"], // Using serif as primary body font
         weights: { regular: 400, medium: 500, semibold: 600, bold: 700 },
       },
       {
         name: "Playfair Display",
         distributor: "Google Fonts",
-        description: "Decorative serif for main headings.",
+        description: "Decorative serif for main headings and display text.",
         family: "'Playfair Display', serif",
-        roles: ["serif", "h1", "h2", "hero-title"],
+        roles: ["display", "serif", "h1", "h2", "hero-title"],
         weights: { regular: 400, bold: 700, black: 900 },
       },
       {
@@ -376,14 +376,6 @@ import {
         roles: ["code", "mono"],
         weights: { regular: 400, bold: 700 },
       },
-       {
-        name: "Montserrat",
-        distributor: "Google Fonts",
-        description: "Clean sans-serif for UI elements if needed.",
-        family: "Montserrat, sans-serif",
-        roles: ["button-label", "form-input", "caption"],
-        weights: { light: 300, regular: 400, medium: 500, semibold: 600, bold: 700 },
-      }
     ],
     style: gucciThemeDefinition.styleGuide,
     themeCssVariables: createThemeCssVars(

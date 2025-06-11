@@ -5,11 +5,11 @@ import React, { createContext, useContext, useEffect, ReactNode, useState, useCa
 import nextgenBrand from "./brandguide"; // nextgenBrand is the default export
 import {
   type OklchString, // Keep OklchString
-  type ThemeCssVars, 
+  type ThemeCssVars,
   type Shade as BaseBrandUtilShade, // Renamed to avoid conflict if EnrichedShade is different
-  type Role, 
-  type Brand, 
-  type ColorToken, 
+  type Role,
+  type Brand,
+  type ColorToken,
   // ShadeKey was removed from brand-utils, if needed here, define locally or adapt
   // For now, let LightnessStepKey (from brand-utils if exported, or define similar concept) guide steps.
   type LightnessStepKey, // Assuming this will be exported from brand-utils or defined appropriately
@@ -25,8 +25,8 @@ export interface EnrichedShade { // Simplified for now to address immediate erro
   value: string; // This will hold the actual CSS value (oklch string or color-mix string)
   resolvedValue: string; // Could be same as value, or resolved if value is a var()
   isAlias: boolean;
-  aliasTarget?: string;      
-  sourceTokenName?: string;  
+  aliasTarget?: string;
+  sourceTokenName?: string;
   sourceShadeKey?: string; // Was ShadeKey, now string for flexibility
   calculatedLightness: number; // 0-1 scale, needs to be derived from OKLCH
   mappedThemeVars?: string[];
@@ -38,8 +38,8 @@ export interface EnrichedColorToken extends ColorToken { // Directly extend new 
   // The keys could be 'base', 'on', or step keys like 'bright', 'darker'.
   shades: Partial<Record<string, EnrichedShade>>; // Key is string (e.g. 'base', 'bright')
   referrers?: Array<{ tokenName: string; shadeKey: string; referringToWhat: 'main' | string }>;
-  sortedDisplayShades?: EnrichedShade[]; 
-  tokenLevelMappedThemeVars?: string[]; 
+  sortedDisplayShades?: EnrichedShade[];
+  tokenLevelMappedThemeVars?: string[];
 }
 
 export interface EnrichedBrand extends Omit<Brand, 'colors'> {
@@ -47,9 +47,9 @@ export interface EnrichedBrand extends Omit<Brand, 'colors'> {
 }
 
 interface BrandContextType {
-  brand: Brand | null; 
-  committedBrand: Brand | null; 
-  processedBrand: EnrichedBrand | null; 
+  brand: Brand | null;
+  committedBrand: Brand | null;
+  processedBrand: EnrichedBrand | null;
   activeThemeKey: string;
   availableThemes: Record<string, Brand>;
   setActiveTheme: (themeKey: string) => void;
@@ -61,7 +61,7 @@ interface BrandContextType {
   canRedo: boolean;
   undoStepsAvailable: number;
   redoStepsAvailable: number;
-  updateRoleAssignment: (roleToUpdate: Role, targetColorName: string | null) => void;
+  updateRoleAssignment: (roleToUpdate: Role, targetColorVariableName: string | null) => void;
 }
 
 const BrandContext = createContext<BrandContextType | undefined>(undefined);
@@ -84,14 +84,14 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
   const [activeThemeKey, _internalSetActiveThemeKey] = useState<string>(initialThemeKey);
   const [history, setHistory] = useState<Brand[]>([initialThemes[initialThemeKey]]);
   const [currentHistoryIndex, setCurrentHistoryIndex] = useState<number>(0);
-  const [liveBrand, setLiveBrand] = useState<Brand>(initialThemes[initialThemeKey]); 
-  const [processedBrand, setProcessedBrand] = useState<EnrichedBrand | null>(null); 
+  const [liveBrand, setLiveBrand] = useState<Brand>(initialThemes[initialThemeKey]);
+  const [processedBrand, setProcessedBrand] = useState<EnrichedBrand | null>(null);
 
-  const currentThemeData = initialThemes[activeThemeKey] || nextgenBrand; 
+  const currentThemeData = initialThemes[activeThemeKey] || nextgenBrand;
 
   // Define committedBrand and brandToDisplay here, before useEffect
   const committedBrand = history[currentHistoryIndex] || null;
-  const brandToDisplay = liveBrand || committedBrand || currentThemeData; 
+  const brandToDisplay = liveBrand || committedBrand || currentThemeData;
 
   const handleSetActiveTheme = useCallback((newThemeKey: string) => {
     if (initialThemes[newThemeKey]) {
@@ -107,26 +107,26 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
   }, [initialThemes, _internalSetActiveThemeKey, setLiveBrand, setHistory, setCurrentHistoryIndex]);
 
   const applyPreviewOrCommit = (
-    colorNameToUpdate: string, 
-    newOklchValue: string, 
+    colorNameToUpdate: string,
+    newOklchValue: string,
     brandStateToUpdate: Brand
   ): Brand => {
     const updatedColors = brandStateToUpdate.colors.map(color =>
-      color.name === colorNameToUpdate ? { ...color, oklchLight: newOklchValue as OklchString } : color 
+      color.name === colorNameToUpdate ? { ...color, oklchLight: newOklchValue as OklchString } : color
     );
     return { ...brandStateToUpdate, colors: updatedColors };
   };
 
   const previewColorUpdate = useCallback((colorNameToUpdate: string, newOklchValue: string) => {
-    setLiveBrand(currentLiveBrand => 
-        applyPreviewOrCommit(colorNameToUpdate, newOklchValue, currentLiveBrand || currentThemeData)
+    setLiveBrand(currentLiveBrand =>
+      applyPreviewOrCommit(colorNameToUpdate, newOklchValue, currentLiveBrand || currentThemeData)
     );
   }, [currentThemeData]);
 
   const commitColorUpdate = useCallback((colorNameToUpdate: string, newOklchValue: string) => {
     const brandToCommitFrom = liveBrand || history[currentHistoryIndex] || currentThemeData;
     const newBrandState = applyPreviewOrCommit(colorNameToUpdate, newOklchValue, brandToCommitFrom);
-    
+
     setHistory(prevHistory => {
       const newHistorySlice = prevHistory.slice(0, currentHistoryIndex + 1);
       return [...newHistorySlice, newBrandState];
@@ -158,43 +158,35 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
   const undoStepsAvailable = currentHistoryIndex;
   const redoStepsAvailable = history.length - 1 - currentHistoryIndex;
 
-  const updateRoleAssignment = useCallback((roleToUpdate: Role, targetColorName: string | null) => {
+  const updateRoleAssignment = useCallback((roleToUpdate: Role, targetColorVariableName: string | null) => {
     const brandToUpdate = liveBrand || history[currentHistoryIndex] || currentThemeData;
-    if (!brandToUpdate) return; 
+    if (!brandToUpdate) return;
 
-    const newBrandState: Brand = JSON.parse(JSON.stringify(brandToUpdate));
-    let colorWasModified = false;
-
-    newBrandState.colors.forEach(color => {
-      if (!Array.isArray(color.roles)) {
-        color.roles = [];
+    // Create a new brand state by mapping over colors and updating roles immutably
+    const updatedColors = brandToUpdate.colors.map(color => {
+      const newRoles = color.roles.filter(r => r !== roleToUpdate);
+      if (color.variableName === targetColorVariableName) {
+        newRoles.push(roleToUpdate);
       }
-
-      const roleIndex = color.roles.indexOf(roleToUpdate);
-
-      if (color.name === targetColorName) {
-        if (roleIndex === -1) { 
-          color.roles.push(roleToUpdate);
-          colorWasModified = true;
-        }
-      } else {
-        if (roleIndex !== -1) { 
-          color.roles.splice(roleIndex, 1);
-          colorWasModified = true;
-        }
-      }
+      // Return a new color object if roles changed, otherwise the original
+      return color.roles.length === newRoles.length && color.roles.every((r, i) => r === newRoles[i])
+        ? color
+        : { ...color, roles: newRoles };
     });
 
-    if (colorWasModified) {
+    // Only proceed if there's an actual change
+    if (updatedColors.some((c, i) => c !== brandToUpdate.colors[i])) {
+      const newBrandState: Brand = { ...brandToUpdate, colors: updatedColors };
+
       setHistory(prevHistory => {
         const newHistorySlice = prevHistory.slice(0, currentHistoryIndex + 1);
         return [...newHistorySlice, newBrandState];
       });
-      const newIndex = currentHistoryIndex + 1; 
+      const newIndex = currentHistoryIndex + 1;
       setCurrentHistoryIndex(newIndex);
       setLiveBrand(newBrandState);
     }
-  }, [liveBrand, history, currentHistoryIndex, currentThemeData, setHistory, setCurrentHistoryIndex, setLiveBrand]);
+  }, [liveBrand, history, currentHistoryIndex, currentThemeData]);
 
   useEffect(() => {
     const brandForCSS = brandToDisplay;
@@ -211,12 +203,12 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
       const findSourceTokenAndShade = (aliasTargetVar: string): { tokenName?: string; shadeKey?: string } => {
         if (!aliasTargetVar.startsWith('var(--') || !aliasTargetVar.endsWith(')')) return {};
-        const targetVar = aliasTargetVar.slice(6, -1); 
-        
+        const targetVar = aliasTargetVar.slice(6, -1);
+
         for (const token of brandForCSS.colors) { // These are ColorToken
           // Check against base variable name
           if (`--${token.variableName}` === targetVar) {
-            return { tokenName: token.name, shadeKey: 'base' }; 
+            return { tokenName: token.name, shadeKey: 'base' };
           }
           // Check against step variable names (e.g., token.variableName + '-bright')
           const stepKeys: LightnessStepKey[] = ['bright', 'brighter', 'dark', 'darker'];
@@ -228,7 +220,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           // Check against onColorLight/Dark variable names if they are structured (e.g. --token-on)
           // This part is TBD as onColorLight/Dark are direct OklchStrings now.
         }
-        return {}; 
+        return {};
       };
 
       const newEnrichedColors: EnrichedColorToken[] = JSON.parse(JSON.stringify(brandForCSS.colors));
@@ -239,7 +231,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
         if (!tokenBeingProcessed.oklchLight || !tokenBeingProcessed.category) {
           console.warn("Skipping enrichment for token due to missing oklchLight or category:", tokenBeingProcessed.name);
-          return; 
+          return;
         }
 
         const baseOklchLight = tokenBeingProcessed.oklchLight;
@@ -280,14 +272,14 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
             processedShades[stepKey] = {
               variableName: `${tokenBeingProcessed.variableName}-${stepKey}`,
               value: stepValue,
-              resolvedValue: stepValue, 
+              resolvedValue: stepValue,
               isAlias: false, // color-mix is not an alias in this context
               calculatedLightness: baseL, // Placeholder - actual L of color-mix is non-trivial
               mappedThemeVars: []
             };
           }
         });
-        tokenBeingProcessed.shades = processedShades; 
+        tokenBeingProcessed.shades = processedShades;
 
         // Populate sortedDisplayShades
         const newSortedDisplayShades: EnrichedShade[] = [];
@@ -302,35 +294,35 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         tokenBeingProcessed.sortedDisplayShades = newSortedDisplayShades;
         // Note: The 'on' shade is not typically included in this visual scale display.
       });
-      
-      newEnrichedColors.forEach(tokenToPopulateReferrersFor => { 
+
+      newEnrichedColors.forEach(tokenToPopulateReferrersFor => {
         // Simplified Referrers: Find if any token's step *value* (a color-mix string) contains `var(--${tokenToPopulateReferrersFor.variableName})`
         if (!tokenToPopulateReferrersFor.referrers) tokenToPopulateReferrersFor.referrers = [];
         newEnrichedColors.forEach(potentialReferrer => {
-            if (potentialReferrer === tokenToPopulateReferrersFor) return;
-            Object.entries(potentialReferrer.lightThemeSteps).forEach(([stepKey, stepValue]) => {
-                if (stepValue.includes(`var(--${tokenToPopulateReferrersFor.variableName})`)) {
-                    tokenToPopulateReferrersFor.referrers?.push({
-                        tokenName: potentialReferrer.name,
-                        shadeKey: stepKey,
-                        referringToWhat: 'main' // Simplified
-                    });
-                }
-            });
-            // Could also check darkThemeSteps
+          if (potentialReferrer === tokenToPopulateReferrersFor) return;
+          Object.entries(potentialReferrer.lightThemeSteps).forEach(([stepKey, stepValue]) => {
+            if (stepValue.includes(`var(--${tokenToPopulateReferrersFor.variableName})`)) {
+              tokenToPopulateReferrersFor.referrers?.push({
+                tokenName: potentialReferrer.name,
+                shadeKey: stepKey,
+                referringToWhat: 'main' // Simplified
+              });
+            }
+          });
+          // Could also check darkThemeSteps
         });
       });
 
       if (brandForCSS.themeCssVariables) {
-        newEnrichedColors.forEach(token => { 
-          token.tokenLevelMappedThemeVars = token.tokenLevelMappedThemeVars || []; 
+        newEnrichedColors.forEach(token => {
+          token.tokenLevelMappedThemeVars = token.tokenLevelMappedThemeVars || [];
           token.shades = token.shades || {};
-          Object.values(token.shades).forEach(shade => { if (shade) shade.mappedThemeVars = shade.mappedThemeVars || []; }); 
-        }); 
-        Object.entries(brandForCSS.themeCssVariables).forEach(([themeVarKey, themeVarValueStr]) => { 
-          if (typeof themeVarValueStr === 'string' && themeVarValueStr.startsWith('var(--')) { 
-            const targetCssVar = themeVarValueStr.slice(4, -1); 
-            for (const token of newEnrichedColors) { 
+          Object.values(token.shades).forEach(shade => { if (shade) shade.mappedThemeVars = shade.mappedThemeVars || []; });
+        });
+        Object.entries(brandForCSS.themeCssVariables).forEach(([themeVarKey, themeVarValueStr]) => {
+          if (typeof themeVarValueStr === 'string' && themeVarValueStr.startsWith('var(--')) {
+            const targetCssVar = themeVarValueStr.slice(4, -1);
+            for (const token of newEnrichedColors) {
               let matched = false;
 
               // Ensure token itself is not null/undefined
@@ -342,11 +334,11 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
               if (token.variableName === targetCssVar) {
                 const fullThemeVarName = `--${themeVarKey}`;
                 // Ensure shades and base exist before trying to push to mappedThemeVars
-                token.shades = token.shades || {}; 
+                token.shades = token.shades || {};
                 token.shades['base'] = token.shades['base'] || { variableName: token.variableName, value: token.oklchLight, resolvedValue: token.oklchLight, isAlias: false, calculatedLightness: 0, mappedThemeVars: [] }; // Minimal fallback for base
                 token.shades['base'].mappedThemeVars = token.shades['base'].mappedThemeVars || [];
                 token.shades['base'].mappedThemeVars?.push(fullThemeVarName);
-                
+
                 token.tokenLevelMappedThemeVars = token.tokenLevelMappedThemeVars || [];
                 if (!token.tokenLevelMappedThemeVars?.includes(fullThemeVarName)) {
                   token.tokenLevelMappedThemeVars?.push(fullThemeVarName);
@@ -359,25 +351,25 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
                   token.shades = {};
                 }
                 // Now token.shades is guaranteed to be an object.
-                for (const shade of Object.values(token.shades)) { 
-                  if (shade && shade.variableName === targetCssVar) { 
-                    const fullThemeVarName = `--${themeVarKey}`; 
+                for (const shade of Object.values(token.shades)) {
+                  if (shade && shade.variableName === targetCssVar) {
+                    const fullThemeVarName = `--${themeVarKey}`;
                     shade.mappedThemeVars = shade.mappedThemeVars || [];
-                    shade.mappedThemeVars?.push(fullThemeVarName); 
-                    
+                    shade.mappedThemeVars?.push(fullThemeVarName);
+
                     token.tokenLevelMappedThemeVars = token.tokenLevelMappedThemeVars || [];
-                    if (!token.tokenLevelMappedThemeVars?.includes(fullThemeVarName)) { 
-                      token.tokenLevelMappedThemeVars?.push(fullThemeVarName); 
+                    if (!token.tokenLevelMappedThemeVars?.includes(fullThemeVarName)) {
+                      token.tokenLevelMappedThemeVars?.push(fullThemeVarName);
                     }
-                    matched = true; 
-                    break; 
-                  } 
-                } 
+                    matched = true;
+                    break;
+                  }
+                }
               }
-              if (matched) break; 
-            } 
-          } 
-        }); 
+              if (matched) break;
+            }
+          }
+        });
       }
 
       // CSS variable setting logic (currently simplified / needs OKLCH focus)
@@ -385,13 +377,13 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       // For now, setting base vars from newEnrichedColors to see them live.
       newEnrichedColors.forEach(token => {
         if (token.oklchLight) {
-            setAndTrackProperty(`--${token.variableName}`, token.oklchLight); 
-            if (token.onColorLight) {
-                 setAndTrackProperty(`--${token.variableName}-on`, token.onColorLight);
-            }
-            Object.entries(token.lightThemeSteps).forEach(([stepKey, stepValue]) => {
-                if (stepValue) setAndTrackProperty(`--${token.variableName}-${stepKey}`, stepValue);
-            });
+          setAndTrackProperty(`--${token.variableName}`, token.oklchLight);
+          if (token.onColorLight) {
+            setAndTrackProperty(`--${token.variableName}-on`, token.onColorLight);
+          }
+          Object.entries(token.lightThemeSteps).forEach(([stepKey, stepValue]) => {
+            if (stepValue) setAndTrackProperty(`--${token.variableName}-${stepKey}`, stepValue);
+          });
         }
         // Dark theme variables are usually applied via class scope from generateGlobalCss
       });
@@ -440,13 +432,13 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
                   }
                 }
               } else {
-                 // Fallback if the surface role itself is unassigned, try original theme var or absolute fallback
-                 if (originalThemeVarValue) cssValueToSet = String(originalThemeVarValue);
-                 else {
-                    const bgTokenForFgFallback = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes('background'));
-                    const bgL = bgTokenForFgFallback ? (oklchConverter(bgTokenForFgFallback.oklchLight)?.l ?? 0.95) : 0.95;
-                    cssValueToSet = bgL >= 0.5 ? "oklch(0.1 0 0)" : "oklch(0.95 0 0)";
-                 }
+                // Fallback if the surface role itself is unassigned, try original theme var or absolute fallback
+                if (originalThemeVarValue) cssValueToSet = String(originalThemeVarValue);
+                else {
+                  const bgTokenForFgFallback = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes('background'));
+                  const bgL = bgTokenForFgFallback ? (oklchConverter(bgTokenForFgFallback.oklchLight)?.l ?? 0.95) : 0.95;
+                  cssValueToSet = bgL >= 0.5 ? "oklch(0.1 0 0)" : "oklch(0.95 0 0)";
+                }
               }
             } else { // It's a main role (not a foreground) and not directly assigned (this case should ideally be caught by directlyAssignedToken already)
               // This else block handles base roles that might not have been directly assigned but have a definition in themeCssVariables
@@ -464,7 +456,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
               cssValueToSet = String(originalThemeVarValue);
             }
           }
-          
+
           if (cssValueToSet !== undefined) {
             setAndTrackProperty(`--${roleKey}`, cssValueToSet);
           } else {
@@ -473,10 +465,37 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           }
         });
       }
-      
-      const finalProcessedBrand: EnrichedBrand = { 
-          ...brandForCSS, 
-          colors: newEnrichedColors 
+
+      // Set font CSS variables based on brand fonts
+      if (brandForCSS.fonts && brandForCSS.fonts.length > 0) {
+        const fontSans = brandForCSS.fonts.find(f => f.roles.includes('sans'))?.family || 'sans-serif';
+        const fontSerif = brandForCSS.fonts.find(f => f.roles.includes('serif'))?.family || 'serif';
+        const fontMono = brandForCSS.fonts.find(f => f.roles.includes('mono'))?.family || 'monospace';
+
+        // New primary font role variables
+        const fontBody = brandForCSS.fonts.find(f => f.roles.includes('body'))?.family || fontSans;
+        const fontDisplay = brandForCSS.fonts.find(f => f.roles.includes('display'))?.family || fontSans;
+        const fontCode = brandForCSS.fonts.find(f => f.roles.includes('code'))?.family || fontMono;
+
+        console.log('Setting font CSS variables:', { fontSans, fontSerif, fontMono, fontBody, fontDisplay, fontCode });
+
+        // Legacy variables (keep for backward compatibility)
+        setAndTrackProperty('--font-sans', fontSans);
+        setAndTrackProperty('--font-serif', fontSerif);
+        setAndTrackProperty('--font-mono', fontMono);
+
+        // Primary role variables
+        setAndTrackProperty('--font-body', fontBody);
+        setAndTrackProperty('--font-display', fontDisplay);
+        setAndTrackProperty('--font-code', fontCode);
+
+        // Also set the body font directly
+        document.body.style.fontFamily = fontBody;
+      }
+
+      const finalProcessedBrand: EnrichedBrand = {
+        ...brandForCSS,
+        colors: newEnrichedColors
       };
       setProcessedBrand(finalProcessedBrand);
 
@@ -498,7 +517,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         while ((match = cssVariableRegex.exec(rootCssContent)) !== null) {
           const varName = match[1].trim();
           const varValue = match[2].trim();
-          
+
           const isDerivedSemanticStep = semanticRolesToGetSteps.some(roleKey => varName.startsWith(`--${roleKey}-`));
 
           // If the variable wasn't set by earlier specific logic OR if it IS a derived semantic step,
@@ -524,22 +543,22 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
   }, [brandToDisplay]); // brandToDisplay is liveBrand || committedBrand || currentThemeData
 
   return (
-    <BrandContext.Provider value={{ 
-        brand: brandToDisplay,
-        committedBrand,
-        processedBrand,
-        activeThemeKey,
-        availableThemes: initialThemes, 
-        setActiveTheme: handleSetActiveTheme,
-        previewColorUpdate, 
-        commitColorUpdate, 
-        undo, 
-        redo, 
-        canUndo, 
-        canRedo, 
-        undoStepsAvailable, 
-        redoStepsAvailable,
-        updateRoleAssignment
+    <BrandContext.Provider value={{
+      brand: brandToDisplay,
+      committedBrand,
+      processedBrand,
+      activeThemeKey,
+      availableThemes: initialThemes,
+      setActiveTheme: handleSetActiveTheme,
+      previewColorUpdate,
+      commitColorUpdate,
+      undo,
+      redo,
+      canUndo,
+      canRedo,
+      undoStepsAvailable,
+      redoStepsAvailable,
+      updateRoleAssignment
     }}>
       {children}
     </BrandContext.Provider>
