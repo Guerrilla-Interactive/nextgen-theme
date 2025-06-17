@@ -38,6 +38,7 @@ import { violetAbyssBrand } from "./themes/violet-abyss.theme";
 import { lilacDaylightBrand } from "./themes/lilac-daylight.theme";
 import { vercelMinimalBrand } from "./themes/vercel.theme";
 import { neonPopBrand } from "./themes/neon-pop.theme";
+import { sageMinimalBrand } from "./themes/sage-minimal.theme";
 
 
 // All original type definitions (Role, NumericShadeLevel, FunctionalShadeKey, ShadeKey, Shade, ColorToken, FontToken, 
@@ -72,7 +73,8 @@ export const themes: Record<string, Brand> = {
   "violetAbyss": violetAbyssBrand,
   "lilacDaylight": lilacDaylightBrand,
   "vercel": vercelMinimalBrand,
-  "neonPop": neonPopBrand
+  "neonPop": neonPopBrand,
+  "sageMinimal": sageMinimalBrand
   
 };
 
@@ -82,24 +84,19 @@ export default nextgenBrand; // Keep nextgen as the default for now if something
 export const ALL_BRANDS = [
   nextgenBrand,
   gucciBrand,
-  ikeaBrand,
-  marvelBrand,
-  neoBrutalismBrand,
-  nintendoBrand,
   razerBrand,
   summerBrand,
   violetSkyBrand,
   fordBrand,
   peachParfaitBrand,
   cyberPulseBrand,
-  primaryPlayBrand,
   monochromeClarityBrand,
   sageMeadowBrand,
   elegantLuxuryBrand,
   terracottaOrchidBrand,
-    violetAbyssBrand,
   lilacDaylightBrand,
-  neonPopBrand
+  neonPopBrand,
+  sageMinimalBrand
 
 ].sort((a, b) => a.name.localeCompare(b.name));
   

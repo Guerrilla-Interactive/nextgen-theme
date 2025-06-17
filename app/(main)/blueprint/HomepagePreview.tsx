@@ -71,7 +71,7 @@ export default function HomepagePreview() {
       {/* Feature Cards Section */}
       <section>
         <div className="grid grid-cols-3 gap-4">
-          <Card className="flex flex-col items-center p-8">
+          <Card className="flex flex-col items-center p-8 shadow-[var(--shadow-md)]">
             <Zap className="size-10 text-primary" />
             <CardTitle
               className="text-lg font-bold text-center"
@@ -86,7 +86,7 @@ export default function HomepagePreview() {
               Learn More
             </Button>
           </Card>
-          <Card className="flex flex-col items-center p-8">
+          <Card className="flex flex-col items-center p-8 shadow-[var(--shadow-md)]">
             <Shield className="size-10 text-primary" />
             <CardTitle
               className="text-lg font-bold text-center"
@@ -101,7 +101,7 @@ export default function HomepagePreview() {
               Learn More
             </Button>
           </Card>
-          <Card className="flex flex-col items-center p-8">
+          <Card className="flex flex-col items-center p-8 shadow-[var(--shadow-md)]">
             <Settings className="size-10 text-primary" />
             <CardTitle
               className="text-lg font-bold text-center"
@@ -121,7 +121,7 @@ export default function HomepagePreview() {
 
       {/* Newsletter Section */}
       <section className="py-12">
-        <Card className="p-8">
+        <Card className="p-8 shadow-[var(--shadow-lg)]">
           <CardHeader className="flex items-center space-x-4">
             <Mail size={48} className="text-primary" />
             <div className="space-y-1">
@@ -153,7 +153,7 @@ export default function HomepagePreview() {
         </h2>
         <div className="grid grid-cols-2 gap-6">
           {/* Testimonial 1 */}
-          <Card>
+          <Card className="shadow-[var(--shadow-sm)]">
             <CardHeader className="flex flex-col items-center space-y-2">
               <Avatar>
                 <AvatarFallback className="font-semibold">JD</AvatarFallback>
@@ -176,7 +176,7 @@ export default function HomepagePreview() {
             </CardContent>
           </Card>
           {/* Testimonial 2 */}
-          <Card>
+          <Card className="shadow-[var(--shadow-sm)]">
             <CardHeader className="flex flex-col items-center space-y-2">
               <Avatar>
                 <AvatarFallback className="font-semibold">JS</AvatarFallback>

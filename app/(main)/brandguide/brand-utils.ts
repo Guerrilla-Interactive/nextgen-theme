@@ -818,6 +818,14 @@ export const generateGlobalCss = (brand: Brand): string => {
   addLine(`--font-mono: ${fontMono};`, 2);
   const radiusBase = brand.themeCssVariables.radius || "0.625rem"; 
   addLine(`--radius: ${radiusBase};`, 2);
+  
+  // Add shadow variables
+  if (brand.themeCssVariables["shadow-xs"]) addLine(`--shadow-xs: ${brand.themeCssVariables["shadow-xs"]};`, 2);
+  if (brand.themeCssVariables["shadow-sm"]) addLine(`--shadow-sm: ${brand.themeCssVariables["shadow-sm"]};`, 2);
+  if (brand.themeCssVariables["shadow-md"]) addLine(`--shadow-md: ${brand.themeCssVariables["shadow-md"]};`, 2);
+  if (brand.themeCssVariables["shadow-lg"]) addLine(`--shadow-lg: ${brand.themeCssVariables["shadow-lg"]};`, 2);
+  if (brand.themeCssVariables["shadow-xl"]) addLine(`--shadow-xl: ${brand.themeCssVariables["shadow-xl"]};`, 2);
+  
   addLine("}");
   addLine("");
 
@@ -977,6 +985,14 @@ export const generateGlobalCss = (brand: Brand): string => {
   addLine(`--radius-md: ${sg.radius.radiusMd};`, 2);
   addLine(`--radius-lg: ${sg.radius.radiusLg};`, 2);
   addLine(`--radius-xl: ${sg.radius.radiusXl};`, 2);
+
+  addLine("", 1);
+  addLine("  /* Shadows for @apply */", 1);
+  if (brand.themeCssVariables["shadow-xs"]) addLine(`--shadow-xs: ${brand.themeCssVariables["shadow-xs"]};`, 2);
+  if (brand.themeCssVariables["shadow-sm"]) addLine(`--shadow-sm: ${brand.themeCssVariables["shadow-sm"]};`, 2);
+  if (brand.themeCssVariables["shadow-md"]) addLine(`--shadow-md: ${brand.themeCssVariables["shadow-md"]};`, 2);
+  if (brand.themeCssVariables["shadow-lg"]) addLine(`--shadow-lg: ${brand.themeCssVariables["shadow-lg"]};`, 2);
+  if (brand.themeCssVariables["shadow-xl"]) addLine(`--shadow-xl: ${brand.themeCssVariables["shadow-xl"]};`, 2);
 
   addLine("}");
 

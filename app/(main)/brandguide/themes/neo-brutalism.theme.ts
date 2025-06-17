@@ -6,34 +6,32 @@ const neoBrutalismThemeDefinition = {
     {
       tokenSpecificName: "White",
       description: "White, used for page background, card & popover backgrounds",
-      oklchLight: "oklch(1.00 0 0)" as OklchString,
+      oklchLight: "oklch(1.0000 0 0)" as OklchString,
       oklchDark: "oklch(0 0 0)" as OklchString,
       roles: ["background", "card", "popover"],
       category: "shade",
       onColorLight: "oklch(0 0 0)" as OklchString,  // text on white in light mode
-      onColorDark: "oklch(1.00 0 0)" as OklchString   // text on black (dark-mode white) 
+      onColorDark: "oklch(1.0000 0 0)" as OklchString   // text on black (dark-mode white) 
     },
 
-    // Black: used for main text, card & popover text, secondary text, destructive actions, inputs, borders, and sidebar text/borders
+    // Black: used for main text, card & popover text, destructive actions, inputs, borders, and sidebar text/borders
     {
       tokenSpecificName: "Black",
-      description: "Black, used for main text, card/popover text, secondary text, destructive actions, inputs, borders, and sidebar text/borders",
+      description: "Black, used for main text, card/popover text, destructive actions, inputs, borders, and sidebar text/borders",
       oklchLight: "oklch(0 0 0)" as OklchString,
-      oklchDark: "oklch(1.00 0 0)" as OklchString,
+      oklchDark: "oklch(1.0000 0 0)" as OklchString,
       roles: [
         "foreground",
         "card-foreground",
         "popover-foreground",
-        "secondary-foreground",
         "destructive",
-        "warning",
-        "input",
         "border",
+        "input",
         "sidebar-foreground",
         "sidebar-border"
       ],
       category: "shade",
-      onColorLight: "oklch(1.00 0 0)" as OklchString, // text on black in light mode
+      onColorLight: "oklch(1.0000 0 0)" as OklchString, // text on black in light mode
       onColorDark: "oklch(0 0 0)" as OklchString       // text on white (dark-mode black)
     },
 
@@ -41,75 +39,75 @@ const neoBrutalismThemeDefinition = {
     {
       tokenSpecificName: "Light Gray",
       description: "Light Gray, used for muted surfaces and sidebar backgrounds",
-      oklchLight: "oklch(0.96 0 0)" as OklchString,
+      oklchLight: "oklch(0.9551 0 0)" as OklchString,
       oklchDark: "oklch(0.32 0 0)" as OklchString,
-      roles: ["muted", "nav"],
+      roles: ["muted", "sidebar"],
       category: "shade",
       onColorLight: "oklch(0 0 0)" as OklchString,   // text on light gray in light mode
-      onColorDark: "oklch(1.00 0 0)" as OklchString   // text on darker gray in dark mode
+      onColorDark: "oklch(1.0000 0 0)" as OklchString   // text on darker gray in dark mode
     },
 
     // Dark Gray: used for muted foreground text
     {
       tokenSpecificName: "Dark Gray",
       description: "Dark Gray, used for muted foreground text",
-      oklchLight: "oklch(0.32 0 0)" as OklchString,
+      oklchLight: "oklch(0.3211 0 0)" as OklchString,
       oklchDark: "oklch(0.85 0 0)" as OklchString,
       roles: ["muted-foreground"],
       category: "shade"
     },
 
-    // Orange: used for primary actions, focus ring (success), chart-1, and sidebar primary
+    // Red Primary: used for primary actions, focus ring, chart-1, and sidebar primary
     {
-      tokenSpecificName: "Orange",
-      description: "Orange, used for primary actions, focus ring/success, chart color 1, and sidebar primary",
-      oklchLight: "oklch(0.65 0.24 26.92)" as OklchString,
+      tokenSpecificName: "Red Primary",
+      description: "Red Primary, used for primary actions, focus ring, chart color 1, and sidebar primary",
+      oklchLight: "oklch(0.6670 0.2428 359.7106)" as OklchString,
       oklchDark: "oklch(0.70 0.19 23.04)" as OklchString,
-      roles: ["primary", "ring", "success", "chart-1", "sidebar-primary"],
+      roles: ["primary", "ring", "chart-1", "sidebar-primary", "sidebar-ring"],
       category: "color",
-      onColorLight: "oklch(1.00 0 0)" as OklchString,  // text on orange in light mode
-      onColorDark: "oklch(0 0 0)" as OklchString       // text on darker-orange in dark mode
+      onColorLight: "oklch(1.0000 0 0)" as OklchString,  // text on red in light mode
+      onColorDark: "oklch(0 0 0)" as OklchString       // text on darker-red in dark mode
     },
 
-    // Green: used for secondary actions and chart-2
+    // Yellow Secondary: used for secondary actions and chart-2
     {
-      tokenSpecificName: "Green",
-      description: "Green, used for secondary actions and chart color 2",
-      oklchLight: "oklch(0.97 0.21 109.74)" as OklchString,
-      oklchDark: "oklch(0.97 0.20 109.61)" as OklchString,
+      tokenSpecificName: "Yellow Secondary",
+      description: "Yellow Secondary, used for secondary actions and chart color 2",
+      oklchLight: "oklch(0.7505 0.1791 58.2827)" as OklchString,
+      oklchDark: "oklch(0.75 0.18 58)" as OklchString,
       roles: ["secondary", "chart-2"],
       category: "color",
-      onColorLight: "oklch(0 0 0)" as OklchString,    // text on green in light mode
-      onColorDark: "oklch(0 0 0)" as OklchString      // text on darker-green in dark mode
+      onColorLight: "oklch(0 0 0)" as OklchString,    // text on yellow in light mode
+      onColorDark: "oklch(0 0 0)" as OklchString      // text on yellow in dark mode
     },
 
-    // Purple: used for accent, info, chart-3, and sidebar accent
+    // Blue Accent: used for accent, chart-3, and sidebar accent
     {
-      tokenSpecificName: "Purple",
-      description: "Purple, used for accent color (info), chart color 3, and sidebar accent",
-      oklchLight: "oklch(0.56 0.24 260.83)" as OklchString,
+      tokenSpecificName: "Blue Accent",
+      description: "Blue Accent, used for accent color, chart color 3, and sidebar accent",
+      oklchLight: "oklch(0.8160 0.1453 216.5023)" as OklchString,
       oklchDark: "oklch(0.68 0.18 251.63)" as OklchString,
-      roles: ["accent", "info", "chart-3", "sidebar-accent"],
+      roles: ["accent", "chart-3", "sidebar-accent"],
       category: "color",
-      onColorLight: "oklch(1.00 0 0)" as OklchString,  // text on purple in light mode
-      onColorDark: "oklch(0 0 0)" as OklchString       // text on darker-purple in dark mode
+      onColorLight: "oklch(1.0000 0 0)" as OklchString,  // text on blue in light mode
+      onColorDark: "oklch(0 0 0)" as OklchString       // text on darker-blue in dark mode
     },
 
-    // Teal: used for chart-4
+    // Green Chart: used for chart-4
     {
-      tokenSpecificName: "Teal",
-      description: "Teal, used for chart color 4",
-      oklchLight: "oklch(0.73 0.25 142.50)" as OklchString,
+      tokenSpecificName: "Green Chart",
+      description: "Green, used for chart color 4",
+      oklchLight: "oklch(0.7492 0.2275 137.1080)" as OklchString,
       oklchDark: "oklch(0.74 0.23 142.87)" as OklchString,
       roles: ["chart-4"],
       category: "color"
     },
 
-    // Pink: used for chart-5
+    // Purple Chart: used for chart-5
     {
-      tokenSpecificName: "Pink",
-      description: "Pink, used for chart color 5",
-      oklchLight: "oklch(0.59 0.27 328.36)" as OklchString,
+      tokenSpecificName: "Purple Chart",
+      description: "Purple, used for chart color 5",
+      oklchLight: "oklch(0.4614 0.2486 298.2946)" as OklchString,
       oklchDark: "oklch(0.61 0.25 328.13)" as OklchString,
       roles: ["chart-5"],
       category: "color"
@@ -117,24 +115,24 @@ const neoBrutalismThemeDefinition = {
   ] as RawColorDefinition[],
 
   styleGuide: {
-    primaryColors:       { primary: "Orange", primaryForeground: "White" },
-    secondaryColors:     { secondary: "Green", secondaryForeground: "Black" },
-    accentColors:        { accent: "Purple", accentForeground: "White" },
+    primaryColors:       { primary: "Red Primary", primaryForeground: "White" },
+    secondaryColors:     { secondary: "Yellow Secondary", secondaryForeground: "Black" },
+    accentColors:        { accent: "Blue Accent", accentForeground: "White" },
     cardColors:          { card: "White", cardForeground: "Black" },
     popoverColors:       { popover: "White", popoverForeground: "Black" },
     mutedColors:         { muted: "Light Gray", mutedForeground: "Dark Gray" },
     destructiveColors:   { destructive: "Black", destructiveForeground: "White" },
-    successColors:       { success: "Orange", successForeground: "White" },
-    infoColors:          { info: "Purple", infoForeground: "White" },
+    successColors:       { success: "Red Primary", successForeground: "White" },
+    infoColors:          { info: "Blue Accent", infoForeground: "White" },
     warningColors:       { warning: "Black", warningForeground: "White" },
     inputColors:         { input: "Black", inputForeground: "White" },
     borderColors:        { border: "Black" },
-    ringColors:          { ring: "Orange" },
+    ringColors:          { ring: "Red Primary" },
     radius: {
-      radiusSm: "0px",  // calc(var(--radius) - 0px)
-      radiusMd: "0px",  // var(--radius)
-      radiusLg: "0px",  // var(--radius)
-      radiusXl: "0px"   // calc(var(--radius) + 0px)
+      radiusSm: "0.125rem",
+      radiusMd: "0.125rem",
+      radiusLg: "0.125rem",
+      radiusXl: "0.125rem"
     },
     spacing: {
       spacingSm: "0.5rem",
@@ -147,37 +145,37 @@ const neoBrutalismThemeDefinition = {
   otherVars: {
     background: "White",
     foreground: "Black",
-    radiusBase: "0px",
+    radiusBase: "0.125rem",
 
-    // Shadows (unchanged)
-    shadowXs: "4px 4px 0px 0px oklch(0.00 0 0 / 0.50)",
-    shadowSm: "4px 4px 0px 0px oklch(0.00 0 0 / 1.00), 4px 1px 2px -1px oklch(0.00 0 0 / 1.00)",
-    shadowMd: "4px 4px 0px 0px oklch(0.00 0 0 / 1.00), 4px 2px 4px -1px oklch(0.00 0 0 / 1.00)",
-    shadowLg: "4px 4px 0px 0px oklch(0.00 0 0 / 1.00), 4px 4px 6px -1px oklch(0.00 0 0 / 1.00)",
-    shadowXl: "4px 4px 0px 0px oklch(0.00 0 0 / 1.00), 4px 8px 10px -1px oklch(0.00 0 0 / 1.00)",
-    "shadow-2xs": "4px 4px 0px 0px oklch(0.00 0 0 / 0.50)",
-    shadow: "4px 4px 0px 0px oklch(0.00 0 0 / 1.00), 4px 1px 2px -1px oklch(0.00 0 0 / 1.00)",
-    "shadow-2xl": "4px 4px 0px 0px oklch(0.00 0 0 / 2.50)",
+    // BRUTAL SHADOWS - The defining characteristic of neo-brutalism
+    "shadow-2xs": "4px 4px 0px 0px hsl(0 0% 10.1961% / 0.50), 4px 1px 2px -1px hsl(0 0% 10.1961% / 0.50)",
+    shadowXs: "4px 4px 0px 0px hsl(0 0% 10.1961% / 0.50), 4px 1px 2px -1px hsl(0 0% 10.1961% / 0.50)",
+    shadowSm: "4px 4px 0px 0px hsl(0 0% 10.1961% / 1.00), 4px 1px 2px -1px hsl(0 0% 10.1961% / 1.00)",
+    shadow: "4px 4px 0px 0px hsl(0 0% 10.1961% / 1.00), 4px 1px 2px -1px hsl(0 0% 10.1961% / 1.00)",
+    shadowMd: "4px 4px 0px 0px hsl(0 0% 10.1961% / 1.00), 4px 1px 2px -1px hsl(0 0% 10.1961% / 1.00)",
+    shadowLg: "4px 4px 0px 0px hsl(0 0% 10.1961% / 1.00), 4px 1px 2px -1px hsl(0 0% 10.1961% / 1.00)",
+    shadowXl: "4px 4px 0px 0px hsl(0 0% 10.1961% / 1.00), 4px 1px 2px -1px hsl(0 0% 10.1961% / 1.00)",
+    "shadow-2xl": "4px 4px 0px 0px hsl(0 0% 10.1961% / 2.50), 4px 1px 2px -1px hsl(0 0% 10.1961% / 2.50)",
 
     borderWidthDefault: "2px",
     borderStyleDefault: "solid",
 
     // Chart tokens
-    chart1: "Orange",
-    chart2: "Green",
-    chart3: "Purple",
-    chart4: "Teal",
-    chart5: "Pink",
+    chart1: "Red Primary",
+    chart2: "Yellow Secondary", 
+    chart3: "Blue Accent",
+    chart4: "Green Chart",
+    chart5: "Purple Chart",
 
     // Sidebar tokens
     sidebarBackground: "Light Gray",
     sidebarForeground: "Black",
-    sidebarPrimary: "Orange",
+    sidebarPrimary: "Red Primary",
     sidebarPrimaryForeground: "White",
-    sidebarAccent: "Purple",
+    sidebarAccent: "Blue Accent",
     sidebarAccentForeground: "White",
     sidebarBorder: "Black",
-    sidebarRing: "Orange"
+    sidebarRing: "Red Primary"
   }
 };
 

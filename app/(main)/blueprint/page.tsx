@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/features/unorganized-components/ui/button";
 import HomepagePreview from "./HomepagePreview";
 import { BrandProvider, useBrand } from "../brandguide/BrandContext";
@@ -21,11 +21,24 @@ function PageContent() {
   const { activeThemeKey, setActiveTheme, availableThemes, brand } = useBrand();
 
   // Preload CSS variables inline for immediate theme styling
-  const inlineThemeVars = brand?.themeCssVariables
-    ? Object.fromEntries(
+  const inlineThemeVars = useMemo(() => {
+    if (!brand?.themeCssVariables) return {};
+
+    const vars = Object.fromEntries(
       Object.entries(brand.themeCssVariables).map(([key, val]) => [`--${key}`, val])
-    )
-    : {};
+    );
+
+    // For themes that prefer dark mode, use dark color values
+    if (brand.prefersDarkSchemeForChrome && brand.colors) {
+      brand.colors.forEach(color => {
+        if (color.oklchDark) {
+          vars[`--${color.variableName}`] = color.oklchDark;
+        }
+      });
+    }
+
+    return vars;
+  }, [brand]);
 
   // Pre-load Google Fonts for all themes so they're available in previews
   useEffect(() => {
@@ -118,13 +131,11 @@ function PageContent() {
       'violet-sky': 'Violet Sky',
       'sageMeadow': 'Sage Meadow',
       'neo-brutalism': 'Neo Brutalism',
-      'primaryPlay': 'Primary Play',
-      'monochromeClarity': 'Monochrome Clarity',
       'elegantLuxury': 'Elegant Luxury',
-      'violetAbyss': 'Violet Abyss',
       'lilacDaylight': 'Lilac Daylight',
       'neonPop': 'Neon Pop',
-      'cyberPulse': 'Cyber Pulse'
+      'cyberPulse': 'Cyber Pulse',
+      'sageMinimal': 'Sage Minimal'
     };
 
     if (specialNames[key]) return specialNames[key];
@@ -212,9 +223,9 @@ function PageContent() {
                       <Card
                         key={key}
                         onClick={() => setActiveTheme(key)}
-                        className={`group relative cursor-pointer transition-all duration-200 ${activeThemeKey === key
-                          ? 'ring-2 ring-foreground bg-accent/50'
-                          : 'hover:bg-accent/20 hover:shadow-md'
+                        className={`group relative cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md ${activeThemeKey === key
+                          ? 'ring-1 ring-primary/40 bg-accent/30 border-primary/20 shadow-lg'
+                          : 'hover:bg-accent/20'
                           }`}
                         style={{
                           fontFamily: bodyFont || 'inherit'
@@ -229,7 +240,7 @@ function PageContent() {
                                   {importantColors.map((colorToken, index) => (
                                     <div
                                       key={colorToken.variableName}
-                                      className="w-8 h-8 rounded-full border-2 border-background shadow-sm"
+                                      className="w-8 h-8 rounded-full  shadow-sm"
                                       style={{
                                         backgroundColor: colorToken.oklchLight,
                                         zIndex: 5 - index
@@ -252,9 +263,6 @@ function PageContent() {
                                   </p>
                                 </div>
                               </div>
-                              {activeThemeKey === key && (
-                                <CheckCircle className="w-5 h-5 text-foreground" />
-                              )}
                             </div>
 
                             {/* Font Preview Section */}
