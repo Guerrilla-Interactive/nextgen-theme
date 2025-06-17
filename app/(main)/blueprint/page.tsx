@@ -19,41 +19,62 @@ export default function BlueprintPage() {
 
 function PageContent() {
   const { activeThemeKey, setActiveTheme, availableThemes, brand } = useBrand();
-  
+
   // Preload CSS variables inline for immediate theme styling
   const inlineThemeVars = brand?.themeCssVariables
     ? Object.fromEntries(
-        Object.entries(brand.themeCssVariables).map(([key, val]) => [`--${key}`, val])
-      )
+      Object.entries(brand.themeCssVariables).map(([key, val]) => [`--${key}`, val])
+    )
     : {};
 
-  // Dynamically load Google Fonts for the active theme
+  // Pre-load Google Fonts for all themes so they're available in previews
   useEffect(() => {
-    if (!brand || !brand.fonts) return;
+    if (!availableThemes) return;
+
     // Remove existing font loader links
     document.querySelectorAll('link[data-font-loader="blueprint"]').forEach(el => el.remove());
-    // Load new font links for Google Fonts
-    brand.fonts.forEach((font: FontToken) => {
-      if (font.distributor === 'Google Fonts') {
-        // Extract primary family name
-        let fontName = font.family.split(',')[0].replace(/['"]/g, '').trim();
-        const encoded = fontName.replace(/\s+/g, '+');
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.setAttribute('data-font-loader', 'blueprint');
-        link.href = `https://fonts.googleapis.com/css?family=${encoded}&display=swap`;
-        document.head.appendChild(link);
+
+    // Collect all unique Google Font families from all themes
+    const googleFontFamilies = new Set<string>();
+
+    Object.values(availableThemes).forEach(theme => {
+      if (theme?.fonts) {
+        theme.fonts.forEach((font: FontToken) => {
+          if (font.distributor === 'Google Fonts') {
+            // Extract primary family name and clean it up
+            let fontName = font.family.split(',')[0].replace(/['"]/g, '').trim();
+            googleFontFamilies.add(fontName);
+          }
+        });
       }
     });
-    // Cleanup on unmount or theme change
+
+    // Load fonts in a single request for better performance
+    if (googleFontFamilies.size > 0) {
+      const familyParams = Array.from(googleFontFamilies)
+        .map(family => {
+          const encoded = family.replace(/\s+/g, '+');
+          // Load multiple weights for better typography support
+          return `${encoded}:300,400,500,600,700`;
+        })
+        .join('|');
+
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.setAttribute('data-font-loader', 'blueprint');
+      link.href = `https://fonts.googleapis.com/css?family=${familyParams}&display=swap`;
+      document.head.appendChild(link);
+    }
+
+    // Cleanup on unmount
     return () => {
       document.querySelectorAll('link[data-font-loader="blueprint"]').forEach(el => el.remove());
     };
-  }, [activeThemeKey, brand?.fonts]);
+  }, [availableThemes]);
 
   const steps = ["Preset", "Colors", "Typography", "Icons"];
   const [currentStep, setCurrentStep] = useState(0);
-  
+
   const handlePrev = () => currentStep > 0 && setCurrentStep(currentStep - 1);
   const handleNext = () => currentStep < steps.length - 1 && setCurrentStep(currentStep + 1);
 
@@ -105,9 +126,9 @@ function PageContent() {
       'neonPop': 'Neon Pop',
       'cyberPulse': 'Cyber Pulse'
     };
-    
+
     if (specialNames[key]) return specialNames[key];
-    
+
     // Convert kebab-case to Title Case
     return key.split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -125,8 +146,27 @@ function PageContent() {
       .slice(0, 5); // Show top 5 most important colors
   };
 
+  // Function to get font information for a theme
+  const getThemeFonts = (themeFonts: FontToken[]) => {
+    if (!themeFonts || themeFonts.length === 0) return [];
+
+    // Return all fonts with their basic information
+    return themeFonts.map(font => ({
+      ...font,
+      usage: font.roles?.includes('heading') || font.roles?.includes('display') ? 'heading' : 'body'
+    }));
+  };
+
+  // Function to get clean font family name for CSS
+  const getCleanFontFamily = (fontFamily: string) => {
+    return fontFamily.split(',')[0].replace(/['"]/g, '').trim();
+  };
+
   return (
-    <div className="h-screen flex flex-col bg-background text-foreground" style={inlineThemeVars}>
+    <div
+      className="h-screen flex flex-col bg-background text-foreground font-sans"
+      style={inlineThemeVars}
+    >
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left preview pane (Homepage preview) */}
@@ -136,7 +176,7 @@ function PageContent() {
         >
           <div
             ref={previewRef}
-            className="absolute left-1/2 bg-card border border-border rounded-lg"
+            className="absolute left-1/2 bg-card border border-border rounded-lg shadow-lg"
             style={{
               position: 'absolute',
               top: '10vh',
@@ -159,46 +199,89 @@ function PageContent() {
                   {themeOptions.map(key => {
                     const th = availableThemes[key];
                     if (!th) return null;
-                    
+
                     const displayName = getThemeDisplayName(key);
-                    
                     const importantColors = getMostImportantColors(th.colors);
-                    
+                    const themeFonts = getThemeFonts(th.fonts);
+
+                    // Get primary fonts for this theme
+                    const headingFont = themeFonts.find(f => f.usage === 'heading')?.family || themeFonts[0]?.family;
+                    const bodyFont = themeFonts.find(f => f.usage === 'body')?.family || themeFonts[1]?.family || themeFonts[0]?.family;
+
                     return (
                       <Card
                         key={key}
                         onClick={() => setActiveTheme(key)}
-                        className={`group relative cursor-pointer transition-all duration-200 ${
-                          activeThemeKey === key 
-                            ? 'ring-2 ring-foreground bg-accent/50' 
-                            : 'hover:bg-accent/20 hover:shadow-md'
-                        }`}
+                        className={`group relative cursor-pointer transition-all duration-200 ${activeThemeKey === key
+                          ? 'ring-2 ring-foreground bg-accent/50'
+                          : 'hover:bg-accent/20 hover:shadow-md'
+                          }`}
+                        style={{
+                          fontFamily: bodyFont || 'inherit'
+                        }}
                       >
                         <CardContent className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3">
-                              <div className="flex -space-x-1">
-                                {importantColors.map((colorToken, index) => (
-                                  <div
-                                    key={colorToken.variableName}
-                                    className="w-8 h-8 rounded-full border-2 border-background shadow-sm"
-                                    style={{ 
-                                      backgroundColor: colorToken.oklchLight,
-                                      zIndex: 5 - index
+                          <div className="space-y-4">
+                            {/* Theme Name and Colors Row */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div className="flex -space-x-1">
+                                  {importantColors.map((colorToken, index) => (
+                                    <div
+                                      key={colorToken.variableName}
+                                      className="w-8 h-8 rounded-full border-2 border-background shadow-sm"
+                                      style={{
+                                        backgroundColor: colorToken.oklchLight,
+                                        zIndex: 5 - index
+                                      }}
+                                      title={`${colorToken.name} (${colorToken.roles.join(', ')})`}
+                                    />
+                                  ))}
+                                </div>
+                                <div>
+                                  <h4
+                                    className="font-semibold text-foreground"
+                                    style={{
+                                      fontFamily: headingFont || 'inherit'
                                     }}
-                                    title={`${colorToken.name} (${colorToken.roles.join(', ')})`}
-                                  />
-                                ))}
+                                  >
+                                    {displayName}
+                                  </h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    {th.colors.length} colors • {th.fonts.length} font{th.fonts.length !== 1 ? 's' : ''}
+                                  </p>
+                                </div>
                               </div>
-                              <div>
-                                <h4 className="font-semibold text-foreground">{displayName}</h4>
-                                <p className="text-sm text-muted-foreground">
-                                  {th.colors.length} colors • {importantColors.length} primary
-                                </p>
-                              </div>
+                              {activeThemeKey === key && (
+                                <CheckCircle className="w-5 h-5 text-foreground" />
+                              )}
                             </div>
-                            {activeThemeKey === key && (
-                              <CheckCircle className="w-5 h-5 text-foreground" />
+
+                            {/* Font Preview Section */}
+                            {themeFonts.length > 0 && (
+                              <div className="text-xs text-muted-foreground/60 font-normal">
+                                <span className="truncate">
+                                  {themeFonts.map((font, index) => {
+                                    const cleanFamily = getCleanFontFamily(font.family);
+                                    return (
+                                      <span key={index}>
+                                        {index > 0 && (
+                                          <span className="mx-2 text-muted-foreground/30">
+                                            ·
+                                          </span>
+                                        )}
+                                        <span
+                                          className="text-muted-foreground/70"
+                                          style={{ fontFamily: font.family }}
+                                          title={`${cleanFamily} — ${font.usage} typeface`}
+                                        >
+                                          {cleanFamily}
+                                        </span>
+                                      </span>
+                                    );
+                                  })}
+                                </span>
+                              </div>
                             )}
                           </div>
                         </CardContent>
@@ -223,11 +306,10 @@ function PageContent() {
             <button
               key={step}
               onClick={() => setCurrentStep(idx)}
-              className={`text-sm ${
-                idx === currentStep
-                  ? "text-foreground border-b-2 border-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className={`text-sm font-medium ${idx === currentStep
+                ? "text-foreground border-b-2 border-foreground"
+                : "text-muted-foreground hover:text-foreground"
+                }`}
             >
               {step}
             </button>
