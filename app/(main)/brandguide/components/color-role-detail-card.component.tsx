@@ -36,8 +36,7 @@ const ROLE_DESCRIPTIONS: Record<Role, string> = {
     "success-foreground": "Text color that appears on success colored surfaces",
     info: "Color for informational messages and neutral feedback",
     "info-foreground": "Text color that appears on info colored surfaces",
-    warning: "Color for warning states and cautionary messages",
-    "warning-foreground": "Text color that appears on warning colored surfaces",
+
     ring: "Color for focus rings and keyboard navigation indicators",
     "chart-1": "Primary color for data visualization and charts",
     "chart-2": "Secondary color for data visualization and charts",
@@ -47,10 +46,7 @@ const ROLE_DESCRIPTIONS: Record<Role, string> = {
     muted: "Subdued background color for less prominent surfaces",
     "muted-foreground": "Subdued text color for secondary content",
     border: "Standard border color for component boundaries",
-    default: "Default fallback color for unspecified use cases",
     "surface-muted": "Alternative muted surface color",
-    "text-brand": "Brand color for text, often used for headings or highlights.",
-
     "chart-outline": "Outline color for chart elements"
 };
 

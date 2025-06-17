@@ -5,7 +5,7 @@ import { Badge } from "@/features/unorganized-components/ui/badge";
 import { Button } from "@/features/unorganized-components/ui/button";
 import { Card as ShadcnCard, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/features/unorganized-components/ui/card";
 import { Input as ShadcnInput } from "@/features/unorganized-components/ui/input";
-import { Loader2 } from 'lucide-react';
+
 
 interface ComponentShowcaseProps {
   brand: Brand;

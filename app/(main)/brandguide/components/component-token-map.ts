@@ -30,7 +30,7 @@ export interface ComponentVariant {
     Badge: {
       description: "Varies with `primary`, `secondary`, and `destructive` roles.",
       variants: {
-        default: ["primary", "primary-foreground"],
+        primary: ["primary", "primary-foreground"],
         secondary: ["secondary", "secondary-foreground"],
         destructive: ["destructive", "destructive-foreground"],
         outline: ["foreground"],
@@ -40,7 +40,7 @@ export interface ComponentVariant {
     Button: {
       description: "Driven by `primary`, `secondary`, and `destructive` variants.",
       variants: {
-        default: ["primary", "primary-foreground"],
+        primary: ["primary", "primary-foreground"],
         destructive: ["destructive"],
         outline: ["background", "accent", "accent-foreground", "input"],
         secondary: ["secondary", "secondary-foreground"],

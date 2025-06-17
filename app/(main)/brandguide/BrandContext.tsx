@@ -402,7 +402,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
             'primary', 'primary-foreground', 'secondary', 'secondary-foreground',
             'muted', 'muted-foreground', 'accent', 'accent-foreground',
             'destructive', 'destructive-foreground', 'success', 'success-foreground',
-            'info', 'info-foreground', 'warning', 'warning-foreground',
+            'info', 'info-foreground',
             'border', 'input', 'input-foreground', 'ring',
             'chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5', 'chart-outline'
           ].includes(roleKey);
@@ -505,7 +505,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
       // Define semanticRolesToGetSteps here, consistent with brand-utils.ts
       const semanticRolesToGetSteps: Array<keyof ThemeCssVars> = [
-        'primary', 'secondary', 'accent', 'destructive', 'success', 'info', 'warning', 'ring',
+        'primary', 'secondary', 'accent', 'destructive', 'success', 'info', 'ring',
         'chart1', 'chart2', 'chart3', 'chart4', 'chart5'
       ];
 

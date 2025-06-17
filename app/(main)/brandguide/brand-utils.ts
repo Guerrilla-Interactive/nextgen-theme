@@ -18,10 +18,6 @@ export const influenceHierarchy = {
     "destructive-foreground": 4.9,
     /** Positive (success) messaging */                                   success: 4,
     "success-foreground": 3.9,
-    /** Neutral info messaging */                                           info: 4,
-    "info-foreground": 3.8, // slightly different to avoid exact tie with warning-fg if sorting matters
-    /** Caution / warning messaging */                                   warning: 4,
-    "warning-foreground": 3.7,
     /** Subdued surface background */                                      muted: 4,
     /** Subdued surface text */                                "muted-foreground": 4,
     /** Accent highlight / tertiary CTA */                               accent: 3,
@@ -33,22 +29,19 @@ export const influenceHierarchy = {
     "popover-foreground": 1.9,
     
     "tooltip-background": 2,
-    "surface-muted": 2,
-    "text-brand": 2,
     "chart-outline": 2,
     "chart-1": 1,
     "chart-2": 1,
     "chart-3": 1,
     "chart-4": 1,
-    "chart-5": 1,
-    /** Any decorative or component‑specific role defaults to 1 */       default: 1
+    "chart-5": 1
   } as const;
   
 export type Role = keyof typeof influenceHierarchy;
   
 // Define which roles are considered surfaces for applying "on" colors
 export const SURFACE_ROLES: ReadonlySet<Role> = new Set<Role>([
-  "background", "card", "popover", "input", "muted", "secondary", "primary", "destructive", "success", "info", "warning", "accent", "surface-muted"
+  "background", "card", "popover", "input", "muted", "secondary", "primary", "destructive", "success", "accent"
 ]);
 
 /** Shade keys for color-mix lightness steps */
@@ -149,8 +142,6 @@ export interface StyleGuide {
   mutedColors: { muted: string; mutedForeground: string };
   destructiveColors: { destructive: string; destructiveForeground: string };
   successColors: { success: string; successForeground: string };
-  infoColors?: { info: string; infoForeground: string };
-  warningColors?: { warning: string; warningForeground: string };
   inputColors: { input: string; inputForeground?: string };
   borderColors: { border: string };
   ringColors: { ring: string };
@@ -197,10 +188,7 @@ export interface ThemeCssVars {
   "destructive-foreground": string;
   success?: string;
   "success-foreground"?: string;
-  info?: string;
-  "info-foreground"?: string;
-  warning?: string;
-  "warning-foreground"?: string;
+
   border: string;
   input: string;
   "input-foreground"?: string;
@@ -311,8 +299,6 @@ export interface BadgeStyles extends ComponentStateStyles {
   variantDefault?: ComponentStateStyles;
   variantDestructive?: ComponentStateStyles;
   variantSuccess?: ComponentStateStyles;
-  variantWarning?: ComponentStateStyles;
-  variantInfo?: ComponentStateStyles;
 }
 
 export interface NavStyles extends ComponentStateStyles {
@@ -640,14 +626,7 @@ export const createThemeCssVars = (
     cssVars.success = resolve(style.successColors.success);
     cssVars["success-foreground"] = resolve(style.successColors.successForeground);
   }
-  if (style.infoColors) {
-    cssVars.info = resolve(style.infoColors.info);
-    cssVars["info-foreground"] = resolve(style.infoColors.infoForeground);
-  }
-  if (style.warningColors) {
-    cssVars.warning = resolve(style.warningColors.warning);
-    cssVars["warning-foreground"] = resolve(style.warningColors.warningForeground);
-  }
+
   if (style.inputColors.inputForeground) {
     cssVars["input-foreground"] = resolve(style.inputColors.inputForeground);
   }
@@ -706,10 +685,10 @@ export const generateGlobalCss = (brand: Brand): string => {
   const sg = brand.style;
   const ov = brand.themeCssVariables; 
 
-  const semanticRolesToGetSteps: Array<keyof ThemeCssVars> = [
-    'primary', 'secondary', 'accent', 'destructive', 'success', 'info', 'warning', 'ring',
-    'chart1', 'chart2', 'chart3', 'chart4', 'chart5'
-  ];
+        const semanticRolesToGetSteps: Array<keyof ThemeCssVars> = [
+        'primary', 'secondary', 'accent', 'destructive', 'success', 'ring',
+        'chart1', 'chart2', 'chart3', 'chart4', 'chart5'
+      ];
 
   const addStepAliasesForScope = (forDarkTheme: boolean) => {
     semanticRolesToGetSteps.forEach(roleKeyStr => {
@@ -827,16 +806,7 @@ export const generateGlobalCss = (brand: Brand): string => {
     if (successToken?.onColorLight) addLine(`--success-foreground: ${successToken.onColorLight};`,2);
     else if (sg.successColors.successForeground) addLine(`--success-foreground: ${resolveAbstractColorRef(sg.successColors.successForeground, brand.name, brand.colors)};`,2);
   }
-  if (sg.infoColors) {
-    const infoToken = brand.colors.find(c => c.name === sg.infoColors?.info); // Corrected: find by name
-    if (infoToken?.onColorLight) addLine(`--info-foreground: ${infoToken.onColorLight};`,2);
-    else if (sg.infoColors.infoForeground) addLine(`--info-foreground: ${resolveAbstractColorRef(sg.infoColors.infoForeground, brand.name, brand.colors)};`,2);
-  }
-   if (sg.warningColors) {
-    const warningToken = brand.colors.find(c => c.name === sg.warningColors?.warning); // Corrected: find by name
-    if (warningToken?.onColorLight) addLine(`--warning-foreground: ${warningToken.onColorLight};`,2);
-    else if (sg.warningColors.warningForeground) addLine(`--warning-foreground: ${resolveAbstractColorRef(sg.warningColors.warningForeground, brand.name, brand.colors)};`,2);
-  }
+ 
 
   addLine("", 1);
   addLine("  /* Typography etc. */", 1);
@@ -933,16 +903,7 @@ export const generateGlobalCss = (brand: Brand): string => {
     if (successToken?.onColorDark) addLine(`--success-foreground: ${successToken.onColorDark};`,2);
     else if (sg.successColors.successForeground) addLine(`--success-foreground: ${resolveAbstractColorRef(sg.successColors.successForeground, brand.name, brand.colors)};`,2);
   }
-  if (sg.infoColors) {
-    const infoToken = brand.colors.find(c => c.name === sg.infoColors?.info); // Corrected: find by name
-    if (infoToken?.onColorDark) addLine(`--info-foreground: ${infoToken.onColorDark};`,2);
-    else if (sg.infoColors.infoForeground) addLine(`--info-foreground: ${resolveAbstractColorRef(sg.infoColors.infoForeground, brand.name, brand.colors)};`,2);
-  }
-   if (sg.warningColors) {
-    const warningToken = brand.colors.find(c => c.name === sg.warningColors?.warning); // Corrected: find by name
-    if (warningToken?.onColorDark) addLine(`--warning-foreground: ${warningToken.onColorDark};`,2);
-    else if (sg.warningColors.warningForeground) addLine(`--warning-foreground: ${resolveAbstractColorRef(sg.warningColors.warningForeground, brand.name, brand.colors)};`,2);
-  }
+
   addLine("}");
   addLine("");
 
@@ -990,8 +951,7 @@ export const generateGlobalCss = (brand: Brand): string => {
   addLine(`--color-accent-foreground: var(--accent-foreground);`, 2);
   addLine(`--color-destructive-foreground: var(--destructive-foreground);`, 2);
   if (sg.successColors?.successForeground) addLine(`--color-success-foreground: var(--success-foreground);`, 2);
-  if (sg.infoColors?.infoForeground) addLine(`--color-info-foreground: var(--info-foreground);`, 2);
-  if (sg.warningColors?.warningForeground) addLine(`--color-warning-foreground: var(--warning-foreground);`, 2);
+
   addLine(`--color-card-foreground: var(--card-foreground);`,2); 
   addLine(`--color-popover-foreground: var(--popover-foreground);`,2);
   

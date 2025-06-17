@@ -60,10 +60,7 @@ const roleToCategoryMap: Record<Role, string> = {
   "destructive-foreground": "Feedback & State",
   success: "Feedback & State",
   "success-foreground": "Feedback & State",
-  info: "Feedback & State",
-  "info-foreground": "Feedback & State",
-  warning: "Feedback & State",
-  "warning-foreground": "Feedback & State",
+
   ring: "Feedback & State",
   'chart-1': "Charts & Data Visualization",
   'chart-2': "Charts & Data Visualization",
@@ -73,9 +70,6 @@ const roleToCategoryMap: Record<Role, string> = {
   muted: "Text & Muted Content",
   'muted-foreground': "Text & Muted Content",
   border: "Structural & Decorative",
-  default: "Default & General Use",
-  'surface-muted': "Component Surfaces",
-
   'chart-outline': "Charts & Data Visualization",
 };
 
@@ -126,15 +120,10 @@ const roleToSubCategoryMap: Record<Role, string> = {
   input: "Input",
   "input-foreground": "Input",
   "tooltip-background": "Tooltip",
-  'surface-muted': "Muted Surface",
   destructive: "Destructive",
   "destructive-foreground": "Destructive",
   success: "Success",
   "success-foreground": "Success",
-  info: "Info",
-  "info-foreground": "Info",
-  warning: "Warning",
-  "warning-foreground": "Warning",
   ring: "Interaction State",
   'chart-1': "Chart Palette",
   'chart-2': "Chart Palette",
@@ -145,7 +134,6 @@ const roleToSubCategoryMap: Record<Role, string> = {
   muted: "Muted Content",
   'muted-foreground': "Muted Content",
   border: "Structural",
-  default: "General",
 };
 
 const rolePairs: Partial<Record<Role, Role>> = {
@@ -1011,7 +999,7 @@ const BrandGuideContent = () => {
         {/* Selected Color or Role Display Section */}
         {(actualSelectedColorData || selectedRole) && (
           <Container className="mt-12">
-            <Grid className="space-y-4 grid grid-cols-1  items-start content-start md:grid-cols-5 gap-6">
+            <Grid className="space-y-4 grid grid-cols-1  items-start content-start md:grid-cols-7 gap-6">
               {(() => {
                 // Explicit priority: selectedRole takes precedence
                 if (selectedRole) {

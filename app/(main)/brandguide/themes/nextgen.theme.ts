@@ -122,16 +122,7 @@ const nextgenThemeDefinition = {
       roles: ["chart-outline"],
       category: 'shade',
     },
-    {
-      tokenSpecificName: "Surface Muted Dark",
-      description: "Muted surface, darker than card but lighter than background",
-      oklchLight: "oklch(0.18 0.01 258)" as OklchString,
-      oklchDark: "oklch(0.18 0.01 258)" as OklchString,
-      roles: ["surface-muted"],
-      category: 'shade',
-      onColorLight: "oklch(0.97 0.005 90)" as OklchString,
-      onColorDark: "oklch(0.97 0.005 90)" as OklchString,
-    },
+
   ] as RawColorDefinition[],
 
   styleGuide: {

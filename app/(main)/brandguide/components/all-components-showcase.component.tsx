@@ -212,7 +212,7 @@ const renderComponent = (name: string, doc: ComponentDocumentation) => {
             return (
                 <div className="flex flex-wrap gap-2">
                     {doc.variants && Object.keys(doc.variants).map(variant => (
-                        <Badge key={variant} variant={variant as BadgeProps['variant']}>{variant}</Badge>
+                        <Badge key={variant} variant={variant === 'primary' ? 'default' : variant as BadgeProps['variant']}>{variant}</Badge>
                     ))}
                 </div>
             );
@@ -220,7 +220,7 @@ const renderComponent = (name: string, doc: ComponentDocumentation) => {
             return (
                 <div className="flex flex-wrap gap-2">
                     {doc.variants && Object.keys(doc.variants).map(variant => (
-                        <Button key={variant} variant={variant as any}>{variant}</Button>
+                        <Button key={variant} variant={variant === 'primary' ? 'default' : variant as any}>{variant}</Button>
                     ))}
                 </div>
             );

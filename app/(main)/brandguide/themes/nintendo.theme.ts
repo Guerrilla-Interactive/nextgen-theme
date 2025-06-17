@@ -126,16 +126,7 @@ const nintendoThemeDefinition = {
       onColorLight: "oklch(0.22 0.002 270)" as OklchString, // Near Black text
       onColorDark: "oklch(1 0 0)" as OklchString,          // Super White text
     },
-    {
-      tokenSpecificName: "Surface Muted",
-      description: "Muted surface, for less emphasis.",
-      oklchLight: "oklch(0.93 0.002 270)" as OklchString, // bs-gray-200: #e9ecef
-      oklchDark: "oklch(0.24 0.002 270)" as OklchString, // Slightly darker than dark card bg
-      roles: ["surface-muted"],
-      category: 'shade',
-      onColorLight: "oklch(0.22 0.002 270)" as OklchString, // Near Black text
-      onColorDark: "oklch(1 0 0)" as OklchString,          // Super White text
-    },
+
     {
       tokenSpecificName: "Text Brand Red",
       description: "Brand text color, same as primary",

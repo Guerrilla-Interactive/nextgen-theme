@@ -82,7 +82,7 @@ import {
       tokenSpecificName: "Sand",
       oklchLight: "oklch(0.90 0.008 53)" as OklchString,
       oklchDark:  "oklch(0.22 0.006 34)" as OklchString,
-      roles: ["muted", "surface-muted", "sidebar-border"],
+      roles: ["muted", "sidebar-border"],
       category: "shade",
       onColorLight: "Charcoal‑Deep",
       onColorDark:  "Snow",
@@ -129,8 +129,8 @@ import {
     mutedColors:         { muted: "Sand", mutedForeground: "Charcoal‑Deep" },
     destructiveColors:   { destructive: "Brick", destructiveForeground: "Snow" },
     successColors:       { success: "Success‑Terracotta", successForeground: "Snow" },
-    infoColors:          { info: "Success‑Terracotta", infoForeground: "Snow" },
-    warningColors:       { warning: "Brick", warningForeground: "Snow" },
+
+    
     inputColors:         { input: "Butter", inputForeground: "Charcoal‑Deep" },
     borderColors:        { border: "Butter" },
     ringColors:          { ring: "Terracotta" },

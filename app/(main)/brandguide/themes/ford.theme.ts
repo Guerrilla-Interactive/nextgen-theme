@@ -43,7 +43,7 @@ import {
         description: "A refined metallic silver for borders, inputs, and muted surfaces.",
         oklchLight: "oklch(0.82 0.005 255)" as OklchString, // Lighter, more like a subtle chrome
         oklchDark:  "oklch(0.75 0.005 255)" as OklchString,
-        roles:      ["secondary", "border", "input", "muted", "chart-4", "surface-muted", "chart-outline", "default"],
+        roles:      ["secondary", "border", "input", "muted", "chart-4", "chart-outline", "default"],
         category:   "shade",
         onColorLight: "oklch(0.15 0.03 255)" as OklchString, // Dark blue text
         onColorDark:  "oklch(0.15 0.03 255)" as OklchString,
