@@ -191,6 +191,14 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
   useEffect(() => {
     const brandForCSS = brandToDisplay;
     if (typeof window !== "undefined" && brandForCSS && brandForCSS.colors) {
+      // If default theme, clear inline styles and skip dynamic injection to use globals.css
+      if (activeThemeKey === 'default') {
+        document.documentElement.style.cssText = '';
+        return;
+      }
+      // Clear previous inline CSS variables on root element to apply only current theme
+      const rootElement = document.documentElement;
+      rootElement.style.cssText = '';
       const rootStyle = document.documentElement.style;
       const hslConverter = converter('hsl'); // Expects hex, rgb etc.
       const oklchConverter = converter('oklch');
@@ -489,8 +497,8 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         setAndTrackProperty('--font-display', fontDisplay);
         setAndTrackProperty('--font-code', fontCode);
 
-        // Also set the body font directly
-        document.body.style.fontFamily = fontBody;
+        // Also set the font on the html root
+        rootStyle.setProperty('font-family', fontBody);
       }
 
       const finalProcessedBrand: EnrichedBrand = {
@@ -505,7 +513,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
       // Define semanticRolesToGetSteps here, consistent with brand-utils.ts
       const semanticRolesToGetSteps: Array<keyof ThemeCssVars> = [
-        'primary', 'secondary', 'accent', 'destructive', 'success', 'info', 'ring',
+        'primary', 'secondary', 'accent', 'destructive', 'success', 'ring',
         'chart1', 'chart2', 'chart3', 'chart4', 'chart5'
       ];
 

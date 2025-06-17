@@ -1,0 +1,67 @@
+import { Brand, ThemeCssVars, StyleGuide } from '../brand-utils';
+
+// Default fallback theme using the provided CSS variable values
+const themeCssVariables: ThemeCssVars = {
+  background: 'oklch(1 0 0)',
+  foreground: 'oklch(0.145 0 0)',
+  card: 'oklch(1 0 0)',
+  'card-foreground': 'oklch(0.145 0 0)',
+  popover: 'oklch(1 0 0)',
+  'popover-foreground': 'oklch(0.145 0 0)',
+  primary: 'oklch(0.205 0 0)',
+  'primary-foreground': 'oklch(0.985 0 0)',
+  secondary: 'oklch(0.97 0 0)',
+  'secondary-foreground': 'oklch(0.205 0 0)',
+  muted: 'oklch(0.97 0 0)',
+  'muted-foreground': 'oklch(0.556 0 0)',
+  accent: 'oklch(0.97 0 0)',
+  'accent-foreground': 'oklch(0.205 0 0)',
+  destructive: 'oklch(0.577 0.245 27.325)',
+  'destructive-foreground': 'oklch(0.577 0.245 27.325)',
+  border: 'oklch(0.922 0 0)',
+  input: 'oklch(0.922 0 0)',
+  ring: 'oklch(0.708 0 0)',
+  chart1: 'oklch(0.646 0.222 41.116)',
+  chart2: 'oklch(0.6 0.118 184.704)',
+  chart3: 'oklch(0.398 0.07 227.392)',
+  chart4: 'oklch(0.828 0.189 84.429)',
+  chart5: 'oklch(0.769 0.188 70.08)',
+  radius: '0.625rem',
+};
+
+export const defaultTheme: Brand = {
+  name: 'Default',
+  businessDetails: {
+    name: 'Default Theme',
+    industry: 'theme',
+    personality: {
+      vintageModern: 50,
+      seasonedYouthful: 50,
+      gracefulBold: 50,
+      playfulElegant: 50,
+      valueSmartLuxurious: 50,
+      structuredNatural: 50,
+      symbolicRealistic: 50,
+    },
+  },
+  colors: [],
+  fonts: [],
+  // Provide minimal styleGuide for default theme
+  style: {
+    primaryColors: { primary: 'primary', primaryForeground: 'primary-foreground' },
+    secondaryColors: { secondary: 'secondary', secondaryForeground: 'secondary-foreground' },
+    accentColors: { accent: 'accent', accentForeground: 'accent-foreground' },
+    cardColors: { card: 'card', cardForeground: 'card-foreground' },
+    popoverColors: { popover: 'popover', popoverForeground: 'popover-foreground' },
+    mutedColors: { muted: 'muted', mutedForeground: 'muted-foreground' },
+    destructiveColors: { destructive: 'destructive', destructiveForeground: 'destructive-foreground' },
+    successColors: { success: 'primary', successForeground: 'primary-foreground' },
+    inputColors: { input: 'input', inputForeground: 'input-foreground' },
+    borderColors: { border: 'border' },
+    ringColors: { ring: 'ring' },
+    radius: { radiusSm: '0.25rem', radiusMd: '0.5rem', radiusLg: '0.75rem', radiusXl: '1rem' },
+    spacing: { spacingSm: '0.5rem', spacingMd: '1rem', spacingLg: '1.5rem', spacingXl: '2rem' },
+  } as StyleGuide,
+  themeCssVariables,
+  prefersDarkSchemeForChrome: false,
+}; 

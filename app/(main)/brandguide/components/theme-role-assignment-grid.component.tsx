@@ -602,7 +602,7 @@ export const ThemeRoleAssignmentGrid: React.FC<ThemeRoleAssignmentGridProps> = (
   /*───────────────────────────────────────────────────────────────────────*/
   return (
     <GridCol className="col-span-5 border-dashed border-[var(--border)]/50 text-xs overflow-hidden" style={{ fontFamily: "var(--font-code, var(--font-mono, monospace))" }}>
-      <div className="columns-3 gap-4 space-y-4 w-full max-w-full overflow-hidden">
+      <div className="columns-5 gap-4 space-y-4 w-full max-w-full overflow-hidden">
         {allRoleItems.map((item: FlattenedRoleItem, index: number) => {
           const { categoryName, icon: Icon, categoryDescription, subCategoryName, description, roles } = item;
 

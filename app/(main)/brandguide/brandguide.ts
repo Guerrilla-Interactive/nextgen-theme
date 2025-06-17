@@ -17,6 +17,7 @@
 
 import { nextgenBrand } from "./themes/nextgen.theme";
 import { razerBrand } from "./themes/razer.theme";
+import { defaultTheme } from "./themes/default.theme";
 import { neoBrutalismBrand } from "./themes/neo-brutalism.theme";
 import { type Brand, influenceHierarchy } from "./brand-utils";
 import { marvelBrand } from "./themes/marvel.theme";
@@ -50,8 +51,8 @@ import { neonPopBrand } from "./themes/neon-pop.theme";
 export { influenceHierarchy }; // Re-export if needed by other parts of the app directly from here
 
 export const themes: Record<string, Brand> = {
+  default: defaultTheme,
   nextgen: nextgenBrand,
-  
   "neo-brutalism": neoBrutalismBrand,
   "marvel": marvelBrand,
   "violet-sky": violetSkyBrand,
