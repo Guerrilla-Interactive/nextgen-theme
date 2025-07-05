@@ -17,7 +17,7 @@ const buttonVariantConfig = {
         "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80 active:bg-secondary/50",
       ghost:
         "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 active:bg-accent/90",
-      link: "text-primary underline-offset-4 hover:underline active:text-primary/80 active:underline",
+      link: "text-primary underline-offset-4 hover:underline active:text-primary/80 active:underline link",
     },
     size: {
       default: "h-9 px-4 py-2 has-[>svg]:px-3",

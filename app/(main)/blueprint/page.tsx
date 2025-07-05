@@ -5,9 +5,12 @@ import { Button } from "@/features/unorganized-components/ui/button";
 import HomepagePreview from "./HomepagePreview";
 import { BrandProvider, useBrand } from "../brandguide/BrandContext";
 import { themes } from "../brandguide/brandguide";
-import { FontToken, influenceHierarchy, type Role } from "../brandguide/brand-utils";
-import { Card, CardHeader, CardTitle, CardContent } from "@/features/unorganized-components/ui/card";
-import { CheckCircle } from 'lucide-react';
+import { FontToken, influenceHierarchy, type Role, generateGlobalCss } from "../brandguide/brand-utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/features/unorganized-components/ui/card";
+import { Moon, Sun, Copy, Download, Check } from "lucide-react";
+import { Badge } from "@/features/unorganized-components/ui/badge";
+import { ExportTab } from "./tabs/export-tab.component";
+import { ColorsTab } from "./tabs/colors-tab.component";
 
 export default function BlueprintPage() {
   return (
@@ -20,25 +23,68 @@ export default function BlueprintPage() {
 function PageContent() {
   const { activeThemeKey, setActiveTheme, availableThemes, brand } = useBrand();
 
+  // Initialize cardDarkModes based on each theme's default preference
+  const initialModes: Record<string, boolean> = {};
+  Object.keys(availableThemes).forEach((key) => {
+    // Use new defaultMode property, fallback to old prefersDarkSchemeForChrome for backward compatibility
+    const themeDefault = availableThemes[key]?.defaultMode === 'dark' || availableThemes[key]?.prefersDarkSchemeForChrome || false;
+    initialModes[key] = themeDefault;
+  });
+
+  const [cardDarkModes, setCardDarkModes] = useState<Record<string, boolean>>(initialModes);
+
+  // Initialize global page dark mode state based on active theme
+  const [isPageDarkMode, setIsPageDarkMode] = useState(() => {
+    return availableThemes[activeThemeKey]?.prefersDarkSchemeForChrome ?? false;
+  });
+
+  // Toggle dark mode for a specific card
+  const toggleCardDarkMode = (cardKey: string) => {
+    setCardDarkModes(prev => {
+      const newCardDarkModes = {
+        ...prev,
+        [cardKey]: !prev[cardKey]
+      };
+      
+      // If this card is the active theme, also update the page theme
+      if (cardKey === activeThemeKey) {
+        const newDarkMode = newCardDarkModes[cardKey] || availableThemes[cardKey]?.defaultMode === 'dark' || availableThemes[cardKey]?.prefersDarkSchemeForChrome || false;
+        setIsPageDarkMode(!!newDarkMode);
+      }
+      
+      return newCardDarkModes;
+    });
+  };
+
+  // Handle theme selection - switch page to that theme's current mode
+  const handleThemeSelection = (themeKey: string) => {
+    setActiveTheme(themeKey);
+    
+    // Switch page to the selected theme's current mode
+    const isThemeDark = cardDarkModes[themeKey] || availableThemes[themeKey]?.defaultMode === 'dark' || availableThemes[themeKey]?.prefersDarkSchemeForChrome || false;
+    setIsPageDarkMode(!!isThemeDark);
+  };
+
+  // Update page theme when active theme changes
+  useEffect(() => {
+    if (activeThemeKey) {
+      const isThemeDark = cardDarkModes[activeThemeKey] || availableThemes[activeThemeKey]?.defaultMode === 'dark' || availableThemes[activeThemeKey]?.prefersDarkSchemeForChrome || false;
+      setIsPageDarkMode(!!isThemeDark);
+    }
+  }, [activeThemeKey, cardDarkModes, availableThemes]);
+
   // Preload CSS variables inline for immediate theme styling
   const inlineThemeVars = useMemo(() => {
     if (!brand?.themeCssVariables) return {};
 
-    const vars = Object.fromEntries(
+    // Just return basic CSS variables for inline styling - let BrandContext handle the actual CSS variable management
+    return Object.fromEntries(
       Object.entries(brand.themeCssVariables).map(([key, val]) => [`--${key}`, val])
     );
-
-    // For themes that prefer dark mode, use dark color values
-    if (brand.prefersDarkSchemeForChrome && brand.colors) {
-      brand.colors.forEach(color => {
-        if (color.oklchDark) {
-          vars[`--${color.variableName}`] = color.oklchDark;
-        }
-      });
-    }
-
-    return vars;
   }, [brand]);
+
+  // BrandContext handles all CSS variable management including role assignments
+  // No need for additional CSS variable management here
 
   // Pre-load Google Fonts for all themes so they're available in previews
   useEffect(() => {
@@ -85,8 +131,39 @@ function PageContent() {
     };
   }, [availableThemes]);
 
-  const steps = ["Preset", "Colors", "Typography", "Icons"];
+  const steps = ["Preset", "Colors", "Typography", "Icons", "Export"];
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Copy functionality for export
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyCSS = async () => {
+    if (!brand) return;
+    
+    const css = generateGlobalCss(brand);
+    try {
+      await navigator.clipboard.writeText(css);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy CSS:', err);
+    }
+  };
+
+  const handleDownloadCSS = () => {
+    if (!brand) return;
+    
+    const css = generateGlobalCss(brand);
+    const blob = new Blob([css], { type: 'text/css' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'globals.css';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   const handlePrev = () => currentStep > 0 && setCurrentStep(currentStep - 1);
   const handleNext = () => currentStep < steps.length - 1 && setCurrentStep(currentStep + 1);
@@ -173,9 +250,14 @@ function PageContent() {
     return fontFamily.split(',')[0].replace(/['"]/g, '').trim();
   };
 
+  // Get the current dark mode for active theme
+  const getActiveThemeDefaultMode = (): boolean => {
+    return availableThemes[activeThemeKey]?.defaultMode === 'dark' || availableThemes[activeThemeKey]?.prefersDarkSchemeForChrome || false;
+  };
+
   return (
     <div
-      className="h-screen flex flex-col bg-background text-foreground font-sans"
+      className={`h-screen flex flex-col bg-background text-foreground font-sans ${isPageDarkMode ? 'dark' : ''}`}
       style={inlineThemeVars}
     >
       {/* Main content */}
@@ -219,10 +301,18 @@ function PageContent() {
                     const headingFont = themeFonts.find(f => f.usage === 'heading')?.family || themeFonts[0]?.family;
                     const bodyFont = themeFonts.find(f => f.usage === 'body')?.family || themeFonts[1]?.family || themeFonts[0]?.family;
 
+                    // Always show colors in light mode for card previews (neutral display)
+                    const getColorForCard = (colorToken: any) => {
+                      return colorToken.oklchLight; // Always use light mode colors for card display
+                    };
+
+                    // Check if this theme's toggle is in dark mode
+                    const isCardToggleDark = cardDarkModes[key] || availableThemes[key]?.defaultMode === 'dark' || availableThemes[key]?.prefersDarkSchemeForChrome || false;
+
                     return (
                       <Card
                         key={key}
-                        onClick={() => setActiveTheme(key)}
+                        onClick={() => handleThemeSelection(key)}
                         className={`group relative cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md ${activeThemeKey === key
                           ? 'ring-1 ring-primary/40 bg-accent/30 border-primary/20 shadow-lg'
                           : 'hover:bg-accent/20'
@@ -240,9 +330,9 @@ function PageContent() {
                                   {importantColors.map((colorToken, index) => (
                                     <div
                                       key={colorToken.variableName}
-                                      className="w-8 h-8 rounded-full  shadow-sm"
+                                      className="w-8 h-8 rounded-full shadow-sm"
                                       style={{
-                                        backgroundColor: colorToken.oklchLight,
+                                        backgroundColor: getColorForCard(colorToken),
                                         zIndex: 5 - index
                                       }}
                                       title={`${colorToken.name} (${colorToken.roles.join(', ')})`}
@@ -263,24 +353,45 @@ function PageContent() {
                                   </p>
                                 </div>
                               </div>
+                              
+                              {/* Dark/Light Mode Toggle */}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Prevent card selection when clicking toggle
+                                  toggleCardDarkMode(key);
+                                }}
+                                className="h-8 w-8 p-0 hover:bg-accent/50 transition-colors relative z-10"
+                                title={isCardToggleDark ? "Switch to light mode" : "Switch to dark mode"}
+                              >
+                                {isCardToggleDark ? (
+                                  <Moon className="h-4 w-4" />
+                                  
+                                ) : (
+                                  <Sun className="h-4 w-4" />
+                                )}
+                              </Button>
                             </div>
 
                             {/* Font Preview Section */}
                             {themeFonts.length > 0 && (
-                              <div className="text-xs text-muted-foreground/60 font-normal">
+                              <div className="text-xs font-normal text-muted-foreground">
                                 <span className="truncate">
                                   {themeFonts.map((font, index) => {
                                     const cleanFamily = getCleanFontFamily(font.family);
                                     return (
                                       <span key={index}>
                                         {index > 0 && (
-                                          <span className="mx-2 text-muted-foreground/30">
+                                          <span className="mx-2 opacity-30">
                                             ·
                                           </span>
                                         )}
                                         <span
-                                          className="text-muted-foreground/70"
-                                          style={{ fontFamily: font.family }}
+                                          style={{ 
+                                            fontFamily: font.family
+                                          }}
+                                          className="opacity-70"
                                           title={`${cleanFamily} — ${font.usage} typeface`}
                                         >
                                           {cleanFamily}
@@ -299,6 +410,16 @@ function PageContent() {
                 </div>
               </div>
             </div>
+          ) : currentStep === 1 ? (
+            <ColorsTab 
+              activeThemeKey={activeThemeKey}
+              isPageDarkMode={isPageDarkMode}
+            />
+          ) : currentStep === 4 ? (
+            <ExportTab 
+              activeThemeKey={activeThemeKey}
+              isPageDarkMode={isPageDarkMode}
+            />
           ) : (
             <div>Decision Panel - {steps[currentStep]}</div>
           )}

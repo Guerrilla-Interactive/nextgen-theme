@@ -207,6 +207,16 @@ import {
       foreground: "Periwinkle",
       radiusBase: "1.5rem",
   
+      // Sidebar mappings - using existing colors from rawColors
+      sidebar: "White",
+      sidebarForeground: "Periwinkle",
+      sidebarPrimary: "Violet",
+      sidebarPrimaryForeground: "White",
+      sidebarAccent: "Cerise",
+      sidebarAccentForeground: "Periwinkle",
+      sidebarBorder: "Indigo",
+      sidebarRing: "Violet",
+  
       // Shadows
       shadowXs:  "0px 8px 16px -4px oklch(0 0 0 / 0.04)",
       shadowSm:  "0px 8px 16px -4px oklch(0 0 0 / 0.08), 0px 1px 2px -5px oklch(0 0 0 / 0.08)",
@@ -279,6 +289,16 @@ import {
       violetSkyThemeDefinition.styleGuide,
       violetSkyThemeDefinition.otherVars
     ),
+    defaultMode: 'light' as const, // Light mode with dreamy sky colors
     prefersDarkSchemeForChrome: false,
+    sevenAxisCode: {
+      colorComplexity: 'duotone',            // Duotone - violet and indigo with cerise accent
+      brightness: 'light',                   // Light - lavender background suggests light mode
+      saturation: 'medium',                  // Medium - balanced violet/indigo saturation
+      colorHarmony: 'analogous',             // Analogous - violet, indigo, and cerise are near each other
+      accentUsage: 'balanced',               // Balanced - good use of cerise accents
+      cornerStyle: 'very-rounded',           // Very-rounded - 1.5rem base radius is quite rounded
+      elevation: 'minimal-shadow',           // Minimal-shadow - soft, ethereal shadows
+    },
   };
   

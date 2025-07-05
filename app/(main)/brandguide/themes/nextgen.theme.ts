@@ -1,4 +1,5 @@
 import { type Brand, generateBrandColors, type RawColorDefinition, type StyleGuide, createThemeCssVars, OklchString } from '../brand-utils';
+import { glowingBorderAnimationPreset } from '../animation-presets';
 
 
 
@@ -159,6 +160,16 @@ const nextgenThemeDefinition = {
     generalTextLightOnDark: "Photon White",
     generalTextDarkOnLight: "Midnight Ash",
 
+    // Sidebar mappings - using existing colors
+    sidebar: "Carbon Fiber",
+    sidebarForeground: "Photon White",
+    sidebarPrimary: "Inferno Orange",
+    sidebarPrimaryForeground: "Photon White",
+    sidebarAccent: "Inferno Orange",
+    sidebarAccentForeground: "Photon White",
+    sidebarBorder: "Tungsten Gray",
+    sidebarRing: "Inferno Orange",
+
     // Edgy, cool-toned sharp shadows
     shadowXs: "0px 1px 2px 0px hsla(260, 10%, 8%, 0.2)",
     shadowSm: "0px 2px 4px -1px hsla(260, 10%, 8%, 0.25), 0px 1px 2px -1px hsla(260, 10%, 8%, 0.2)",
@@ -229,5 +240,19 @@ export const nextgenBrand: Brand = {
     nextgenThemeDefinition.styleGuide,
     nextgenThemeDefinition.otherVars
   ),
+  defaultMode: 'dark' as const, // Dark mode for edgy gaming aesthetic
   prefersDarkSchemeForChrome: true, // Dark-first, edgy tech preference
+  sevenAxisCode: {
+    colorComplexity: 'duotone',           // Duotone - orange primary with supporting colors
+    brightness: 'dark',                   // Dark - midnight ash background
+    saturation: 'neon',                   // Neon - bright, high-saturation orange and vibrant chart colors
+    colorHarmony: 'complementary',        // Complementary - orange with contrasting blues/teals
+    accentUsage: 'prominent',             // Prominent - strong orange accent usage
+    cornerStyle: 'sharp',                 // Sharp - minimal radius (3px base)
+    elevation: 'layered',                 // Layered - distinctive shadows for depth
+  },
+  animationConfig: {
+    preset: glowingBorderAnimationPreset,
+    rootClassName: 'nextgen-glow-theme'
+  }
 };

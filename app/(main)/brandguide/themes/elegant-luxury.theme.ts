@@ -158,6 +158,16 @@ import {
     textBrand: "Terracotta",
     chartOutline: "Terracotta",
   
+    // Sidebar mappings - using colors already defined in rawColors
+    sidebar: "Butter",
+    sidebarForeground: "Charcoal‑Deep",
+    sidebarPrimary: "Terracotta",
+    sidebarPrimaryForeground: "Snow",
+    sidebarAccent: "Butter‑Accent",
+    sidebarAccentForeground: "Charcoal‑Deep",
+    sidebarBorder: "Sand",
+    sidebarRing: "Terracotta",
+  
     // Shadows (soft flat)
     "shadow-2xs": "1px 1px 16px -2px hsl(0 63% 18% / 0.06)",
     "shadow-xs":  "var(--shadow-2xs)",
@@ -233,7 +243,17 @@ import {
       styleGuide,
       otherVars
     ),
-    prefersDarkSchemeForChrome: false
+    defaultMode: 'light' as const,
+    prefersDarkSchemeForChrome: false,
+    sevenAxisCode: {
+      colorComplexity: 'duotone',           // Duotone - terracotta and butter 
+      brightness: 'light',                  // Light - light mode default with ivory backgrounds
+      saturation: 'muted',                  // Muted - sophisticated, low saturation luxury colors
+      colorHarmony: 'analogous',            // Analogous - terracotta (orange-red) and butter (yellow) are adjacent/analogous on color wheel
+      accentUsage: 'balanced',              // Accent-neutral - balanced use of color accents
+      cornerStyle: 'rounded',               // Rounded - uses calc(var(--radius)) system with 0.375rem base
+      elevation: 'flat',                    // Flat - soft, minimal shadows with low opacity
+    },
   };
   
   // =====================================================================

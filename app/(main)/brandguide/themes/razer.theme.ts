@@ -7,6 +7,8 @@ import {
     OklchString,
   } from '../brand-utils';
   
+import { glowingBorderAnimationPreset } from '../animation-presets';
+  
   const razerThemeDefinition = {
     rawColors: [
       // Razer Off-White: Main foreground text
@@ -235,43 +237,43 @@ import {
   export const razerBrand: Brand = {
     name: "Razer",
     businessDetails: {
-      name: "Razer Inc.",
-      industry: "gaming_hardware_software_services", // Expanded
+      name: "Razer",
+      industry: "gaming",
       personality: {
-        vintageModern: 20,    // More modern
-        seasonedYouthful: 80, // Youthful
-        gracefulBold: 90,     // Bold
-        playfulElegant: 50,   // Balanced
-        valueSmartLuxurious: 75, // Premium feel
-        structuredNatural: 40, // More structured
-        symbolicRealistic: 60,
+        vintageModern: 25,
+        seasonedYouthful: 80,
+        gracefulBold: 90,
+        playfulElegant: 30,
+        valueSmartLuxurious: 75,
+        structuredNatural: 70,
+        symbolicRealistic: 65,
       },
     },
     colors: razerBrandColors,
     fonts: [
       {
-        name: "Rajdhani",
+        name: "Inter",
         distributor: "Google Fonts",
-        description: "Sharp, tech-inspired sans-serif perfect for gaming interfaces.",
-        family: "'Rajdhani', 'Exo 2', system-ui, sans-serif",
-        roles: ["body", "default", "sans", "p", "a", "li", "button-label", "form-input", "serif"],
-        weights: { light: 300, regular: 400, medium: 500, semibold: 600, bold: 700 },
+        description: "Clean, modern sans-serif perfect for gaming interfaces.",
+        family: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+        roles: ["body", "default", "sans", "p", "a", "li", "button-label", "form-input"],
+        weights: { thin: 100, light: 300, regular: 400, medium: 500, semibold: 600, bold: 700, extrabold: 800, black: 900 },
       },
       {
         name: "Orbitron",
         distributor: "Google Fonts",
-        description: "Futuristic display font perfect for Razer's cutting-edge gaming brand.",
-        family: "'Orbitron', 'Rajdhani', sans-serif",
-        roles: ["display", "h1", "h2", "h3", "h4", "h5", "h6", "hero-title"],
-        weights: { regular: 400, medium: 500, semibold: 600, bold: 700, extrabold: 800, black: 900 },
+        description: "Futuristic display font that matches Razer's tech aesthetic.",
+        family: "'Orbitron', 'Inter', sans-serif",
+        roles: ["display", "h1", "h2", "h3", "hero-title", "nav-title"],
+        weights: { regular: 400, medium: 500, semibold: 600, bold: 700, black: 900 },
       },
       {
-        name: "Fira Code",
+        name: "JetBrains Mono",
         distributor: "Google Fonts",
-        description: "Developer-focused monospaced font perfect for gaming tech code.",
-        family: "'Fira Code', 'JetBrains Mono', Consolas, monospace",
+        description: "Technical monospace font for gaming data and code.",
+        family: "'JetBrains Mono', 'IBM Plex Mono', Consolas, monospace",
         roles: ["code", "mono"],
-        weights: { light: 300, regular: 400, medium: 500, semibold: 600, bold: 700 },
+        weights: { thin: 100, light: 300, regular: 400, medium: 500, bold: 700 },
       },
     ],
     style: razerThemeDefinition.styleGuide,
@@ -281,6 +283,20 @@ import {
       razerThemeDefinition.styleGuide,
       razerThemeDefinition.otherVars
     ),
+    defaultMode: 'dark' as const,
     prefersDarkSchemeForChrome: true,
+    sevenAxisCode: {
+      colorComplexity: 'duotone',           // Duotone - green primary with supporting colors
+      brightness: 'dark',                   // Dark - typical gaming aesthetic
+      saturation: 'neon',                   // Neon - bright, high-saturation green
+      colorHarmony: 'complementary',        // Complementary - green with contrasting accents
+      accentUsage: 'prominent',             // Prominent - strong green accent usage
+      cornerStyle: 'sharp',                 // Sharp - angular, tech-focused design
+      elevation: 'layered',                 // Layered - gaming UI depth and shadows
+    },
+    animationConfig: {
+      preset: glowingBorderAnimationPreset,
+      rootClassName: 'razer-glow-theme'
+    }
   };
   

@@ -10,6 +10,14 @@ export const influenceHierarchy = {
     /** Highest contrast foreground (text) colour */                  foreground: 9,
     /** Secondary actionable hue or surface */                         secondary: 8,
     "secondary-foreground": 7.9,
+    /** Sidebar surface */                                               sidebar: 7.5,
+    "sidebar-foreground": 7.4,
+    "sidebar-primary": 7.3,
+    "sidebar-primary-foreground": 7.2,
+    "sidebar-accent": 7.1,
+    "sidebar-accent-foreground": 7.0,
+    "sidebar-border": 6.9,
+    "sidebar-ring": 6.8,
     /** Standard border colour */                                         border: 7,
     /** Form control foregrounds/backgrounds */                           input: 7,
     "input-foreground": 6.9,
@@ -41,7 +49,7 @@ export type Role = keyof typeof influenceHierarchy;
   
 // Define which roles are considered surfaces for applying "on" colors
 export const SURFACE_ROLES: ReadonlySet<Role> = new Set<Role>([
-  "background", "card", "popover", "input", "muted", "secondary", "primary", "destructive", "success", "accent"
+  "background", "card", "popover", "input", "muted", "secondary", "primary", "destructive", "success", "accent", "sidebar"
 ]);
 
 /** Shade keys for color-mix lightness steps */
@@ -133,6 +141,33 @@ export interface Personality {
   symbolicRealistic: number;
 }
   
+/**
+ * 7-axis design code that describes the visual characteristics of a theme.
+ * Each axis represents a fundamental design dimension.
+ */
+export interface SevenAxisCode {
+  /** Color complexity: Monochrome (simple) vs. Polychrome (complex) */
+  colorComplexity: 'monochrome' | 'duotone' | 'triad' | 'polychrome';
+  
+  /** Default brightness preference: Light vs. Dark */
+  brightness: 'light' | 'dark' | 'adaptive';
+  
+  /** Color saturation: Muted/Pastel vs. Vibrant/Neon */
+  saturation: 'muted' | 'pastel' | 'medium' | 'vibrant' | 'neon';
+  
+  /** Color relationships: Single-hue vs. Multi-hue gradients/schemes */
+  colorHarmony: 'single-hue' | 'analogous' | 'complementary' | 'triadic' | 'tetradic';
+  
+  /** Visual hierarchy: Accent-heavy vs. Accent-neutral */
+  accentUsage: 'minimal' | 'subtle' | 'balanced' | 'prominent' | 'dominant';
+  
+  /** Border radius: Sharp/Angular vs. Rounded */
+  cornerStyle: 'sharp' | 'slightly-rounded' | 'rounded' | 'very-rounded' | 'pill';
+  
+  /** Visual depth: Flat vs. Elevated/Layered */
+  elevation: 'flat' | 'minimal-shadow' | 'subtle-depth' | 'layered' | 'dramatic';
+}
+  
 export interface StyleGuide {
   primaryColors: { primary: string; primaryForeground: string };
   secondaryColors: { secondary: string; secondaryForeground: string };
@@ -188,6 +223,15 @@ export interface ThemeCssVars {
   "destructive-foreground": string;
   success?: string;
   "success-foreground"?: string;
+
+  sidebar?: string;
+  "sidebar-foreground"?: string;
+  "sidebar-primary"?: string;
+  "sidebar-primary-foreground"?: string;
+  "sidebar-accent"?: string;
+  "sidebar-accent-foreground"?: string;
+  "sidebar-border"?: string;
+  "sidebar-ring"?: string;
 
   border: string;
   input: string;
@@ -397,6 +441,109 @@ export interface ComponentShowcaseConfig { // This was ComponentShowcaseDefiniti
   styleOverrides?: Record<string, string>; // For styling the showcase UI itself
 }
 
+/**
+ * Animation timing and easing configuration
+ */
+export interface AnimationTiming {
+  /** Animation duration (e.g., "200ms", "0.2s") */
+  duration: string;
+  /** Animation easing function (e.g., "ease-in-out", "cubic-bezier(...)") */
+  easing: string;
+  /** Optional delay before animation starts */
+  delay?: string;
+}
+
+/**
+ * Transform-based animation properties
+ */
+export interface AnimationTransform {
+  /** Scale transformation (e.g., "scale(0.95)" for press effect) */
+  scale?: string;
+  /** Translation transformation (e.g., "translateY(2px)" for press effect) */
+  translate?: string;
+  /** Combined transform string if needed */
+  transform?: string;
+}
+
+/**
+ * Animation state configuration for different interaction states
+ */
+export interface AnimationState extends AnimationTiming {
+  /** Transform properties for this state */
+  transform?: AnimationTransform;
+  /** Box shadow for this state (useful for neo-brutalism press effects) */
+  boxShadow?: string;
+  /** Filter effects (e.g., brightness, contrast) */
+  filter?: string;
+  /** Opacity for this state */
+  opacity?: string;
+  /** Border properties that animate */
+  border?: string;
+  /** Background color changes */
+  backgroundColor?: string;
+  /** Custom properties for theme-specific effects */
+  custom?: Record<string, string>;
+}
+
+/**
+ * Complete animation configuration for interactive elements
+ */
+export interface InteractiveAnimationConfig {
+  /** Default/idle state */
+  default: AnimationState;
+  /** Hover state animation */
+  hover: AnimationState;
+  /** Focus state animation */
+  focus: AnimationState;
+  /** Active/pressed state animation */
+  active: AnimationState;
+  /** Disabled state animation */
+  disabled?: AnimationState;
+  /** Global animation settings that apply to all states */
+  global?: {
+    /** CSS transition property */
+    transition: string;
+    /** Transform origin for animations */
+    transformOrigin?: string;
+    /** Will-change property for performance */
+    willChange?: string;
+  };
+}
+
+/**
+ * Animation preset definitions for different themes
+ */
+export interface AnimationPreset {
+  /** Preset identifier */
+  name: string;
+  /** Description of the animation style */
+  description: string;
+  /** Button animation configuration */
+  button: InteractiveAnimationConfig;
+  /** Link animation configuration */
+  link: InteractiveAnimationConfig;
+  /** Input field animation configuration */
+  input?: InteractiveAnimationConfig;
+  /** Card animation configuration */
+  card?: InteractiveAnimationConfig;
+  /** Custom CSS classes that get applied globally */
+  globalClasses?: Record<string, string>;
+  /** Custom CSS keyframes */
+  keyframes?: Record<string, string>;
+}
+
+/**
+ * Theme-specific animation configuration
+ */
+export interface ThemeAnimationConfig {
+  /** The animation preset to use */
+  preset: AnimationPreset;
+  /** Override specific animations for this theme */
+  overrides?: Partial<AnimationPreset>;
+  /** CSS class name that gets applied to the root element */
+  rootClassName: string;
+}
+
 // END: Added types
 
 export interface Brand {
@@ -411,11 +558,17 @@ export interface Brand {
   themeCssVariables: ThemeCssVars;
   /** A human-friendly name for the brand theme */
   name: string; 
+  /** Default color mode for this theme */
+  defaultMode?: 'light' | 'dark';
   /** Indicates if the theme prefers a dark browser/OS chrome (e.g., for top bars, window frames) */
   prefersDarkSchemeForChrome?: boolean;
+  /** 7-axis design code describing the visual characteristics of this theme */
+  sevenAxisCode: SevenAxisCode;
   // Added optional properties
   componentStyles?: ComponentStyles;
   componentShowcase?: ComponentShowcaseConfig;
+  /** Animation configuration for interactive elements */
+  animationConfig?: ThemeAnimationConfig;
 }
   
 /**
@@ -759,6 +912,30 @@ export const generateGlobalCss = (brand: Brand): string => {
   addLine(`--accent: ${ov.accent};`, 2);           
   addLine(`--destructive: ${ov.destructive};`, 2);   
 
+  // Add debugging for role assignments
+  console.log("[BrandUtils] Role assignments in generateGlobalCss:");
+  console.log(`  --primary: ${ov.primary}`);
+  console.log(`  --secondary: ${ov.secondary}`);
+  console.log(`  --accent: ${ov.accent}`);
+  console.log(`  --destructive: ${ov.destructive}`);
+  
+  // Show what actual colors these resolve to
+  if (ov.primary && ov.primary.startsWith('var(--') && ov.primary.endsWith(')')) {
+    const primaryVarName = ov.primary.slice(6, -1);
+    const primaryToken = brand.colors.find(c => c.variableName === primaryVarName);
+    if (primaryToken) {
+      console.log(`  🎨 --primary resolves to: "${primaryToken.name}" with color ${primaryToken.oklchLight}`);
+    }
+  }
+  
+  if (ov.accent && ov.accent.startsWith('var(--') && ov.accent.endsWith(')')) {
+    const accentVarName = ov.accent.slice(6, -1);
+    const accentToken = brand.colors.find(c => c.variableName === accentVarName);
+    if (accentToken) {
+      console.log(`  🎨 --accent resolves to: "${accentToken.name}" with color ${accentToken.oklchLight}`);
+    }
+  }
+
   addStepAliasesForScope(false);
 
   const primaryTokenName = sg.primaryColors.primary;
@@ -780,6 +957,16 @@ export const generateGlobalCss = (brand: Brand): string => {
   const destructiveToken = brand.colors.find(c => c.name === destructiveTokenName);
   if (destructiveToken?.onColorLight) addLine(`--destructive-foreground: ${destructiveToken.onColorLight};`,2);
   else if (sg.destructiveColors.destructiveForeground) addLine(`--destructive-foreground: ${resolveAbstractColorRef(sg.destructiveColors.destructiveForeground, brand.name, brand.colors)};`,2);
+
+  // Sidebar variables
+  if (ov.sidebar) addLine(`--sidebar: ${ov.sidebar};`, 2);
+  if (ov["sidebar-foreground"]) addLine(`--sidebar-foreground: ${ov["sidebar-foreground"]};`, 2);
+  if (ov["sidebar-primary"]) addLine(`--sidebar-primary: ${ov["sidebar-primary"]};`, 2);
+  if (ov["sidebar-primary-foreground"]) addLine(`--sidebar-primary-foreground: ${ov["sidebar-primary-foreground"]};`, 2);
+  if (ov["sidebar-accent"]) addLine(`--sidebar-accent: ${ov["sidebar-accent"]};`, 2);
+  if (ov["sidebar-accent-foreground"]) addLine(`--sidebar-accent-foreground: ${ov["sidebar-accent-foreground"]};`, 2);
+  if (ov["sidebar-border"]) addLine(`--sidebar-border: ${ov["sidebar-border"]};`, 2);
+  if (ov["sidebar-ring"]) addLine(`--sidebar-ring: ${ov["sidebar-ring"]};`, 2);
 
   const cardBaseTokenName = sg.cardColors.card;
   const cardToken = brand.colors.find(c => c.name === cardBaseTokenName);
@@ -997,6 +1184,176 @@ export const generateGlobalCss = (brand: Brand): string => {
   addLine("}");
 
   return cssString;
+};
+
+/**
+ * Generates CSS for animation configurations
+ */
+export const generateAnimationCss = (animationConfig: ThemeAnimationConfig): string => {
+  const { preset, rootClassName } = animationConfig;
+  let css = '';
+
+  const addLine = (line: string, indentLevel = 0) => {
+    css += `${'  '.repeat(indentLevel)}${line}\n`;
+  };
+
+  // Universal reset - ALWAYS reset all animation styles first to prevent bleeding
+  addLine(`/* Universal animation reset - prevents style bleeding between themes */`);
+  addLine(`[data-slot="button"]:not([class*="link"]) {`);
+  addLine(`box-shadow: none !important;`, 1);
+  addLine(`transform: translate(0px, 0px) !important;`, 1);
+  addLine(`transition: all 200ms ease !important;`, 1);
+  addLine(`}`, 0);
+  
+  // Reset all possible button states universally
+  const universalStates = ['', ':hover:not(:disabled)', ':focus-visible:not(:disabled)', ':active:not(:disabled)', ':disabled'];
+  universalStates.forEach(state => {
+    addLine(`[data-slot="button"]:not([class*="link"])${state} {`);
+    addLine(`box-shadow: ${state === ':focus-visible:not(:disabled)' ? '0 0 0 2px var(--ring)' : 'none'} !important;`, 1);
+    addLine(`transform: translate(0px, 0px) !important;`, 1);
+    addLine(`}`, 0);
+  });
+  addLine('');
+
+  // Now apply theme-specific styles with higher specificity
+  addLine(`/* Theme-specific styles for ${preset.name} */`);
+  addLine(`.${rootClassName} [data-slot="button"]:not([class*="link"]) {`);
+  
+  // Apply theme-specific base styles
+  if (preset.button.global?.transition) {
+    addLine(`transition: ${preset.button.global.transition} !important;`, 1);
+  }
+  if (preset.button.global?.transformOrigin) {
+    addLine(`transform-origin: ${preset.button.global.transformOrigin} !important;`, 1);
+  }
+  if (preset.button.global?.willChange) {
+    addLine(`will-change: ${preset.button.global.willChange} !important;`, 1);
+  }
+  addLine(`}`, 0);
+  addLine('');
+
+  // Add keyframes first
+  if (preset.keyframes) {
+    Object.values(preset.keyframes).forEach(keyframe => {
+      addLine(keyframe);
+      addLine('');
+    });
+  }
+
+  // Add global classes
+  if (preset.globalClasses) {
+    Object.entries(preset.globalClasses).forEach(([className, styles]) => {
+      addLine(`.${rootClassName} .${className} {`);
+      addLine(styles, 1);
+      addLine('}');
+      addLine('');
+    });
+  }
+
+  // Generate component-specific animation classes
+  const generateComponentCss = (
+    componentName: string,
+    componentConfig: InteractiveAnimationConfig
+  ) => {
+    addLine(`/* ${componentName.charAt(0).toUpperCase() + componentName.slice(1)} animations for ${preset.name} theme */`);
+    
+    // State-specific styles
+    const states = ['default', 'hover', 'focus', 'active', 'disabled'] as const;
+    states.forEach(state => {
+      const stateConfig = componentConfig[state];
+      if (!stateConfig) return;
+
+      let selector = `.${rootClassName} [data-slot="${componentName}"]`;
+      
+      // For buttons, exclude link variants from animations
+      if (componentName === 'button') {
+        selector += ':not([class*="link"])';
+      }
+      
+      switch (state) {
+        case 'hover':
+          selector += ':hover:not(:disabled)';
+          break;
+        case 'focus':
+          selector += ':focus-visible:not(:disabled)';
+          break;
+        case 'active':
+          selector += ':active:not(:disabled)';
+          break;
+        case 'disabled':
+          selector += ':disabled';
+          break;
+      }
+
+      addLine(`${selector} {`);
+
+      // Add transform properties
+      if (stateConfig.transform) {
+        const { scale, translate, transform } = stateConfig.transform;
+        let transformValue = '';
+        
+        if (transform) {
+          transformValue = transform;
+        } else {
+          const transformParts = [];
+          if (translate) transformParts.push(translate);
+          if (scale) transformParts.push(`scale(${scale})`);
+          transformValue = transformParts.join(' ');
+        }
+        
+        if (transformValue) {
+          addLine(`transform: ${transformValue} !important;`, 1);
+        }
+      }
+
+      // Add other properties with !important to ensure they override previous theme styles
+      if (stateConfig.boxShadow) {
+        // Normalize multiline box-shadow values by removing extra whitespace and newlines
+        const normalizedBoxShadow = stateConfig.boxShadow
+          .replace(/\s*\n\s*/g, ' ')  // Replace newlines and surrounding whitespace with single space
+          .replace(/\s+/g, ' ')       // Replace multiple spaces with single space
+          .trim();                    // Remove leading/trailing whitespace
+        addLine(`box-shadow: ${normalizedBoxShadow} !important;`, 1);
+      }
+      
+      if (stateConfig.opacity) {
+        addLine(`opacity: ${stateConfig.opacity} !important;`, 1);
+      }
+      if (stateConfig.backgroundColor) {
+        addLine(`background-color: ${stateConfig.backgroundColor} !important;`, 1);
+      }
+      if (stateConfig.border) {
+        addLine(`border: ${stateConfig.border} !important;`, 1);
+      }
+      if (stateConfig.filter) {
+        addLine(`filter: ${stateConfig.filter} !important;`, 1);
+      }
+
+      // Add custom properties
+      if (stateConfig.custom) {
+        Object.entries(stateConfig.custom).forEach(([prop, value]) => {
+          addLine(`${prop}: ${value} !important;`, 1);
+        });
+      }
+
+      addLine('}');
+      addLine('');
+    });
+  };
+
+  // Generate CSS for each component type
+  generateComponentCss('button', preset.button);
+  generateComponentCss('link', preset.link);
+  
+  if (preset.input) {
+    generateComponentCss('input', preset.input);
+  }
+  
+  if (preset.card) {
+    generateComponentCss('card', preset.card);
+  }
+
+  return css;
 };
 
 /**

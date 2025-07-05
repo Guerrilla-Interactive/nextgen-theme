@@ -755,8 +755,10 @@ const BrandGuideContent = () => {
 
   useEffect(() => {
     // Set top bar theme based on the active brand's preference
-    if (displayBrand && typeof displayBrand.prefersDarkSchemeForChrome === 'boolean') {
-      sessionStatus.setIsTopDark(displayBrand.prefersDarkSchemeForChrome);
+    if (displayBrand) {
+      // Use new defaultMode property, fallback to old prefersDarkSchemeForChrome for backward compatibility
+      const isDarkDefault = displayBrand.defaultMode === 'dark' || displayBrand.prefersDarkSchemeForChrome || false;
+      sessionStatus.setIsTopDark(isDarkDefault);
     } else {
       // Fallback if the property is not defined (e.g., during initial load or if a brand is misconfigured)
       sessionStatus.setIsTopDark(true); // Default to dark if undefined

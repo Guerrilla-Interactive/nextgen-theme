@@ -20,26 +20,25 @@ import { razerBrand } from "./themes/razer.theme";
 import { defaultTheme } from "./themes/default.theme";
 import { neoBrutalismBrand } from "./themes/neo-brutalism.theme";
 import { type Brand, influenceHierarchy } from "./brand-utils";
-import { marvelBrand } from "./themes/marvel.theme";
+
 import { violetSkyBrand } from "./themes/violet-sky.theme";
 import { summerBrand } from "./themes/summer.theme";
-import { nintendoBrand } from "./themes/nintendo.theme";
-import { ikeaBrand } from "./themes/ikea.theme";
-import { gucciBrand } from "./themes/gucci.theme";
-import { fordBrand } from './themes/ford.theme';
+
+
 import { peachParfaitBrand } from "./themes/peach.theme";
 import { cyberPulseBrand } from "./themes/cyberpulse.theme";
-import { primaryPlayBrand } from "./themes/primaryplay.theme";
-import { monochromeClarityBrand } from "./themes/monochromeclarity.theme";
+
+
 import { sageMeadowBrand } from "./themes/sagemeadow.theme";
 import { elegantLuxuryBrand } from "./themes/elegant-luxury.theme";
-import { terracottaOrchidBrand } from "./themes/terracota.theme";
-import { violetAbyssBrand } from "./themes/violet-abyss.theme";
+
+
 import { lilacDaylightBrand } from "./themes/lilac-daylight.theme";
 import { vercelMinimalBrand } from "./themes/vercel.theme";
-import { neonPopBrand } from "./themes/neon-pop.theme";
-import { sageMinimalBrand } from "./themes/sage-minimal.theme";
 
+import { sageMinimalBrand } from "./themes/sage-minimal.theme";
+import { twitterXTheme } from "./themes/twitter-x.theme";
+import { rosePurpleTheme } from "./themes/rose-purple.theme";
 
 // All original type definitions (Role, NumericShadeLevel, FunctionalShadeKey, ShadeKey, Shade, ColorToken, FontToken, 
 // Personality, StyleGuide, BusinessDetails, Brand, ThemeCssVars) 
@@ -55,27 +54,18 @@ export const themes: Record<string, Brand> = {
   default: defaultTheme,
   nextgen: nextgenBrand,
   "neo-brutalism": neoBrutalismBrand,
-  "marvel": marvelBrand,
   "violet-sky": violetSkyBrand,
   "summer": summerBrand,
   "razer": razerBrand,
-  "nintendo": nintendoBrand,
-  "ikea": ikeaBrand,
-  "gucci": gucciBrand,
-  "ford": fordBrand,
   "peach": peachParfaitBrand,
   "cyberPulse": cyberPulseBrand,
-  "primaryPlay": primaryPlayBrand,
-  "monochromeClarity": monochromeClarityBrand,
   "sageMeadow": sageMeadowBrand,
   "elegantLuxury": elegantLuxuryBrand,
-  "terracotta": terracottaOrchidBrand,
-  "violetAbyss": violetAbyssBrand,
   "lilacDaylight": lilacDaylightBrand,
   "vercel": vercelMinimalBrand,
-  "neonPop": neonPopBrand,
-  "sageMinimal": sageMinimalBrand
-  
+  "sageMinimal": sageMinimalBrand,
+  "twitter-x": twitterXTheme,
+  "rose-purple": rosePurpleTheme
 };
 
 // Update the default export if necessary, or page.tsx will pick a default from 'themes'
@@ -83,20 +73,22 @@ export default nextgenBrand; // Keep nextgen as the default for now if something
 
 export const ALL_BRANDS = [
   nextgenBrand,
-  gucciBrand,
+  
   razerBrand,
   summerBrand,
   violetSkyBrand,
-  fordBrand,
+  
   peachParfaitBrand,
   cyberPulseBrand,
-  monochromeClarityBrand,
+  
   sageMeadowBrand,
   elegantLuxuryBrand,
-  terracottaOrchidBrand,
+  
   lilacDaylightBrand,
-  neonPopBrand,
-  sageMinimalBrand
+
+  sageMinimalBrand,
+  twitterXTheme,
+  rosePurpleTheme
 
 ].sort((a, b) => a.name.localeCompare(b.name));
   

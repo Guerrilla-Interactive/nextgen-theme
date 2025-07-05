@@ -204,6 +204,7 @@ const themeCssVars = createThemeCssVars(
     background: "Pure White",
     foreground: "Sage Foreground",
     radiusBase: "0.5rem",
+
     // Soft, subtle shadows with minimal opacity
     shadowXs: "1px 2px 5px 1px hsl(0 0% 10.1961% / 0.03)",
     shadowSm: "1px 2px 5px 1px hsl(0 0% 10.1961% / 0.06), 1px 1px 2px 0px hsl(0 0% 10.1961% / 0.06)",
@@ -225,7 +226,17 @@ export const sageMinimalBrand: Brand = {
   fonts: sageMinimalThemeDefinition.fonts,
   style: sageMinimalThemeDefinition.styleGuide,
   themeCssVariables: themeCssVars,
+  defaultMode: 'light' as const, // Light mode with clean white background
   prefersDarkSchemeForChrome: false,
+  sevenAxisCode: {
+    colorComplexity: 'monochrome',        // Monochrome - primarily sage green with minimal accents
+    brightness: 'light',                  // Light - white background with subtle green tones
+    saturation: 'muted',                  // Muted - very subtle, minimal saturation
+    colorHarmony: 'analogous',            // Analogous - green-based color harmony
+    accentUsage: 'minimal',               // Minimal - very clean and minimal design approach
+    cornerStyle: 'rounded',               // Rounded - uses standard rounded corners
+    elevation: 'flat',                    // Flat - very minimal shadows with low opacity
+  },
 };
 
 export default sageMinimalBrand; 

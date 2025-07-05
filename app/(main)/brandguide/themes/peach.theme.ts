@@ -1,7 +1,7 @@
 // peachParfaitTheme.ts  –  M1‑L‑Ps‑G1‑Ax‑RdF
 //---------------------------------------------------------
 // Theme spec generated from the 7‑axis code:
-//   Monochrome · Light · Pastel · Single‑hue Gradient · Accent‑neutral · Rounded‑Flat
+// Monochrome · Light · Pastel · Single‑hue Gradient · Accent‑neutral · Rounded‑Flat
 // Uses a single peach hue (OKLCH hue ≈ 40°) plus neutral grays.
 
 import {
@@ -149,8 +149,6 @@ import {
     mutedColors:         { muted: "Light Peach", mutedForeground: "Slate" },
     destructiveColors:   { destructive: "Scarlet", destructiveForeground: "White" },
     successColors:       { success: "Peach", successForeground: "White" },
-    infoColors:          { info: "Peach", infoForeground: "White" },
-    warningColors:       { warning: "Scarlet", warningForeground: "White" },
     inputColors:         { input: "Light Peach", inputForeground: "Charcoal" },
     borderColors:        { border: "Light Peach" },
     ringColors:          { ring: "Peach" },
@@ -175,6 +173,16 @@ import {
     background: "Vanilla Cream",
     foreground: "Charcoal",
     radiusBase: "0.75rem",
+  
+    // Sidebar mappings - using existing colors from rawColors
+    sidebar: "White",
+    sidebarForeground: "Charcoal",
+    sidebarPrimary: "Peach",
+    sidebarPrimaryForeground: "White",
+    sidebarAccent: "Peach",
+    sidebarAccentForeground: "White",
+    sidebarBorder: "Light Peach",
+    sidebarRing: "Peach",
   
     // Single‑hue gradient example (G1) — used on hero / banner
     heroGradient: "linear-gradient(135deg, oklch(0.98 0.01 100) 0%, oklch(0.90 0.05 40) 100%)",
@@ -251,6 +259,16 @@ import {
       peachParfaitStyleGuide,
       peachParfaitOtherVars
     ),
-    prefersDarkSchemeForChrome: false,
+    defaultMode: 'light' as const, // Light pastel theme 
+    prefersDarkSchemeForChrome: false, // Light pastel theme
+    sevenAxisCode: {
+      colorComplexity: 'monochrome',     // Monochrome - single peach hue plus neutrals
+      brightness: 'light',               // Light - defaults to light mode
+      saturation: 'pastel',              // Pastel - soft, muted peach tones
+      colorHarmony: 'single-hue',        // Single-hue gradient - one main hue (peach)
+      accentUsage: 'subtle',             // Accent-neutral - subtle accent usage
+      cornerStyle: 'rounded',            // Rounded-flat - 0.75rem base radius
+      elevation: 'minimal-shadow',       // Flat - minimal shadow system
+    },
   };
   

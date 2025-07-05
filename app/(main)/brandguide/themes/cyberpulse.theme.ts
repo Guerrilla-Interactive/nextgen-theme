@@ -1,4 +1,4 @@
-// cyberPulseTheme.ts  –  M2-C-D-Ne-Fl-Pa-SqE
+// cyberPulseTheme.ts  –  M2-C-D-Ne-Fl-Pa-SqE
 //--------------------------------------------------------------
 // Duotone · Complementary · Dark · Neon · Flat · Paired-Accents · Square‑Elevated
 // Neon‑cyan + neon‑red sit on a dark, square‑edged UI with crisp drop‑shadows.
@@ -11,6 +11,8 @@ import {
     createThemeCssVars,
     OklchString,
   } from "../brand-utils";
+  
+import { glowingBorderAnimationPreset } from '../animation-presets';
   
   /* -------------------------------------------------------------
      1. RAW COLOR TOKENS
@@ -164,8 +166,6 @@ import {
     mutedColors:         { muted: "Muted Panel", mutedForeground: "Smoke" },
     destructiveColors:   { destructive: "Alert Red", destructiveForeground: "Panel" },
     successColors:       { success: "Neon Cyan", successForeground: "Panel" },
-    infoColors:          { info: "Neon Cyan", infoForeground: "Panel" },
-    warningColors:       { warning: "Alert Red", warningForeground: "Panel" },
     inputColors:         { input: "Graphite", inputForeground: "Mist" },
     borderColors:        { border: "Graphite" },
     ringColors:          { ring: "Neon Cyan" },
@@ -190,6 +190,16 @@ import {
     background: "Void",
     foreground: "Mist",
     radiusBase: "0px",
+  
+    // Sidebar mappings - using colors already defined in rawColors
+    sidebar: "Neon Red",
+    sidebarForeground: "Mist",
+    sidebarPrimary: "Neon Cyan",
+    sidebarPrimaryForeground: "Panel",
+    sidebarAccent: "Neon Red",
+    sidebarAccentForeground: "Panel",
+    sidebarBorder: "Graphite",
+    sidebarRing: "Neon Cyan",
   
     // Elevation shadows (SqE → strong offsets)
     shadowXs: "0 0 1px 0 oklch(0 0 0 / 0.60)",
@@ -265,6 +275,20 @@ import {
       cyberPulseStyleGuide,
       cyberPulseOtherVars
     ),
+    defaultMode: 'dark' as const,
     prefersDarkSchemeForChrome: true,
+    sevenAxisCode: {
+      colorComplexity: 'duotone',           // Duotone - cyan and red neon colors
+      brightness: 'dark',                   // Dark - dark mode default
+      saturation: 'neon',                   // Neon - high saturation cyan and red
+      colorHarmony: 'complementary',        // Complementary - cyan and red are opposite on color wheel
+      accentUsage: 'prominent',             // Paired-accents - strong accent usage
+      cornerStyle: 'sharp',                 // Square - 0px radius throughout
+      elevation: 'layered',                 // Elevated - strong drop shadows
+    },
+    animationConfig: {
+      preset: glowingBorderAnimationPreset,
+      rootClassName: 'cyberpulse-glow-theme'
+    }
   };
   

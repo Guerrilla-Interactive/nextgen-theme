@@ -1,4 +1,5 @@
 import { type Brand, generateBrandColors, type RawColorDefinition, type StyleGuide, createThemeCssVars, OklchString } from '../brand-utils';
+import { neoBrutalismAnimationPreset } from '../animation-presets';
 
 const neoBrutalismThemeDefinition = {
   rawColors: [
@@ -222,5 +223,18 @@ export const neoBrutalismBrand: Brand = {
     neoBrutalismThemeDefinition.styleGuide,
     neoBrutalismThemeDefinition.otherVars
   ),
-  prefersDarkSchemeForChrome: false
+  prefersDarkSchemeForChrome: false,
+  sevenAxisCode: {
+    colorComplexity: 'duotone',
+    brightness: 'light',
+    saturation: 'vibrant',
+    colorHarmony: 'complementary',
+    accentUsage: 'prominent',
+    cornerStyle: 'sharp',
+    elevation: 'dramatic'
+  },
+  animationConfig: {
+    preset: neoBrutalismAnimationPreset,
+    rootClassName: 'neo-brutal-theme'
+  }
 };

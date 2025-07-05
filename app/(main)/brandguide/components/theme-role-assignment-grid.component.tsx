@@ -79,6 +79,10 @@ interface ThemeRoleAssignmentGridProps {
   handleRoleColorChange: (role: Role, newColorHex: string) => void;
   onRoleClick?: (role: Role) => void;
   selectedRole?: Role | null;
+  // New role-based color handlers
+  handleRoleSwatchSelection?: (role: Role, swatchName: string) => void;
+  handleRoleDirectColorChange?: (role: Role, newHex: string) => void;
+  previewRoleDirectColorChange?: (role: Role, newHex: string) => void;
 }
 
 /*───────────────────────────────────────────────────────────────────────────*
@@ -577,6 +581,9 @@ export const ThemeRoleAssignmentGrid: React.FC<ThemeRoleAssignmentGridProps> = (
   handleRoleColorChange,
   onRoleClick,
   selectedRole,
+  handleRoleSwatchSelection,
+  handleRoleDirectColorChange,
+  previewRoleDirectColorChange,
 }) => {
   const cleanupRef = useRef<(() => void) | null>(null);
 
@@ -686,9 +693,17 @@ export const ThemeRoleAssignmentGrid: React.FC<ThemeRoleAssignmentGridProps> = (
                     <span className="font-medium">{roleItem.role.replace(/-/g, " ")}</span>
                     <ColorPicker
                       value={roleItem.assignedColorHex ?? '#ffffff'}
-                      onChange={(newHex) => handleRoleColorChange(roleItem.role, newHex)}
+                      onChange={(newHex) => {
+                        if (previewRoleDirectColorChange) {
+                          previewRoleDirectColorChange(roleItem.role, newHex);
+                        } else {
+                          handleRoleColorChange(roleItem.role, newHex);
+                        }
+                      }}
                       swatches={swatches}
                       className="!h-4 !w-4 rounded-[var(--radius-sm)] border border-[var(--border)]/50 transition-transform hover:scale-110"
+                      onSwatchSelect={handleRoleSwatchSelection ? (swatch) => handleRoleSwatchSelection(roleItem.role, swatch.name) : undefined}
+                      onDirectColorChange={handleRoleDirectColorChange ? (newHex) => handleRoleDirectColorChange(roleItem.role, newHex) : undefined}
                     />
                   </div>
                 ))}

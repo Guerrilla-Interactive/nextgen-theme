@@ -13,9 +13,11 @@ import {
   // ShadeKey was removed from brand-utils, if needed here, define locally or adapt
   // For now, let LightnessStepKey (from brand-utils if exported, or define similar concept) guide steps.
   type LightnessStepKey, // Assuming this will be exported from brand-utils or defined appropriately
-  generateGlobalCss
+  generateGlobalCss,
+  type ThemeAnimationConfig,
+  generateAnimationCss
 } from "./brand-utils";
-import { converter, formatHex } from 'culori'; // Import from culori
+import { converter, formatHex, parseHex } from 'culori'; // Import from culori
 
 // Enhanced types for context
 // EnrichedShade's structure needs to be compatible with how it's used and what it represents.
@@ -55,6 +57,7 @@ interface BrandContextType {
   setActiveTheme: (themeKey: string) => void;
   previewColorUpdate: (colorName: string, newOklchValue: string) => void; // param changed
   commitColorUpdate: (colorName: string, newOklchValue: string) => void;  // param changed
+  addNewColor: (name: string, hexColor: string, roles?: Role[]) => void;
   undo: () => void;
   redo: () => void;
   canUndo: boolean;
@@ -62,6 +65,10 @@ interface BrandContextType {
   undoStepsAvailable: number;
   redoStepsAvailable: number;
   updateRoleAssignment: (roleToUpdate: Role, targetColorVariableName: string | null) => void;
+  // New role-based color handling functions
+  handleRoleSwatchSelection: (role: Role, swatchName: string) => void;
+  handleRoleDirectColorChange: (role: Role, newHex: string) => void;
+  previewRoleDirectColorChange: (role: Role, newHex: string) => void;
 }
 
 const BrandContext = createContext<BrandContextType | undefined>(undefined);
@@ -92,6 +99,31 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
   // Define committedBrand and brandToDisplay here, before useEffect
   const committedBrand = history[currentHistoryIndex] || null;
   const brandToDisplay = liveBrand || committedBrand || currentThemeData;
+  
+  console.log(`[BrandProvider] 📊 Brand state recalculated:`, {
+    liveBrandExists: !!liveBrand,
+    committedBrandExists: !!committedBrand,
+    brandToDisplaySource: liveBrand ? 'liveBrand' : (committedBrand ? 'committedBrand' : 'currentThemeData'),
+    brandToDisplayReference: brandToDisplay,
+    primaryRoleAssignments: brandToDisplay?.colors?.filter(c => c.roles?.includes('primary')).map(c => ({ name: c.name, variableName: c.variableName }))
+  });
+
+  // Add useEffect to track liveBrand changes
+  useEffect(() => {
+    console.log(`[BrandProvider] 🔄 liveBrand changed:`, {
+      liveBrandReference: liveBrand,
+      primaryInLiveBrand: liveBrand?.colors?.filter(c => c.roles?.includes('primary')).map(c => ({ name: c.name, variableName: c.variableName })),
+      liveBrandColors: liveBrand?.colors?.length
+    });
+  }, [liveBrand]);
+
+  // Add useEffect to track when brandToDisplay changes
+  useEffect(() => {
+    console.log(`[BrandProvider] 🎯 brandToDisplay changed:`, {
+      brandToDisplayReference: brandToDisplay,
+      primaryInBrandToDisplay: brandToDisplay?.colors?.filter(c => c.roles?.includes('primary')).map(c => ({ name: c.name, variableName: c.variableName }))
+    });
+  }, [brandToDisplay]);
 
   const handleSetActiveTheme = useCallback((newThemeKey: string) => {
     if (initialThemes[newThemeKey]) {
@@ -162,22 +194,157 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     const brandToUpdate = liveBrand || history[currentHistoryIndex] || currentThemeData;
     if (!brandToUpdate) return;
 
-    // Create a new brand state by mapping over colors and updating roles immutably
-    const updatedColors = brandToUpdate.colors.map(color => {
-      const newRoles = color.roles.filter(r => r !== roleToUpdate);
-      if (color.variableName === targetColorVariableName) {
-        newRoles.push(roleToUpdate);
+    console.log(`[updateRoleAssignment] Updating role: "${roleToUpdate}" to target variable: "${targetColorVariableName}"`);
+    
+    // Log current state before update
+    console.log(`[updateRoleAssignment] BEFORE - Current role assignments:`);
+    brandToUpdate.colors.forEach(color => {
+      if (color.roles && color.roles.length > 0) {
+        console.log(`  "${color.name}" (${color.variableName}): [${color.roles.join(', ')}] - Color: ${color.oklchLight}`);
       }
-      // Return a new color object if roles changed, otherwise the original
-      return color.roles.length === newRoles.length && color.roles.every((r, i) => r === newRoles[i])
-        ? color
-        : { ...color, roles: newRoles };
     });
 
-    // Only proceed if there's an actual change
-    if (updatedColors.some((c, i) => c !== brandToUpdate.colors[i])) {
+    // Find the target color (where we want to assign the role)
+    const targetColor = targetColorVariableName ? brandToUpdate.colors.find(color => color.variableName === targetColorVariableName) : null;
+    
+    // Find the current owner of the role
+    const currentRoleOwner = brandToUpdate.colors.find(color => color.roles?.includes(roleToUpdate));
+    
+    console.log(`[updateRoleAssignment] Role "${roleToUpdate}" currently owned by: "${currentRoleOwner?.name || 'none'}" (${currentRoleOwner?.variableName || 'none'})`);
+    console.log(`[updateRoleAssignment] Target color: "${targetColor?.name || 'none'}" (${targetColor?.variableName || 'none'})`);
+
+    if (targetColor && currentRoleOwner !== targetColor) {
+      console.log(`[updateRoleAssignment] 🔄 Simple reassignment: Moving role "${roleToUpdate}" from "${currentRoleOwner?.name || 'unassigned'}" to "${targetColor.name}"`);
+      
+      // Check if we need to create a preserved color for other roles
+      // Only create preserved color if the current owner has multiple roles AND 
+      // we're moving the role to a DIFFERENT color (not just adding it to the same color)
+      const needsColorSeparation = false; // Disable color separation for now to fix the issue
+      
+      let updatedColors = [...brandToUpdate.colors];
+      
+      if (needsColorSeparation) {
+        const otherRoles = currentRoleOwner.roles.filter(r => r !== roleToUpdate);
+        console.log(`[updateRoleAssignment] 🔄 Current owner "${currentRoleOwner.name}" has multiple roles: [${currentRoleOwner.roles.join(', ')}]`);
+        console.log(`[updateRoleAssignment] 🔄 Other roles that need to keep the original color: [${otherRoles.join(', ')}]`);
+        
+        // Create a new color token for the other roles
+        const preservedColorName = `${currentRoleOwner.name} (${otherRoles.join(', ')})`;
+        let finalPreservedName = preservedColorName;
+        let nameCounter = 1;
+        
+        // Find unique name
+        while (updatedColors.find(color => color.name === finalPreservedName)) {
+          finalPreservedName = `${preservedColorName} ${nameCounter}`;
+          nameCounter++;
+        }
+        
+        // Generate unique variable name
+        const baseVariableName = `${currentRoleOwner.variableName}-preserved`;
+        let finalVariableName = baseVariableName;
+        let variableCounter = 1;
+        
+        while (updatedColors.find(color => color.variableName === finalVariableName)) {
+          finalVariableName = `${baseVariableName}-${variableCounter}`;
+          variableCounter++;
+        }
+        
+        // Create the preserved color token with the other roles
+        const preservedColorToken: ColorToken = {
+          ...currentRoleOwner,
+          name: finalPreservedName,
+          variableName: finalVariableName,
+          description: `Preserved color for ${otherRoles.join(', ')} roles`,
+          roles: otherRoles,
+          rawTokenSpecificName: finalPreservedName,
+        };
+        
+        console.log(`[updateRoleAssignment] 🔄 Created preserved color token: "${finalPreservedName}" (${finalVariableName}) for roles: [${otherRoles.join(', ')}]`);
+        
+        // Update the original color to only have the role being reassigned (temporarily)
+        const originalColorIndex = updatedColors.findIndex(color => color === currentRoleOwner);
+        if (originalColorIndex !== -1) {
+          updatedColors[originalColorIndex] = {
+            ...currentRoleOwner,
+            roles: [roleToUpdate], // Only the role being reassigned
+            description: `${currentRoleOwner.description} (${roleToUpdate} role only)`,
+          };
+        }
+        
+        // Add the preserved color token
+        updatedColors.push(preservedColorToken);
+      }
+      
+      // Now perform the standard role reassignment
+      updatedColors = updatedColors.map(color => {
+      if (color.variableName === targetColorVariableName) {
+          // Add the role to the target color
+          const newRoles = [...(color.roles || [])];
+          if (!newRoles.includes(roleToUpdate)) {
+        newRoles.push(roleToUpdate);
+      }
+          return { ...color, roles: newRoles };
+        } else {
+          // Remove the role from all other colors
+          const newRoles = (color.roles || []).filter(r => r !== roleToUpdate);
+          return color.roles?.length === newRoles.length ? color : { ...color, roles: newRoles };
+        }
+      });
+      
+      // Clean up: If the original color (after role separation) has no roles left, remove it
+      if (needsColorSeparation && currentRoleOwner) {
+        const originalAfterSeparation = updatedColors.find(color => 
+          color.variableName === currentRoleOwner.variableName && 
+          color.roles.length === 1 && 
+          color.roles[0] === roleToUpdate
+        );
+        if (originalAfterSeparation) {
+          // Remove the temporary single-role color since the role is now assigned elsewhere
+          updatedColors = updatedColors.filter(color => color !== originalAfterSeparation);
+        }
+      }
+      
+      // Create the new brand state
       const newBrandState: Brand = { ...brandToUpdate, colors: updatedColors };
 
+      // Log new state after update
+      console.log(`[updateRoleAssignment] AFTER - New role assignments:`);
+      newBrandState.colors.forEach(color => {
+        if (color.roles && color.roles.length > 0) {
+          console.log(`  "${color.name}" (${color.variableName}): [${color.roles.join(', ')}] - Color: ${color.oklchLight}`);
+        }
+      });
+
+      // Update the brand state
+      setHistory(prevHistory => {
+        const newHistorySlice = prevHistory.slice(0, currentHistoryIndex + 1);
+        return [...newHistorySlice, newBrandState];
+      });
+      const newIndex = currentHistoryIndex + 1;
+      console.log(`[updateRoleAssignment] 🔄 About to call setLiveBrand with new state:`, newBrandState);
+      console.log(`[updateRoleAssignment] 🔄 New state reference (should be different):`, newBrandState === brandToUpdate ? 'SAME REFERENCE (BAD)' : 'DIFFERENT REFERENCE (GOOD)');
+      setCurrentHistoryIndex(newIndex);
+      setLiveBrand(newBrandState);
+      console.log(`[updateRoleAssignment] ✅ setLiveBrand called successfully`);
+      
+      // Add a timeout to check if the state actually changed
+      setTimeout(() => {
+        console.log(`[updateRoleAssignment] 🕐 State check after 100ms - Primary role assignments should be updated`);
+      }, 100);
+      
+      console.log(`[updateRoleAssignment] ✅ Role reassignment completed`);
+      
+    } else if (targetColorVariableName === null) {
+      // Unassigning the role
+      console.log(`[updateRoleAssignment] 🔄 Unassigning role "${roleToUpdate}"`);
+      
+      const updatedColors = brandToUpdate.colors.map(color => {
+        const newRoles = (color.roles || []).filter(r => r !== roleToUpdate);
+        return color.roles?.length === newRoles.length ? color : { ...color, roles: newRoles };
+      });
+      
+      const newBrandState: Brand = { ...brandToUpdate, colors: updatedColors };
+      
       setHistory(prevHistory => {
         const newHistorySlice = prevHistory.slice(0, currentHistoryIndex + 1);
         return [...newHistorySlice, newBrandState];
@@ -185,28 +352,302 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       const newIndex = currentHistoryIndex + 1;
       setCurrentHistoryIndex(newIndex);
       setLiveBrand(newBrandState);
+      console.log(`[updateRoleAssignment] ✅ Role unassignment completed`);
+      
+    } else {
+      console.log(`[updateRoleAssignment] No changes needed - role "${roleToUpdate}" is already assigned to the target color`);
     }
   }, [liveBrand, history, currentHistoryIndex, currentThemeData]);
 
+  const addNewColor = useCallback((name: string, hexColor: string, roles: Role[] = []) => {
+    const brandToUpdate = liveBrand || history[currentHistoryIndex] || currentThemeData;
+    if (!brandToUpdate) return;
+
+    // Convert hex to OKLCH
+    const oklchConverter = converter('oklch');
+    const colorObj = parseHex(hexColor);
+    
+    if (!colorObj) {
+      console.error('Invalid hex color provided:', hexColor);
+      return;
+    }
+
+    const converted = oklchConverter(colorObj);
+    if (!converted) {
+      console.error('Failed to convert hex to OKLCH:', hexColor);
+      return;
+    }
+
+    let { l = 0, c = 0, h = 0 } = converted;
+    h = isNaN(h) ? 0 : h;
+    
+    const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})` as OklchString;
+    
+    // Generate unique name and variable name
+    let finalName = name;
+    let baseVariableName = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    let finalVariableName = baseVariableName;
+    
+    // Check for existing names and generate unique ones if needed
+    let nameCounter = 1;
+    let variableCounter = 1;
+    
+    // Find unique display name
+    while (brandToUpdate.colors.find(color => color.name === finalName)) {
+      finalName = `${name} ${nameCounter}`;
+      nameCounter++;
+    }
+    
+    // Find unique variable name
+    while (brandToUpdate.colors.find(color => color.variableName === finalVariableName)) {
+      finalVariableName = `${baseVariableName}-${variableCounter}`;
+      variableCounter++;
+    }
+
+    // Create the new color token
+    const newColorToken: ColorToken = {
+      name: finalName,
+      variableName: finalVariableName,
+      description: `Custom color: ${finalName}`,
+      oklchLight: oklchString,
+      oklchDark: oklchString, // Use same color for both themes initially
+      rawTokenSpecificName: finalName,
+      roles: roles,
+      lightThemeSteps: {},
+      darkThemeSteps: {},
+      category: 'color',
+    };
+
+    // Add the new color to the brand
+    const newBrandState: Brand = {
+      ...brandToUpdate,
+      colors: [...brandToUpdate.colors, newColorToken]
+    };
+
+    // Update history
+    setHistory(prevHistory => {
+      const newHistorySlice = prevHistory.slice(0, currentHistoryIndex + 1);
+      return [...newHistorySlice, newBrandState];
+    });
+    const newIndex = currentHistoryIndex + 1;
+    setCurrentHistoryIndex(newIndex);
+    setLiveBrand(newBrandState);
+    
+    console.log(`Added new color: "${finalName}" with variable name: "${finalVariableName}"`);
+  }, [liveBrand, history, currentHistoryIndex, currentThemeData]);
+
+  // New role-based color handling functions
+  const handleRoleSwatchSelection = useCallback((role: Role, swatchName: string) => {
+    const brandToUpdate = liveBrand || history[currentHistoryIndex] || currentThemeData;
+    if (!brandToUpdate) return;
+
+    console.log(`[handleRoleSwatchSelection] Role: "${role}", Swatch: "${swatchName}"`);
+    console.log(`[handleRoleSwatchSelection] Available colors in brand:`, brandToUpdate.colors.map(c => ({ name: c.name, variableName: c.variableName })));
+
+    // Find the color token by name first, then by variableName if not found
+    let targetColor = brandToUpdate.colors.find(color => color.name === swatchName);
+    if (!targetColor) {
+      targetColor = brandToUpdate.colors.find(color => color.variableName === swatchName);
+    }
+    
+    if (targetColor) {
+      console.log(`[handleRoleSwatchSelection] Found target color: "${targetColor.name}" with variable: "${targetColor.variableName}"`);
+      console.log(`[handleRoleSwatchSelection] Current roles for target color:`, targetColor.roles);
+      
+      // Show which color currently has this role before reassignment
+      const currentlyAssignedColor = brandToUpdate.colors.find(color => 
+        color.roles?.includes(role)
+      );
+      if (currentlyAssignedColor) {
+        console.log(`[handleRoleSwatchSelection] Role "${role}" currently assigned to: "${currentlyAssignedColor.name}" (${currentlyAssignedColor.variableName})`);
+      } else {
+        console.log(`[handleRoleSwatchSelection] Role "${role}" is not currently assigned to any color`);
+      }
+
+      // Call the role assignment update
+      console.log(`[handleRoleSwatchSelection] Calling updateRoleAssignment("${role}", "${targetColor.variableName}")`);
+      updateRoleAssignment(role, targetColor.variableName);
+    } else {
+      console.warn(`[handleRoleSwatchSelection] Swatch "${swatchName}" not found in brand colors`);
+      console.log(`[handleRoleSwatchSelection] Available color names:`, brandToUpdate.colors.map(c => c.name));
+      console.log(`[handleRoleSwatchSelection] Available variable names:`, brandToUpdate.colors.map(c => c.variableName));
+    }
+  }, [liveBrand, history, currentHistoryIndex, currentThemeData, updateRoleAssignment]);
+
+  const handleRoleDirectColorChange = useCallback((role: Role, newHex: string) => {
+    const brandToUpdate = liveBrand || history[currentHistoryIndex] || currentThemeData;
+    if (!brandToUpdate) return;
+
+    console.log(`[handleRoleDirectColorChange] Role: "${role}", New Hex: "${newHex}"`);
+
+    // Find the currently assigned color token for this role
+    const currentlyAssignedColor = brandToUpdate.colors.find(color => 
+      color.roles?.includes(role)
+    );
+
+    if (currentlyAssignedColor) {
+      console.log(`[handleRoleDirectColorChange] Current color for role "${role}": "${currentlyAssignedColor.name}" (${currentlyAssignedColor.variableName})`);
+      console.log(`[handleRoleDirectColorChange] Current color roles:`, currentlyAssignedColor.roles);
+      
+      // Check if this color is assigned to multiple roles
+      const hasMultipleRoles = currentlyAssignedColor.roles && currentlyAssignedColor.roles.length > 1;
+      
+      if (hasMultipleRoles) {
+        console.log(`[handleRoleDirectColorChange] 🔄 Color "${currentlyAssignedColor.name}" is assigned to multiple roles: [${currentlyAssignedColor.roles.join(', ')}]`);
+        console.log(`[handleRoleDirectColorChange] 🔄 Creating new color token to avoid affecting other roles`);
+        
+        // Create a new color token for this role
+        const oklchConverter = converter('oklch');
+        const colorObj = parseHex(newHex);
+        
+        if (colorObj) {
+          const converted = oklchConverter(colorObj);
+          if (converted) {
+            let { l = 0, c = 0, h = 0 } = converted;
+            h = isNaN(h) ? 0 : h;
+            
+            const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})` as OklchString;
+            
+            // Generate a unique name for the new color
+            const baseName = `${role.charAt(0).toUpperCase() + role.slice(1)} Custom`;
+            let finalName = baseName;
+            let nameCounter = 1;
+            
+            while (brandToUpdate.colors.find(color => color.name === finalName)) {
+              finalName = `${baseName} ${nameCounter}`;
+              nameCounter++;
+            }
+            
+            // Generate a unique variable name
+            const baseVariableName = `${role}-custom`;
+            let finalVariableName = baseVariableName;
+            let variableCounter = 1;
+            
+            while (brandToUpdate.colors.find(color => color.variableName === finalVariableName)) {
+              finalVariableName = `${baseVariableName}-${variableCounter}`;
+              variableCounter++;
+            }
+            
+            // Create the new color token
+            const newColorToken: ColorToken = {
+              name: finalName,
+              variableName: finalVariableName,
+              description: `Custom color for ${role} role`,
+              oklchLight: oklchString,
+              oklchDark: oklchString,
+              rawTokenSpecificName: finalName,
+              roles: [role], // Only assign to this role
+              lightThemeSteps: {},
+              darkThemeSteps: {},
+              category: 'color',
+            };
+            
+            console.log(`[handleRoleDirectColorChange] 🎨 Creating new color token: "${finalName}" (${finalVariableName}) for role "${role}"`);
+            
+            // Update the brand state: remove role from current color and add new color
+            const updatedColors = brandToUpdate.colors.map(color => {
+              if (color === currentlyAssignedColor) {
+                const newRoles = color.roles.filter(r => r !== role);
+                return newRoles.length === color.roles.length ? color : { ...color, roles: newRoles };
+              }
+              return color;
+            });
+            
+            // Add the new color token
+            updatedColors.push(newColorToken);
+            
+            const newBrandState: Brand = { ...brandToUpdate, colors: updatedColors };
+            
+            // Update history
+            setHistory(prevHistory => {
+              const newHistorySlice = prevHistory.slice(0, currentHistoryIndex + 1);
+              return [...newHistorySlice, newBrandState];
+            });
+            const newIndex = currentHistoryIndex + 1;
+            setCurrentHistoryIndex(newIndex);
+            setLiveBrand(newBrandState);
+            
+            console.log(`[handleRoleDirectColorChange] ✅ Created new color token and updated brand state`);
+          }
+        }
+      } else {
+        console.log(`[handleRoleDirectColorChange] 🔄 Color "${currentlyAssignedColor.name}" is only assigned to role "${role}", safe to modify directly`);
+        
+        // Convert hex to OKLCH and commit the change to the existing color
+      const oklchConverter = converter('oklch');
+      const colorObj = parseHex(newHex);
+      
+      if (colorObj) {
+        const converted = oklchConverter(colorObj);
+        if (converted) {
+          let { l = 0, c = 0, h = 0 } = converted;
+          h = isNaN(h) ? 0 : h;
+          
+          const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})` as OklchString;
+          commitColorUpdate(currentlyAssignedColor.name, oklchString);
+          }
+        }
+      }
+    } else {
+      console.warn(`[handleRoleDirectColorChange] No color currently assigned to role "${role}"`);
+    }
+  }, [liveBrand, history, currentHistoryIndex, currentThemeData, commitColorUpdate, setHistory, setCurrentHistoryIndex, setLiveBrand]);
+
+  const previewRoleDirectColorChange = useCallback((role: Role, newHex: string) => {
+    const brandToUpdate = liveBrand || history[currentHistoryIndex] || currentThemeData;
+    if (!brandToUpdate) return;
+
+    // Find the currently assigned color token for this role
+    const currentlyAssignedColor = brandToUpdate.colors.find(color => 
+      color.roles?.includes(role)
+    );
+
+    if (currentlyAssignedColor) {
+      // For preview, we can always modify the existing color temporarily
+      // since this is just a live preview and won't be committed
+      const oklchConverter = converter('oklch');
+      const colorObj = parseHex(newHex);
+      
+      if (colorObj) {
+        const converted = oklchConverter(colorObj);
+        if (converted) {
+          let { l = 0, c = 0, h = 0 } = converted;
+          h = isNaN(h) ? 0 : h;
+          
+          const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})` as OklchString;
+          previewColorUpdate(currentlyAssignedColor.name, oklchString);
+        }
+      }
+    }
+  }, [liveBrand, history, currentHistoryIndex, currentThemeData, previewColorUpdate]);
+
   useEffect(() => {
+    console.log(`[BrandContext useEffect] 🚀 useEffect triggered`);
+    console.log(`[BrandContext useEffect] brandToDisplay reference:`, brandToDisplay);
+    console.log(`[BrandContext useEffect] brandToDisplay.colors length:`, brandToDisplay?.colors?.length);
+    console.log(`[BrandContext useEffect] liveBrand reference:`, liveBrand);
+    console.log(`[BrandContext useEffect] Primary role assignments in brandToDisplay:`, 
+      brandToDisplay?.colors?.filter(c => c.roles?.includes('primary')).map(c => ({ name: c.name, variableName: c.variableName })));
+    
     const brandForCSS = brandToDisplay;
     if (typeof window !== "undefined" && brandForCSS && brandForCSS.colors) {
-      // If default theme, clear inline styles and skip dynamic injection to use globals.css
-      if (activeThemeKey === 'default') {
-        document.documentElement.style.cssText = '';
-        return;
-      }
-      // Clear previous inline CSS variables on root element to apply only current theme
       const rootElement = document.documentElement;
-      rootElement.style.cssText = '';
       const rootStyle = document.documentElement.style;
       const hslConverter = converter('hsl'); // Expects hex, rgb etc.
       const oklchConverter = converter('oklch');
       const expectedCssVariables = new Set<string>();
 
+      // More selective CSS variable management - don't clear everything
+      // Instead, we'll track what variables we expect and update only those that changed
+      const variablesToSet = new Map<string, string>();
+
       const setAndTrackProperty = (varName: string, value: string) => {
-        rootStyle.setProperty(varName, value);
+        variablesToSet.set(varName, value);
         expectedCssVariables.add(varName);
+        // Debug critical role variables
+        if (['--primary', '--secondary', '--accent', '--destructive', '--background', '--foreground'].includes(varName)) {
+          console.log(`[BrandContext Debug] Tracking property ${varName}: "${value}"`);
+        }
       };
 
       const findSourceTokenAndShade = (aliasTargetVar: string): { tokenName?: string; shadeKey?: string } => {
@@ -397,79 +838,136 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       });
 
       // Apply semantic aliases from themeCssVariables, making them dynamic for color roles
+      console.log("[BrandContext] 🔍 Checking themeCssVariables:", {
+        exists: !!brandForCSS.themeCssVariables,
+        type: typeof brandForCSS.themeCssVariables,
+        keys: brandForCSS.themeCssVariables ? Object.keys(brandForCSS.themeCssVariables) : 'N/A'
+      });
+      
       if (brandForCSS.themeCssVariables) {
+        console.log("[BrandContext] 🎯 ENTERING themeCssVariables processing");
+        console.log("[BrandContext] themeCssVariables available:", Object.keys(brandForCSS.themeCssVariables));
+        
         const themeRoleKeys = Object.keys(brandForCSS.themeCssVariables) as Array<keyof ThemeCssVars>;
 
+        console.log("[BrandContext] Processing theme CSS variables for role assignments:");
+        console.log("[BrandContext] Available roles in colors:");
+        newEnrichedColors.forEach(color => {
+          if (color.roles && color.roles.length > 0) {
+            console.log(`  "${color.name}" (${color.variableName}): [${color.roles.join(', ')}]`);
+          }
+        });
+
         themeRoleKeys.forEach(roleKey => {
-          const originalThemeVarValue = brandForCSS.themeCssVariables[roleKey];
-          let cssValueToSet: string | undefined = undefined;
+          try {
+            console.log(`[BrandContext] 🔄 Processing role "${roleKey}"...`);
+            
+            const originalThemeVarValue = brandForCSS.themeCssVariables[roleKey];
+            let cssValueToSet: string | undefined = undefined;
 
-          // Check if this key is a color role that should be dynamically resolved
-          const isDynamicColorRole = [
-            'background', 'foreground', 'card', 'card-foreground', 'popover', 'popover-foreground',
-            'primary', 'primary-foreground', 'secondary', 'secondary-foreground',
-            'muted', 'muted-foreground', 'accent', 'accent-foreground',
-            'destructive', 'destructive-foreground', 'success', 'success-foreground',
-            'info', 'info-foreground',
-            'border', 'input', 'input-foreground', 'ring',
-            'chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5', 'chart-outline'
-          ].includes(roleKey);
+            // Check if this key is a color role that should be dynamically resolved
+            const isDynamicColorRole = [
+              'background', 'foreground', 'card', 'card-foreground', 'popover', 'popover-foreground',
+              'primary', 'primary-foreground', 'secondary', 'secondary-foreground',
+              'muted', 'muted-foreground', 'accent', 'accent-foreground',
+              'destructive', 'destructive-foreground', 'success', 'success-foreground',
+              'info', 'info-foreground',
+              'border', 'input', 'input-foreground', 'ring',
+              'chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5', 'chart-outline'
+            ].includes(roleKey);
 
-          if (isDynamicColorRole) {
-            // Check for direct assignment to this roleKey first (for any role, including foregrounds)
-            const directlyAssignedToken = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes(roleKey as Role));
+            console.log(`[BrandContext] Role "${roleKey}" isDynamicColorRole: ${isDynamicColorRole}`);
 
-            if (directlyAssignedToken) {
-              cssValueToSet = `var(--${directlyAssignedToken.variableName})`;
-            } else if (roleKey.endsWith('-foreground')) { // If not directly assigned AND it's a foreground role
-              const surfaceRoleKey = roleKey.replace('-foreground', '') as Role;
-              const surfaceToken = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes(surfaceRoleKey));
-              if (surfaceToken) {
-                if (surfaceToken.onColorLight) {
-                  cssValueToSet = surfaceToken.onColorLight;
-                } else {
-                  // Fallback for foreground if surface token has no onColorLight
-                  const genericFgToken = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes('foreground'));
-                  if (genericFgToken) {
-                    cssValueToSet = `var(--${genericFgToken.variableName})`;
+            if (isDynamicColorRole) {
+              // Enhanced debugging for primary role specifically
+              if (roleKey === 'primary') {
+                console.log(`[BrandContext] ⚡ ENHANCED PRIMARY DEBUGGING ⚡`);
+                console.log(`[BrandContext] Looking for role "primary" in colors:`, newEnrichedColors.map(c => ({
+                  name: c.name,
+                  variableName: c.variableName,
+                  roles: c.roles
+                })));
+              }
+              
+              // Check for direct assignment to this roleKey first (for any role, including foregrounds)
+              const directlyAssignedToken = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes(roleKey as Role));
+
+              console.log(`[BrandContext] Processing role "${roleKey}":`, {
+                isDynamicColorRole,
+                directlyAssignedToken: directlyAssignedToken ? {
+                  name: directlyAssignedToken.name,
+                  variableName: directlyAssignedToken.variableName,
+                  roles: directlyAssignedToken.roles,
+                  oklchLight: directlyAssignedToken.oklchLight
+                } : null
+              });
+
+              if (directlyAssignedToken) {
+                cssValueToSet = `var(--${directlyAssignedToken.variableName})`;
+                console.log(`[BrandContext] Role "${roleKey}" directly assigned to token "${directlyAssignedToken.name}" -> CSS value: ${cssValueToSet}`);
+              } else if (roleKey.endsWith('-foreground')) {
+                const surfaceRoleKey = roleKey.replace('-foreground', '') as Role;
+                const surfaceToken = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes(surfaceRoleKey));
+                console.log(`[BrandContext] Foreground role "${roleKey}" not directly assigned, looking for surface role "${surfaceRoleKey}":`, {
+                  surfaceToken: surfaceToken ? { name: surfaceToken.name, variableName: surfaceToken.variableName } : null
+                });
+                
+                if (surfaceToken) {
+                  if (surfaceToken.onColorLight) {
+                    cssValueToSet = surfaceToken.onColorLight;
                   } else {
-                    // Absolute fallback for foreground
+                    // Fallback for foreground if surface token has no onColorLight
+                    const genericFgToken = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes('foreground'));
+                    if (genericFgToken) {
+                      cssValueToSet = `var(--${genericFgToken.variableName})`;
+                    } else {
+                      // Absolute fallback for foreground
+                      const bgTokenForFgFallback = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes('background'));
+                      const bgL = bgTokenForFgFallback ? (oklchConverter(bgTokenForFgFallback.oklchLight)?.l ?? 0.95) : 0.95;
+                      cssValueToSet = bgL >= 0.5 ? "oklch(0.1 0 0)" : "oklch(0.95 0 0)";
+                    }
+                  }
+                } else {
+                  // Fallback if the surface role itself is unassigned, try original theme var or absolute fallback
+                  if (originalThemeVarValue) cssValueToSet = String(originalThemeVarValue);
+                  else {
                     const bgTokenForFgFallback = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes('background'));
                     const bgL = bgTokenForFgFallback ? (oklchConverter(bgTokenForFgFallback.oklchLight)?.l ?? 0.95) : 0.95;
                     cssValueToSet = bgL >= 0.5 ? "oklch(0.1 0 0)" : "oklch(0.95 0 0)";
                   }
                 }
-              } else {
-                // Fallback if the surface role itself is unassigned, try original theme var or absolute fallback
-                if (originalThemeVarValue) cssValueToSet = String(originalThemeVarValue);
-                else {
-                  const bgTokenForFgFallback = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes('background'));
-                  const bgL = bgTokenForFgFallback ? (oklchConverter(bgTokenForFgFallback.oklchLight)?.l ?? 0.95) : 0.95;
-                  cssValueToSet = bgL >= 0.5 ? "oklch(0.1 0 0)" : "oklch(0.95 0 0)";
+              } else { // It's a main role (not a foreground) and not directly assigned (this case should ideally be caught by directlyAssignedToken already)
+                // This else block handles base roles that might not have been directly assigned but have a definition in themeCssVariables
+                const tokenForRole = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes(roleKey as Role));
+                if (tokenForRole) { // Should have been caught by directlyAssignedToken
+                  cssValueToSet = `var(--${tokenForRole.variableName})`;
+                } else if (originalThemeVarValue) {
+                  // Fallback to the theme's original definition if role is unassigned and no direct token found
+                  cssValueToSet = String(originalThemeVarValue);
                 }
               }
-            } else { // It's a main role (not a foreground) and not directly assigned (this case should ideally be caught by directlyAssignedToken already)
-              // This else block handles base roles that might not have been directly assigned but have a definition in themeCssVariables
-              const tokenForRole = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes(roleKey as Role));
-              if (tokenForRole) { // Should have been caught by directlyAssignedToken
-                cssValueToSet = `var(--${tokenForRole.variableName})`;
-              } else if (originalThemeVarValue) {
-                // Fallback to the theme's original definition if role is unassigned and no direct token found
+            } else {
+              // Not a dynamic color role (e.g., radius, shadow), use original value
+              if (originalThemeVarValue !== undefined) {
                 cssValueToSet = String(originalThemeVarValue);
               }
             }
-          } else {
-            // Not a dynamic color role (e.g., radius, shadow), use original value
-            if (originalThemeVarValue !== undefined) {
-              cssValueToSet = String(originalThemeVarValue);
-            }
-          }
 
-          if (cssValueToSet !== undefined) {
-            setAndTrackProperty(`--${roleKey}`, cssValueToSet);
-          } else {
-            // If a variable is optional in ThemeCssVars and not resolved, it's okay to not set it.
-            // console.warn(`CSS Variable --${roleKey} could not be resolved and has no default value.`);
+            if (cssValueToSet !== undefined) {
+              setAndTrackProperty(`--${roleKey}`, cssValueToSet);
+              if (isDynamicColorRole) {
+                console.log(`[BrandContext] Set CSS variable --${roleKey}: ${cssValueToSet}`);
+              }
+            } else {
+              // If a variable is optional in ThemeCssVars and not resolved, it's okay to not set it.
+              if (isDynamicColorRole) {
+                console.warn(`[BrandContext] CSS Variable --${roleKey} could not be resolved and has no default value.`);
+              }
+            }
+            
+            console.log(`[BrandContext] ✅ Completed processing role "${roleKey}"`);
+          } catch (error) {
+            console.error(`[BrandContext] ❌ Error processing role "${roleKey}":`, error);
           }
         });
       }
@@ -507,39 +1005,23 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       };
       setProcessedBrand(finalProcessedBrand);
 
-      // --- BEGIN: Apply all :root variables from generateGlobalCss ---
-      const completeCssString = generateGlobalCss(brandForCSS);
-      const rootBlockMatch = completeCssString.match(/:root\s*{\s*([\s\S]*?)\s*}/);
-
-      // Define semanticRolesToGetSteps here, consistent with brand-utils.ts
-      const semanticRolesToGetSteps: Array<keyof ThemeCssVars> = [
-        'primary', 'secondary', 'accent', 'destructive', 'success', 'ring',
-        'chart1', 'chart2', 'chart3', 'chart4', 'chart5'
-      ];
-
-      if (rootBlockMatch && rootBlockMatch[1]) {
-        const rootCssContent = rootBlockMatch[1];
-        const cssVariableRegex = /\s*(--[^:]+)\s*:\s*([^;]+);/g;
-        let match;
-        console.log("[BrandContext Debug] Applying all :root variables from generateGlobalCss string:");
-        while ((match = cssVariableRegex.exec(rootCssContent)) !== null) {
-          const varName = match[1].trim();
-          const varValue = match[2].trim();
-
-          const isDerivedSemanticStep = semanticRolesToGetSteps.some(roleKey => varName.startsWith(`--${roleKey}-`));
-
-          // If the variable wasn't set by earlier specific logic OR if it IS a derived semantic step,
-          // then apply the value from generateGlobalCss.
-          if (!expectedCssVariables.has(varName) || isDerivedSemanticStep) {
-            // console.log(`[BrandContext Debug]   Setting from generateGlobalCss :root: ${varName}: ${varValue}`);
-            rootStyle.setProperty(varName, varValue);
-            expectedCssVariables.add(varName); // Track it as set
-          } else {
-            // console.log(`[BrandContext Debug]   Skipping (already set by specific logic and not a derived step): ${varName}`);
+      // Apply all variables efficiently - only update those that have changed
+      variablesToSet.forEach((value, varName) => {
+        const currentValue = rootStyle.getPropertyValue(varName);
+        if (currentValue !== value) {
+          rootStyle.setProperty(varName, value);
+          // Debug critical role variables
+          if (['--primary', '--secondary', '--accent', '--destructive', '--background', '--foreground'].includes(varName)) {
+            console.log(`[BrandContext Debug] Setting CSS variable ${varName}: "${currentValue}" -> "${value}"`);
           }
         }
+      });
+
+      // Force a style recalculation to ensure changes are applied
+      if (typeof window !== "undefined") {
+        // Trigger a reflow to ensure CSS changes are applied
+        window.getComputedStyle(rootElement).getPropertyValue('--primary');
       }
-      // --- END: Apply all :root variables from generateGlobalCss ---
 
       console.log("--- CSS Variables Applied (Full Check via BrandContext) ---");
       expectedCssVariables.forEach(varName => {
@@ -548,7 +1030,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       });
       console.log("--- End CSS Variable Check (BrandContext) ---");
     }
-  }, [brandToDisplay]); // brandToDisplay is liveBrand || committedBrand || currentThemeData
+  }, [brandToDisplay, currentThemeData, activeThemeKey]);
 
   return (
     <BrandContext.Provider value={{
@@ -560,15 +1042,45 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       setActiveTheme: handleSetActiveTheme,
       previewColorUpdate,
       commitColorUpdate,
+      addNewColor,
       undo,
       redo,
       canUndo,
       canRedo,
       undoStepsAvailable,
       redoStepsAvailable,
-      updateRoleAssignment
+      updateRoleAssignment,
+      // New role-based color handling functions
+      handleRoleSwatchSelection,
+      handleRoleDirectColorChange,
+      previewRoleDirectColorChange
     }}>
       {children}
     </BrandContext.Provider>
   );
+};
+
+/**
+ * Hook to get the current theme's animation configuration
+ */
+export const useThemeAnimations = (): ThemeAnimationConfig | null => {
+  const { brand } = useBrand();
+  return brand?.animationConfig || null;
+};
+
+/**
+ * Hook to get the animation CSS for the current theme
+ */
+export const useAnimationCss = (): string => {
+  const animationConfig = useThemeAnimations();
+  if (!animationConfig) return '';
+  return generateAnimationCss(animationConfig);
+};
+
+/**
+ * Hook to get the root class name for animations
+ */
+export const useAnimationRootClassName = (): string => {
+  const animationConfig = useThemeAnimations();
+  return animationConfig?.rootClassName || '';
 };
