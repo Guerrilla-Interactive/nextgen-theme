@@ -999,6 +999,56 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         rootStyle.setProperty('font-family', fontBody);
       }
 
+      // Handle animation CSS injection and root class application
+      if (brandForCSS.animationConfig) {
+        console.log('Applying animation configuration:', brandForCSS.animationConfig);
+        
+        // Generate the animation CSS
+        const animationCss = generateAnimationCss(brandForCSS.animationConfig);
+        
+        // Find existing animation style element or create new one
+        const existingStyleElement = document.querySelector('style[data-theme-animations]');
+        let styleElement = existingStyleElement as HTMLStyleElement;
+        
+        if (!styleElement) {
+          styleElement = document.createElement('style');
+          styleElement.setAttribute('data-theme-animations', 'true');
+          document.head.appendChild(styleElement);
+        }
+        
+        // Update the style element with new animation CSS
+        styleElement.textContent = animationCss;
+        
+        // Apply the root class name to the document element
+        const rootClassName = brandForCSS.animationConfig.rootClassName;
+        
+        // Remove any existing animation root classes
+        const existingAnimationClasses = Array.from(rootElement.classList).filter(cls => 
+          cls.endsWith('-theme') || cls.includes('animation') || cls.includes('brutal') || cls.includes('modern')
+        );
+        existingAnimationClasses.forEach(cls => rootElement.classList.remove(cls));
+        
+        // Add the new root class
+        if (rootClassName) {
+          rootElement.classList.add(rootClassName);
+          console.log(`Applied animation root class: ${rootClassName}`);
+        }
+      } else {
+        // If no animation config, remove any existing animation styles and classes
+        const existingStyleElement = document.querySelector('style[data-theme-animations]');
+        if (existingStyleElement) {
+          existingStyleElement.remove();
+        }
+        
+        // Remove any existing animation root classes
+        const existingAnimationClasses = Array.from(rootElement.classList).filter(cls => 
+          cls.endsWith('-theme') || cls.includes('animation') || cls.includes('brutal') || cls.includes('modern')
+        );
+        existingAnimationClasses.forEach(cls => rootElement.classList.remove(cls));
+        
+        console.log('No animation configuration found, removed existing animation styles');
+      }
+
       const finalProcessedBrand: EnrichedBrand = {
         ...brandForCSS,
         colors: newEnrichedColors

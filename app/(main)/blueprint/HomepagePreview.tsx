@@ -152,15 +152,15 @@ export default function HomepagePreview() {
             Experience innovation that accelerates your ideas into reality.
           </p>
           <div className="flex space-x-4">
-            <Button className="font-semibold">Get Started</Button>
-            <Button variant="outline" className="font-semibold">Learn More</Button>
+            <Button className="font-semibold" data-slot="button">Get Started</Button>
+            <Button variant="outline" className="font-semibold" data-slot="button">Learn More</Button>
           </div>
         </section>
 
         {/* Feature Cards Section */}
         <section>
           <div className="grid grid-cols-3 gap-4">
-            <Card className="flex flex-col items-center p-8 shadow-[var(--shadow-md)]">
+            <Card className="flex flex-col items-center p-8 shadow-[var(--shadow-md)]" data-slot="card">
               <Zap className="size-10 text-primary" />
               <CardTitle
                 className="text-lg font-bold text-center"
@@ -171,11 +171,11 @@ export default function HomepagePreview() {
               <CardDescription className="text-sm text-center font-normal">
                 Lightning-fast speeds.
               </CardDescription>
-              <Button variant="link" className="font-medium">
+              <Button variant="link" className="font-medium" data-slot="link">
                 Learn More
               </Button>
             </Card>
-            <Card className="flex flex-col items-center p-8 shadow-[var(--shadow-md)]">
+            <Card className="flex flex-col items-center p-8 shadow-[var(--shadow-md)]" data-slot="card">
               <Shield className="size-10 text-primary" />
               <CardTitle
                 className="text-lg font-bold text-center"
@@ -186,11 +186,11 @@ export default function HomepagePreview() {
               <CardDescription className="text-sm text-center font-normal">
                 Robust data protection.
               </CardDescription>
-              <Button variant="link" className="font-medium">
+              <Button variant="link" className="font-medium" data-slot="link">
                 Learn More
               </Button>
             </Card>
-            <Card className="flex flex-col items-center p-8 shadow-[var(--shadow-md)]">
+            <Card className="flex flex-col items-center p-8 shadow-[var(--shadow-md)]" data-slot="card">
               <Settings className="size-10 text-primary" />
               <CardTitle
                 className="text-lg font-bold text-center"
@@ -201,7 +201,7 @@ export default function HomepagePreview() {
               <CardDescription className="text-sm text-center font-normal">
                 Flexible theming options.
               </CardDescription>
-              <Button variant="link" className="font-medium">
+              <Button variant="link" className="font-medium" data-slot="link">
                 Learn More
               </Button>
             </Card>
@@ -210,7 +210,7 @@ export default function HomepagePreview() {
 
         {/* Newsletter Section */}
         <section className="py-12">
-          <Card className="p-8 shadow-[var(--shadow-lg)]">
+          <Card className="p-8 shadow-[var(--shadow-lg)]" data-slot="card">
             <CardHeader className="flex items-center space-x-4">
               <Mail size={48} className="text-primary" />
               <div className="space-y-1">
@@ -226,8 +226,8 @@ export default function HomepagePreview() {
               </div>
             </CardHeader>
             <CardContent className="mt-6 flex flex-row items-center space-x-2">
-              <Input placeholder="Email address" className="flex-1 font-normal" />
-              <Button className="font-semibold">Subscribe</Button>
+              <Input placeholder="Email address" className="flex-1 font-normal" data-slot="input" />
+              <Button className="font-semibold" data-slot="button">Subscribe</Button>
             </CardContent>
           </Card>
         </section>
@@ -242,7 +242,7 @@ export default function HomepagePreview() {
           </h2>
           <div className="grid grid-cols-2 gap-6">
             {/* Testimonial 1 */}
-            <Card className="shadow-[var(--shadow-sm)]">
+            <Card className="shadow-[var(--shadow-sm)]" data-slot="card">
               <CardHeader className="flex flex-col items-center space-y-2">
                 <Avatar>
                   <AvatarFallback className="font-semibold">JD</AvatarFallback>
@@ -265,7 +265,7 @@ export default function HomepagePreview() {
               </CardContent>
             </Card>
             {/* Testimonial 2 */}
-            <Card className="shadow-[var(--shadow-sm)]">
+            <Card className="shadow-[var(--shadow-sm)]" data-slot="card">
               <CardHeader className="flex flex-col items-center space-y-2">
                 <Avatar>
                   <AvatarFallback className="font-semibold">JS</AvatarFallback>
@@ -330,9 +330,9 @@ export default function HomepagePreview() {
         <footer className="flex justify-between text-sm text-muted-foreground">
           <p className="font-normal">© 2024 Your Company</p>
           <div className="flex space-x-4">
-            <Button variant="link" className="font-medium">Privacy</Button>
-            <Button variant="link" className="font-medium">Terms</Button>
-            <Button variant="link" className="font-medium">Contact</Button>
+            <Button variant="link" className="font-medium" data-slot="link">Privacy</Button>
+            <Button variant="link" className="font-medium" data-slot="link">Terms</Button>
+            <Button variant="link" className="font-medium" data-slot="link">Contact</Button>
           </div>
         </footer>
       </div>
