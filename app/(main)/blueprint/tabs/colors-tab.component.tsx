@@ -201,7 +201,9 @@ export function ColorsTab({ activeThemeKey, isPageDarkMode }: ColorsTabProps) {
     canUndo,
     handleRoleSwatchSelection,
     handleRoleDirectColorChange,
-    previewRoleDirectColorChange
+    previewRoleDirectColorChange,
+    addNewColor,
+    commitColorUpdate
   } = useBrand();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -352,35 +354,79 @@ export function ColorsTab({ activeThemeKey, isPageDarkMode }: ColorsTabProps) {
     );
   }, [roleGroups, searchTerm]);
 
-  // Generate swatches for color picker
+  // Generate swatches for color picker - use original brand colors order to preserve insertion order
   const swatches = useMemo(() => 
-    processedColors.map(c => ({
+    brand?.colors?.map(c => ({
       name: c.variableName,
       displayName: c.name,
       color: formatHex(c.oklchLight as string) || '#000000'
-    })).filter(s => s.color !== '#000000'), 
-    [processedColors]
+    })).filter(s => s.color !== '#000000') || [], 
+    [brand]
   );
 
   // Handle adding new color swatch
-  const handleSwatchAdd = (name: string, color: string) => {
-    console.log('Adding new swatch:', name, color);
-    // TODO: Implement actual swatch addition logic
-    // This would typically involve updating the brand context with a new color
+  const handleSwatchAdd = (name: string, color: string, onColorCreated?: (variableName: string) => void) => {
+    // Use the brand context's addNewColor function with callback to make it active
+    addNewColor(name, color, [], (newColorName) => {
+      // Find the variable name for the newly created color
+      // The brand context returns the display name, but we need the variable name
+      // Generate the expected variable name using the same logic as ColorPicker
+      const generateExpectedVariableName = (displayName: string): string => {
+        let baseVariableName = displayName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        let finalVariableName = baseVariableName;
+        
+        // Check for existing variable names and generate unique ones if needed
+        let variableCounter = 1;
+        if (brand?.colors) {
+          while (brand.colors.find(color => color.variableName === finalVariableName)) {
+            finalVariableName = `${baseVariableName}-${variableCounter}`;
+            variableCounter++;
+          }
+        }
+        
+        return finalVariableName;
+      };
+      
+      const expectedVariableName = generateExpectedVariableName(newColorName);
+      
+      // Call the callback to notify the ColorPicker about the new color's variable name
+      if (onColorCreated) {
+        onColorCreated(expectedVariableName);
+      }
+    });
   };
 
   // Handle updating existing color swatch
   const handleSwatchUpdate = (oldName: string, newName: string, color: string) => {
-    console.log('Updating swatch:', oldName, '->', newName, color);
-    // TODO: Implement actual swatch update logic
-    // This would typically involve updating the brand context
+    // Find the color by variable name and update it
+    const colorToUpdate = processedColors.find(c => c.variableName === oldName);
+    if (colorToUpdate) {
+      // Convert hex to OKLCH and commit the change
+      const oklchConverter = converter('oklch');
+      const colorObj = parseHex(color);
+      
+      if (colorObj) {
+        const converted = oklchConverter(colorObj);
+        if (converted) {
+          let { l = 0, c = 0, h = 0 } = converted;
+          h = isNaN(h) ? 0 : h;
+          
+          const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})`;
+          commitColorUpdate(colorToUpdate.name, oklchString);
+        }
+      }
+    }
   };
 
   // Handle deleting color swatch
   const handleSwatchDelete = (name: string) => {
-    console.log('Deleting swatch:', name);
-    // TODO: Implement actual swatch deletion logic
-    // This would typically involve removing from the brand context
+    // Find the color by variable name
+    const colorToDelete = processedColors.find(c => c.variableName === name);
+    if (colorToDelete) {
+      // For now, we'll just log this since we don't have a delete function in the brand context
+      // In a full implementation, you'd want to add a deleteColor function to the brand context
+      console.warn('Color deletion not yet implemented in brand context');
+    }
   };
 
   if (!brand) {
@@ -498,6 +544,7 @@ export function ColorsTab({ activeThemeKey, isPageDarkMode }: ColorsTabProps) {
                             className="w-14 h-14 rounded-full border border-border/60 shadow-sm hover:shadow-md transition-all"
                             style={{ zIndex: 10 - index }}
                             title={roleTitle}
+                            role={roleAssignment.role}
                             swatches={swatches}
                             onSwatchSelect={(swatch) => handleRoleSwatchSelection(roleAssignment.role, swatch.name)}
                             onChange={(newHex) => previewRoleDirectColorChange(roleAssignment.role, newHex)}

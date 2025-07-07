@@ -4,9 +4,31 @@ import { Button } from "@/features/unorganized-components/ui/button";
 import { useBrand } from "./BrandContext";
 import { Input } from "@/features/unorganized-components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/features/unorganized-components/ui/card";
+import { ColorPicker } from "../brand-colors/ColorPicker";
+import { useState } from "react";
+import { formatHex } from "culori";
 
 export const AnimationDemo = () => {
-  const { brand } = useBrand();
+  const { brand, processedBrand, addNewColor } = useBrand();
+  const [testColor, setTestColor] = useState('#3B82F6');
+  
+  // Generate swatches for testing - use original brand colors order to preserve insertion order
+  const swatches = brand?.colors?.map(c => ({
+    name: c.variableName,
+    displayName: c.name,
+    color: formatHex(c.oklchLight as string) || '#000000'
+  })).filter(s => s.color !== '#000000') || [];
+  
+  const handleSwatchAdd = (name: string, color: string) => {
+    console.log('AnimationDemo: Adding new swatch:', name, color);
+    // Immediately update the color picker to the new color
+    setTestColor(color);
+    console.log('AnimationDemo: Set active color to:', color);
+    
+    addNewColor(name, color, [], (newColorName) => {
+      console.log('AnimationDemo: New color created and confirmed active:', newColorName);
+    });
+  };
   
   return (
     <div className="space-y-6">
@@ -21,6 +43,33 @@ export const AnimationDemo = () => {
           )}
         </p>
       </div>
+      
+      {/* Color Creation Test */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Test Color Creation</CardTitle>
+          <CardDescription>
+            Click the color picker and then click the "+" button to create a new color instantly
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4">
+            <ColorPicker
+              value={testColor}
+              onChange={setTestColor}
+              swatches={swatches}
+              onSwatchAdd={handleSwatchAdd}
+              className="w-12 h-12"
+            />
+            <div className="text-sm">
+              <p>Current color: {testColor}</p>
+              <p className="text-muted-foreground">
+                Total colors in theme: {brand?.colors?.length || 0}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       
       <div className="space-y-4">
         <Card data-slot="card" className="p-4">

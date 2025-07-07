@@ -24,10 +24,11 @@ import { useBrand } from "../brandguide/BrandContext";
 import { FontToken } from "../brandguide/brand-utils";
 
 export default function HomepagePreview() {
-  const { brand } = useBrand();
+  const { brand, processedBrand } = useBrand();
 
   // Force re-render when brand changes to ensure CSS variables are applied
   const [renderKey, setRenderKey] = React.useState(0);
+  const [cssVariableUpdate, setCssVariableUpdate] = React.useState(0);
   
   React.useEffect(() => {
     if (brand) {
@@ -35,6 +36,88 @@ export default function HomepagePreview() {
       console.log('[HomepagePreview] Brand changed - forcing re-render');
     }
   }, [brand]);
+
+  // Enhanced effect to monitor both brand and processedBrand changes
+  React.useEffect(() => {
+    if (processedBrand) {
+      setCssVariableUpdate(prev => prev + 1);
+      console.log('[HomepagePreview] ProcessedBrand changed - triggering CSS variable refresh');
+      
+      // Force a style recalculation after a short delay
+      setTimeout(() => {
+        if (typeof window !== "undefined") {
+          // Force browser to recalculate styles
+          document.documentElement.offsetHeight;
+          setRenderKey(prev => prev + 1);
+        }
+      }, 50);
+    }
+  }, [processedBrand]);
+
+  // Monitor CSS variable changes directly and watch for style[data-brand-theme] changes
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const observer = new MutationObserver((mutations) => {
+      let needsRerender = false;
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          const target = mutation.target as HTMLElement;
+          if (target === document.documentElement) {
+            needsRerender = true;
+          }
+        }
+        
+        // Also watch for changes to the brand theme style element
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const element = node as HTMLElement;
+              if (element.tagName === 'STYLE' && element.hasAttribute('data-brand-theme')) {
+                needsRerender = true;
+                console.log('[HomepagePreview] Brand theme style element added/changed');
+              }
+            }
+          });
+        }
+        
+        // Watch for content changes in existing brand theme style element
+        if (mutation.type === 'characterData') {
+          const parentElement = mutation.target.parentElement;
+          if (parentElement?.tagName === 'STYLE' && parentElement.hasAttribute('data-brand-theme')) {
+            needsRerender = true;
+            console.log('[HomepagePreview] Brand theme style element content changed');
+          }
+        }
+      });
+      
+      if (needsRerender) {
+        console.log('[HomepagePreview] Theme changes detected - forcing component update');
+        setCssVariableUpdate(prev => prev + 1);
+        // Small delay to ensure CSS changes are fully applied
+        setTimeout(() => {
+          setRenderKey(prev => prev + 1);
+        }, 100);
+      }
+    });
+    
+    // Observe changes to document.documentElement style attribute
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['style']
+    });
+    
+    // Observe changes to document.head for style element additions/removals
+    observer.observe(document.head, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+    
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   // Debug: Check CSS variables in the component
   React.useEffect(() => {
@@ -74,36 +157,16 @@ export default function HomepagePreview() {
       console.log('--- End HomepagePreview CSS Debug ---');
     };
 
-    // Run immediately and set up periodic checks
+    // Run debug check when CSS variables update
     debugCSSVariables();
     
-    // Set up a listener for CSS variable changes
-    const observer = new MutationObserver((mutations) => {
-      let needsRecheck = false;
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-          needsRecheck = true;
-        }
-      });
-      
-      if (needsRecheck) {
-        setTimeout(debugCSSVariables, 100); // Small delay to ensure changes are applied
-      }
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['style']
-    });
-    
     // Also check periodically
-    const interval = setInterval(debugCSSVariables, 2000);
+    const interval = setInterval(debugCSSVariables, 5000);
     
     return () => {
-      observer.disconnect();
       clearInterval(interval);
     };
-  }, []);
+  }, [cssVariableUpdate]);
 
   // Get theme fonts and categorize them
   const getThemeFonts = () => {
@@ -125,20 +188,25 @@ export default function HomepagePreview() {
   const { headingFont, bodyFont } = getThemeFonts();
 
   return (
-    <div key={renderKey} className="w-full h-full bg-background text-foreground">
+    <div 
+      key={`${renderKey}-${cssVariableUpdate}`} 
+      className="w-full h-full bg-background text-foreground"
+      style={{ 
+        // Force CSS variable re-evaluation by adding a custom property
+        '--force-update': cssVariableUpdate as any,
+        fontFamily: bodyFont || 'inherit'
+      } as React.CSSProperties}
+    >
       {/* Visual indicator for current primary color */}
       <div className="fixed top-4 right-4 z-50 bg-card border rounded p-2 text-xs shadow-lg">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded bg-[var(--primary)] border"></div>
-          <span>Primary Color (render #{renderKey})</span>
+          <span>Primary Color (r#{renderKey} c#{cssVariableUpdate})</span>
         </div>
       </div>
       
       {/* Header */}
-      <div
-        className="bg-background text-foreground space-y-8 p-6"
-        style={{ fontFamily: bodyFont || 'inherit' }}
-      >
+      <div className="bg-background text-foreground space-y-8 p-6">
         {/* Hero Section */}
         <section className="flex flex-col items-center space-y-6 py-20">
           <Badge className="font-medium">New</Badge>

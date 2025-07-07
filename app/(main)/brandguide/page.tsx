@@ -914,10 +914,11 @@ const BrandGuideContent = () => {
       .sort((a, b) => b.effectiveInfluence - a.effectiveInfluence);
   }, [processedBrand, getEffectiveInfluenceAndRoles, generateImportanceSummary]);
 
-  const swatches = useMemo(() => processedColors.map(c => ({
+  // Generate swatches using original brand colors order to preserve insertion order
+  const swatches = useMemo(() => brand?.colors?.map(c => ({
     name: c.name,
     color: formatHex(c.oklchLight)
-  })), [processedColors]);
+  })) || [], [brand]);
 
   const handleRoleColorChange = (role: Role, newColorHex: string) => {
     const hex = formatHex(newColorHex)?.toLowerCase();

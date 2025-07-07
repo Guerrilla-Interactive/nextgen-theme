@@ -11,6 +11,7 @@ import { Moon, Sun, Copy, Download, Check } from "lucide-react";
 import { Badge } from "@/features/unorganized-components/ui/badge";
 import { ExportTab } from "./tabs/export-tab.component";
 import { ColorsTab } from "./tabs/colors-tab.component";
+import { BrandContextDebugPanel } from "./components/BrandContextDebugPanel";
 
 export default function BlueprintPage() {
   return (
@@ -21,7 +22,7 @@ export default function BlueprintPage() {
 }
 
 function PageContent() {
-  const { activeThemeKey, setActiveTheme, availableThemes, brand } = useBrand();
+  const { activeThemeKey, setActiveTheme, availableThemes, brand, processedBrand } = useBrand();
 
   // Initialize cardDarkModes based on each theme's default preference
   const initialModes: Record<string, boolean> = {};
@@ -146,7 +147,7 @@ function PageContent() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy CSS:', err);
+      // Handle error silently - copy operation failed
     }
   };
 
@@ -448,6 +449,9 @@ function PageContent() {
           Next
         </Button>
       </nav>
+      
+      {/* Debug Panel */}
+      <BrandContextDebugPanel />
     </div>
   );
 }
