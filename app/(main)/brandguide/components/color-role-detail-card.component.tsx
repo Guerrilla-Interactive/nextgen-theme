@@ -3,9 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/fea
 import { GridCol } from "@/features/unorganized-components/nextgen-core-ui";
 import { ColorPicker } from "../../brand-colors/ColorPicker";
 import { formatHex, converter } from "culori";
-import { Role, type OklchString, type Shade, influenceHierarchy } from "../brand-utils";
+import { Role, type OklchString, type Shade, influenceHierarchy } from "../../blueprint/brand-utils";
 import { ProcessedColorToken } from "../page";
-import { type EnrichedShade } from "../BrandContext";
+import { type EnrichedShade } from "../../blueprint/BrandContext";
 import { buttonVariantConfig } from "@/features/unorganized-components/ui/button";
 
 interface ColorSwatch {

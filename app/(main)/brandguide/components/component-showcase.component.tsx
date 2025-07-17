@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { Brand, ComponentShowcaseItem, ComponentStateStyles } from '../brand-utils';
+import { Brand, ComponentShowcaseItem, ComponentStateStyles } from '../../blueprint/brand-utils';
 
 import { Badge } from "@/features/unorganized-components/ui/badge";
 import { Button } from "@/features/unorganized-components/ui/button";
@@ -73,7 +73,6 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ brand, cla
             placeholder={item.displayComponent}
             className="w-full"
             disabled={item.variant === 'disabled'}
-            forceState={state}
             style={{ ...inputStyles, ...stateStyle } as any as React.CSSProperties}
           />
         );

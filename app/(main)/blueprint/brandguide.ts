@@ -16,29 +16,38 @@
  */
 
 import { nextgenBrand } from "./themes/nextgen.theme";
+import { nextgenLightBrand } from "./themes/nextgen-light.theme";
 import { razerBrand } from "./themes/razer.theme";
 import { defaultTheme } from "./themes/default.theme";
 import { neoBrutalismBrand } from "./themes/neo-brutalism.theme";
+import { darkBrutalismBrand } from "./themes/dark-brutalism.theme";
+
 import { type Brand, influenceHierarchy } from "./brand-utils";
 
 import { violetSkyBrand } from "./themes/violet-sky.theme";
+import { cosmicDuskBrand } from "./themes/cosmic-dusk.theme";
 import { summerBrand } from "./themes/summer.theme";
-
+import { sunsetGlowBrand } from "./themes/sunset-glow.theme";
 
 import { peachParfaitBrand } from "./themes/peach.theme";
 import { cyberPulseBrand } from "./themes/cyberpulse.theme";
-
-
+import { cyberLightBrand } from "./themes/cyber-light.theme";
 import { sageMeadowBrand } from "./themes/sagemeadow.theme";
+import { forestDuskTheme } from "./themes/forest-dusk.theme";
 import { elegantLuxuryBrand } from "./themes/elegant-luxury.theme";
-
+import { opulentMidnightBrand } from "./themes/opulent-midnight.theme";
 
 import { lilacDaylightBrand } from "./themes/lilac-daylight.theme";
 import { vercelMinimalBrand } from "./themes/vercel.theme";
+import { vercelDarkBrand } from "./themes/vercel-dark.theme";
 
 import { sageMinimalBrand } from "./themes/sage-minimal.theme";
+import { sageShadowBrand } from "./themes/sage-shadow.theme";
 import { twitterXTheme } from "./themes/twitter-x.theme";
+import { twitterXDarkTheme } from "./themes/twitter-x-dark.theme";
 import { rosePurpleTheme } from "./themes/rose-purple.theme";
+import { midnightRoseTheme } from "./themes/midnight-rose.theme";
+
 
 // All original type definitions (Role, NumericShadeLevel, FunctionalShadeKey, ShadeKey, Shade, ColorToken, FontToken, 
 // Personality, StyleGuide, BusinessDetails, Brand, ThemeCssVars) 
@@ -51,21 +60,32 @@ import { rosePurpleTheme } from "./themes/rose-purple.theme";
 export { influenceHierarchy }; // Re-export if needed by other parts of the app directly from here
 
 export const themes: Record<string, Brand> = {
-  default: defaultTheme,
   nextgen: nextgenBrand,
+  "nextgen-light": nextgenLightBrand,
   "neo-brutalism": neoBrutalismBrand,
+  "dark-brutalism": darkBrutalismBrand,
   "violet-sky": violetSkyBrand,
+  "cosmic-dusk": cosmicDuskBrand,
   "summer": summerBrand,
+  "sunset-glow": sunsetGlowBrand,
   "razer": razerBrand,
   "peach": peachParfaitBrand,
   "cyberPulse": cyberPulseBrand,
+  "cyber-light": cyberLightBrand,
   "sageMeadow": sageMeadowBrand,
+  "forest-dusk": forestDuskTheme,
   "elegantLuxury": elegantLuxuryBrand,
+  "opulent-midnight": opulentMidnightBrand,
   "lilacDaylight": lilacDaylightBrand,
   "vercel": vercelMinimalBrand,
+  "vercel-dark": vercelDarkBrand,
   "sageMinimal": sageMinimalBrand,
+  "sage-shadow": sageShadowBrand,
   "twitter-x": twitterXTheme,
-  "rose-purple": rosePurpleTheme
+  "twitter-x-dark": twitterXDarkTheme,
+  "rose-purple": rosePurpleTheme,
+  "midnight-rose": midnightRoseTheme,
+  
 };
 
 // Update the default export if necessary, or page.tsx will pick a default from 'themes'
@@ -73,22 +93,30 @@ export default nextgenBrand; // Keep nextgen as the default for now if something
 
 export const ALL_BRANDS = [
   nextgenBrand,
-  
+  nextgenLightBrand,
+  neoBrutalismBrand,
+  darkBrutalismBrand,
   razerBrand,
   summerBrand,
+  sunsetGlowBrand,
   violetSkyBrand,
-  
+  cosmicDuskBrand,
   peachParfaitBrand,
   cyberPulseBrand,
-  
+  cyberLightBrand,
   sageMeadowBrand,
+  forestDuskTheme,
   elegantLuxuryBrand,
-  
+  opulentMidnightBrand,
   lilacDaylightBrand,
-
   sageMinimalBrand,
+  sageShadowBrand,
   twitterXTheme,
-  rosePurpleTheme
+  twitterXDarkTheme,
+  rosePurpleTheme,
+  midnightRoseTheme,
+  vercelMinimalBrand,
+  vercelDarkBrand
 
 ].sort((a, b) => a.name.localeCompare(b.name));
   

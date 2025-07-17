@@ -1,5 +1,5 @@
 /*───────────────────────────────────────────────────────────────────────*\
-  Vercel Excellence
+  Default Theme (Based on Vercel Excellence)
   – ultra-high-contrast black / white UI with precision-crafted shadows
   – monochrome-duotone · dark-first · sophisticated · modern-minimal
 \*───────────────────────────────────────────────────────────────────────*/
@@ -12,16 +12,17 @@ import {
     createThemeCssVars,
     OklchString,
   } from "../brand-utils";
+import { modernAnimationPreset } from '../animation-presets';
   
   /*───────────────────────────────────────────────────────────────────────*\
     1. RAW COLOUR TOKENS - Precision-Crafted Palette
   \*───────────────────────────────────────────────────────────────────────*/
-  const vercelThemeDefinition = {
+  const defaultThemeDefinition = {
     rawColors: [
       /* Core Neutral Architecture */
       {
         tokenSpecificName: "Void Black",
-        description: "Vercel's signature ultra-deep background, the perfect digital black",
+        description: "Signature ultra-deep background, the perfect digital black",
         oklchLight: "oklch(0.99 0 0)" as OklchString,
         oklchDark:  "oklch(0.05 0 0)" as OklchString,
         roles: ["background"],
@@ -119,7 +120,7 @@ import {
       /* System Status Colors */
       {
         tokenSpecificName: "Success Emerald",
-        description: "Clean success state inspired by Vercel's deployment success",
+        description: "Clean success state inspired by deployment success",
         oklchLight: "oklch(0.45 0.14 155)" as OklchString,
         oklchDark:  "oklch(0.65 0.13 155)" as OklchString,
         roles: ["success"],
@@ -129,7 +130,7 @@ import {
       },
       {
         tokenSpecificName: "Info Blue",
-        description: "Information state with Vercel's refined blue tone",
+        description: "Information state with refined blue tone",
         oklchLight: "oklch(0.45 0.15 240)" as OklchString,
         oklchDark:  "oklch(0.60 0.16 240)" as OklchString,
         roles: ["info"],
@@ -148,10 +149,10 @@ import {
         onColorDark:  "oklch(0.05 0 0)" as OklchString,
       },
   
-      /* Chart Colors - Vercel's Data Visualization Palette */
+      /* Chart Colors - Data Visualization Palette */
       {
         tokenSpecificName: "Chart Primary",
-        description: "Primary chart color matching Vercel's branding",
+        description: "Primary chart color matching branding",
         oklchLight: "oklch(0.05 0 0)" as OklchString,
         oklchDark:  "oklch(0.95 0 0)" as OklchString,
         roles: ["chart-1"],
@@ -218,6 +219,8 @@ import {
       mutedColors:         { muted: "Neutral Surface", mutedForeground: "Ghost Grey" },
       destructiveColors:   { destructive: "Alert Crimson", destructiveForeground: "Status Text" },
       successColors:       { success: "Success Emerald", successForeground: "Status Text" },
+      infoColors:          { info: "Info Blue", infoForeground: "Status Text" },
+      warningColors:       { warning: "Alert Crimson", warningForeground: "Status Text" },
       inputColors:         { input: "Neutral Surface", inputForeground: "Pure Ink" },
       borderColors:        { border: "Neutral Surface" },
       ringColors:          { ring: "Absolute Black" },
@@ -252,7 +255,7 @@ import {
       sidebarBorder: "Neutral Surface",
       sidebarRing: "Absolute Black",
 
-      // Vercel's ultra-clean shadow system - invisible unless intentionally heavy
+      // Ultra-clean shadow system - invisible unless intentionally heavy
       shadowXs: "0px 0px 0px 0px transparent",
       shadowSm: "0px 1px 1px 0px hsla(0, 0%, 0%, 0.01)",
       shadowMd: "0px 1px 2px 0px hsla(0, 0%, 0%, 0.02)",
@@ -272,16 +275,16 @@ import {
   };
 
   /*───────────────────────────────────────────────────────────────────────*\
-    4. BRAND EXPORT - Vercel Excellence
+    4. BRAND EXPORT - Default Theme
   \*───────────────────────────────────────────────────────────────────────*/
-  const vercelBrandColors = generateBrandColors("vercel-excellence", vercelThemeDefinition.rawColors);
+  const defaultBrandColors = generateBrandColors("default", defaultThemeDefinition.rawColors);
 
-  export const vercelMinimalBrand: Brand = {
-    name: "Vercel Excellence",
-    businessDetails: {
-      name: "Vercel Excellence",
+export const defaultTheme: Brand = {
+    name: "Default",
+  businessDetails: {
+      name: "Default Theme",
       industry: "developer_platform",
-      personality: {
+    personality: {
         vintageModern: 15,      // Very modern, cutting-edge
         seasonedYouthful: 85,   // Youthful innovation
         gracefulBold: 90,       // Bold simplicity with grace
@@ -291,12 +294,12 @@ import {
         symbolicRealistic: 25,  // Realistic, practical approach
       },
     },
-    colors: vercelBrandColors,
+    colors: defaultBrandColors,
     fonts: [
       {
         name: "Geist",
         distributor: "Vercel",
-        description: "Vercel's signature sans-serif, engineered for perfect readability and modern web interfaces.",
+        description: "Signature sans-serif, engineered for perfect readability and modern web interfaces.",
         family: "'Geist', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
         roles: [
           "heading", "body", "display", "sans", "default",
@@ -316,7 +319,7 @@ import {
       {
         name: "Geist Mono",
         distributor: "Vercel",
-        description: "Vercel's precision-crafted monospace font, optimized for code readability and technical content.",
+        description: "Precision-crafted monospace font, optimized for code readability and technical content.",
         family: "'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace",
         roles: ["code", "mono", "pre"],
         weights: { 
@@ -328,23 +331,33 @@ import {
         },
       },
     ],
-    style: vercelThemeDefinition.styleGuide,
+    style: defaultThemeDefinition.styleGuide,
     themeCssVariables: createThemeCssVars(
-      "vercel-excellence",
-      vercelBrandColors,
-      vercelThemeDefinition.styleGuide,
-      vercelThemeDefinition.otherVars
+      "default",
+      defaultBrandColors,
+      defaultThemeDefinition.styleGuide,
+      defaultThemeDefinition.otherVars
     ),
-    defaultMode: 'dark' as const, // Vercel's signature dark-first approach
-    prefersDarkSchemeForChrome: true, // Vercel's signature dark-first approach
+    prefersDarkSchemeForChrome: false, // Default starts in light mode
     sevenAxisCode: {
-      colorComplexity: 'monochrome',     // Black, white, and grays only
-      brightness: 'dark',                // Dark-first approach
+      colorComplexity: 'monochrome',     // Black, white, and grays
+      brightness: 'light',               // Default starts in light mode
       saturation: 'muted',               // Minimal color, mostly grayscale
-      colorHarmony: 'single-hue',        // Essentially grayscale system
-      accentUsage: 'minimal',            // Ultra-minimal accent usage
-      cornerStyle: 'slightly-rounded',   // 0.375rem to 1rem radius range  
-      elevation: 'minimal-shadow',       // Ultra-clean, nearly invisible shadows
+      colorHarmony: 'single-hue',        // Essentially grayscale with minimal accent
+      accentUsage: 'minimal',            // Very clean, minimal accent usage
+      cornerStyle: 'slightly-rounded',   // 0.375rem to 1rem radius range
+      elevation: 'minimal-shadow',       // Ultra-clean shadow system
     },
-  };
-  
+    animationConfig: {
+      preset: {
+        ...modernAnimationPreset,
+        button: {
+          ...modernAnimationPreset.button,
+          active: {
+            ...modernAnimationPreset.button.active,
+          }
+        }
+      },
+      rootClassName: 'modern-theme'
+    },
+}; 

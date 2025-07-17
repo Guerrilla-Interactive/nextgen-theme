@@ -2,7 +2,7 @@
 //---------------------------------------------------------
 // Theme spec generated from the 7‑axis code:
 // Monochrome · Light · Pastel · Single‑hue Gradient · Accent‑neutral · Rounded‑Flat
-// Uses a single peach hue (OKLCH hue ≈ 40°) plus neutral grays.
+// Uses a single peach hue (OKLCH hue ≈ 40°) plus neutral grays.
 
 import {
     type Brand,
@@ -14,15 +14,14 @@ import {
   } from "../brand-utils";
   
   /* --------------------------------------------------------
-     1. RAW COLOR TOKENS
+     1. RAW COLOR TOKENS (Light mode theme)
      ----------------------------------------------------- */
   const peachParfaitRawColors = [
     // Vanilla‑Cream — overall page background (very light warm gray)
     {
       tokenSpecificName: "Vanilla Cream",
       description: "Page background",
-      oklchLight: "oklch(0.98 0.01 100)" as OklchString,
-      oklchDark:  "oklch(0.24 0.01 100)" as OklchString,
+      oklch: "oklch(0.98 0.01 100)" as OklchString,
       roles: ["background"],
       category: "shade",
     },
@@ -31,8 +30,7 @@ import {
     {
       tokenSpecificName: "Charcoal",
       description: "Primary text color for body content",
-      oklchLight: "oklch(0.30 0.01 255)" as OklchString,
-      oklchDark:  "oklch(0.92 0.01 255)" as OklchString,
+      oklch: "oklch(0.30 0.01 255)" as OklchString,
       roles: [
         "foreground",
         "card-foreground",
@@ -48,90 +46,77 @@ import {
     {
       tokenSpecificName: "White",
       description: "Surface for cards / popovers & on‑color text",
-      oklchLight: "oklch(1 0 0)" as OklchString,
-      oklchDark:  "oklch(0.28 0 0)" as OklchString,
+      oklch: "oklch(1 0 0)" as OklchString,
       roles: ["card", "popover", "primary-foreground", "sidebar-primary-foreground"],
       category: "shade",
-      onColorLight: "oklch(0.30 0.01 255)" as OklchString,
-      onColorDark:  "oklch(0.92 0.01 255)" as OklchString,
+      onColor: "oklch(0.30 0.01 255)" as OklchString,
     },
   
     // Peach — the single chromatic accent (primary / accent / ring)
     {
       tokenSpecificName: "Peach",
       description: "Primary actions, accent surfaces, focus ring",
-      oklchLight: "oklch(0.90 0.05 40)" as OklchString,   // pastel peach
-      oklchDark:  "oklch(0.45 0.05 40)" as OklchString,   // deeper peach for dark mode
+      oklch: "oklch(0.90 0.05 40)" as OklchString,   // pastel peach
       roles: ["primary", "accent", "ring", "chart-1", "sidebar-primary", "sidebar-accent"],
       category: "color",
-      onColorLight: "oklch(1 0 0)" as OklchString,
-      onColorDark:  "oklch(0.24 0.01 100)" as OklchString,
+      onColor: "oklch(1 0 0)" as OklchString,
     },
   
     // Light Peach — muted surfaces (chips, subtle UI)
     {
       tokenSpecificName: "Light Peach",
       description: "Muted backgrounds / subtle fills",
-      oklchLight: "oklch(0.96 0.03 40)" as OklchString,
-      oklchDark:  "oklch(0.36 0.03 40)" as OklchString,
+      oklch: "oklch(0.96 0.03 40)" as OklchString,
       roles: ["muted"],
       category: "shade",
-      onColorLight: "oklch(0.40 0.01 255)" as OklchString,
-      onColorDark:  "oklch(0.88 0.01 255)" as OklchString,
+      onColor: "oklch(0.40 0.01 255)" as OklchString,
     },
   
     // Slate — text on muted
     {
       tokenSpecificName: "Slate",
       description: "Text on muted surfaces",
-      oklchLight: "oklch(0.40 0.01 255)" as OklchString,
-      oklchDark:  "oklch(0.88 0.01 255)" as OklchString,
+      oklch: "oklch(0.40 0.01 255)" as OklchString,
       roles: ["muted-foreground"],
       category: "shade",
     },
   
-    // Scarlet — destructive (same in both modes for WCAG contrast)
+    // Scarlet — destructive actions only
     {
       tokenSpecificName: "Scarlet",
-      description: "Destructive / warning actions",
-      oklchLight: "oklch(0.78 0.11 25)" as OklchString,
-      oklchDark:  "oklch(0.78 0.11 25)" as OklchString,
-      roles: ["destructive", "warning"],
+      description: "Destructive actions",
+      oklch: "oklch(0.78 0.11 25)" as OklchString,
+      roles: ["destructive"],
       category: "color",
-      onColorLight: "oklch(1 0 0)" as OklchString,
-      onColorDark:  "oklch(1 0 0)" as OklchString,
+      onColor: "oklch(1 0 0)" as OklchString,
     },
   
     // Extra chart hues (monochrome ramp)
     {
       tokenSpecificName: "Peach 2",
       description: "Chart color 2 (darker peach)",
-      oklchLight: "oklch(0.80 0.06 40)" as OklchString,
-      oklchDark:  "oklch(0.55 0.06 40)" as OklchString,
+      oklch: "oklch(0.80 0.06 40)" as OklchString,
       roles: ["chart-2"],
       category: "color",
     },
     {
       tokenSpecificName: "Peach 3",
       description: "Chart color 3 (medium peach)",
-      oklchLight: "oklch(0.70 0.07 40)" as OklchString,
-      oklchDark:  "oklch(0.47 0.07 40)" as OklchString,
+      oklch: "oklch(0.70 0.07 40)" as OklchString,
       roles: ["chart-3"],
       category: "color",
     },
     {
       tokenSpecificName: "Peach 4",
       description: "Chart color 4 (deep peach)",
-      oklchLight: "oklch(0.60 0.08 40)" as OklchString,
-      oklchDark:  "oklch(0.39 0.08 40)" as OklchString,
+      oklch: "oklch(0.60 0.08 40)" as OklchString,
       roles: ["chart-4"],
       category: "color",
     },
     {
       tokenSpecificName: "Peach 5",
       description: "Chart color 5 (rich peach)",
-      oklchLight: "oklch(0.50 0.10 40)" as OklchString,
-      oklchDark:  "oklch(0.33 0.10 40)" as OklchString,
+      oklch: "oklch(0.50 0.10 40)" as OklchString,
       roles: ["chart-5"],
       category: "color",
     },
@@ -259,8 +244,6 @@ import {
       peachParfaitStyleGuide,
       peachParfaitOtherVars
     ),
-    defaultMode: 'light' as const, // Light pastel theme 
-    prefersDarkSchemeForChrome: false, // Light pastel theme
     sevenAxisCode: {
       colorComplexity: 'monochrome',     // Monochrome - single peach hue plus neutrals
       brightness: 'light',               // Light - defaults to light mode

@@ -1,8 +1,8 @@
-// sageMeadowTheme.ts  –  M2-An-L-Mt-Tx-Ax-RdP
+// sageMeadowTheme.ts  –  M2-An-L-Mt-Tx-Ax-RdP
 //------------------------------------------------------------------
 // Duotone · Analogous · Light · Muted · Texture · Accent‑neutral · Rounded‑Pressed
 // Two adjacent muted greens (sage + olive) sit on airy off‑white paper surfaces.
-// UI surfaces use subtle noise texture; components have gentle 8 px rounding and
+// UI surfaces use subtle noise texture; components have gentle 8 px rounding and
 // an inset "pressed" shadow to echo physical letter‑press.
 
 import {
@@ -15,25 +15,23 @@ import {
   } from "../brand-utils";
   
   /* ----------------------------------------------------------------
-     1. RAW COLOR TOKENS
-     ----------------------------------------------------------------*/
-  const sageMeadowRawColors = [
-    // Linen — overall page background (warm off‑white, textured)
+     1. RAW COLOR TOKENS - Sage Meadow Light Palette
+     ----------------------------------------------------------------*/
+  const sageMeadowLightRawColors = [
+    // Linen — overall page background (warm off‑white, textured)
     {
       tokenSpecificName: "Linen",
       description: "Page background (textured paper)",
-      oklchLight: "oklch(0.98 0.005 100)" as OklchString,
-      oklchDark:  "oklch(0.22 0.005 100)" as OklchString,
+      oklch: "oklch(0.98 0.005 100)" as OklchString,
       roles: ["background"],
       category: "shade",
     },
   
-    // Deep Moss — universal foreground text
+    // Deep Moss — universal foreground text
     {
       tokenSpecificName: "Deep Moss",
       description: "Primary text colour on all surfaces",
-      oklchLight: "oklch(0.28 0.04 150)" as OklchString, // #34473b
-      oklchDark:  "oklch(0.92 0.02 150)" as OklchString, // #e7f0ec
+      oklch: "oklch(0.28 0.04 150)" as OklchString, // #34473b
       roles: [
         "foreground",
         "card-foreground",
@@ -45,137 +43,119 @@ import {
       category: "shade",
     },
   
-    // Parchment — card & popover surfaces (paper with tiny texture)
+    // Parchment — card & popover surfaces (paper with tiny texture)
     {
       tokenSpecificName: "Parchment",
       description: "Cards, popovers, & on‑colour text",
-      oklchLight: "oklch(0.97 0.003 100)" as OklchString,
-      oklchDark:  "oklch(0.26 0.003 100)" as OklchString,
+      oklch: "oklch(0.97 0.003 100)" as OklchString,
       roles: ["card", "popover", "primary-foreground", "sidebar-primary-foreground"],
       category: "shade",
-      onColorLight: "oklch(0.28 0.04 150)" as OklchString,
-      onColorDark:  "oklch(0.92 0.02 150)" as OklchString,
+      onColor: "oklch(0.28 0.04 150)" as OklchString,
     },
   
-    // Sage — primary accent hue (lighter green)
+    // Sage — primary accent hue (lighter green)
     {
       tokenSpecificName: "Sage",
       description: "Primary actions & focus ring (muted green)",
-      oklchLight: "oklch(0.85 0.05 140)" as OklchString, // pastel sage
-      oklchDark:  "oklch(0.55 0.05 140)" as OklchString,
+      oklch: "oklch(0.85 0.05 140)" as OklchString, // pastel sage
       roles: ["primary", "ring", "chart-1", "sidebar-primary"],
       category: "color",
-      onColorLight: "oklch(1 0 0)" as OklchString,
-      onColorDark:  "oklch(0.18 0.04 150)" as OklchString,
+      onColor: "oklch(1 0 0)" as OklchString,
     },
   
-    // Olive — secondary surface/action hue (adjacent to sage)
+    // Olive — secondary surface/action hue (adjacent to sage)
     {
       tokenSpecificName: "Olive",
       description: "Secondary buttons, sidebar background, borders, inputs",
-      oklchLight: "oklch(0.80 0.06 120)" as OklchString,
-      oklchDark:  "oklch(0.45 0.06 120)" as OklchString,
+      oklch: "oklch(0.80 0.06 120)" as OklchString,
       roles: ["secondary", "sidebar", "border", "input"],
       category: "color",
-      onColorLight: "oklch(0.28 0.04 150)" as OklchString,
-      onColorDark:  "oklch(0.92 0.02 150)" as OklchString,
+      onColor: "oklch(0.28 0.04 150)" as OklchString,
     },
   
-    // Dark Olive — text on Olive surfaces
+    // Dark Olive — text on Olive surfaces
     {
       tokenSpecificName: "Dark Olive",
       description: "Text on secondary surfaces",
-      oklchLight: "oklch(0.35 0.05 130)" as OklchString,
-      oklchDark:  "oklch(0.88 0.02 130)" as OklchString,
+      oklch: "oklch(0.35 0.05 130)" as OklchString,
       roles: ["secondary-foreground"],
       category: "shade",
     },
   
-    // Misty Sage — muted UI fills
+    // Misty Sage — muted UI fills
     {
       tokenSpecificName: "Misty Sage",
       description: "Muted surfaces (e.g., table rows)",
-      oklchLight: "oklch(0.93 0.03 135)" as OklchString,
-      oklchDark:  "oklch(0.30 0.03 135)" as OklchString,
+      oklch: "oklch(0.93 0.03 135)" as OklchString,
       roles: ["muted"],
       category: "shade",
-      onColorLight: "oklch(0.35 0.05 130)" as OklchString,
-      onColorDark:  "oklch(0.85 0.02 150)" as OklchString,
+      onColor: "oklch(0.35 0.05 130)" as OklchString,
     },
   
-    // Moss — text on muted surfaces
+    // Moss — text on muted surfaces
     {
       tokenSpecificName: "Moss",
       description: "Text on muted surfaces",
-      oklchLight: "oklch(0.35 0.05 130)" as OklchString,
-      oklchDark:  "oklch(0.85 0.02 150)" as OklchString,
+      oklch: "oklch(0.35 0.05 130)" as OklchString,
       roles: ["muted-foreground"],
       category: "shade",
     },
   
-    // Clay — neutral destructive / warning (muted red‑brown)
+    // Clay — neutral destructive / warning (muted red‑brown)
     {
       tokenSpecificName: "Clay",
       description: "Destructive & warning actions (earthy red)",
-      oklchLight: "oklch(0.70 0.06 50)" as OklchString,
-      oklchDark:  "oklch(0.55 0.05 50)" as OklchString,
-      roles: ["destructive", "warning"],
+      oklch: "oklch(0.70 0.06 50)" as OklchString,
+      roles: ["destructive"],
       category: "color",
-      onColorLight: "oklch(1 0 0)" as OklchString,
-      onColorDark:  "oklch(0.15 0.04 150)" as OklchString,
+      onColor: "oklch(1 0 0)" as OklchString,
     },
   
-    // Fern — success & info indication (slightly higher chroma to differentiate)
+    // Fern — success indication (slightly higher chroma to differentiate)
     {
       tokenSpecificName: "Fern",
-      description: "Success & info",
-      oklchLight: "oklch(0.78 0.07 145)" as OklchString,
-      oklchDark:  "oklch(0.52 0.07 145)" as OklchString,
-      roles: ["success", "info"],
+      description: "Success indication",
+      oklch: "oklch(0.78 0.07 145)" as OklchString,
+      roles: ["success"],
       category: "color",
-      onColorLight: "oklch(1 0 0)" as OklchString,
-      onColorDark:  "oklch(0.18 0.04 150)" as OklchString,
+      onColor: "oklch(1 0 0)" as OklchString,
     },
   
     // Chart shades (analogue ramp of green‑olive)
     {
       tokenSpecificName: "Chart Sage 2",
       description: "Chart colour 2",
-      oklchLight: "oklch(0.70 0.06 140)" as OklchString,
-      oklchDark:  "oklch(0.45 0.06 140)" as OklchString,
+      oklch: "oklch(0.70 0.06 140)" as OklchString,
       roles: ["chart-2"],
       category: "color",
     },
     {
       tokenSpecificName: "Chart Olive 2",
       description: "Chart colour 3",
-      oklchLight: "oklch(0.65 0.07 120)" as OklchString,
-      oklchDark:  "oklch(0.42 0.07 120)" as OklchString,
+      oklch: "oklch(0.65 0.07 120)" as OklchString,
       roles: ["chart-3"],
       category: "color",
     },
     {
       tokenSpecificName: "Chart Sage 3",
       description: "Chart colour 4",
-      oklchLight: "oklch(0.58 0.06 140)" as OklchString,
-      oklchDark:  "oklch(0.38 0.06 140)" as OklchString,
+      oklch: "oklch(0.58 0.06 140)" as OklchString,
       roles: ["chart-4"],
       category: "color",
     },
     {
       tokenSpecificName: "Chart Olive 3",
       description: "Chart colour 5",
-      oklchLight: "oklch(0.52 0.07 120)" as OklchString,
-      oklchDark:  "oklch(0.34 0.07 120)" as OklchString,
+      oklch: "oklch(0.52 0.07 120)" as OklchString,
       roles: ["chart-5"],
       category: "color",
     },
   ] as RawColorDefinition[];
   
   /* ----------------------------------------------------------------
-     2. STYLE GUIDE (rounded‑pressed → soft radius, inset shadows)
-     ----------------------------------------------------------------*/
-  const sageMeadowStyleGuide: StyleGuide = {
+     2. STYLE GUIDE (rounded‑pressed → soft radius, inset shadows)
+     ----------------------------------------------------------------*/
+  const sageMeadowLightStyleGuide: StyleGuide = {
     primaryColors:       { primary: "Sage", primaryForeground: "Parchment" },
     secondaryColors:     { secondary: "Olive", secondaryForeground: "Dark Olive" },
     accentColors:        { accent: "Sage", accentForeground: "Parchment" }, // Accent‑neutral (Ax)
@@ -184,16 +164,14 @@ import {
     mutedColors:         { muted: "Misty Sage", mutedForeground: "Moss" },
     destructiveColors:   { destructive: "Clay", destructiveForeground: "Parchment" },
     successColors:       { success: "Fern", successForeground: "Parchment" },
-    infoColors:          { info: "Fern", infoForeground: "Parchment" },
-    warningColors:       { warning: "Clay", warningForeground: "Parchment" },
     inputColors:         { input: "Olive", inputForeground: "Dark Olive" },
     borderColors:        { border: "Olive" },
     ringColors:          { ring: "Sage" },
     radius: {
-      radiusSm: "0.25rem",    // 4 px
-      radiusMd: "0.5rem",     // 8 px (matches Rd)
-      radiusLg: "0.75rem",    // 12 px
-      radiusXl: "1rem",       // 16 px
+      radiusSm: "0.25rem",    // 4 px
+      radiusMd: "0.5rem",     // 8 px (matches Rd)
+      radiusLg: "0.75rem",    // 12 px
+      radiusXl: "1rem",       // 16 px
     },
     spacing: {
       spacingSm: "0.5rem",
@@ -204,9 +182,9 @@ import {
   };
   
   /* ----------------------------------------------------------------
-     3. OTHER VARS (Texture + pressed inset shadows)
-     ----------------------------------------------------------------*/
-  const sageMeadowOtherVars = {
+     3. OTHER VARS (Texture + pressed inset shadows)
+     ----------------------------------------------------------------*/
+  const sageMeadowLightOtherVars = {
     background: "Linen",
     foreground: "Deep Moss",
     radiusBase: "0.5rem",
@@ -234,14 +212,14 @@ import {
   };
   
   /* ----------------------------------------------------------------
-     4. BRAND OBJECT
-     ----------------------------------------------------------------*/
-  const sageMeadowColors = generateBrandColors("sage-meadow", sageMeadowRawColors);
+     4. BRAND OBJECT - Sage Meadow Light
+     ----------------------------------------------------------------*/
+  const sageMeadowLightColors = generateBrandColors("sage-meadow-light", sageMeadowLightRawColors);
   
   export const sageMeadowBrand: Brand = {
     name: "Sage Meadow",
     businessDetails: {
-      name: "Sage Meadow Studio",
+      name: "Sage Meadow Light Studio",
       industry: "wellness_app",
       personality: {
         vintageModern: 45,
@@ -253,7 +231,7 @@ import {
         symbolicRealistic: 60,
       },
     },
-    colors: sageMeadowColors,
+    colors: sageMeadowLightColors,
     fonts: [
       {
         name: "Work Sans",
@@ -280,13 +258,21 @@ import {
         weights: { thin: 100, light: 300, regular: 400, medium: 500, bold: 700 },
       },
     ],
-    style: sageMeadowStyleGuide,
+    style: sageMeadowLightStyleGuide,
     themeCssVariables: createThemeCssVars(
-      "sage-meadow",
-      sageMeadowColors,
-      sageMeadowStyleGuide,
-      sageMeadowOtherVars
+      "sage-meadow-light",
+      sageMeadowLightColors,
+      sageMeadowLightStyleGuide,
+      sageMeadowLightOtherVars
     ),
-    prefersDarkSchemeForChrome: false,
+    sevenAxisCode: {
+      colorComplexity: 'duotone',        // Sage and olive greens
+      brightness: 'light',               // Light theme
+      saturation: 'muted',               // Muted natural colors
+      colorHarmony: 'analogous',         // Adjacent greens
+      accentUsage: 'minimal',            // Accent-neutral design
+      cornerStyle: 'rounded',            // 0.5rem rounded corners
+      elevation: 'subtle-depth',         // Subtle inset shadows for pressed effect
+    },
   };
   

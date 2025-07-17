@@ -6,92 +6,77 @@ const sageMinimalThemeDefinition = {
     {
       tokenSpecificName: "Pure White",
       description: "Pure white, used for page background, card & popover backgrounds",
-      oklchLight: "oklch(1.0000 0 0)" as OklchString,
-      oklchDark: "oklch(0.1500 0 0)" as OklchString,
+      oklch: "oklch(1.0000 0 0)" as OklchString,
       roles: ["background", "card", "popover", "sidebar", "input"],
       category: "shade",
-      onColorLight: "oklch(0.4533 0.0327 109.8917)" as OklchString,
-      onColorDark: "oklch(0.9500 0 0)" as OklchString,
+      onColor: "oklch(0.4533 0.0327 109.8917)" as OklchString,
     },
     
     // Sage Foreground: main text color with subtle green undertone
     {
       tokenSpecificName: "Sage Foreground",
       description: "Primary text color with subtle green undertone",
-      oklchLight: "oklch(0.4533 0.0327 109.8917)" as OklchString,
-      oklchDark: "oklch(0.9500 0 0)" as OklchString,
+      oklch: "oklch(0.4533 0.0327 109.8917)" as OklchString,
       roles: ["foreground"],
       category: "shade",
-      onColorLight: "oklch(1.0000 0 0)" as OklchString,
-      onColorDark: "oklch(0.1500 0 0)" as OklchString,
+      onColor: "oklch(1.0000 0 0)" as OklchString,
     },
 
     // Sage Primary: main brand color
     {
       tokenSpecificName: "Sage Primary",
       description: "Primary brand color with balanced green tone",
-      oklchLight: "oklch(0.7575 0.0599 122.8008)" as OklchString,
-      oklchDark: "oklch(0.6575 0.0599 122.8008)" as OklchString,
+      oklch: "oklch(0.7575 0.0599 122.8008)" as OklchString,
       roles: ["primary", "ring"],
       category: "color",
-      onColorLight: "oklch(1.0000 0 0)" as OklchString,
-      onColorDark: "oklch(0.1500 0 0)" as OklchString,
+      onColor: "oklch(1.0000 0 0)" as OklchString,
     },
 
     // Sage Secondary: very light green for secondary elements
     {
       tokenSpecificName: "Sage Secondary",
       description: "Very light green for secondary surfaces",
-      oklchLight: "oklch(0.9925 0.0041 121.5586)" as OklchString,
-      oklchDark: "oklch(0.2500 0.0041 121.5586)" as OklchString,
+      oklch: "oklch(0.9925 0.0041 121.5586)" as OklchString,
       roles: ["secondary"],
       category: "color",
-      onColorLight: "oklch(0.4533 0.0327 109.8917)" as OklchString,
-      onColorDark: "oklch(0.9500 0 0)" as OklchString,
+      onColor: "oklch(0.4533 0.0327 109.8917)" as OklchString,
     },
 
     // Sage Muted: subtle background variation
     {
       tokenSpecificName: "Sage Muted",
       description: "Muted background with hint of green",
-      oklchLight: "oklch(0.9775 0.0041 121.5599)" as OklchString,
-      oklchDark: "oklch(0.2200 0.0041 121.5599)" as OklchString,
+      oklch: "oklch(0.9775 0.0041 121.5599)" as OklchString,
       roles: ["muted"],
       category: "shade",
-      onColorLight: "oklch(0.6369 0.0376 112.8165)" as OklchString,
-      onColorDark: "oklch(0.8500 0 0)" as OklchString,
+      onColor: "oklch(0.6369 0.0376 112.8165)" as OklchString,
     },
 
     // Sage Accent: blue-green accent color
     {
       tokenSpecificName: "Sage Accent",
       description: "Blue-green accent for highlights and tertiary actions",
-      oklchLight: "oklch(0.9207 0.0440 176.7905)" as OklchString,
-      oklchDark: "oklch(0.3207 0.0440 176.7905)" as OklchString,
+      oklch: "oklch(0.9207 0.0440 176.7905)" as OklchString,
       roles: ["accent"],
       category: "color",
-      onColorLight: "oklch(0.4144 0.0409 174.5287)" as OklchString,
-      onColorDark: "oklch(0.9500 0 0)" as OklchString,
+      onColor: "oklch(0.4144 0.0409 174.5287)" as OklchString,
     },
 
     // Sage Destructive: soft red for errors
     {
       tokenSpecificName: "Sage Destructive",
       description: "Soft red for error states and destructive actions",
-      oklchLight: "oklch(0.8419 0.0963 195.4785)" as OklchString,
-      oklchDark: "oklch(0.6419 0.0963 195.4785)" as OklchString,
+      oklch: "oklch(0.8419 0.0963 195.4785)" as OklchString,
       roles: ["destructive"],
       category: "color",
-      onColorLight: "oklch(1.0000 0 0)" as OklchString,
-      onColorDark: "oklch(0.1500 0 0)" as OklchString,
+      onColor: "oklch(1.0000 0 0)" as OklchString,
     },
 
     // Sage Border: subtle border color
     {
       tokenSpecificName: "Sage Border",
       description: "Subtle border color with green undertone",
-      oklchLight: "oklch(0.9386 0.0111 123.4631)" as OklchString,
-      oklchDark: "oklch(0.3000 0.0111 123.4631)" as OklchString,
+      oklch: "oklch(0.9386 0.0111 123.4631)" as OklchString,
       roles: ["border"],
       category: "shade",
     },
@@ -100,8 +85,7 @@ const sageMinimalThemeDefinition = {
     {
       tokenSpecificName: "Chart Rose",
       description: "Rose color for charts",
-      oklchLight: "oklch(0.7014 0.0700 356.1866)" as OklchString,
-      oklchDark: "oklch(0.6014 0.0700 356.1866)" as OklchString,
+      oklch: "oklch(0.7014 0.0700 356.1866)" as OklchString,
       roles: [],
       category: "color",
     },
@@ -109,8 +93,7 @@ const sageMinimalThemeDefinition = {
     {
       tokenSpecificName: "Chart Purple",
       description: "Purple color for charts",
-      oklchLight: "oklch(0.8418 0.0634 258.0875)" as OklchString,
-      oklchDark: "oklch(0.6418 0.0634 258.0875)" as OklchString,
+      oklch: "oklch(0.8418 0.0634 258.0875)" as OklchString,
       roles: [],
       category: "color",
     },
@@ -118,8 +101,7 @@ const sageMinimalThemeDefinition = {
     {
       tokenSpecificName: "Chart Yellow",
       description: "Yellow color for charts",
-      oklchLight: "oklch(0.8993 0.0399 77.1500)" as OklchString,
-      oklchDark: "oklch(0.6993 0.0399 77.1500)" as OklchString,
+      oklch: "oklch(0.8993 0.0399 77.1500)" as OklchString,
       roles: [],
       category: "color",
     },
@@ -226,8 +208,6 @@ export const sageMinimalBrand: Brand = {
   fonts: sageMinimalThemeDefinition.fonts,
   style: sageMinimalThemeDefinition.styleGuide,
   themeCssVariables: themeCssVars,
-  defaultMode: 'light' as const, // Light mode with clean white background
-  prefersDarkSchemeForChrome: false,
   sevenAxisCode: {
     colorComplexity: 'monochrome',        // Monochrome - primarily sage green with minimal accents
     brightness: 'light',                  // Light - white background with subtle green tones

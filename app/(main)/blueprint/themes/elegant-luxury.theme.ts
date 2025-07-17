@@ -1,7 +1,7 @@
-// elegantLuxuryTheme.ts  —  Elegant Luxury (WCAG‑AA valid)
+// elegantLuxuryTheme.ts  —  Elegant Luxury Light (WCAG‑AA valid)
 // =====================================================================
 // A luxury‑oriented duotone palette with adjacent terracotta + butter hues.
-// All text/surface combos score ≥ 4.5∶1 (WCAG AA) for body size.
+// All text/surface combos score ≥ 4.5∶1 (WCAG AA) for body size.
 // Axes: duotone · adjacent · light · muted · flat · accent‑neutral · rounded
 // ---------------------------------------------------------------------
 
@@ -15,24 +15,21 @@ import {
   } from "../brand-utils";
   
   /*──────────────────────────────────────────────────────────────────────────*
-    1. RAW COLOR DEFINITIONS (light + dark pairs)
+    1. RAW COLOR DEFINITIONS (light mode only)
    *──────────────────────────────────────────────────────────────────────────*/
   const rawColors = [
     // Ivory — high‑key surface (BG / card / popover)
     {
       tokenSpecificName: "Ivory",
-      oklchLight: "oklch(0.98 0.004 56)" as OklchString,
-      oklchDark:  "oklch(0.24 0.006 34)" as OklchString,
+      oklch: "oklch(0.98 0.004 56)" as OklchString,
       roles: ["background", "card", "popover", "tooltip-background"],
       category: "shade",
-      onColorLight: "oklch(0.13 0.005 20)" as OklchString,
-      onColorDark:  "oklch(0.98 0.004 56)" as OklchString,
+      onColor: "oklch(0.13 0.005 20)" as OklchString,
     },
-    // Universal dark / light text
+    // Universal dark text
     {
       tokenSpecificName: "Charcoal‑Deep",
-      oklchLight: "oklch(0.13 0.005 20)" as OklchString,
-      oklchDark:  "oklch(0.97 0.002 106)" as OklchString,
+      oklch: "oklch(0.13 0.005 20)" as OklchString,
       roles: [
         "foreground", "card-foreground", "popover-foreground", "sidebar-foreground",
         "muted-foreground", "input-foreground", "tooltip-foreground",
@@ -42,76 +39,62 @@ import {
     },
     {
       tokenSpecificName: "Snow",
-      oklchLight: "oklch(1 0 0)" as OklchString,
-      oklchDark:  "oklch(0.98 0.004 56)" as OklchString,
+      oklch: "oklch(1 0 0)" as OklchString,
       roles: ["primary-foreground", "destructive-foreground", "sidebar-primary-foreground"],
       category: "shade",
     },
     // Terracotta — primary CTA / ring / chart2 / outline
     {
       tokenSpecificName: "Terracotta",
-      oklchLight: "oklch(0.46 0.15 25)" as OklchString,
-      oklchDark:  "oklch(0.55 0.18 26)" as OklchString,
+      oklch: "oklch(0.46 0.15 25)" as OklchString,
       roles: ["primary", "ring", "sidebar-primary", "chart-outline", "chart-2"],
       category: "color",
-      onColorLight: "Snow",
-      onColorDark:  "Ivory",
+      onColor: "oklch(1 0 0)" as OklchString,
     },
     // Butter — secondary hue, sidebar surface, borders, inputs
     {
       tokenSpecificName: "Butter",
-      oklchLight: "oklch(0.95 0.04 89)" as OklchString,
-      oklchDark:  "oklch(0.48 0.12 46)" as OklchString,
+      oklch: "oklch(0.95 0.04 89)" as OklchString,
       roles: ["secondary", "sidebar", "border", "input"],
       category: "color",
-      onColorLight: "Charcoal‑Deep",
-      onColorDark:  "Butter",
+      onColor: "oklch(0.13 0.005 20)" as OklchString,
     },
     // Butter‑Accent — highlight accent & chart4
     {
       tokenSpecificName: "Butter‑Accent",
-      oklchLight: "oklch(0.96 0.06 96)" as OklchString,
-      oklchDark:  "oklch(0.57 0.15 48)" as OklchString,
+      oklch: "oklch(0.96 0.06 96)" as OklchString,
       roles: ["accent", "sidebar-accent", "chart-4"],
       category: "color",
-      onColorLight: "Charcoal‑Deep",
-      onColorDark:  "Butter‑Accent",
+      onColor: "oklch(0.13 0.005 20)" as OklchString,
     },
     // Sand — low‑emphasis muted surfaces
     {
       tokenSpecificName: "Sand",
-      oklchLight: "oklch(0.90 0.008 53)" as OklchString,
-      oklchDark:  "oklch(0.22 0.006 34)" as OklchString,
+      oklch: "oklch(0.90 0.008 53)" as OklchString,
       roles: ["muted", "sidebar-border"],
       category: "shade",
-      onColorLight: "Charcoal‑Deep",
-      onColorDark:  "Snow",
+      onColor: "oklch(0.13 0.005 20)" as OklchString,
     },
     // Brick — destructive / warning & chart3
     {
       tokenSpecificName: "Brick",
-      oklchLight: "oklch(0.44 0.16 27)" as OklchString,
-      oklchDark:  "oklch(0.64 0.20 26)" as OklchString,
+      oklch: "oklch(0.44 0.16 27)" as OklchString,
       roles: ["destructive", "warning", "chart-3"],
       category: "color",
-      onColorLight: "Snow",
-      onColorDark:  "Ivory",
+      onColor: "oklch(1 0 0)" as OklchString,
     },
     // Success‑Terracotta — reuse Terracotta for success/info
     {
       tokenSpecificName: "Success‑Terracotta",
-      oklchLight: "Terracotta",
-      oklchDark:  "Terracotta",
+      oklch: "oklch(0.46 0.15 25)" as OklchString,
       roles: ["success", "info", "chart-1"],
       category: "color",
-      onColorLight: "Snow",
-      onColorDark:  "Ivory",
+      onColor: "oklch(1 0 0)" as OklchString,
     },
     // Chart‑Butter‑Mid — chart5
     {
       tokenSpecificName: "Chart‑Butter‑Mid",
-      oklchLight: "oklch(0.48 0.12 46)" as OklchString,
-      oklchDark:  "oklch(0.77 0.16 70)" as OklchString,
+      oklch: "oklch(0.48 0.12 46)" as OklchString,
       roles: ["chart-5"],
       category: "color",
     }
@@ -121,19 +104,17 @@ import {
     2. STYLE GUIDE
    *──────────────────────────────────────────────────────────────────────────*/
   const styleGuide: StyleGuide = {
-    primaryColors:       { primary: "Terracotta", primaryForeground: "Snow" },
-    secondaryColors:     { secondary: "Butter", secondaryForeground: "Charcoal‑Deep" },
-    accentColors:        { accent: "Butter‑Accent", accentForeground: "Charcoal‑Deep" },
-    cardColors:          { card: "Ivory", cardForeground: "Charcoal‑Deep" },
-    popoverColors:       { popover: "Ivory", popoverForeground: "Charcoal‑Deep" },
-    mutedColors:         { muted: "Sand", mutedForeground: "Charcoal‑Deep" },
-    destructiveColors:   { destructive: "Brick", destructiveForeground: "Snow" },
-    successColors:       { success: "Success‑Terracotta", successForeground: "Snow" },
-
-    
-    inputColors:         { input: "Butter", inputForeground: "Charcoal‑Deep" },
-    borderColors:        { border: "Butter" },
-    ringColors:          { ring: "Terracotta" },
+    primaryColors: { primary: "Terracotta", primaryForeground: "Snow" },
+    secondaryColors: { secondary: "Butter", secondaryForeground: "Charcoal‑Deep" },
+    accentColors: { accent: "Butter‑Accent", accentForeground: "Charcoal‑Deep" },
+    cardColors: { card: "Ivory", cardForeground: "Charcoal‑Deep" },
+    popoverColors: { popover: "Ivory", popoverForeground: "Charcoal‑Deep" },
+    mutedColors: { muted: "Sand", mutedForeground: "Charcoal‑Deep" },
+    destructiveColors: { destructive: "Brick", destructiveForeground: "Snow" },
+    successColors: { success: "Success‑Terracotta", successForeground: "Snow" },
+    inputColors: { input: "Butter", inputForeground: "Charcoal‑Deep" },
+    borderColors: { border: "Butter" },
+    ringColors: { ring: "Terracotta" },
     radius: {
       radiusSm: "calc(var(--radius) - 4px)",
       radiusMd: "calc(var(--radius) - 2px)",
@@ -170,12 +151,12 @@ import {
   
     // Shadows (soft flat)
     "shadow-2xs": "1px 1px 16px -2px hsl(0 63% 18% / 0.06)",
-    "shadow-xs":  "var(--shadow-2xs)",
-    "shadow-sm":  "1px 1px 16px -2px hsl(0 63% 18% / 0.12), 1px 1px 2px -3px hsl(0 63% 18% / 0.12)",
-    "shadow":     "var(--shadow-sm)",
-    "shadow-md":  "1px 2px 4px -3px hsl(0 63% 18% / 0.12)",
-    "shadow-lg":  "1px 4px 6px -3px hsl(0 63% 18% / 0.12)",
-    "shadow-xl":  "1px 8px 10px -3px hsl(0 63% 18% / 0.12)",
+    "shadow-xs": "var(--shadow-2xs)",
+    "shadow-sm": "1px 1px 16px -2px hsl(0 63% 18% / 0.12), 1px 1px 2px -3px hsl(0 63% 18% / 0.12)",
+    "shadow": "var(--shadow-sm)",
+    "shadow-md": "1px 2px 4px -3px hsl(0 63% 18% / 0.12)",
+    "shadow-lg": "1px 4px 6px -3px hsl(0 63% 18% / 0.12)",
+    "shadow-xl": "1px 8px 10px -3px hsl(0 63% 18% / 0.12)",
     "shadow-2xl": "1px 1px 16px -2px hsl(0 63% 18% / 0.30)",
   
     borderWidthDefault: "1px",
@@ -243,14 +224,12 @@ import {
       styleGuide,
       otherVars
     ),
-    defaultMode: 'light' as const,
-    prefersDarkSchemeForChrome: false,
     sevenAxisCode: {
       colorComplexity: 'duotone',           // Duotone - terracotta and butter 
       brightness: 'light',                  // Light - light mode default with ivory backgrounds
       saturation: 'muted',                  // Muted - sophisticated, low saturation luxury colors
       colorHarmony: 'analogous',            // Analogous - terracotta (orange-red) and butter (yellow) are adjacent/analogous on color wheel
-      accentUsage: 'balanced',              // Accent-neutral - balanced use of color accents
+      accentUsage: 'balanced',              // Balanced use of color accents
       cornerStyle: 'rounded',               // Rounded - uses calc(var(--radius)) system with 0.375rem base
       elevation: 'flat',                    // Flat - soft, minimal shadows with low opacity
     },

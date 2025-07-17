@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { GridCol } from "@/features/unorganized-components/nextgen-core-ui";
-import { Role, type OklchString } from "../brand-utils";
+import { Role, type OklchString } from "../../blueprint/brand-utils";
 import { ProcessedColorToken } from "../page";
 import { ColorPicker } from "../../brand-colors/ColorPicker";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/features/unorganized-components/ui/tooltip';
@@ -90,11 +90,11 @@ interface ThemeRoleAssignmentGridProps {
  *──────────────────────────────────────────────────────────────────────────*/
 
 const chartConfig = {
-  desktop: { label: "Desktop", color: "var(--chart1)" },
-  mobile: { label: "Mobile", color: "var(--chart2)" },
-  tablet: { label: "Tablet", color: "var(--chart3)" },
-  tv: { label: "TV", color: "var(--chart4)" },
-  console: { label: "Console", color: "var(--chart5)" },
+  desktop: { label: "Desktop", color: "var(--chart-1)" },
+  mobile: { label: "Mobile", color: "var(--chart-2)" },
+  tablet: { label: "Tablet", color: "var(--chart-3)" },
+  tv: { label: "TV", color: "var(--chart-4)" },
+  console: { label: "Console", color: "var(--chart-5)" },
 };
 
 const chartData = [
@@ -322,9 +322,9 @@ const renderSophisticatedPreview = (subCategoryName: string, categoryName: strin
       return {
         content: (
           <div className="p-6">
-            <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+            <ChartContainer config={chartConfig} className="h-[200px] w-full flex-shrink-0">
               <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={chartData.slice(0, 4)}>
+                <BarChart data={chartData.slice(0, 4)} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
                   <CartesianGrid vertical={false} />
                   <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} />
                   <YAxis />
@@ -520,14 +520,15 @@ const renderSophisticatedPreview = (subCategoryName: string, categoryName: strin
         return {
           content: (
             <div className="p-6">
-              <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+              <ChartContainer config={chartConfig} className="h-[200px] w-full flex-shrink-0">
                 <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={chartData.slice(0, 4)}>
+                  <BarChart data={chartData.slice(0, 4)} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
                     <CartesianGrid vertical={false} />
                     <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} />
                     <YAxis />
                     <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
                     <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                    <Bar dataKey="tablet" fill="var(--color-tablet)" radius={4} />
                   </BarChart>
                 </ResponsiveContainer>
               </ChartContainer>

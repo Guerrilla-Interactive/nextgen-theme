@@ -1,6 +1,6 @@
-import { useBrand, type EnrichedColorToken, type EnrichedShade } from "./BrandContext";
+import { useBrand, type EnrichedColorToken, type EnrichedShade } from "../blueprint/BrandContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Role, type ColorToken as BaseColorToken } from "./brand-utils";
+import { Role, type ColorToken as BaseColorToken } from "../blueprint/brand-utils";
 import { getContainerOffsetPlusPadding } from "@/features/unorganized-utils/get-container-offset-plus-padding.t";
 import { useRef } from "react";
 import { Container } from "@/features/unorganized-components/nextgen-core-ui";

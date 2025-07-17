@@ -22,8 +22,7 @@ import { glowingBorderAnimationPreset } from '../animation-presets';
     {
       tokenSpecificName: "Void",
       description: "Page background (dark mode default)",
-      oklchLight: "oklch(0.96 0.01 260)" as OklchString,   // light‑mode fallback
-      oklchDark:  "oklch(0.14 0.01 260)" as OklchString,   // near‑black
+      oklch: "oklch(0.14 0.01 260)" as OklchString,   // near‑black
       roles: ["background"],
       category: "shade",
     },
@@ -32,8 +31,7 @@ import { glowingBorderAnimationPreset } from '../animation-presets';
     {
       tokenSpecificName: "Mist",
       description: "Primary text colour on dark surfaces",
-      oklchLight: "oklch(0.25 0.01 260)" as OklchString,  // dark text on light bg
-      oklchDark:  "oklch(0.92 0.01 260)" as OklchString,  // pale gray on dark bg
+      oklch: "oklch(0.92 0.01 260)" as OklchString,  // pale gray on dark bg
       roles: [
         "foreground",
         "card-foreground",
@@ -49,68 +47,57 @@ import { glowingBorderAnimationPreset } from '../animation-presets';
     {
       tokenSpecificName: "Panel",
       description: "Cards, popovers, and on‑colour text",
-      oklchLight: "oklch(1 0 0)" as OklchString,
-      oklchDark:  "oklch(0.18 0.01 260)" as OklchString,
+      oklch: "oklch(0.18 0.01 260)" as OklchString,
       roles: ["card", "popover", "primary-foreground", "sidebar-primary-foreground"],
       category: "shade",
-      onColorLight: "oklch(0.25 0.01 260)" as OklchString,
-      onColorDark:  "oklch(0.92 0.01 260)" as OklchString,
+      onColor: "oklch(0.92 0.01 260)" as OklchString,
     },
   
     // Neon Cyan – primary accent (complement 1)
     {
       tokenSpecificName: "Neon Cyan",
       description: "Primary actions, focus ring, chart‑1",
-      oklchLight: "oklch(0.85 0.14 195)" as OklchString,
-      oklchDark:  "oklch(0.55 0.14 195)" as OklchString,
+      oklch: "oklch(0.55 0.14 195)" as OklchString,
       roles: ["primary", "ring", "chart-1", "sidebar-primary"],
       category: "color",
-      onColorLight: "oklch(0 0 0)" as OklchString,
-      onColorDark:  "oklch(0 0 0)" as OklchString,
+      onColor: "oklch(0 0 0)" as OklchString,
     },
   
     // Neon Red – paired accent (complement 2)
     {
       tokenSpecificName: "Neon Red",
       description: "Secondary / accent actions, chart‑2, sidebar accent",
-      oklchLight: "oklch(0.85 0.16 20)" as OklchString,
-      oklchDark:  "oklch(0.55 0.16 20)" as OklchString,
+      oklch: "oklch(0.55 0.16 20)" as OklchString,
       roles: ["secondary", "accent", "chart-2", "sidebar", "sidebar-accent"],
       category: "color",
-      onColorLight: "oklch(0 0 0)" as OklchString,
-      onColorDark:  "oklch(0 0 0)" as OklchString,
+      onColor: "oklch(0 0 0)" as OklchString,
     },
   
     // Graphite – borders & inputs
     {
       tokenSpecificName: "Graphite",
       description: "Borders and input backgrounds",
-      oklchLight: "oklch(0.88 0.02 260)" as OklchString,
-      oklchDark:  "oklch(0.25 0.02 260)" as OklchString,
+      oklch: "oklch(0.25 0.02 260)" as OklchString,
       roles: ["border", "input"],
       category: "shade",
-      onColorLight: "oklch(0.25 0.01 260)" as OklchString,
-      onColorDark:  "oklch(0.92 0.01 260)" as OklchString,
+      onColor: "oklch(0.92 0.01 260)" as OklchString,
     },
   
     // Muted Panel – subtle surface fills
     {
       tokenSpecificName: "Muted Panel",
       description: "Muted surfaces (e.g. table rows)",
-      oklchLight: "oklch(0.93 0.01 260)" as OklchString,
-      oklchDark:  "oklch(0.22 0.01 260)" as OklchString,
+      oklch: "oklch(0.22 0.01 260)" as OklchString,
       roles: ["muted"],
       category: "shade",
-      onColorLight: "oklch(0.25 0.01 260)" as OklchString,
-      onColorDark:  "oklch(0.92 0.01 260)" as OklchString,
+      onColor: "oklch(0.92 0.01 260)" as OklchString,
     },
   
     // Muted‑foreground
     {
       tokenSpecificName: "Smoke",
       description: "Text on muted surfaces",
-      oklchLight: "oklch(0.40 0.01 260)" as OklchString,
-      oklchDark:  "oklch(0.80 0.01 260)" as OklchString,
+      oklch: "oklch(0.80 0.01 260)" as OklchString,
       roles: ["muted-foreground"],
       category: "shade",
     },
@@ -119,36 +106,31 @@ import { glowingBorderAnimationPreset } from '../animation-presets';
     {
       tokenSpecificName: "Alert Red",
       description: "Destructive actions & warnings",
-      oklchLight: "oklch(0.85 0.16 20)" as OklchString,
-      oklchDark:  "oklch(0.55 0.16 20)" as OklchString,
+      oklch: "oklch(0.55 0.16 20)" as OklchString,
       roles: ["destructive", "warning"],
       category: "color",
-      onColorLight: "oklch(0 0 0)" as OklchString,
-      onColorDark:  "oklch(0 0 0)" as OklchString,
+      onColor: "oklch(0 0 0)" as OklchString,
     },
   
     // Additional chart hues (monochrome ramps of cyan/red)
     {
       tokenSpecificName: "Cyan 2",
       description: "Chart‑3 (deeper cyan)",
-      oklchLight: "oklch(0.75 0.14 195)" as OklchString,
-      oklchDark:  "oklch(0.45 0.14 195)" as OklchString,
+      oklch: "oklch(0.45 0.14 195)" as OklchString,
       roles: ["chart-3"],
       category: "color",
     },
     {
       tokenSpecificName: "Red 2",
       description: "Chart‑4 (deeper red)",
-      oklchLight: "oklch(0.75 0.16 20)" as OklchString,
-      oklchDark:  "oklch(0.45 0.16 20)" as OklchString,
+      oklch: "oklch(0.45 0.16 20)" as OklchString,
       roles: ["chart-4"],
       category: "color",
     },
     {
       tokenSpecificName: "Cyan 3",
       description: "Chart‑5 (darkest cyan)",
-      oklchLight: "oklch(0.65 0.14 195)" as OklchString,
-      oklchDark:  "oklch(0.37 0.14 195)" as OklchString,
+      oklch: "oklch(0.37 0.14 195)" as OklchString,
       roles: ["chart-5"],
       category: "color",
     },
@@ -275,11 +257,9 @@ import { glowingBorderAnimationPreset } from '../animation-presets';
       cyberPulseStyleGuide,
       cyberPulseOtherVars
     ),
-    defaultMode: 'dark' as const,
-    prefersDarkSchemeForChrome: true,
     sevenAxisCode: {
       colorComplexity: 'duotone',           // Duotone - cyan and red neon colors
-      brightness: 'dark',                   // Dark - dark mode default
+      brightness: 'adaptive',              // Adaptive - dark mode default
       saturation: 'neon',                   // Neon - high saturation cyan and red
       colorHarmony: 'complementary',        // Complementary - cyan and red are opposite on color wheel
       accentUsage: 'prominent',             // Paired-accents - strong accent usage

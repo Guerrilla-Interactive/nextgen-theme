@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef } from 'react';
-import { BrandProvider, useBrand, type EnrichedColorToken, type EnrichedShade } from './BrandContext';
-import { themes } from './brandguide';
-import { influenceHierarchy, type ColorToken as BaseColorToken, type Role, type Shade as BaseShade, type Brand, type OklchString } from './brand-utils';
+import { BrandProvider, useBrand, type EnrichedColorToken, type EnrichedShade } from '../blueprint/BrandContext';
+import { themes } from '../blueprint/brandguide';
+import { influenceHierarchy, type ColorToken as BaseColorToken, type Role, type Shade as BaseShade, type Brand, type OklchString } from '../blueprint/brand-utils';
 import { useGlobalContext } from '@/features/context/global-context';
 import { Container, Grid, GridCol, Section } from '@/features/unorganized-components/nextgen-core-ui';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/features/unorganized-components/ui/card';
@@ -15,7 +15,7 @@ import { formatHex, converter, parseHex, formatOklch } from 'culori';
 import { ComponentShowcase } from './components/component-showcase.component';
 import { Redo2Icon, Undo2Icon, Palette, MousePointerClick, Square, Info, BarChart, Type, Puzzle, Package } from 'lucide-react';
 import { ThemeRoleAssignmentGrid } from './components/theme-role-assignment-grid.component';
-import { getHighContrastTextColor } from './brand-utils';
+import { getHighContrastTextColor } from '../blueprint/brand-utils';
 import { ColorRoleDetailCard } from './components/color-role-detail-card.component';
 import { AllComponentsShowcase } from './components/all-components-showcase.component';
 

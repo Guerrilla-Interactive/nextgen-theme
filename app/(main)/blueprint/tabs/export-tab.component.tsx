@@ -11,18 +11,18 @@ import {
   Palette, 
   Type,
   Info,
-  Zap
+  Zap,
+  Package
 } from "lucide-react";
-import { generateGlobalCss, type Brand, type ColorToken, type FontToken } from "../../brandguide/brand-utils";
-import { useBrand } from "../../brandguide/BrandContext";
+import { generateGlobalCss, type Brand, type ColorToken, type FontToken } from "../brand-utils";
+import { useBrand } from "../BrandContext";
 
 interface ExportTabProps {
   activeThemeKey: string;
-  isPageDarkMode: boolean;
 }
 
-export function ExportTab({ activeThemeKey, isPageDarkMode }: ExportTabProps) {
-  const { brand, availableThemes } = useBrand();
+export function ExportTab({ activeThemeKey }: ExportTabProps) {
+  const { brand } = useBrand();
   const [copiedItems, setCopiedItems] = useState<Record<string, boolean>>({});
 
   // Get theme display name
@@ -80,12 +80,11 @@ export function ExportTab({ activeThemeKey, isPageDarkMode }: ExportTabProps) {
     // Generate JSON config
     const jsonConfig = {
       name: getThemeDisplayName(activeThemeKey),
-      mode: isPageDarkMode ? 'dark' : 'light',
+      mode: 'light',
       colors: brand.colors.map(color => ({
         name: color.name,
         variable: color.variableName,
-        light: color.oklchLight,
-        dark: color.oklchDark,
+        light: color.oklch,
         roles: color.roles,
         category: color.category
       })),
@@ -102,20 +101,9 @@ export function ExportTab({ activeThemeKey, isPageDarkMode }: ExportTabProps) {
 /* Tailwind v4 CSS with @theme inline */
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
 ${brand.colors.map(color => {
-  return `  --${color.variableName}: ${color.oklchLight};`;
-}).join('\n')}
-${Object.entries(brand.themeCssVariables).map(([key, value]) => {
-  return `  --${key}: ${value};`;
-}).join('\n')}
-}
-
-.dark {
-${brand.colors.map(color => {
-  return `  --${color.variableName}: ${color.oklchDark};`;
+  return `  --${color.variableName}: ${color.oklch};`;
 }).join('\n')}
 ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
   return `  --${key}: ${value};`;
@@ -201,8 +189,8 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Mode:</span>
-                <Badge variant={isPageDarkMode ? "default" : "secondary"} className="text-xs h-4 px-1.5">
-                  {isPageDarkMode ? 'Dark' : 'Light'}
+                <Badge variant="secondary" className="text-xs h-4 px-1.5">
+                  Light
                 </Badge>
               </div>
             </div>
@@ -230,7 +218,7 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
                     key={color.variableName}
                     className="w-5 h-5 rounded border border-border shadow-sm flex-shrink-0"
                     style={{
-                      backgroundColor: isPageDarkMode ? color.oklchDark : color.oklchLight,
+                      backgroundColor: color.oklchLight,
                     }}
                     title={`${color.name} (${color.roles.join(', ')})`}
                   />
@@ -264,55 +252,92 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
       </Card>
 
       {/* Export Card */}
-      <Card className="overflow-hidden">
+      <Card>
         <CardHeader className="pb-3">
-          <div className="space-y-3">
-            {/* Title and Icon */}
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-md bg-primary/10">
-                <Zap className="w-4 h-4 text-primary" />
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Zap className="w-3 h-3" />
+            Ready to Export
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* CSS Export */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <Type className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium">Complete CSS File</p>
+                  <p className="text-xs text-muted-foreground">
+                    Full styles with variables and classes
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <CardTitle className="text-sm font-semibold">Tailwind v4 Export</CardTitle>
-                <p className="text-xs text-muted-foreground">
-                  Production-ready CSS with @theme inline syntax
-                </p>
+              <div className="flex items-center gap-1.5 ml-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleCopy(exports.css, 'css')}
+                  className="h-7 px-2.5 text-xs"
+                >
+                  {copiedItems.css ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDownload(exports.css, `${activeThemeKey}-theme.css`)}
+                  className="h-7 px-2.5 text-xs"
+                >
+                  <Download className="w-3 h-3" />
+                </Button>
               </div>
-            </div>
-            
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleCopy(exports.tailwindConfig, 'tailwind')}
-                className="h-8 text-xs"
-              >
-                {copiedItems.tailwind ? (
-                  <>
-                    <Check className="w-3 h-3 mr-1.5 text-green-500" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3 h-3 mr-1.5" />
-                    Copy CSS
-                  </>
-                )}
-              </Button>
-              <Button
-                size="sm"
-                onClick={() => handleDownload(exports.tailwindConfig, `${activeThemeKey}-tailwind-v4.css`, 'text/css')}
-                className="h-8 text-xs"
-              >
-                <Download className="w-3 h-3 mr-1.5" />
-                Download
-              </Button>
             </div>
           </div>
+
+          {/* JSON Export */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <Package className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium">Theme Config (JSON)</p>
+                  <p className="text-xs text-muted-foreground">
+                    Structured data for integrations
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 ml-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleCopy(exports.jsonConfig, 'json')}
+                  className="h-7 px-2.5 text-xs"
+                >
+                  {copiedItems.json ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDownload(exports.jsonConfig, `${activeThemeKey}-config.json`, 'application/json')}
+                  className="h-7 px-2.5 text-xs"
+                >
+                  <Download className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Tailwind v4 Preview */}
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Palette className="w-3 h-3" />
+            Tailwind v4 CSS
+            <Badge variant="outline" className="text-xs">Preview</Badge>
+          </CardTitle>
         </CardHeader>
 
-        {/* Code Preview Section - Full Width */}
         <div className="border-t bg-muted/30">
           <div className="p-3 border-b bg-background/50">
             <div className="flex items-center justify-between">
@@ -333,7 +358,7 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
           </div>
           
           <div className="relative">
-            <div className="h-64 overflow-auto bg-slate-950 dark:bg-slate-900">
+            <div className="h-64 overflow-auto bg-slate-950">
               <pre className="p-3 text-xs leading-relaxed">
                 <code className="text-slate-300 whitespace-pre-wrap font-mono">
                   {exports.tailwindConfig}
@@ -366,24 +391,33 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
                 <span className="text-xs font-semibold text-primary">2</span>
               </div>
               <div className="min-w-0 flex-1">
-                <h4 className="font-medium text-xs">Add dark class</h4>
-                <p className="text-xs text-muted-foreground">
-                  Toggle <code className="bg-muted px-1 rounded text-xs">dark</code> on root element
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-start gap-2">
-              <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-xs font-semibold text-primary">3</span>
-              </div>
-              <div className="min-w-0 flex-1">
                 <h4 className="font-medium text-xs">Use Tailwind classes</h4>
                 <p className="text-xs text-muted-foreground">
                   <code className="bg-muted px-1 rounded text-xs">bg-primary</code>, <code className="bg-muted px-1 rounded text-xs">text-foreground</code>
                 </p>
               </div>
             </div>
+          </div>
+
+          <div className="pt-3 border-t mt-4 flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleCopy(exports.tailwindConfig, 'tailwind')}
+              className="h-8 px-3 text-xs flex-1"
+            >
+              {copiedItems.tailwind ? <Check className="w-3 h-3 mr-1.5" /> : <Copy className="w-3 h-3 mr-1.5" />}
+              Copy CSS
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleDownload(exports.tailwindConfig, `${activeThemeKey}-tailwind-v4.css`)}
+              className="h-8 px-3 text-xs flex-1"
+            >
+              <Download className="w-3 h-3 mr-1.5" />
+              Download
+            </Button>
           </div>
         </CardContent>
       </Card>

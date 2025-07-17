@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useBrand } from '../../brandguide/BrandContext';
+import { useBrand } from '../BrandContext';
 import { Button } from '@/features/unorganized-components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/features/unorganized-components/ui/card';
 import { Badge } from '@/features/unorganized-components/ui/badge';
@@ -231,11 +231,52 @@ export function BrandContextDebugPanel() {
                   <div className="space-y-2">
                     {brand?.fonts?.map((font, index) => (
                       <div key={`${font.family}-${index}`} className="text-xs border border-border rounded p-2">
+                        <div><strong>Name:</strong> {font.name}</div>
                         <div><strong>Family:</strong> {font.family}</div>
                         <div><strong>Distributor:</strong> {font.distributor}</div>
                         <div><strong>Roles:</strong> {formatRoles(font.roles)}</div>
+                        <div><strong>Weights:</strong> {Object.entries(font.weights || {}).map(([name, value]) => `${name}:${value}`).join(', ')}</div>
+                        {font.fontWeights && Object.keys(font.fontWeights).length > 0 && (
+                          <div><strong>Weight Assignments:</strong> {Object.entries(font.fontWeights).map(([role, weight]) => `${role}:${weight}`).join(', ')}</div>
+                        )}
                       </div>
                     )) || <div className="text-muted-foreground text-sm">No fonts available</div>}
+                  </div>
+                </DebugSection>
+
+                {/* Font Role Assignments */}
+                <DebugSection title="Font Role Assignments" icon={Type}>
+                  <div className="space-y-1 text-xs">
+                    {brand?.fonts ? (() => {
+                      // Create a mapping of roles to fonts with weights
+                      const roleToFontMap: Record<string, { fontName: string; weight?: string }> = {};
+                      brand.fonts.forEach(font => {
+                        font.roles?.forEach(role => {
+                          roleToFontMap[role] = {
+                            fontName: font.name,
+                            weight: font.fontWeights?.[role] || 'default'
+                          };
+                        });
+                      });
+
+                      return Object.keys(roleToFontMap).length > 0 ? (
+                        Object.entries(roleToFontMap).map(([role, { fontName, weight }]) => (
+                          <div key={role} className="flex justify-between items-center py-1 px-2 border border-border/30 rounded">
+                            <span className="text-muted-foreground capitalize">{role.replace(/-/g, ' ')}:</span>
+                            <div className="text-right">
+                              <div className="font-medium">{fontName}</div>
+                              <div className="text-xs text-muted-foreground">
+                                Weight: {weight}
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-muted-foreground italic text-center py-2">No font roles assigned</div>
+                      );
+                    })() : (
+                      <div className="text-muted-foreground italic text-center py-2">No fonts available</div>
+                    )}
                   </div>
                 </DebugSection>
 

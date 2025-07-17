@@ -1,26 +1,21 @@
 import { type Brand, generateBrandColors, type RawColorDefinition, type StyleGuide, createThemeCssVars, OklchString } from '../brand-utils';
 import { glowingBorderAnimationPreset } from '../animation-presets';
 
-
-
 const nextgenThemeDefinition = {
   rawColors: [
     // Core Dark Palette (Edgy Tech)
     {
       tokenSpecificName: "Midnight Ash",
       description: "Deep, dark background, almost black.",
-      oklchLight: "oklch(0.15 0.01 260)" as OklchString, // Dark mode default
-      oklchDark: "oklch(0.15 0.01 260)" as OklchString,  // Stays dark
+      oklch: "oklch(0.15 0.01 260)" as OklchString,  // Stays dark
       roles: ["background"],
       category: 'shade',
-      onColorLight: "oklch(0.97 0.005 90)" as OklchString, // Photon White
-      onColorDark: "oklch(0.97 0.005 90)" as OklchString,  // Photon White
+      onColor: "oklch(0.97 0.005 90)" as OklchString,  // Photon White
     },
     {
       tokenSpecificName: "Photon White",
       description: "Bright, clean white for high-contrast text and UI elements.",
-      oklchLight: "oklch(0.97 0.005 90)" as OklchString,
-      oklchDark: "oklch(0.97 0.005 90)" as OklchString,
+      oklch: "oklch(0.97 0.005 90)" as OklchString,
       roles: [
         "foreground",
         "primary-foreground",
@@ -40,28 +35,23 @@ const nextgenThemeDefinition = {
     {
       tokenSpecificName: "Carbon Fiber",
       description: "Dark surface for cards, popovers; slightly lighter than background.",
-      oklchLight: "oklch(0.20 0.015 255)" as OklchString,
-      oklchDark: "oklch(0.20 0.015 255)" as OklchString,
+      oklch: "oklch(0.20 0.015 255)" as OklchString,
       roles: ["card", "popover", "secondary", "tooltip-background"],
       category: 'shade',
-      onColorLight: "oklch(0.97 0.005 90)" as OklchString, // Photon White
-      onColorDark: "oklch(0.97 0.005 90)" as OklchString,  // Photon White
+      onColor: "oklch(0.97 0.005 90)" as OklchString,  // Photon White
     },
     {
       tokenSpecificName: "Tungsten Gray",
       description: "Mid-dark gray for borders, inputs, and muted elements.",
-      oklchLight: "oklch(0.35 0.01 250)" as OklchString,
-      oklchDark: "oklch(0.35 0.01 250)" as OklchString,
+      oklch: "oklch(0.35 0.01 250)" as OklchString,
       roles: ["border", "input", "muted"],
       category: 'shade',
-      onColorLight: "oklch(0.97 0.005 90)" as OklchString, // Photon White
-      onColorDark: "oklch(0.97 0.005 90)" as OklchString,
+      onColor: "oklch(0.97 0.005 90)" as OklchString,
     },
     {
       tokenSpecificName: "Titanium Mist",
       description: "Light gray for muted text, providing better accessibility.",
-      oklchLight: "oklch(0.70 0.008 255)" as OklchString,
-      oklchDark: "oklch(0.70 0.008 255)" as OklchString,
+      oklch: "oklch(0.70 0.008 255)" as OklchString,
       roles: ["muted-foreground"],
       category: 'shade',
     },
@@ -70,56 +60,45 @@ const nextgenThemeDefinition = {
     {
       tokenSpecificName: "Inferno Orange",
       description: "Primary action color, #FF3600 retained for high-energy actions, also used for accents, success, and info states.",
-      oklchLight: "oklch(0.6484 0.239166 33.0098)" as OklchString,
-      oklchDark: "oklch(0.6484 0.239166 33.0098)" as OklchString,
+      oklch: "oklch(0.6484 0.239166 33.0098)" as OklchString,
       roles: ["primary", "ring",  "accent", "success", "info", "chart-1", "text-brand"],
       category: 'color',
-      onColorLight: "oklch(0.97 0.005 90)" as OklchString, // Photon White
-      onColorDark: "oklch(0.97 0.005 90)" as OklchString,  // Photon White
+      onColor: "oklch(0.97 0.005 90)" as OklchString,  // Photon White
     },
     {
       tokenSpecificName: "Crimson Alert",
       description: "Intense red for destructive actions and warnings.",
-      oklchLight: "oklch(0.55 0.25 15)" as OklchString,
-      oklchDark: "oklch(0.50 0.26 15)" as OklchString,
+      oklch: "oklch(0.50 0.26 15)" as OklchString,
       roles: ["destructive", "warning"],
       category: 'color',
-      onColorLight: "oklch(0.97 0.005 90)" as OklchString, // Photon White
-      onColorDark: "oklch(0.97 0.005 90)" as OklchString,
+      onColor: "oklch(0.97 0.005 90)" as OklchString,
     },
 
     // Vibrant Chart Colors (Digital Edge)
     {
       tokenSpecificName: "Chart Electric Blue",
-      oklchLight: "oklch(0.62 0.20 230)" as OklchString,
-      oklchDark: "oklch(0.62 0.20 230)" as OklchString,
+      oklch: "oklch(0.62 0.20 230)" as OklchString,
       roles: ["chart-2"],
       category: 'color',
-      onColorLight: "oklch(0.15 0.01 260)" as OklchString,
-      onColorDark: "oklch(0.15 0.01 260)" as OklchString,
+      onColor: "oklch(0.15 0.01 260)" as OklchString,
     },
     {
       tokenSpecificName: "Chart Neon Pink",
-      oklchLight: "oklch(0.62 0.23 330)" as OklchString,
-      oklchDark: "oklch(0.62 0.23 330)" as OklchString,
+      oklch: "oklch(0.62 0.23 330)" as OklchString,
       roles: ["chart-3"],
       category: 'color',
-      onColorLight: "oklch(0.15 0.01 260)" as OklchString,
-      onColorDark: "oklch(0.15 0.01 260)" as OklchString,
+      onColor: "oklch(0.15 0.01 260)" as OklchString,
     },
     {
       tokenSpecificName: "Chart Plasma Teal",
-      oklchLight: "oklch(0.68 0.21 190)" as OklchString,
-      oklchDark: "oklch(0.68 0.21 190)" as OklchString,
+      oklch: "oklch(0.68 0.21 190)" as OklchString,
       roles: ["chart-5"],
       category: 'color',
-      onColorLight: "oklch(0.15 0.01 260)" as OklchString,
-      onColorDark: "oklch(0.15 0.01 260)" as OklchString,
+      onColor: "oklch(0.15 0.01 260)" as OklchString,
     },
     {
       tokenSpecificName: "Chart Outline Gray",
-      oklchLight: "oklch(0.45 0.01 250)" as OklchString,
-      oklchDark: "oklch(0.40 0.01 250)" as OklchString,
+      oklch: "oklch(0.40 0.01 250)" as OklchString,
       roles: ["chart-outline"],
       category: 'shade',
     },
@@ -135,8 +114,6 @@ const nextgenThemeDefinition = {
     mutedColors: { muted: "Tungsten Gray", mutedForeground: "Titanium Mist" },
     destructiveColors: { destructive: "Crimson Alert", destructiveForeground: "Photon White" },
     successColors: { success: "Inferno Orange", successForeground: "Photon White" },
-    infoColors: { info: "Inferno Orange", infoForeground: "Photon White" },
-    warningColors: { warning: "Crimson Alert", warningForeground: "Photon White" },
     inputColors: { input: "Tungsten Gray", inputForeground: "Photon White" },
     borderColors: { border: "Tungsten Gray" },
     ringColors: { ring: "Inferno Orange" },
@@ -240,11 +217,9 @@ export const nextgenBrand: Brand = {
     nextgenThemeDefinition.styleGuide,
     nextgenThemeDefinition.otherVars
   ),
-  defaultMode: 'dark' as const, // Dark mode for edgy gaming aesthetic
-  prefersDarkSchemeForChrome: true, // Dark-first, edgy tech preference
   sevenAxisCode: {
     colorComplexity: 'duotone',           // Duotone - orange primary with supporting colors
-    brightness: 'dark',                   // Dark - midnight ash background
+    brightness: 'adaptive',              // Adaptive - midnight ash background
     saturation: 'neon',                   // Neon - bright, high-saturation orange and vibrant chart colors
     colorHarmony: 'complementary',        // Complementary - orange with contrasting blues/teals
     accentUsage: 'prominent',             // Prominent - strong orange accent usage

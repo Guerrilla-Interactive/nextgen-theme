@@ -41,6 +41,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { CalendarIcon, Smile, InfoIcon } from 'lucide-react';
+// Import brand context and related utilities
+import { useBrand } from '../../blueprint/BrandContext';
+import { ColorPicker } from '../../brand-colors/ColorPicker';
+import { formatHex } from 'culori';
+import { Role } from '../../blueprint/brand-utils';
 
 const chartConfig = {
     desktop: { label: "Desktop", color: "var(--chart1)" },
@@ -104,8 +109,50 @@ const MyForm = () => {
     );
 };
 
-const generateTokenTooltipContent = (doc: ComponentDocumentation) => {
+const generateTokenTooltipContent = (doc: ComponentDocumentation, brand: any, processedBrand: any, handleRoleSwatchSelection: any, handleRoleDirectColorChange: any, previewRoleDirectColorChange: any, swatches: any[]) => {
     const sections: React.ReactNode[] = [];
+
+    // Helper function to get color for a role
+    const getColorForRole = (role: string) => {
+        if (!processedBrand?.colors) return null;
+        
+        const color = processedBrand.colors.find((c: any) => 
+            c.roles && c.roles.includes(role)
+        );
+        
+        if (color && color.oklchLight) {
+            return formatHex(color.oklchLight);
+        }
+        return null;
+    };
+
+    // Helper function to render role badge with color swatch
+    const renderRoleBadge = (role: string) => {
+        const colorHex = getColorForRole(role);
+        
+        if (colorHex) {
+            return (
+                <div key={role} className="inline-flex items-center gap-1.5 bg-muted/50 text-foreground px-2 py-0.5 rounded-md">
+                    <ColorPicker
+                        value={colorHex}
+                        className="w-3 h-3 rounded-full border border-border/60 cursor-pointer hover:scale-110 transition-transform"
+                        role={role as Role}
+                        swatches={swatches}
+                        onSwatchSelect={(swatch) => handleRoleSwatchSelection(role as Role, swatch.name)}
+                        onChange={(newHex) => previewRoleDirectColorChange(role as Role, newHex)}
+                        onDirectColorChange={(newHex) => handleRoleDirectColorChange(role as Role, newHex)}
+                    />
+                    <span className="text-xs">{role}</span>
+                </div>
+            );
+        } else {
+            return (
+                <span key={role} className="text-xs bg-muted/50 text-foreground px-2 py-0.5 rounded-md">
+                    {role}
+                </span>
+            );
+        }
+    };
 
     // Base roles
     if (doc.base && doc.base.length > 0) {
@@ -113,9 +160,7 @@ const generateTokenTooltipContent = (doc: ComponentDocumentation) => {
             <div key="base">
                 <h5 className="font-semibold text-xs mt-2 mb-1 uppercase tracking-wider text-muted-foreground">Base</h5>
                 <div className="flex flex-wrap gap-1">
-                    {doc.base.map(role => (
-                        <span key={role} className="text-xs bg-muted/50 text-foreground px-2 py-0.5 rounded-md">{role}</span>
-                    ))}
+                    {doc.base.map(role => renderRoleBadge(role))}
                 </div>
             </div>
         );
@@ -130,9 +175,7 @@ const generateTokenTooltipContent = (doc: ComponentDocumentation) => {
                     <div key={variantName} className="mt-1.5">
                         <p className="text-xs font-medium capitalize">{variantName}</p>
                         <div className="flex flex-wrap gap-1 mt-1">
-                            {roles.map(role => (
-                                <span key={role} className="text-xs bg-muted/50 text-foreground px-2 py-0.5 rounded-md">{role}</span>
-                            ))}
+                            {roles.map(role => renderRoleBadge(role))}
                         </div>
                     </div>
                 ))}
@@ -150,9 +193,7 @@ const generateTokenTooltipContent = (doc: ComponentDocumentation) => {
                         <p className="text-xs font-medium">{partName}</p>
                         {Array.isArray(value) ? (
                             <div className="flex flex-wrap gap-1 mt-1">
-                                {value.map(role => (
-                                    <span key={role} className="text-xs bg-muted/50 text-foreground px-2 py-0.5 rounded-md">{role}</span>
-                                ))}
+                                {value.map(role => renderRoleBadge(role))}
                             </div>
                         ) : (
                             <p className="text-xs text-muted-foreground mt-1">{value}</p>
@@ -588,6 +629,62 @@ const renderComponent = (name: string, doc: ComponentDocumentation) => {
 };
 
 export const AllComponentsShowcase = () => {
+    // Use brand context
+    const { 
+        brand, 
+        processedBrand,
+        handleRoleSwatchSelection,
+        handleRoleDirectColorChange,
+        previewRoleDirectColorChange,
+        addNewColor
+    } = useBrand();
+
+    // Generate swatches for color picker (similar to colors-tab)
+    const swatches = React.useMemo(() => 
+        brand?.colors?.filter(c => {
+            // Exclude colors that are primarily chart colors
+            const chartRoles = c.roles?.filter(role => role.startsWith('chart-')) || [];
+            const nonChartRoles = c.roles?.filter(role => !role.startsWith('chart-')) || [];
+            
+            if (chartRoles.length > 0 && nonChartRoles.length === 0) {
+                return false;
+            }
+            
+            return true;
+        }).map(c => ({
+            name: c.variableName,
+            displayName: c.name,
+            color: formatHex(c.oklchLight as string) || '#000000'
+        })).filter(s => s.color !== '#000000') || [], 
+        [brand]
+    );
+
+    // Handle adding new color swatch
+    const handleSwatchAdd = (name: string, color: string, onColorCreated?: (variableName: string) => void) => {
+        addNewColor(name, color, [], (newColorName) => {
+            const generateExpectedVariableName = (displayName: string): string => {
+                let baseVariableName = displayName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                let finalVariableName = baseVariableName;
+                
+                let variableCounter = 1;
+                if (brand?.colors) {
+                    while (brand.colors.find(color => color.variableName === finalVariableName)) {
+                        finalVariableName = `${baseVariableName}-${variableCounter}`;
+                        variableCounter++;
+                    }
+                }
+                
+                return finalVariableName;
+            };
+            
+            const expectedVariableName = generateExpectedVariableName(newColorName);
+            
+            if (onColorCreated) {
+                onColorCreated(expectedVariableName);
+            }
+        });
+    };
+
     return (
         <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
             {Object.entries(componentTokenMap).map(([name, doc]) => (
@@ -597,12 +694,20 @@ export const AllComponentsShowcase = () => {
                         <CardDescription>{doc.description}</CardDescription>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <button className="absolute top-4 right-4 h-6 w-6 flex items-center justify-center rounded-full bg-muted/50 hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
+                                <button className="absolute -top-3.5 right-4 h-6 w-6 flex items-center justify-center rounded-full  hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
                                     <InfoIcon className="h-4 w-4" />
                                 </button>
                             </TooltipTrigger>
                             <TooltipContent className="max-w-xs p-3">
-                                {generateTokenTooltipContent(doc)}
+                                {generateTokenTooltipContent(
+                                    doc, 
+                                    brand, 
+                                    processedBrand, 
+                                    handleRoleSwatchSelection, 
+                                    handleRoleDirectColorChange, 
+                                    previewRoleDirectColorChange, 
+                                    swatches
+                                )}
                             </TooltipContent>
                         </Tooltip>
                     </CardHeader>

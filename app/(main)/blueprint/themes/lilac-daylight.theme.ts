@@ -14,36 +14,30 @@ import {
   } from "../brand-utils";
   
   /*───────────────────────────────────────────────────────────────────────*\
-    1. RAW COLOUR TOKENS (light values = supplied palette)
-       Dark values use the previous “Violet Abyss” darks so both modes exist.
+    1. RAW COLOUR TOKENS (light mode theme)
   \*───────────────────────────────────────────────────────────────────────*/
   const rawColors: RawColorDefinition[] = [
     /* Neutral surfaces & text */
     {
       tokenSpecificName: "Blossom White",
       description: "Primary background",
-      oklchLight: "oklch(1 0 0)" as OklchString,
-      oklchDark:  "oklch(0.2077 0.0398 265.7549)" as OklchString,
+      oklch: "oklch(1 0 0)" as OklchString,
       roles: ["background"],
       category: "shade",
-      onColorLight: "oklch(0.3588 0.1354 278.6973)" as OklchString,
-      onColorDark:  "oklch(0.9299 0.0334 272.7879)" as OklchString,
+      onColor: "oklch(0.3588 0.1354 278.6973)" as OklchString,
     },
     {
       tokenSpecificName: "Snow",
       description: "Cards / popovers / secondary surfaces",
-      oklchLight: "oklch(1 0 0)" as OklchString,
-      oklchDark:  "oklch(0.2573 0.0861 281.2883)" as OklchString,
+      oklch: "oklch(1 0 0)" as OklchString,
       roles: ["card", "popover", "tooltip-background", "sidebar"],
       category: "shade",
-      onColorLight: "oklch(0.3588 0.1354 278.6973)" as OklchString,
-      onColorDark:  "oklch(0.9299 0.0334 272.7879)" as OklchString,
+      onColor: "oklch(0.3588 0.1354 278.6973)" as OklchString,
     },
     {
       tokenSpecificName: "Ink Violet",
       description: "Universal dark text",
-      oklchLight: "oklch(0.3588 0.1354 278.6973)" as OklchString,
-      oklchDark:  "oklch(0.9299 0.0334 272.7879)" as OklchString,
+      oklch: "oklch(0.3588 0.1354 278.6973)" as OklchString,
       roles: [
         "foreground",
         "card-foreground",
@@ -60,58 +54,66 @@ import {
     {
       tokenSpecificName: "Ultraviolet",
       description: "Primary CTAs",
-      oklchLight: "oklch(0.6056 0.2189 292.7172)" as OklchString,
-      oklchDark:  "oklch(0.6056 0.2189 292.7172)" as OklchString,
-      roles: ["primary", "ring", "sidebar-primary", "chart-1", "text-brand"],
+      oklch: "oklch(0.6056 0.2189 292.7172)" as OklchString,
+      roles: ["primary", "ring", "sidebar-primary", "chart-1"],
       category: "color",
-      onColorLight: "Blossom White",
-      onColorDark:  "Blossom White",
+      onColor: "oklch(1 0 0)" as OklchString,
     },
     {
       tokenSpecificName: "Soft Lilac",
       description: "Secondary buttons / muted surfaces",
-      oklchLight: "oklch(0.9618 0.0202 295.1913)" as OklchString,
-      oklchDark:  "oklch(0.3095 0.0266 266.7132)" as OklchString,
+      oklch: "oklch(0.9618 0.0202 295.1913)" as OklchString,
       roles: ["secondary", "muted"],
       category: "shade",
-      onColorLight: "oklch(0.4568 0.2146 277.0229)" as OklchString,
-      onColorDark:  "Blossom White",
+      onColor: "oklch(0.4568 0.2146 277.0229)" as OklchString,
     },
     {
       tokenSpecificName: "Periwinkle Mist",
       description: "Accent / tertiary",
-      oklchLight: "oklch(0.9319 0.0316 255.5855)" as OklchString,
-      oklchDark:  "oklch(0.4568 0.2146 277.0229)" as OklchString,
+      oklch: "oklch(0.9319 0.0316 255.5855)" as OklchString,
       roles: ["accent", "sidebar-accent", "chart-3"],
       category: "color",
-      onColorLight: "oklch(0.4244 0.1809 265.6377)" as OklchString,
-      onColorDark:  "Blossom White",
+      onColor: "oklch(0.4244 0.1809 265.6377)" as OklchString,
     },
     {
       tokenSpecificName: "Lavender Border",
       description: "Borders & inputs",
-      oklchLight: "oklch(0.9299 0.0334 272.7879)" as OklchString,
-      oklchDark:  "oklch(0.2827 0.1351 291.0894)" as OklchString,
+      oklch: "oklch(0.9299 0.0334 272.7879)" as OklchString,
       roles: ["border", "input", "sidebar-border"],
       category: "color",
-      onColorLight: "Ink Violet",
-      onColorDark:  "Blossom White",
+      onColor: "oklch(0.3588 0.1354 278.6973)" as OklchString,
     },
     {
       tokenSpecificName: "Brick",
-      description: "Destructive / warning",
-      oklchLight: "oklch(0.6368 0.2078 25.3313)" as OklchString,
-      oklchDark:  "oklch(0.6368 0.2078 25.3313)" as OklchString,
-      roles: ["destructive", "warning"],
+      description: "Destructive actions",
+      oklch: "oklch(0.6368 0.2078 25.3313)" as OklchString,
+      roles: ["destructive"],
       category: "color",
-      onColorLight: "Blossom White",
-      onColorDark:  "Blossom White",
+      onColor: "oklch(1 0 0)" as OklchString,
     },
   
     /* Additional chart hues */
-    { tokenSpecificName: "Chart Violet 2", oklchLight: "oklch(0.5413 0.2466 293.0090)" as OklchString, oklchDark: "oklch(0.5413 0.2466 293.0090)" as OklchString, roles: ["chart-2"], category: "color" },
-    { tokenSpecificName: "Chart Violet 3", oklchLight: "oklch(0.4907 0.2412 292.5809)" as OklchString, oklchDark: "oklch(0.4907 0.2412 292.5809)" as OklchString, roles: ["chart-4"], category: "color" },
-    { tokenSpecificName: "Chart Violet 4", oklchLight: "oklch(0.4320 0.2106 292.7591)" as OklchString, oklchDark: "oklch(0.4320 0.2106 292.7591)" as OklchString, roles: ["chart-5"], category: "color" },
+    { 
+      tokenSpecificName: "Chart Violet 2", 
+      description: "Chart data series color",
+      oklch: "oklch(0.5413 0.2466 293.0090)" as OklchString, 
+      roles: ["chart-2"], 
+      category: "color" 
+    },
+    { 
+      tokenSpecificName: "Chart Violet 3", 
+      description: "Chart data series color",
+      oklch: "oklch(0.4907 0.2412 292.5809)" as OklchString, 
+      roles: ["chart-4"], 
+      category: "color" 
+    },
+    { 
+      tokenSpecificName: "Chart Violet 4", 
+      description: "Chart data series color",
+      oklch: "oklch(0.4320 0.2106 292.7591)" as OklchString, 
+      roles: ["chart-5"], 
+      category: "color" 
+    },
   ];
   
   /*───────────────────────────────────────────────────────────────────────*\
@@ -126,8 +128,6 @@ import {
     mutedColors:         { muted: "Soft Lilac", mutedForeground: "Ink Violet" },
     destructiveColors:   { destructive: "Brick", destructiveForeground: "Blossom White" },
     successColors:       { success: "Ultraviolet", successForeground: "Blossom White" },
-    infoColors:          { info: "Periwinkle Mist", infoForeground: "Ink Violet" },
-    warningColors:       { warning: "Brick", warningForeground: "Blossom White" },
     inputColors:         { input: "Lavender Border", inputForeground: "Ink Violet" },
     borderColors:        { border: "Lavender Border" },
     ringColors:          { ring: "Ultraviolet" },
@@ -215,6 +215,14 @@ import {
     ],
     style: styleGuide,
     themeCssVariables: createThemeCssVars("lilac-daylight", colors, styleGuide, otherVars),
-    prefersDarkSchemeForChrome: false,
+    sevenAxisCode: {
+      colorComplexity: 'duotone',
+      brightness: 'light',
+      saturation: 'muted',
+      colorHarmony: 'analogous',
+      accentUsage: 'subtle',
+      cornerStyle: 'rounded',
+      elevation: 'flat',
+    },
   };
   
