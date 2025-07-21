@@ -1152,6 +1152,62 @@ export const generateGlobalCss = (brand: Brand): string => {
   addLine("}");
   addLine("");
 
+  // Helper function to get font family for a role
+  const getFontFamilyForRole = (role: string): string => {
+    const assignedFont = brand.fonts.find(font => font.roles?.includes(role));
+    if (assignedFont?.family) {
+      return assignedFont.family;
+    }
+    // Fallback logic
+    if (role.includes('h') || role === 'heading' || role === 'display') {
+      return brand.fonts.find(f => f.roles?.includes('heading') || f.roles?.includes('display'))?.family || 
+             brand.fonts.find(f => f.roles?.includes('sans'))?.family || 'sans-serif';
+    }
+    return brand.fonts.find(f => f.roles?.includes('body') || f.roles?.includes('p'))?.family ||
+           brand.fonts.find(f => f.roles?.includes('sans'))?.family || 'sans-serif';
+  };
+  
+  // Helper function to get default font size for a role
+  const getDefaultFontSizeForRole = (role: string): string => {
+    const sizeMap: Record<string, string> = {
+      'h1': '2.25rem', 'h2': '1.875rem', 'h3': '1.5rem', 'h4': '1.25rem', 'h5': '1.125rem', 'h6': '1rem',
+      'p': '1rem', 'body': '1rem', 'default': '1rem', 'display': '3rem',
+      'button': '0.875rem', 'caption': '0.75rem', 'badge': '0.75rem', 'code': '0.875rem'
+    };
+    return sizeMap[role] || '1rem';
+  };
+
+  // Create brand-specific class name for high specificity
+  const brandClassName = brand.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+  // FIXED: Typography selectors that allow Tailwind utilities to override brand styles
+  // Previous issue: High-specificity selectors with !important were overriding text-sm, text-lg, etc.
+  // Solution: Use :not() to exclude elements with specific Tailwind text size classes
+  const semanticElements = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'];
+  semanticElements.forEach(element => {
+    const fontFamily = getFontFamilyForRole(element);
+    const defaultFontSize = getDefaultFontSizeForRole(element);
+    const defaultWeight = element === 'p' ? '400' : element.includes('h') ? '700' : '400';
+    
+    // Only target elements without specific Tailwind text size classes
+    // This allows Tailwind size utilities to override brand defaults while preserving other functionality
+    const tailwindSizeClasses = 'text-xs,text-sm,text-base,text-lg,text-xl,text-2xl,text-3xl,text-4xl,text-5xl,text-6xl,text-7xl,text-8xl,text-9xl';
+    const notSelectors = tailwindSizeClasses.split(',').map(cls => `[class*="${cls}"]`).join(',');
+    
+    addLine(`html.theme-${brandClassName} ${element}:not(${notSelectors}), .theme-${brandClassName} ${element}:not(${notSelectors}) {`);
+    addLine(`font-family: ${fontFamily};`, 2);
+    addLine(`font-size: var(--font-size-${element}, ${defaultFontSize});`, 2);
+    addLine(`font-weight: var(--font-weight-${element}, ${defaultWeight});`, 2);
+    addLine(`}`, 0);
+    addLine("");
+    
+    // Only apply font-family with !important (but not size/weight) to maintain brand consistency
+    addLine(`html.theme-${brandClassName} ${element}, .theme-${brandClassName} ${element} {`);
+    addLine(`font-family: ${fontFamily} !important;`, 2);
+    addLine(`}`, 0);
+    addLine("");
+  });
+
   return cssString;
 };
 

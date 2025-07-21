@@ -47,6 +47,8 @@ import { twitterXTheme } from "./themes/twitter-x.theme";
 import { twitterXDarkTheme } from "./themes/twitter-x-dark.theme";
 import { rosePurpleTheme } from "./themes/rose-purple.theme";
 import { midnightRoseTheme } from "./themes/midnight-rose.theme";
+import { cocaColaBrand } from "./themes/coke-theme";
+import { ikeaBrand } from "./themes/ikea-theme";
 
 
 // All original type definitions (Role, NumericShadeLevel, FunctionalShadeKey, ShadeKey, Shade, ColorToken, FontToken, 
@@ -85,6 +87,8 @@ export const themes: Record<string, Brand> = {
   "twitter-x-dark": twitterXDarkTheme,
   "rose-purple": rosePurpleTheme,
   "midnight-rose": midnightRoseTheme,
+  "coke": cocaColaBrand,
+  "ikea": ikeaBrand,
   
 };
 
@@ -116,7 +120,9 @@ export const ALL_BRANDS = [
   rosePurpleTheme,
   midnightRoseTheme,
   vercelMinimalBrand,
-  vercelDarkBrand
+  vercelDarkBrand,
+  cocaColaBrand,
+  ikeaBrand,
 
 ].sort((a, b) => a.name.localeCompare(b.name));
   

@@ -1713,6 +1713,20 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           console.log('No animation configuration found, removed existing animation styles');
         }
 
+        // Apply brand theme class for typography
+        const brandClassName = brandForCSS.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        const themeClassName = `theme-${brandClassName}`;
+        
+        // Remove any existing theme classes
+        const existingThemeClasses = Array.from(rootElement.classList).filter(cls => 
+          cls.startsWith('theme-')
+        );
+        existingThemeClasses.forEach(cls => rootElement.classList.remove(cls));
+        
+        // Add the new theme class
+        rootElement.classList.add(themeClassName);
+        console.log(`Applied brand theme class: ${themeClassName}`);
+
         const finalProcessedBrand: EnrichedBrand = {
           ...brandForCSS,
           colors: newEnrichedColors

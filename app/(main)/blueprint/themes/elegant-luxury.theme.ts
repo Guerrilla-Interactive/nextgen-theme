@@ -5,6 +5,7 @@
 // Axes: duotone · adjacent · light · muted · flat · accent‑neutral · rounded
 // ---------------------------------------------------------------------
 
+import { modernAnimationPreset } from "../animation-presets";
 import {
     type Brand,
     generateBrandColors,
@@ -232,6 +233,55 @@ import {
       accentUsage: 'balanced',              // Balanced use of color accents
       cornerStyle: 'rounded',               // Rounded - uses calc(var(--radius)) system with 0.375rem base
       elevation: 'flat',                    // Flat - soft, minimal shadows with low opacity
+    },
+    animationConfig: {
+      preset: {
+        ...modernAnimationPreset,
+        button: {
+          ...modernAnimationPreset.button,
+          // Enhanced outline variant with subtle luxury-themed active effect
+          outline: {
+            default: {
+              duration: '180ms',
+              easing: 'ease-out',
+              opacity: '1',
+              transform: {
+                scale: '1'
+              }
+            },
+            hover: {
+              duration: '150ms',
+              easing: 'ease-out',
+              opacity: '0.9',
+              backgroundColor: 'oklch(0.95 0.04 89 / 0.5)' // A bit less subtle butter tint on hover
+            },
+            focus: {
+              duration: '150ms',
+              easing: 'ease-out',
+              opacity: '0.95',
+              boxShadow: '0 0 0 2px var(--ring)',
+              transform: {
+                scale: '1'
+              }
+            },
+            active: {
+              duration: '100ms',
+              easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+              opacity: '1',
+              backgroundColor: 'oklch(0.95 0.04 89 / 0.8)' // A bit stronger butter tint on active
+            },
+            disabled: {
+              duration: '150ms',
+              easing: 'ease-out',
+              opacity: '0.5',
+              transform: {
+                scale: '1'
+              }
+            }
+          }
+        }
+      },
+      rootClassName: 'elegant-luxury-theme'
     },
   };
   

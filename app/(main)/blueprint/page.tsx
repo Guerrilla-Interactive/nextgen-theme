@@ -292,8 +292,27 @@ function ThemeChooser({
             const displayName = prettify(key);
             const importantColors = getMostImportantColors(th.colors);
             const themeFonts = getThemeFonts(th.fonts);
-            const headingFont = themeFonts.find(f => f.usage === 'heading')?.family || themeFonts[0]?.family;
-            const bodyFont = themeFonts.find(f => f.usage === 'body')?.family || themeFonts[1]?.family || themeFonts[0]?.family;
+            
+            // Better logic for finding heading and body fonts
+            const headingFont = th.fonts?.find(f => 
+              f.roles?.some(r => ['heading', 'display', 'h1', 'h2', 'h3'].includes(r))
+            )?.family || th.fonts?.[0]?.family;
+            
+            const bodyFont = th.fonts?.find(f => 
+              f.roles?.some(r => ['body', 'p', 'default', 'sans'].includes(r))
+            )?.family || th.fonts?.find(f => !f.roles?.some(r => ['heading', 'display', 'h1', 'h2', 'h3', 'code', 'mono'].includes(r)))?.family || th.fonts?.[0]?.family;
+
+            console.log(`Theme ${key}:`, {
+              displayName,
+              totalFonts: th.fonts?.length,
+              headingFont: headingFont ? headingFont.split(',')[0].replace(/['"]/g, '').trim() : 'none',
+              bodyFont: bodyFont ? bodyFont.split(',')[0].replace(/['"]/g, '').trim() : 'none',
+              allFonts: th.fonts?.map(f => ({
+                name: f.name,
+                family: f.family.split(',')[0].replace(/['"]/g, '').trim(),
+                roles: f.roles
+              }))
+            });
 
             return (
               <Card
@@ -320,10 +339,25 @@ function ThemeChooser({
                           ))}
                         </div>
                         <div>
-                          <h4 className="font-semibold text-foreground" style={{ fontFamily: headingFont || 'inherit' }}>
+                          <h5 
+                            className="text-foreground" 
+                            style={{ 
+                              fontFamily: `${headingFont ? headingFont.split(',')[0].replace(/['"]/g, '').trim() : 'sans-serif'}, sans-serif !important`,
+                              fontWeight: '600 !important',
+                              fontSize: '1rem !important',
+                              fontStyle: 'normal !important'
+                            }}
+                            title={`Using font: ${headingFont ? headingFont.split(',')[0].replace(/['"]/g, '').trim() : 'default'}`}
+                          >
                             {displayName}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
+                          </h5>
+                          <p 
+                            className="text-sm text-muted-foreground"
+                            style={{ 
+                              fontFamily: `${bodyFont ? bodyFont.split(',')[0].replace(/['"]/g, '').trim() : 'sans-serif'}, sans-serif !important`,
+                              fontSize: '0.875rem !important'
+                            }}
+                          >
                             {th.colors.length} colors • {th.fonts.length} font{th.fonts.length !== 1 ? 's' : ''}
                           </p>
                         </div>
@@ -332,12 +366,18 @@ function ThemeChooser({
 
                     {/* Font sample row */}
                     {themeFonts.length > 0 && (
-                      <div className="text-xs font-normal text-muted-foreground truncate">
+                      <div 
+                        className="text-xs font-normal text-muted-foreground truncate"
+                        style={{ fontSize: '0.75rem' }}
+                      >
                         {themeFonts.map((f, idx) => (
                           <span key={idx}>
                             {idx > 0 && <span className="mx-2 opacity-30">·</span>}
                             <span
-                              style={{ fontFamily: f.family }}
+                              style={{ 
+                                fontFamily: f.family,
+                                fontWeight: 400
+                              }}
                               className="opacity-70"
                               title={`${cleanFamily(f.family)} — ${f.usage} typeface`}
                             >

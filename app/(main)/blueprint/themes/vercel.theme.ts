@@ -42,15 +42,23 @@ import {
         roles: [
           "foreground",
           "card-foreground",
-          "popover-foreground"
+          "popover-foreground",
+          "accent-foreground",
+          "secondary-foreground"
         ],
         category: "shade",
       },
       {
         tokenSpecificName: "White Text",
-        description: "Text that appears on dark primary buttons",
+        description: "Text that appears on dark primary buttons and destructive actions",
         oklch: "oklch(0.99 0 0)" as OklchString,
-        roles: ["primary-foreground"],
+        roles: [
+          "primary-foreground",
+          "destructive-foreground",
+          "success-foreground",
+          "info-foreground",
+          "warning-foreground"
+        ],
         category: "shade",
       },
       {
@@ -179,13 +187,15 @@ import {
 
     styleGuide: {
       primaryColors:       { primary: "Primary Black", primaryForeground: "White Text" },
-      secondaryColors:     { secondary: "Light Gray Surface", secondaryForeground: "Black Text" },
+      secondaryColors:     { secondary: "Light Gray Surface", secondaryForeground: "Deep Black" },
       accentColors:        { accent: "Subtle Gray", accentForeground: "Deep Black" },
       cardColors:          { card: "Card White", cardForeground: "Deep Black" },
       popoverColors:       { popover: "Card White", popoverForeground: "Deep Black" },
       mutedColors:         { muted: "Light Gray Surface", mutedForeground: "Muted Gray" },
-      destructiveColors:   { destructive: "Error Red", destructiveForeground: "Status White Text" },
-      successColors:       { success: "Success Green", successForeground: "Status White Text" },
+      destructiveColors:   { destructive: "Error Red", destructiveForeground: "White Text" },
+      successColors:       { success: "Success Green", successForeground: "White Text" },
+      infoColors:          { info: "Info Blue", infoForeground: "White Text" },
+      warningColors:       { warning: "Error Red", warningForeground: "White Text" },
       inputColors:         { input: "Light Gray Surface", inputForeground: "Deep Black" },
       borderColors:        { border: "Light Gray Surface" },
       ringColors:          { ring: "Primary Black" },
