@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/features/unorganized-components/ui/button";
-import HomepagePreview from "./HomepagePreview";
-import GalleryPreview from "./GalleryPreview";
-import ArtistPreview from "./ArtistPreview";
-import ComponentPreview from "./ComponentPreview";
-import { BrandProvider, useBrand } from "./BrandContext";
+import HomepagePreview from "./previews/HomepagePreview";
+import GalleryPreview from "./previews/GalleryPreview";
+import ArtistPreview from "./previews/ArtistPreview";
+import ComponentPreview from "./previews/ComponentPreview";
+import { BrandProvider, useBrand, UIProvider, useUIContext } from "./BrandContext";
 import { themes } from "./brandguide";
 import {
   FontToken,
@@ -27,6 +27,7 @@ import {
 import { ExportTab } from "./tabs/export-tab.component";
 import { ColorsTab } from "./tabs/colors-tab.component";
 import { TypographyTab } from "./tabs/typography-tab.component";
+import { InteractionTab } from "./tabs/interaction-tab.component";
 import { BrandContextDebugPanel } from "./components/BrandContextDebugPanel";
 
 /* -------------------------------------------------------------------------------------------------
@@ -36,7 +37,9 @@ import { BrandContextDebugPanel } from "./components/BrandContextDebugPanel";
 export default function BlueprintPage() {
   return (
     <BrandProvider initialThemes={themes} initialThemeKey="default">
-      <PageContent />
+      <UIProvider initialTab="colors">
+        <PageContent />
+      </UIProvider>
     </BrandProvider>
   );
 }
@@ -49,14 +52,31 @@ function PageContent() {
     brand
   } = useBrand();
 
+  const { activeTab } = useUIContext();
+
   /* ──────────────────────────────────────────────────────────
    * Local state
    * ────────────────────────────────────────────────────────*/
   const [previewType, setPreviewType] = useState<'saas' | 'gallery' | 'artist' | 'components'>('saas');
 
   // wizard steps (simple array so we can step fwd/backwards)
-  const steps = ["Preset", "Colors", "Typography", "Icons", "Export"] as const;
+  const steps = ["Preset", "Colors", "Typography", "Interaction", "Export"] as const;
   const [currentStep, setCurrentStep] = useState<number>(0);
+
+  // Listen for activeTab changes from UI context and update currentStep
+  useEffect(() => {
+    const tabToStepMap: Record<string, number> = {
+      'preset': 0,
+      'colors': 1,
+      'typography': 2,
+      'interaction': 3,
+      'export': 4
+    };
+
+    if (activeTab && tabToStepMap[activeTab] !== undefined) {
+      setCurrentStep(tabToStepMap[activeTab]);
+    }
+  }, [activeTab]);
 
   /* ──────────────────────────────────────────────────────────
    * Font pre‑loading (Google Fonts)
@@ -196,10 +216,10 @@ function PageContent() {
               transformOrigin: 'top center'
             }}
           >
-            {previewType === 'saas' ? <HomepagePreview /> : 
-             previewType === 'gallery' ? <GalleryPreview /> : 
-             previewType === 'artist' ? <ArtistPreview /> : 
-             <ComponentPreview />}
+            {previewType === 'saas' ? <HomepagePreview /> :
+              previewType === 'gallery' ? <GalleryPreview /> :
+                previewType === 'artist' ? <ArtistPreview /> :
+                  <ComponentPreview />}
           </div>
         </div>
 
@@ -220,6 +240,8 @@ function PageContent() {
             <ColorsTab activeThemeKey={activeThemeKey} />
           ) : currentStep === 2 ? (
             <TypographyTab activeThemeKey={activeThemeKey} />
+          ) : currentStep === 3 ? (
+            <InteractionTab activeThemeKey={activeThemeKey} />
           ) : currentStep === 4 ? (
             <ExportTab activeThemeKey={activeThemeKey} />
           ) : (
@@ -292,13 +314,13 @@ function ThemeChooser({
             const displayName = prettify(key);
             const importantColors = getMostImportantColors(th.colors);
             const themeFonts = getThemeFonts(th.fonts);
-            
+
             // Better logic for finding heading and body fonts
-            const headingFont = th.fonts?.find(f => 
+            const headingFont = th.fonts?.find(f =>
               f.roles?.some(r => ['heading', 'display', 'h1', 'h2', 'h3'].includes(r))
             )?.family || th.fonts?.[0]?.family;
-            
-            const bodyFont = th.fonts?.find(f => 
+
+            const bodyFont = th.fonts?.find(f =>
               f.roles?.some(r => ['body', 'p', 'default', 'sans'].includes(r))
             )?.family || th.fonts?.find(f => !f.roles?.some(r => ['heading', 'display', 'h1', 'h2', 'h3', 'code', 'mono'].includes(r)))?.family || th.fonts?.[0]?.family;
 
@@ -318,9 +340,8 @@ function ThemeChooser({
               <Card
                 key={key}
                 onClick={() => onThemeSelect(key)}
-                className={`group relative cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md ${
-                  activeKey === key ? 'ring-1 ring-primary/40 bg-accent/30 border-primary/20 shadow-lg' : 'hover:bg-accent/20'
-                }`}
+                className={`group relative cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md ${activeKey === key ? 'ring-1 ring-primary/40 bg-accent/30 border-primary/20 shadow-lg' : 'hover:bg-accent/20'
+                  }`}
                 style={{ fontFamily: bodyFont || 'inherit' }}
               >
                 <CardContent className="p-4">
@@ -339,9 +360,9 @@ function ThemeChooser({
                           ))}
                         </div>
                         <div>
-                          <h5 
-                            className="text-foreground" 
-                            style={{ 
+                          <h5
+                            className="text-foreground"
+                            style={{
                               fontFamily: `${headingFont ? headingFont.split(',')[0].replace(/['"]/g, '').trim() : 'sans-serif'}, sans-serif !important`,
                               fontWeight: '600 !important',
                               fontSize: '1rem !important',
@@ -351,9 +372,9 @@ function ThemeChooser({
                           >
                             {displayName}
                           </h5>
-                          <p 
+                          <p
                             className="text-sm text-muted-foreground"
-                            style={{ 
+                            style={{
                               fontFamily: `${bodyFont ? bodyFont.split(',')[0].replace(/['"]/g, '').trim() : 'sans-serif'}, sans-serif !important`,
                               fontSize: '0.875rem !important'
                             }}
@@ -366,7 +387,7 @@ function ThemeChooser({
 
                     {/* Font sample row */}
                     {themeFonts.length > 0 && (
-                      <div 
+                      <div
                         className="text-xs font-normal text-muted-foreground truncate"
                         style={{ fontSize: '0.75rem' }}
                       >
@@ -374,7 +395,7 @@ function ThemeChooser({
                           <span key={idx}>
                             {idx > 0 && <span className="mx-2 opacity-30">·</span>}
                             <span
-                              style={{ 
+                              style={{
                                 fontFamily: f.family,
                                 fontWeight: 400
                               }}

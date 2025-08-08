@@ -11,8 +11,8 @@ import { Separator } from "@/features/unorganized-components/ui/separator";
 import { Avatar, AvatarFallback } from "@/features/unorganized-components/ui/avatar";
 import { Menu, ListFilter } from "lucide-react";
 import { cn } from "@/features/unorganized-utils/utils";
-import { useBrand } from "./BrandContext";
-import { FontToken } from "./brand-utils";
+import { useBrand } from "../BrandContext";
+import { FontToken } from "../brand-utils";
 
 const categories = ["All", "Abstract", "Landscape", "Portrait", "Nature"];
 
@@ -44,7 +44,7 @@ function CategoryFilters({
   return (
     <Card className={cn("border-0 shadow-none bg-transparent p-0", className)} data-slot="card">
       <CardHeader className="p-0 pb-6">
- 
+
       </CardHeader>
       <CardContent className="p-0">
         <ul className="space-y-2">
@@ -58,8 +58,8 @@ function CategoryFilters({
                 }}
                 className={cn(
                   "w-full justify-start h-auto px-3 py-2 capitalize text-base transition-all duration-200 rounded-md",
-                  selectedCategory === cat 
-                    ? "text-foreground font-semibold" 
+                  selectedCategory === cat
+                    ? "text-foreground font-semibold"
                     : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
                 )}
                 style={getRoleStyle('nav', selectedCategory === cat ? '600' : '400')}
@@ -75,16 +75,16 @@ function CategoryFilters({
 }
 
 // Smart Image component that automatically handles aspect ratios and responsive sizing
-function SmartImage({ 
-  src, 
-  alt, 
+function SmartImage({
+  src,
+  alt,
   category,
   title,
   price,
   year
-}: { 
-  src: string; 
-  alt: string; 
+}: {
+  src: string;
+  alt: string;
   category: string;
   title: string;
   price: string;
@@ -104,53 +104,53 @@ function SmartImage({
 
   const getResponsiveSize = () => {
     if (!imageDimensions) return { width: "w-full", height: "h-auto" };
-    
+
     const aspectRatio = imageDimensions.width / imageDimensions.height;
-    
+
     // Wide landscape images - let them be wider
     if (aspectRatio > 1.8) {
-      return { 
-        width: "w-full", 
-        height: "h-auto max-h-80", 
-        extraClasses: "sm:col-span-2" 
+      return {
+        width: "w-full",
+        height: "h-auto max-h-80",
+        extraClasses: "sm:col-span-2"
       };
     }
-    
+
     // Standard landscape
     if (aspectRatio > 1.2) {
-      return { 
-        width: "w-full", 
-        height: "h-auto", 
-        extraClasses: "md:col-span-2 xl:col-span-1" 
+      return {
+        width: "w-full",
+        height: "h-auto",
+        extraClasses: "md:col-span-2 xl:col-span-1"
       };
     }
-    
+
     // Portrait orientation - tall images
     if (aspectRatio < 0.7) {
-      return { 
-        width: "w-full", 
-        height: "h-auto", 
-        extraClasses: "sm:col-span-1 md:col-span-1" 
+      return {
+        width: "w-full",
+        height: "h-auto",
+        extraClasses: "sm:col-span-1 md:col-span-1"
       };
     }
-    
+
     // Square or nearly square
-    return { 
-      width: "w-full", 
-      height: "h-auto", 
-      extraClasses: "" 
+    return {
+      width: "w-full",
+      height: "h-auto",
+      extraClasses: ""
     };
   };
 
   const { width, height, extraClasses } = getResponsiveSize();
 
   return (
-    <div 
+    <div
       className={cn(
         "overflow-hidden group transition-all duration-300 break-inside-avoid mb-6 cursor-pointer",
         extraClasses
       )}
-      style={{ 
+      style={{
         opacity: isLoaded ? 1 : 0.7,
         transition: 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out'
       }}
@@ -170,19 +170,19 @@ function SmartImage({
           priority={false}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent via-60% to-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        
+
         {/* Metadata overlay */}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
           {/* Year - Top Left */}
           <div className="absolute top-4 left-4 text-white text-sm font-medium">
             {year}
           </div>
-          
+
           {/* Title - Bottom Left */}
           <div className="absolute bottom-4 left-4 text-white">
             <h3 className="text-lg font-semibold">{title}</h3>
           </div>
-          
+
           {/* Price - Bottom Right */}
           <div className="absolute bottom-4 right-4 text-white">
             <span className="text-lg font-semibold">{price}</span>
@@ -195,11 +195,11 @@ function SmartImage({
 
 export default function ArtistPreview() {
   const { brand, processedBrand, getFontWeightForRole, getFontSizeForRole } = useBrand();
-  
+
   // Force re-render when brand changes to ensure CSS variables are applied
   const [renderKey, setRenderKey] = React.useState(0);
   const [cssVariableUpdate, setCssVariableUpdate] = React.useState(0);
-  
+
   React.useEffect(() => {
     if (brand) {
       setRenderKey(prev => prev + 1);
@@ -210,7 +210,7 @@ export default function ArtistPreview() {
   React.useEffect(() => {
     if (processedBrand) {
       setCssVariableUpdate(prev => prev + 1);
-      
+
       // Force a style recalculation after a short delay
       setTimeout(() => {
         if (typeof window !== "undefined") {
@@ -235,7 +235,7 @@ export default function ArtistPreview() {
             needsRerender = true;
           }
         }
-        
+
         // Also watch for changes to the brand theme style element
         if (mutation.type === 'childList') {
           mutation.addedNodes.forEach((node) => {
@@ -247,7 +247,7 @@ export default function ArtistPreview() {
             }
           });
         }
-        
+
         // Watch for content changes in existing brand theme style element
         if (mutation.type === 'characterData') {
           const parentElement = mutation.target.parentElement;
@@ -256,7 +256,7 @@ export default function ArtistPreview() {
           }
         }
       });
-      
+
       if (needsRerender) {
         setCssVariableUpdate(prev => prev + 1);
         // Small delay to ensure CSS changes are fully applied
@@ -265,20 +265,20 @@ export default function ArtistPreview() {
         }, 100);
       }
     });
-    
+
     // Observe changes to document.documentElement style attribute
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['style']
     });
-    
+
     // Observe changes to document.head for style element additions/removals
     observer.observe(document.head, {
       childList: true,
       subtree: true,
       characterData: true
     });
-    
+
     return () => {
       observer.disconnect();
     };
@@ -383,7 +383,7 @@ export default function ArtistPreview() {
   // Helper function to get role-based font and size styles
   const getRoleStyle = (role: string, fallbackWeight: string = '400') => {
     // Get the assigned font for this role
-    const assignedFont = brand?.fonts?.find(font => 
+    const assignedFont = brand?.fonts?.find(font =>
       font.roles?.includes(role)
     );
 
@@ -402,7 +402,7 @@ export default function ArtistPreview() {
     const fontSize = `${TAILWIND_FONT_SIZES[sizeKey] || 1}rem`;
 
     // Get font weight
-    const fontWeight = assignedFont && getFontWeightForRole ? 
+    const fontWeight = assignedFont && getFontWeightForRole ?
       assignedFont.weights?.[getFontWeightForRole(assignedFont.name, role) || 'regular'] || fallbackWeight
       : fallbackWeight;
 
@@ -419,17 +419,17 @@ export default function ArtistPreview() {
 
   const filteredImages = galleryImages.filter((img) => {
     const categoryMatch = selectedCategory === "All" || img.category === selectedCategory;
-    const availabilityMatch = availabilityFilter === "All" || 
+    const availabilityMatch = availabilityFilter === "All" ||
       (availabilityFilter === "Available" && img.available) ||
       (availabilityFilter === "Sold" && !img.available);
     return categoryMatch && availabilityMatch;
   });
 
   return (
-    <div 
+    <div
       key={`${renderKey}-${cssVariableUpdate}`}
       className="flex flex-col min-h-screen bg-background text-foreground"
-      style={{ 
+      style={{
         // Force CSS variable re-evaluation by adding a custom property
         '--force-update': cssVariableUpdate as any,
         fontFamily: bodyFont || 'inherit'
@@ -524,9 +524,9 @@ export default function ArtistPreview() {
         <div className="flex">
           <aside className="hidden lg:block w-72 border-r border-border">
             <div className="py-12 px-8">
-              <CategoryFilters 
-                selectedCategory={selectedCategory} 
-                setSelectedCategory={setSelectedCategory} 
+              <CategoryFilters
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
                 getRoleStyle={getRoleStyle}
               />
             </div>
@@ -534,13 +534,13 @@ export default function ArtistPreview() {
 
           <main className="flex-1">
             <section id="about" className="pt-16 pb-20 md:pt-24 md:pb-28 px-12">
-              <h1 
+              <h1
                 className="text-5xl md:text-7xl text-foreground max-w-3xl"
                 style={getRoleStyle('h1', '700')}
               >
                 Hi there.
               </h1>
-              <p 
+              <p
                 className="mt-4 max-w-2xl text-lg text-muted-foreground"
                 style={getRoleStyle('p', '400')}
               >
@@ -551,7 +551,7 @@ export default function ArtistPreview() {
 
             <section id="gallery" className="px-12 pb-24">
               <div className="flex justify-between items-baseline mb-8">
-                <h2 
+                <h2
                   className="text-3xl font-bold capitalize text-foreground"
                   style={getRoleStyle('h2', '700')}
                 >
@@ -600,11 +600,11 @@ export default function ArtistPreview() {
 
               <div className="columns-1 sm:columns-2 xl:columns-2 gap-6">
                 {filteredImages.map((img) => (
-                  <SmartImage 
-                    key={img.src} 
-                    src={img.src} 
-                    alt={`Artwork by Aurora Hart - ${img.category}`} 
-                    category={img.category} 
+                  <SmartImage
+                    key={img.src}
+                    src={img.src}
+                    alt={`Artwork by Aurora Hart - ${img.category}`}
+                    category={img.category}
                     title={img.title}
                     price={img.price}
                     year={img.year}
@@ -616,12 +616,12 @@ export default function ArtistPreview() {
           </main>
         </div>
       </div>
-      
+
       <Separator />
-      
+
       <footer id="contact" className="py-16 px-12">
         <div className="text-center space-y-4">
-          <p 
+          <p
             className="text-sm text-muted-foreground"
             style={getRoleStyle('footer', '400')}
           >

@@ -1,7 +1,7 @@
 import * as React from "react";
-import { useBrand } from "./BrandContext";
-import { AllComponentsShowcase } from "../brandguide/components/all-components-showcase.component";
-import { FontToken } from "./brand-utils";
+import { useBrand } from "../BrandContext";
+import { AllComponentsShowcase } from "../../brandguide/components/all-components-showcase.component";
+import { FontToken } from "../brand-utils";
 import { Badge } from "@/features/unorganized-components/ui/badge";
 import { Separator } from "@/features/unorganized-components/ui/separator";
 import { TooltipProvider } from "@/features/unorganized-components/ui/tooltip";
@@ -13,7 +13,7 @@ export default function ComponentPreview() {
   // Force re-render when brand changes to ensure CSS variables are applied
   const [renderKey, setRenderKey] = React.useState(0);
   const [cssVariableUpdate, setCssVariableUpdate] = React.useState(0);
-  
+
   React.useEffect(() => {
     if (brand) {
       setRenderKey(prev => prev + 1);
@@ -24,7 +24,7 @@ export default function ComponentPreview() {
   React.useEffect(() => {
     if (processedBrand) {
       setCssVariableUpdate(prev => prev + 1);
-      
+
       // Force a style recalculation after a short delay
       setTimeout(() => {
         if (typeof window !== "undefined") {
@@ -49,7 +49,7 @@ export default function ComponentPreview() {
             needsRerender = true;
           }
         }
-        
+
         // Watch for changes to the brand theme style element
         if (mutation.type === 'childList') {
           mutation.addedNodes.forEach((node) => {
@@ -61,7 +61,7 @@ export default function ComponentPreview() {
             }
           });
         }
-        
+
         // Watch for content changes in existing brand theme style element
         if (mutation.type === 'characterData') {
           const parentElement = mutation.target.parentElement;
@@ -70,7 +70,7 @@ export default function ComponentPreview() {
           }
         }
       });
-      
+
       if (needsRerender) {
         setCssVariableUpdate(prev => prev + 1);
         setTimeout(() => {
@@ -78,20 +78,20 @@ export default function ComponentPreview() {
         }, 100);
       }
     });
-    
+
     // Observe changes to document.documentElement style attribute
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['style']
     });
-    
+
     // Observe changes to document.head for style element additions/removals
     observer.observe(document.head, {
       childList: true,
       subtree: true,
       characterData: true
     });
-    
+
     return () => {
       observer.disconnect();
     };
@@ -147,7 +147,7 @@ export default function ComponentPreview() {
 
   // Role-based styling helper (consistent with HomepagePreview)
   const getRoleStyle = (role: string, fallbackWeight: string = '400') => {
-    const assignedFont = brand?.fonts?.find(font => 
+    const assignedFont = brand?.fonts?.find(font =>
       font.roles?.includes(role)
     );
 
@@ -188,14 +188,14 @@ export default function ComponentPreview() {
   }
 
   // Count total components for stats
-  const componentCount = Object.keys(import("../brandguide/components/component-token-map")).length || 50;
+  const componentCount = Object.keys(import("../../brandguide/components/component-token-map")).length || 50;
   const variantCount = componentCount * 3; // Rough estimate of variants
 
   return (
-    <div 
-      key={`${renderKey}-${cssVariableUpdate}`} 
+    <div
+      key={`${renderKey}-${cssVariableUpdate}`}
       className="w-full h-full bg-background text-foreground overflow-y-auto"
-      style={{ 
+      style={{
         '--force-update': cssVariableUpdate as any,
         fontFamily: bodyFont || 'inherit'
       } as React.CSSProperties}
@@ -206,11 +206,11 @@ export default function ComponentPreview() {
           <section className="py-20 pb-12 px-8 text-center bg-gradient-to-b from-background to-muted/30">
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center justify-center space-x-2 mb-6">
-                <Badge 
+                <Badge
                   variant="outline"
                   className="border-opacity-20 bg-opacity-10"
-                  style={{ 
-                    borderColor: themeColors.info, 
+                  style={{
+                    borderColor: themeColors.info,
                     backgroundColor: `${themeColors.info}20`,
                     color: themeColors.info,
                     ...getRoleStyle('badge', '500')
@@ -219,16 +219,16 @@ export default function ComponentPreview() {
                   ✨ Live Theme Preview
                 </Badge>
               </div>
-              
-              <h1 
+
+              <h1
                 className="text-5xl font-bold mb-6 leading-tight"
                 style={getRoleStyle('h1', '800')}
               >
                 Complete Component
                 <span className="text-primary"> Design System</span>
               </h1>
-              
-              <p 
+
+              <p
                 className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8"
                 style={getRoleStyle('p', '400')}
               >
@@ -238,7 +238,7 @@ export default function ComponentPreview() {
             </div>
           </section>
 
-    
+
 
           <Separator />
 
@@ -246,21 +246,21 @@ export default function ComponentPreview() {
           {/* Main Component Showcase */}
           <section className="py-20">
             <div className="px-8">
-   
-              
+
+
               <AllComponentsShowcase />
             </div>
           </section>
 
-       
+
           {/* Footer */}
           <footer className="py-8 px-8 border-t border-border bg-muted/20">
             <div className="max-w-6xl mx-auto text-center">
-              <p 
+              <p
                 className="text-sm text-muted-foreground"
                 style={getRoleStyle('caption', '400')}
               >
-                This showcase demonstrates all components with real-time theme switching and live styling updates. 
+                This showcase demonstrates all components with real-time theme switching and live styling updates.
                 Components automatically adapt to your brand colors, fonts, and animation preferences.
               </p>
             </div>

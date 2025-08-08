@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, ReactNode, useState, useCallback, useRef } from "react";
+import React, { createContext, useContext, useReducer, ReactNode, useCallback, useMemo, useEffect, useRef, useState } from "react";
 
 import nextgenBrand from "./brandguide"; // nextgenBrand is the default export
 import {
@@ -22,6 +22,7 @@ import {
   influenceHierarchy
 } from "./brand-utils";
 import { converter, formatHex, parseHex } from 'culori'; // Import from culori
+import { animationPresets } from './animation-presets';
 
 // Enhanced types for context
 // EnrichedShade's structure needs to be compatible with how it's used and what it represents.
@@ -85,6 +86,8 @@ interface BrandContextType {
   // Font size assignment functions
   updateFontSizeAssignment: (fontName: string, role: string, sizeValue: number) => void;
   getFontSizeForRole: (fontName: string, role: string) => number | null;
+  // Animation config functions
+  updateAnimationConfig: (presetName: string) => void;
 }
 
 const BrandContext = createContext<BrandContextType | undefined>(undefined);
@@ -119,7 +122,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
   // Define committedBrand and brandToDisplay here, before useEffect
   const committedBrand = history[currentHistoryIndex] || null;
   const brandToDisplay = liveBrand || committedBrand || currentThemeData;
-  
+
   console.log(`[BrandProvider] 📊 Brand state recalculated:`, {
     liveBrandExists: !!liveBrand,
     committedBrandExists: !!committedBrand,
@@ -263,7 +266,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
   const regenerateThemeCssVariables = useCallback((brandState: Brand): Brand => {
     // Create a new themeCssVariables object based on current role assignments
     const newThemeCssVariables: ThemeCssVars = { ...brandState.themeCssVariables };
-    
+
     // Helper function to find color assigned to a role
     const getColorVariableForRole = (role: Role): string | undefined => {
       const assignedColor = brandState.colors.find(color => color.roles?.includes(role));
@@ -272,10 +275,10 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       }
       return undefined;
     };
-    
+
     // Update all role mappings based on current assignments
     const roleKeys = Object.keys(newThemeCssVariables) as (keyof ThemeCssVars)[];
-    
+
     roleKeys.forEach(roleKey => {
       const role = roleKey as Role;
       if (influenceHierarchy[role] !== undefined) {
@@ -285,7 +288,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         }
       }
     });
-    
+
     return {
       ...brandState,
       themeCssVariables: newThemeCssVariables
@@ -301,7 +304,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     console.log(`[updateRoleAssignment] Target color variable name: "${targetColorVariableName}"`);
 
     // Debug: Log current chart role assignments before any changes
-    const chartRolesBefore = brandToUpdate.colors.filter(color => 
+    const chartRolesBefore = brandToUpdate.colors.filter(color =>
       color.roles?.some(role => role.startsWith('chart-'))
     ).map(color => ({
       color: color.name,
@@ -309,18 +312,18 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       chartRoles: color.roles?.filter(role => role.startsWith('chart-')),
       allRoles: color.roles
     }));
-    
+
     if (chartRolesBefore.length > 0) {
       console.log(`[updateRoleAssignment] Chart colors BEFORE updating "${roleToUpdate}":`, chartRolesBefore);
     }
 
     // Find the target color (where we want to assign the role)
     const targetColor = targetColorVariableName ? brandToUpdate.colors.find(color => color.variableName === targetColorVariableName) : null;
-    
+
     if (targetColor) {
       console.log(`[updateRoleAssignment] Target color found: "${targetColor.name}" (${targetColor.variableName})`);
       console.log(`[updateRoleAssignment] Target color current roles:`, targetColor.roles);
-      
+
       // Check if target color is a chart color
       const isTargetChartColor = targetColor.roles?.some(role => role.startsWith('chart-'));
       if (isTargetChartColor) {
@@ -331,10 +334,10 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       console.warn(`[updateRoleAssignment] Target color with variable name "${targetColorVariableName}" NOT FOUND!`);
       console.log(`[updateRoleAssignment] Available variable names:`, brandToUpdate.colors.map(c => ({ name: c.name, variableName: c.variableName })));
     }
-    
+
     // Find the current owner of the role
     const currentRoleOwner = brandToUpdate.colors.find(color => color.roles?.includes(roleToUpdate));
-    
+
     if (currentRoleOwner) {
       console.log(`[updateRoleAssignment] Current owner of role "${roleToUpdate}": "${currentRoleOwner.name}" (${currentRoleOwner.variableName})`);
       console.log(`[updateRoleAssignment] Current owner roles:`, currentRoleOwner.roles);
@@ -344,7 +347,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
     if (targetColor && currentRoleOwner !== targetColor) {
       console.log(`[updateRoleAssignment] Proceeding with role reassignment...`);
-      
+
       // Clean role reassignment without touching hierarchy or other properties
       const updatedColors = brandToUpdate.colors.map(color => {
         if (color === currentRoleOwner) {
@@ -380,7 +383,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       };
 
       // Debug: Log chart role assignments after role reassignment but before CSS regeneration
-      const chartRolesAfter = newBrandState.colors.filter(color => 
+      const chartRolesAfter = newBrandState.colors.filter(color =>
         color.roles?.some(role => role.startsWith('chart-'))
       ).map(color => ({
         color: color.name,
@@ -388,10 +391,10 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         chartRoles: color.roles?.filter(role => role.startsWith('chart-')),
         allRoles: color.roles
       }));
-      
+
       if (chartRolesAfter.length > 0) {
         console.log(`[updateRoleAssignment] Chart colors AFTER updating "${roleToUpdate}":`, chartRolesAfter);
-        
+
         // Check if any ACTUAL chart roles changed (only compare chart-specific roles, not all roles)
         const chartRolesActuallyChanged = (() => {
           // Create simplified comparison objects with only chart roles
@@ -403,15 +406,15 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
             variableName: c.variableName,
             chartRoles: c.chartRoles
           }));
-          
+
           return JSON.stringify(beforeComparison) !== JSON.stringify(afterComparison);
         })();
-        
+
         if (chartRolesActuallyChanged) {
           console.error(`[updateRoleAssignment] ❌ CHART ROLES UNEXPECTEDLY CHANGED when updating "${roleToUpdate}"!`);
           console.error(`[updateRoleAssignment] BEFORE:`, chartRolesBefore);
           console.error(`[updateRoleAssignment] AFTER:`, chartRolesAfter);
-          
+
           // Find specific chart role changes (only report actual chart role changes)
           chartRolesAfter.forEach(afterColor => {
             const beforeColor = chartRolesBefore.find(bc => bc.variableName === afterColor.variableName);
@@ -437,34 +440,34 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
       // Regenerate theme CSS variables and apply both updates atomically
       const brandWithUpdatedThemeCss = regenerateThemeCssVariables(newBrandState);
-      
+
       // Single state update with both role assignment and CSS regeneration
       setLiveBrand(brandWithUpdatedThemeCss);
-      
+
       // Generate and apply complete CSS with atomic update to prevent flickering
       if (typeof window !== "undefined") {
         // Set the flag to prevent main useEffect from interfering
         isUpdatingCssRef.current = true;
-        
+
         requestAnimationFrame(() => {
           const globalCss = generateGlobalCss(brandWithUpdatedThemeCss);
           const existingStyleElement = document.querySelector('style[data-brand-theme="true"]');
-          
+
           if (existingStyleElement) {
             // Use atomic update to prevent flickering
             const tempStyleElement = document.createElement('style');
             tempStyleElement.setAttribute('data-brand-theme-temp', 'true');
             tempStyleElement.setAttribute('type', 'text/css');
             tempStyleElement.textContent = globalCss;
-            
+
             // Insert temporary element and swap atomically
             existingStyleElement.parentNode?.insertBefore(tempStyleElement, existingStyleElement.nextSibling);
-            
+
             Promise.resolve().then(() => {
               existingStyleElement.remove();
               tempStyleElement.removeAttribute('data-brand-theme-temp');
               tempStyleElement.setAttribute('data-brand-theme', 'true');
-              
+
               // Clear the flag after update is complete
               setTimeout(() => {
                 isUpdatingCssRef.current = false;
@@ -475,7 +478,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
             styleElement.setAttribute('data-brand-theme', 'true');
             styleElement.textContent = globalCss;
             document.head.appendChild(styleElement);
-            
+
             // Clear the flag after update is complete
             setTimeout(() => {
               isUpdatingCssRef.current = false;
@@ -483,13 +486,13 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           }
         });
       }
-      
+
       console.log(`[updateRoleAssignment] ==== ROLE ASSIGNMENT COMPLETE ====`);
     } else if (!targetColor) {
       // Role unassignment: remove from current owner
       if (currentRoleOwner) {
         console.log(`[updateRoleAssignment] Proceeding with role unassignment...`);
-        
+
         const updatedColors = brandToUpdate.colors.map(color => {
           if (color === currentRoleOwner) {
             const newRoles = color.roles?.filter(role => role !== roleToUpdate) || [];
@@ -508,7 +511,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         };
 
         // Debug: Log chart role assignments after unassignment
-        const chartRolesAfter = newBrandState.colors.filter(color => 
+        const chartRolesAfter = newBrandState.colors.filter(color =>
           color.roles?.some(role => role.startsWith('chart-'))
         ).map(color => ({
           color: color.name,
@@ -516,38 +519,38 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           chartRoles: color.roles?.filter(role => role.startsWith('chart-')),
           allRoles: color.roles
         }));
-        
+
         if (chartRolesAfter.length > 0) {
           console.log(`[updateRoleAssignment] Chart colors after UNASSIGNING "${roleToUpdate}":`, chartRolesAfter);
         }
 
         const brandWithUpdatedThemeCss = regenerateThemeCssVariables(newBrandState);
         setLiveBrand(brandWithUpdatedThemeCss);
-        
+
         // Generate and apply complete CSS with atomic update to prevent flickering
         if (typeof window !== "undefined") {
           // Set the flag to prevent main useEffect from interfering
           isUpdatingCssRef.current = true;
-          
+
           requestAnimationFrame(() => {
             const globalCss = generateGlobalCss(brandWithUpdatedThemeCss);
             const existingStyleElement = document.querySelector('style[data-brand-theme="true"]');
-            
+
             if (existingStyleElement) {
               // Use atomic update to prevent flickering
               const tempStyleElement = document.createElement('style');
               tempStyleElement.setAttribute('data-brand-theme-temp', 'true');
               tempStyleElement.setAttribute('type', 'text/css');
               tempStyleElement.textContent = globalCss;
-              
+
               // Insert temporary element and swap atomically
               existingStyleElement.parentNode?.insertBefore(tempStyleElement, existingStyleElement.nextSibling);
-              
+
               Promise.resolve().then(() => {
                 existingStyleElement.remove();
                 tempStyleElement.removeAttribute('data-brand-theme-temp');
                 tempStyleElement.setAttribute('data-brand-theme', 'true');
-                
+
                 // Clear the flag after update is complete
                 setTimeout(() => {
                   isUpdatingCssRef.current = false;
@@ -558,7 +561,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
               styleElement.setAttribute('data-brand-theme', 'true');
               styleElement.textContent = globalCss;
               document.head.appendChild(styleElement);
-              
+
               // Clear the flag after update is complete
               setTimeout(() => {
                 isUpdatingCssRef.current = false;
@@ -566,7 +569,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
             }
           });
         }
-        
+
         console.log(`[updateRoleAssignment] ==== ROLE UNASSIGNMENT COMPLETE ====`);
       }
     } else {
@@ -587,7 +590,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
     if (targetFont && currentRoleOwner !== targetFont) {
       console.log(`[updateFontRoleAssignment] Proceeding with font role reassignment...`);
-      
+
       const updatedFonts = brandToUpdate.fonts.map(font => {
         if (font === currentRoleOwner) {
           // Remove role from current owner
@@ -609,13 +612,13 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
       const newBrandState = { ...brandToUpdate, fonts: updatedFonts };
       setLiveBrand(newBrandState);
-      
+
       console.log(`[updateFontRoleAssignment] Font role assignment complete`);
     } else if (!targetFont) {
       // Role unassignment: remove from current owner
       if (currentRoleOwner) {
         console.log(`[updateFontRoleAssignment] Proceeding with font role unassignment...`);
-        
+
         const updatedFonts = brandToUpdate.fonts.map(font => {
           if (font === currentRoleOwner) {
             const newRoles = font.roles?.filter(role => role !== roleToUpdate) || [];
@@ -627,7 +630,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
         const newBrandState = { ...brandToUpdate, fonts: updatedFonts };
         setLiveBrand(newBrandState);
-        
+
         console.log(`[updateFontRoleAssignment] Font role unassignment complete`);
       }
     } else {
@@ -679,11 +682,11 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     };
 
     setLiveBrand(newBrandState);
-    
+
     if (onFontAdded) {
       onFontAdded(name);
     }
-    
+
     console.log(`[addNewFont] Font "${name}" added successfully`);
   }, [liveBrand, history, currentHistoryIndex, currentThemeData]);
 
@@ -697,7 +700,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     const updatedFonts = brandToUpdate.fonts.map(font => {
       if (font.name === fontName) {
         const newFontWeights = { ...font.fontWeights };
-        
+
         // Check if the weight exists for this font
         if (font.weights && Object.keys(font.weights).includes(weightName)) {
           newFontWeights[role] = weightName;
@@ -706,14 +709,14 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           console.warn(`[updateFontWeightAssignment] Weight "${weightName}" not available for font "${fontName}"`);
           return font;
         }
-        
+
         return { ...font, fontWeights: newFontWeights };
       }
       return font;
     });
 
     const newBrandState = { ...brandToUpdate, fonts: updatedFonts };
-    
+
     // Update history properly like other functions do
     setHistory(prevHistory => {
       const newHistorySlice = prevHistory.slice(0, currentHistoryIndex + 1);
@@ -722,11 +725,11 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     const newIndex = currentHistoryIndex + 1;
     setCurrentHistoryIndex(newIndex);
     setLiveBrand(newBrandState);
-    
+
     // Force immediate CSS variable update for the font weight
     if (typeof window !== "undefined") {
       console.log(`[updateFontWeightAssignment] 🎯 Forcing immediate CSS update for font weight...`);
-      
+
       // Find the font and get the weight value
       const targetFont = newBrandState.fonts.find(f => f.name === fontName);
       if (targetFont && targetFont.weights && targetFont.weights[weightName]) {
@@ -735,12 +738,12 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         rootStyle.setProperty(`--font-weight-${role}`, weightValue.toString());
         console.log(`[updateFontWeightAssignment] 🎯 Force updated CSS: --font-weight-${role} = ${weightValue}`);
       }
-      
+
       // Also regenerate and inject complete CSS for comprehensive update
       const completeCss = generateGlobalCss(newBrandState);
       const existingBrandStyleElement = document.querySelector('style[data-brand-theme]');
       let brandStyleElement = existingBrandStyleElement as HTMLStyleElement;
-      
+
       if (!brandStyleElement) {
         brandStyleElement = document.createElement('style');
         brandStyleElement.setAttribute('data-brand-theme', 'true');
@@ -748,25 +751,25 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         document.head.appendChild(brandStyleElement);
         console.log('[updateFontWeightAssignment] 🎨 Created new brand theme style element');
       }
-      
+
       // Use atomic update to prevent flickering
       requestAnimationFrame(() => {
         // Set the flag to prevent main useEffect from interfering
         isUpdatingCssRef.current = true;
-        
+
         const tempStyleElement = document.createElement('style');
         tempStyleElement.setAttribute('data-brand-theme-temp', 'true');
         tempStyleElement.setAttribute('type', 'text/css');
         tempStyleElement.textContent = completeCss;
-        
+
         brandStyleElement.parentNode?.insertBefore(tempStyleElement, brandStyleElement.nextSibling);
-        
+
         Promise.resolve().then(() => {
           brandStyleElement.remove();
           tempStyleElement.removeAttribute('data-brand-theme-temp');
           tempStyleElement.setAttribute('data-brand-theme', 'true');
           console.log('[updateFontWeightAssignment] 🎨 Applied complete CSS for font weight update with atomic update');
-          
+
           // Clear the flag after update is complete
           setTimeout(() => {
             isUpdatingCssRef.current = false;
@@ -774,7 +777,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         });
       });
     }
-    
+
     console.log(`[updateFontWeightAssignment] Font weight assignment complete and added to history`);
   }, [liveBrand, history, currentHistoryIndex, currentThemeData]);
 
@@ -798,18 +801,18 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     const updatedFonts = brandToUpdate.fonts.map(font => {
       if (font.name === fontName) {
         const newFontSizes = { ...font.fontSizes };
-        
+
         // Always allow assignment of font sizes - no validation needed for now
         newFontSizes[role] = sizeValue;
         console.log(`[updateFontSizeAssignment] Updated size for role "${role}" to "${sizeValue}" for font "${fontName}"`);
-        
+
         return { ...font, fontSizes: newFontSizes };
       }
       return font;
     });
 
     const newBrandState = { ...brandToUpdate, fonts: updatedFonts };
-    
+
     // Update history properly like other functions do
     setHistory(prevHistory => {
       const newHistorySlice = prevHistory.slice(0, currentHistoryIndex + 1);
@@ -818,11 +821,11 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     const newIndex = currentHistoryIndex + 1;
     setCurrentHistoryIndex(newIndex);
     setLiveBrand(newBrandState);
-    
+
     // Force immediate CSS variable update for the font size
     if (typeof window !== "undefined") {
       console.log(`[updateFontSizeAssignment] 🎯 Forcing immediate CSS update for font size...`);
-      
+
       // Find the font and get the size value
       const targetFont = newBrandState.fonts.find(f => f.name === fontName);
       if (targetFont && targetFont.fontSizes && targetFont.fontSizes[role]) {
@@ -831,12 +834,12 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         rootStyle.setProperty(`--font-size-${role}`, `${fontSizeValue}rem`);
         console.log(`[updateFontSizeAssignment] 🎯 Force updated CSS: --font-size-${role} = ${fontSizeValue}rem`);
       }
-      
+
       // Also regenerate and inject complete CSS for comprehensive update
       const completeCss = generateGlobalCss(newBrandState);
       const existingBrandStyleElement = document.querySelector('style[data-brand-theme]');
       let brandStyleElement = existingBrandStyleElement as HTMLStyleElement;
-      
+
       if (!brandStyleElement) {
         brandStyleElement = document.createElement('style');
         brandStyleElement.setAttribute('data-brand-theme', 'true');
@@ -844,25 +847,25 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         document.head.appendChild(brandStyleElement);
         console.log('[updateFontSizeAssignment] 🎨 Created new brand theme style element');
       }
-      
+
       // Use atomic update to prevent flickering
       requestAnimationFrame(() => {
         // Set the flag to prevent main useEffect from interfering
         isUpdatingCssRef.current = true;
-        
+
         const tempStyleElement = document.createElement('style');
         tempStyleElement.setAttribute('data-brand-theme-temp', 'true');
         tempStyleElement.setAttribute('type', 'text/css');
         tempStyleElement.textContent = completeCss;
-        
+
         brandStyleElement.parentNode?.insertBefore(tempStyleElement, brandStyleElement.nextSibling);
-        
+
         Promise.resolve().then(() => {
           brandStyleElement.remove();
           tempStyleElement.removeAttribute('data-brand-theme-temp');
           tempStyleElement.setAttribute('data-brand-theme', 'true');
           console.log('[updateFontSizeAssignment] 🎨 Applied complete CSS for font size update with atomic update');
-          
+
           // Clear the flag after update is complete
           setTimeout(() => {
             isUpdatingCssRef.current = false;
@@ -870,7 +873,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         });
       });
     }
-    
+
     console.log(`[updateFontSizeAssignment] Font size assignment complete and added to history`);
   }, [liveBrand, history, currentHistoryIndex, currentThemeData]);
 
@@ -884,6 +887,39 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     return font.fontSizes[role] || null;
   }, [liveBrand, history, currentHistoryIndex, currentThemeData]);
 
+  const updateAnimationConfig = useCallback(async (presetName: string) => {
+    const brandToUpdate = liveBrand || history[currentHistoryIndex] || currentThemeData;
+    if (!brandToUpdate) return;
+
+    try {
+      // Load the animation preset
+      const preset = await animationPresets[presetName as keyof typeof animationPresets]();
+
+      // Create updated brand with new animation config
+      const updatedBrand: Brand = {
+        ...brandToUpdate,
+        animationConfig: {
+          preset,
+          rootClassName: `${activeThemeKey}-${presetName}-theme`
+        }
+      };
+
+      // Update history
+      setHistory(prevHistory => {
+        const newHistorySlice = prevHistory.slice(0, currentHistoryIndex + 1);
+        return [...newHistorySlice, updatedBrand];
+      });
+
+      const newIndex = currentHistoryIndex + 1;
+      setCurrentHistoryIndex(newIndex);
+      setLiveBrand(updatedBrand);
+
+      console.log(`Updated animation config to: ${presetName}`);
+    } catch (error) {
+      console.error('Failed to update animation config:', error);
+    }
+  }, [liveBrand, history, currentHistoryIndex, currentThemeData, activeThemeKey]);
+
   const addNewColor = useCallback((name: string, hexColor: string, roles: Role[] = [], onColorAdded?: (colorName: string) => void) => {
     const brandToUpdate = liveBrand || history[currentHistoryIndex] || currentThemeData;
     if (!brandToUpdate) return;
@@ -891,7 +927,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     // Convert hex to OKLCH
     const oklchConverter = converter('oklch');
     const colorObj = parseHex(hexColor);
-    
+
     if (!colorObj) {
       console.error('Invalid hex color provided:', hexColor);
       return;
@@ -905,24 +941,24 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
     let { l = 0, c = 0, h = 0 } = converted;
     h = isNaN(h) ? 0 : h;
-    
+
     const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})` as OklchString;
-    
+
     // Generate unique name and variable name
     let finalName = name;
     let baseVariableName = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     let finalVariableName = baseVariableName;
-    
+
     // Check for existing names and generate unique ones if needed
     let nameCounter = 1;
     let variableCounter = 1;
-    
+
     // Find unique display name
     while (brandToUpdate.colors.find(color => color.name === finalName)) {
       finalName = `${name} ${nameCounter}`;
       nameCounter++;
     }
-    
+
     // Find unique variable name
     while (brandToUpdate.colors.find(color => color.variableName === finalVariableName)) {
       finalVariableName = `${baseVariableName}-${variableCounter}`;
@@ -955,9 +991,9 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     const newIndex = currentHistoryIndex + 1;
     setCurrentHistoryIndex(newIndex);
     setLiveBrand(newBrandState);
-    
+
     console.log(`Added new color: "${finalName}" with variable name: "${finalVariableName}"`);
-    
+
     // Call the callback with the final color name if provided
     if (onColorAdded) {
       onColorAdded(finalName);
@@ -977,13 +1013,13 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     if (!targetColor) {
       targetColor = brandToUpdate.colors.find(color => color.variableName === swatchName);
     }
-    
+
     if (targetColor) {
       console.log(`[handleRoleSwatchSelection] Found target color: "${targetColor.name}" with variable: "${targetColor.variableName}"`);
       console.log(`[handleRoleSwatchSelection] Current roles for target color:`, targetColor.roles);
-      
+
       // Show which color currently has this role before reassignment
-      const currentlyAssignedColor = brandToUpdate.colors.find(color => 
+      const currentlyAssignedColor = brandToUpdate.colors.find(color =>
         color.roles?.includes(role)
       );
       if (currentlyAssignedColor) {
@@ -1009,53 +1045,53 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     console.log(`[handleRoleDirectColorChange] Role: "${role}", New Hex: "${newHex}"`);
 
     // Find the currently assigned color token for this role
-    const currentlyAssignedColor = brandToUpdate.colors.find(color => 
+    const currentlyAssignedColor = brandToUpdate.colors.find(color =>
       color.roles?.includes(role)
     );
 
     if (currentlyAssignedColor) {
       console.log(`[handleRoleDirectColorChange] Current color for role "${role}": "${currentlyAssignedColor.name}" (${currentlyAssignedColor.variableName})`);
       console.log(`[handleRoleDirectColorChange] Current color roles:`, currentlyAssignedColor.roles);
-      
+
       // Check if this color is assigned to multiple roles
       const hasMultipleRoles = currentlyAssignedColor.roles && currentlyAssignedColor.roles.length > 1;
-      
+
       if (hasMultipleRoles) {
         console.log(`[handleRoleDirectColorChange] 🔄 Color "${currentlyAssignedColor.name}" is assigned to multiple roles: [${currentlyAssignedColor.roles.join(', ')}]`);
         console.log(`[handleRoleDirectColorChange] 🔄 Creating new color token to avoid affecting other roles`);
-        
+
         // Create a new color token for this role
         const oklchConverter = converter('oklch');
         const colorObj = parseHex(newHex);
-        
+
         if (colorObj) {
           const converted = oklchConverter(colorObj);
           if (converted) {
             let { l = 0, c = 0, h = 0 } = converted;
             h = isNaN(h) ? 0 : h;
-            
+
             const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})` as OklchString;
-            
+
             // Generate a unique name for the new color
             const baseName = `${role.charAt(0).toUpperCase() + role.slice(1)} Custom`;
             let finalName = baseName;
             let nameCounter = 1;
-            
+
             while (brandToUpdate.colors.find(color => color.name === finalName)) {
               finalName = `${baseName} ${nameCounter}`;
               nameCounter++;
             }
-            
+
             // Generate a unique variable name
             const baseVariableName = `${role}-custom`;
             let finalVariableName = baseVariableName;
             let variableCounter = 1;
-            
+
             while (brandToUpdate.colors.find(color => color.variableName === finalVariableName)) {
               finalVariableName = `${baseVariableName}-${variableCounter}`;
               variableCounter++;
             }
-            
+
             // Create the new color token
             const newColorToken: ColorToken = {
               name: finalName,
@@ -1067,9 +1103,9 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
               themeSteps: {},
               category: 'color',
             };
-            
+
             console.log(`[handleRoleDirectColorChange] 🎨 Creating new color token: "${finalName}" (${finalVariableName}) for role "${role}"`);
-            
+
             // Update the brand state: remove role from current color and add new color
             const updatedColors = brandToUpdate.colors.map(color => {
               if (color === currentlyAssignedColor) {
@@ -1078,12 +1114,12 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
               }
               return color;
             });
-            
+
             // Add the new color token
             updatedColors.push(newColorToken);
-            
+
             const newBrandState: Brand = { ...brandToUpdate, colors: updatedColors };
-            
+
             // Update history
             setHistory(prevHistory => {
               const newHistorySlice = prevHistory.slice(0, currentHistoryIndex + 1);
@@ -1092,24 +1128,24 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
             const newIndex = currentHistoryIndex + 1;
             setCurrentHistoryIndex(newIndex);
             setLiveBrand(newBrandState);
-            
+
             console.log(`[handleRoleDirectColorChange] ✅ Created new color token and updated brand state`);
-            
+
             // Force immediate CSS variable update for the role
             if (typeof window !== "undefined") {
               console.log(`[handleRoleDirectColorChange] 🎯 Generating complete CSS for color modification...`);
-              
+
               // Set the flag to prevent main useEffect from interfering
               isUpdatingCssRef.current = true;
-              
+
               // Generate and inject the complete CSS from brand-utils.ts immediately with atomic update
               requestAnimationFrame(() => {
                 const completeCss = generateGlobalCss(newBrandState);
-                
+
                 // Find existing brand theme style element or create new one
                 const existingBrandStyleElement = document.querySelector('style[data-brand-theme]');
                 let brandStyleElement = existingBrandStyleElement as HTMLStyleElement;
-                
+
                 if (!brandStyleElement) {
                   brandStyleElement = document.createElement('style');
                   brandStyleElement.setAttribute('data-brand-theme', 'true');
@@ -1117,34 +1153,34 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
                   document.head.appendChild(brandStyleElement);
                   console.log('[handleRoleDirectColorChange] 🎨 Created new brand theme style element');
                 }
-                
+
                 // Use atomic update to prevent flickering
                 const tempStyleElement = document.createElement('style');
                 tempStyleElement.setAttribute('data-brand-theme-temp', 'true');
                 tempStyleElement.setAttribute('type', 'text/css');
                 tempStyleElement.textContent = completeCss;
-                
+
                 // Insert temporary element and swap atomically
                 brandStyleElement.parentNode?.insertBefore(tempStyleElement, brandStyleElement.nextSibling);
-                
+
                 Promise.resolve().then(() => {
                   brandStyleElement.remove();
                   tempStyleElement.removeAttribute('data-brand-theme-temp');
                   tempStyleElement.setAttribute('data-brand-theme', 'true');
-                  
+
                   console.log('[handleRoleDirectColorChange] 🎨 Applied complete CSS for color modification with atomic update');
-                  
+
                   // Also set individual CSS variables for immediate feedback (after atomic update)
                   const rootStyle = document.documentElement.style;
                   // Set the NEW color token's variable (not the old one!)
                   rootStyle.setProperty(`--${finalVariableName}`, oklchString);
                   rootStyle.setProperty(`--${role}`, `var(--${finalVariableName})`);
                   console.log(`[handleRoleDirectColorChange] 🎯 Force updated CSS: --${finalVariableName} = ${oklchString}, --${role} = var(--${finalVariableName})`);
-                  
+
                   // Force a style recalculation
                   document.documentElement.offsetHeight;
                   console.log(`[handleRoleDirectColorChange] 🔄 Forced style recalculation`);
-                  
+
                   // Clear the flag after update is complete
                   setTimeout(() => {
                     isUpdatingCssRef.current = false;
@@ -1156,20 +1192,20 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         }
       } else {
         console.log(`[handleRoleDirectColorChange] 🔄 Color "${currentlyAssignedColor.name}" is only assigned to role "${role}", safe to modify directly`);
-        
+
         // Convert hex to OKLCH and commit the change to the existing color
-      const oklchConverter = converter('oklch');
-      const colorObj = parseHex(newHex);
-      
-      if (colorObj) {
-        const converted = oklchConverter(colorObj);
-        if (converted) {
-          let { l = 0, c = 0, h = 0 } = converted;
-          h = isNaN(h) ? 0 : h;
-          
-          const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})` as OklchString;
-          commitColorUpdate(currentlyAssignedColor.name, oklchString);
-            
+        const oklchConverter = converter('oklch');
+        const colorObj = parseHex(newHex);
+
+        if (colorObj) {
+          const converted = oklchConverter(colorObj);
+          if (converted) {
+            let { l = 0, c = 0, h = 0 } = converted;
+            h = isNaN(h) ? 0 : h;
+
+            const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})` as OklchString;
+            commitColorUpdate(currentlyAssignedColor.name, oklchString);
+
             // Force immediate CSS variable update for the role
             if (typeof window !== "undefined") {
               const rootStyle = document.documentElement.style;
@@ -1190,7 +1226,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     if (!brandToUpdate) return;
 
     // Find the currently assigned color token for this role
-    const currentlyAssignedColor = brandToUpdate.colors.find(color => 
+    const currentlyAssignedColor = brandToUpdate.colors.find(color =>
       color.roles?.includes(role)
     );
 
@@ -1199,16 +1235,16 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       // since this is just a live preview and won't be committed
       const oklchConverter = converter('oklch');
       const colorObj = parseHex(newHex);
-      
+
       if (colorObj) {
         const converted = oklchConverter(colorObj);
         if (converted) {
           let { l = 0, c = 0, h = 0 } = converted;
           h = isNaN(h) ? 0 : h;
-          
+
           const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})` as OklchString;
           previewColorUpdate(currentlyAssignedColor.name, oklchString);
-          
+
           // Force immediate CSS variable update for instant preview
           if (typeof window !== "undefined") {
             const rootStyle = document.documentElement.style;
@@ -1226,18 +1262,18 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
     console.log(`[BrandContext useEffect] brandToDisplay reference:`, brandToDisplay);
     console.log(`[BrandContext useEffect] brandToDisplay.colors length:`, brandToDisplay?.colors?.length);
     console.log(`[BrandContext useEffect] liveBrand reference:`, liveBrand);
-    console.log(`[BrandContext useEffect] Primary role assignments in brandToDisplay:`, 
+    console.log(`[BrandContext useEffect] Primary role assignments in brandToDisplay:`,
       brandToDisplay?.colors?.filter(c => c.roles?.includes('primary')).map(c => ({ name: c.name, variableName: c.variableName })));
-    
+
     // CRITICAL FIX: Check if we're in the middle of a specific CSS update to prevent conflicts
     if (isUpdatingCssRef.current) {
       console.log('[BrandContext useEffect] ⏸️ Deferring main CSS update - specific function is updating CSS');
-      
+
       // Clear any existing timeout
       if (cssUpdateTimeoutRef.current) {
         clearTimeout(cssUpdateTimeoutRef.current);
       }
-      
+
       // Schedule the main CSS update for after the specific update is complete
       cssUpdateTimeoutRef.current = setTimeout(() => {
         console.log('[BrandContext useEffect] 🔄 Retrying deferred main CSS update');
@@ -1248,10 +1284,10 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           performMainCssUpdate();
         }
       }, 100); // Short delay to ensure specific update completes
-      
+
       return;
     }
-    
+
     // Helper function to perform the main CSS update
     const performMainCssUpdate = () => {
       const brandForCSS = brandToDisplay;
@@ -1261,11 +1297,11 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           // Generate and inject the complete CSS from brand-utils.ts
           console.log('[BrandContext] 🎨 Generating complete CSS from brand-utils...');
           const completeCss = generateGlobalCss(brandForCSS);
-          
+
           // Find existing brand theme style element or create new one
           const existingBrandStyleElement = document.querySelector('style[data-brand-theme]');
           let brandStyleElement = existingBrandStyleElement as HTMLStyleElement;
-          
+
           if (!brandStyleElement) {
             brandStyleElement = document.createElement('style');
             brandStyleElement.setAttribute('data-brand-theme', 'true');
@@ -1273,7 +1309,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
             document.head.appendChild(brandStyleElement);
             console.log('[BrandContext] 🎨 Created new brand theme style element');
           }
-          
+
           // CRITICAL FIX: Use atomic CSS update to prevent flickering
           // Instead of directly setting textContent, we'll create a temporary style element
           // and swap them atomically to prevent any moment where styles are incomplete
@@ -1281,10 +1317,10 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           tempStyleElement.setAttribute('data-brand-theme-temp', 'true');
           tempStyleElement.setAttribute('type', 'text/css');
           tempStyleElement.textContent = completeCss;
-          
+
           // Insert the temporary element right after the existing one
           brandStyleElement.parentNode?.insertBefore(tempStyleElement, brandStyleElement.nextSibling);
-          
+
           // Use a micro-task to ensure the temporary styles are processed before removal
           Promise.resolve().then(() => {
             // Remove the old style element
@@ -1292,11 +1328,11 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
             // Rename the temporary element to be the new permanent one
             tempStyleElement.removeAttribute('data-brand-theme-temp');
             tempStyleElement.setAttribute('data-brand-theme', 'true');
-            
+
             console.log('[BrandContext] 🎨 Applied complete CSS with atomic update to prevent flickering');
           });
         });
-        
+
         // Also apply individual CSS variables for immediate updates (keeps existing functionality)
         const rootElement = document.documentElement;
         const rootStyle = document.documentElement.style;
@@ -1507,11 +1543,11 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           type: typeof brandForCSS.themeCssVariables,
           keys: brandForCSS.themeCssVariables ? Object.keys(brandForCSS.themeCssVariables) : 'N/A'
         });
-        
+
         if (brandForCSS.themeCssVariables) {
           console.log("[BrandContext] 🎯 ENTERING themeCssVariables processing");
           console.log("[BrandContext] themeCssVariables available:", Object.keys(brandForCSS.themeCssVariables));
-          
+
           const themeRoleKeys = Object.keys(brandForCSS.themeCssVariables) as Array<keyof ThemeCssVars>;
 
           console.log("[BrandContext] Processing theme CSS variables for role assignments:");
@@ -1525,7 +1561,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           themeRoleKeys.forEach(roleKey => {
             try {
               console.log(`[BrandContext] 🔄 Processing role "${roleKey}"...`);
-              
+
               const originalThemeVarValue = brandForCSS.themeCssVariables[roleKey];
               let cssValueToSet: string | undefined = undefined;
 
@@ -1552,7 +1588,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
                     roles: c.roles
                   })));
                 }
-                
+
                 // Check for direct assignment to this roleKey first (for any role, including foregrounds)
                 const directlyAssignedToken = newEnrichedColors.find(c => Array.isArray(c.roles) && c.roles.includes(roleKey as Role));
 
@@ -1575,7 +1611,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
                   console.log(`[BrandContext] Foreground role "${roleKey}" not directly assigned, looking for surface role "${surfaceRoleKey}":`, {
                     surfaceToken: surfaceToken ? { name: surfaceToken.name, variableName: surfaceToken.variableName } : null
                   });
-                  
+
                   if (surfaceToken) {
                     if (surfaceToken.onColor) {
                       cssValueToSet = surfaceToken.onColor;
@@ -1628,7 +1664,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
                   console.warn(`[BrandContext] CSS Variable --${roleKey} could not be resolved and has no default value.`);
                 }
               }
-              
+
               console.log(`[BrandContext] ✅ Completed processing role "${roleKey}"`);
             } catch (error) {
               console.error(`[BrandContext] ❌ Error processing role "${roleKey}":`, error);
@@ -1666,32 +1702,32 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         // Handle animation CSS injection and root class application
         if (brandForCSS.animationConfig) {
           console.log('Applying animation configuration:', brandForCSS.animationConfig);
-          
+
           // Generate the animation CSS
           const animationCss = generateAnimationCss(brandForCSS.animationConfig);
-          
+
           // Find existing animation style element or create new one
           const existingStyleElement = document.querySelector('style[data-theme-animations]');
           let styleElement = existingStyleElement as HTMLStyleElement;
-          
+
           if (!styleElement) {
             styleElement = document.createElement('style');
             styleElement.setAttribute('data-theme-animations', 'true');
             document.head.appendChild(styleElement);
           }
-          
+
           // Update the style element with new animation CSS
           styleElement.textContent = animationCss;
-          
+
           // Apply the root class name to the document element
           const rootClassName = brandForCSS.animationConfig.rootClassName;
-          
+
           // Remove any existing animation root classes
-          const existingAnimationClasses = Array.from(rootElement.classList).filter(cls => 
+          const existingAnimationClasses = Array.from(rootElement.classList).filter(cls =>
             cls.endsWith('-theme') || cls.includes('animation') || cls.includes('brutal') || cls.includes('modern')
           );
           existingAnimationClasses.forEach(cls => rootElement.classList.remove(cls));
-          
+
           // Add the new root class
           if (rootClassName) {
             rootElement.classList.add(rootClassName);
@@ -1703,26 +1739,26 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           if (existingStyleElement) {
             existingStyleElement.remove();
           }
-          
+
           // Remove any existing animation root classes
-          const existingAnimationClasses = Array.from(rootElement.classList).filter(cls => 
+          const existingAnimationClasses = Array.from(rootElement.classList).filter(cls =>
             cls.endsWith('-theme') || cls.includes('animation') || cls.includes('brutal') || cls.includes('modern')
           );
           existingAnimationClasses.forEach(cls => rootElement.classList.remove(cls));
-          
+
           console.log('No animation configuration found, removed existing animation styles');
         }
 
         // Apply brand theme class for typography
         const brandClassName = brandForCSS.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         const themeClassName = `theme-${brandClassName}`;
-        
+
         // Remove any existing theme classes
-        const existingThemeClasses = Array.from(rootElement.classList).filter(cls => 
+        const existingThemeClasses = Array.from(rootElement.classList).filter(cls =>
           cls.startsWith('theme-')
         );
         existingThemeClasses.forEach(cls => rootElement.classList.remove(cls));
-        
+
         // Add the new theme class
         rootElement.classList.add(themeClassName);
         console.log(`Applied brand theme class: ${themeClassName}`);
@@ -1750,7 +1786,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         if (typeof window !== "undefined") {
           // Trigger a reflow to ensure CSS changes are applied
           window.getComputedStyle(rootElement).getPropertyValue('--primary');
-          
+
           // Force a repaint by temporarily changing and restoring a non-visible property
           const originalVisibility = rootElement.style.visibility;
           rootElement.style.visibility = 'visible';
@@ -1758,7 +1794,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
           if (originalVisibility) {
             rootElement.style.visibility = originalVisibility;
           }
-          
+
           console.log('[BrandContext] 🎨 Forced style recalculation and repaint');
         }
 
@@ -1770,7 +1806,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         console.log("--- End CSS Variable Check (BrandContext) ---");
       }
     };
-    
+
     // Call the main CSS update function
     performMainCssUpdate();
   }, [brandToDisplay, currentThemeData, activeThemeKey]);
@@ -1820,7 +1856,9 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       getFontWeightForRole,
       // Font size assignment functions
       updateFontSizeAssignment,
-      getFontSizeForRole
+      getFontSizeForRole,
+      // Animation config functions
+      updateAnimationConfig
     }}>
       {children}
     </BrandContext.Provider>
@@ -1850,4 +1888,50 @@ export const useAnimationCss = (): string => {
 export const useAnimationRootClassName = (): string => {
   const animationConfig = useThemeAnimations();
   return animationConfig?.rootClassName || '';
+};
+
+// UI Context for managing active tab and typography role selection
+interface UIContextType {
+  activeTab: string;
+  selectedTypographyRole: string | null;
+  selectedColorRole: string | null;
+  setActiveTab: (tab: string) => void;
+  setSelectedTypographyRole: (role: string) => void;
+  setSelectedColorRole: (role: string) => void;
+}
+
+const UIContext = createContext<UIContextType | undefined>(undefined);
+
+export const useUIContext = () => {
+  const context = useContext(UIContext);
+  if (!context) {
+    throw new Error('useUIContext must be used within a UIProvider');
+  }
+  return context;
+};
+
+interface UIProviderProps {
+  children: ReactNode;
+  initialTab?: string;
+}
+
+export const UIProvider: React.FC<UIProviderProps> = ({ children, initialTab = 'colors' }) => {
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const [selectedTypographyRole, setSelectedTypographyRole] = useState<string | null>(null);
+  const [selectedColorRole, setSelectedColorRole] = useState<string | null>(null);
+
+  const value = useMemo(() => ({
+    activeTab,
+    selectedTypographyRole,
+    selectedColorRole,
+    setActiveTab,
+    setSelectedTypographyRole,
+    setSelectedColorRole,
+  }), [activeTab, selectedTypographyRole, selectedColorRole]);
+
+  return (
+    <UIContext.Provider value={value}>
+      {children}
+    </UIContext.Provider>
+  );
 };

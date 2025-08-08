@@ -13,8 +13,8 @@ import { Separator } from "@/features/unorganized-components/ui/separator";
 import { Input } from "@/features/unorganized-components/ui/input";
 import { Badge } from "@/features/unorganized-components/ui/badge";
 import { Avatar, AvatarFallback } from "@/features/unorganized-components/ui/avatar";
-import { useBrand } from "./BrandContext";
-import { FontToken } from "./brand-utils";
+import { useBrand } from "../BrandContext";
+import { FontToken } from "../brand-utils";
 
 export default function GalleryPreview() {
   const { brand, processedBrand, getFontWeightForRole, getFontSizeForRole } = useBrand();
@@ -22,7 +22,7 @@ export default function GalleryPreview() {
   // Force re-render when brand changes to ensure CSS variables are applied
   const [renderKey, setRenderKey] = React.useState(0);
   const [cssVariableUpdate, setCssVariableUpdate] = React.useState(0);
-  
+
   React.useEffect(() => {
     if (brand) {
       setRenderKey(prev => prev + 1);
@@ -33,7 +33,7 @@ export default function GalleryPreview() {
   React.useEffect(() => {
     if (processedBrand) {
       setCssVariableUpdate(prev => prev + 1);
-      
+
       // Force a style recalculation after a short delay
       setTimeout(() => {
         if (typeof window !== "undefined") {
@@ -57,7 +57,7 @@ export default function GalleryPreview() {
             needsRerender = true;
           }
         }
-        
+
         if (mutation.type === 'childList') {
           mutation.addedNodes.forEach((node) => {
             if (node.nodeType === Node.ELEMENT_NODE) {
@@ -68,7 +68,7 @@ export default function GalleryPreview() {
             }
           });
         }
-        
+
         if (mutation.type === 'characterData') {
           const parentElement = mutation.target.parentElement;
           if (parentElement?.tagName === 'STYLE' && parentElement.hasAttribute('data-brand-theme')) {
@@ -76,7 +76,7 @@ export default function GalleryPreview() {
           }
         }
       });
-      
+
       if (needsRerender) {
         setCssVariableUpdate(prev => prev + 1);
         setTimeout(() => {
@@ -84,18 +84,18 @@ export default function GalleryPreview() {
         }, 100);
       }
     });
-    
+
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['style']
     });
-    
+
     observer.observe(document.head, {
       childList: true,
       subtree: true,
       characterData: true
     });
-    
+
     return () => {
       observer.disconnect();
     };
@@ -172,7 +172,7 @@ export default function GalleryPreview() {
 
   // Helper function to get role-based font and size styles
   const getRoleStyle = (role: string, fallbackWeight: string = '400') => {
-    const assignedFont = brand?.fonts?.find(font => 
+    const assignedFont = brand?.fonts?.find(font =>
       font.roles?.includes(role)
     );
 
@@ -188,7 +188,7 @@ export default function GalleryPreview() {
     const sizeKey = DEFAULT_ROLE_SIZE_ASSIGNMENTS[role] || 'text-base';
     const fontSize = `${TAILWIND_FONT_SIZES[sizeKey] || 1}rem`;
 
-    const fontWeight = assignedFont && getFontWeightForRole ? 
+    const fontWeight = assignedFont && getFontWeightForRole ?
       assignedFont.weights?.[getFontWeightForRole(assignedFont.name, role) || 'regular'] || fallbackWeight
       : fallbackWeight;
 
@@ -231,10 +231,10 @@ export default function GalleryPreview() {
   const themeColors = getThemeColors();
 
   return (
-    <div 
-      key={`${renderKey}-${cssVariableUpdate}`} 
+    <div
+      key={`${renderKey}-${cssVariableUpdate}`}
       className="w-full h-full bg-background text-foreground"
-      style={{ 
+      style={{
         '--force-update': cssVariableUpdate as any,
         fontFamily: bodyFont || 'inherit'
       } as React.CSSProperties}
@@ -246,7 +246,7 @@ export default function GalleryPreview() {
           <span>Gallery Theme (r#{renderKey} c#{cssVariableUpdate})</span>
         </div>
       </div>
-      
+
       {/* Header */}
       <div className="bg-background text-foreground">
         {/* Navigation Bar */}
@@ -288,14 +288,14 @@ export default function GalleryPreview() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="tracking-wide"
               style={getRoleStyle('button', '400')}
             >
               Search
             </Button>
-            <Button 
+            <Button
               className="tracking-wide"
               style={getRoleStyle('button', '500')}
               data-slot="button"
@@ -307,11 +307,11 @@ export default function GalleryPreview() {
 
         {/* Hero Section with Large Image */}
         <section className="relative h-[70vh] overflow-hidden">
-          <div 
+          <div
             className="absolute inset-0"
-            style={{ 
+            style={{
               background: `linear-gradient(to bottom right, ${themeColors.primary}20, ${themeColors.secondary}30, ${themeColors.accent1}20),
-                          url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><rect fill="%23000" width="1920" height="1080"/><g opacity="0.1"><rect x="480" y="270" width="960" height="540" fill="%23fff"/></g></svg>')` 
+                          url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><rect fill="%23000" width="1920" height="1080"/><g opacity="0.1"><rect x="480" y="270" width="960" height="540" fill="%23fff"/></g></svg>')`
             }}
           ></div>
           <div className="absolute inset-0 bg-black/40"></div>
@@ -330,14 +330,14 @@ export default function GalleryPreview() {
                 Discover extraordinary contemporary art from emerging and established artists around the world
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
+                <Button
                   className="bg-white text-black hover:bg-white/90 px-8 py-3 text-lg"
                   style={getRoleStyle('button', '600')}
                 >
                   Explore Collection
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="border-white text-white hover:bg-white hover:text-black px-8 py-3 text-lg"
                   style={getRoleStyle('button', '600')}
                 >
@@ -358,14 +358,14 @@ export default function GalleryPreview() {
               >
                 Featured Artworks
               </h2>
-              <p 
+              <p
                 className="text-lg text-muted-foreground"
                 style={getRoleStyle('p', '400')}
               >
                 Discover our curated selection of contemporary masterpieces
               </p>
             </div>
-            <Button 
+            <Button
               variant="outline"
               className="tracking-wide"
               style={getRoleStyle('button', '400')}
@@ -379,14 +379,14 @@ export default function GalleryPreview() {
             {/* Featured Artwork 1 */}
             <Card className="overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300" data-slot="card">
               <div className="relative aspect-[3/4]">
-                <div 
+                <div
                   className="absolute inset-0"
-                  style={{ 
+                  style={{
                     background: `linear-gradient(135deg, ${themeColors.info}40, ${themeColors.accent1}60)`
                   }}
                 ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-                
+
                 {/* Overlay Actions */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
                   <div className="flex gap-3">
@@ -401,12 +401,12 @@ export default function GalleryPreview() {
                     </Button>
                   </div>
                 </div>
-                
+
                 {/* Price Tag */}
                 <div className="absolute top-4 right-4">
-                  <Badge 
+                  <Badge
                     className="text-white border-white/30"
-                    style={{ 
+                    style={{
                       backgroundColor: `${themeColors.success}90`,
                       ...getRoleStyle('price', '600')
                     }}
@@ -415,12 +415,12 @@ export default function GalleryPreview() {
                   </Badge>
                 </div>
               </div>
-              
+
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge 
+                  <Badge
                     variant="outline"
-                    style={{ 
+                    style={{
                       borderColor: themeColors.info,
                       color: themeColors.info,
                       ...getRoleStyle('category', '500')
@@ -428,9 +428,9 @@ export default function GalleryPreview() {
                   >
                     Contemporary
                   </Badge>
-                  <Badge 
+                  <Badge
                     variant="outline"
-                    style={{ 
+                    style={{
                       borderColor: themeColors.accent1,
                       color: themeColors.accent1,
                       ...getRoleStyle('category', '500')
@@ -455,7 +455,7 @@ export default function GalleryPreview() {
                   className="text-sm text-muted-foreground mb-4 leading-relaxed"
                   style={getRoleStyle('description', '400')}
                 >
-                  A striking exploration of modern city life through abstract forms and vibrant colors, 
+                  A striking exploration of modern city life through abstract forms and vibrant colors,
                   capturing the energy and complexity of urban environments.
                 </p>
                 <div className="flex items-center justify-between">
@@ -472,9 +472,9 @@ export default function GalleryPreview() {
                       (24 reviews)
                     </span>
                   </div>
-                  <Button 
+                  <Button
                     size="sm"
-                    style={{ 
+                    style={{
                       backgroundColor: themeColors.primary,
                       ...getRoleStyle('button', '600')
                     }}
@@ -488,14 +488,14 @@ export default function GalleryPreview() {
             {/* Featured Artwork 2 */}
             <Card className="overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300" data-slot="card">
               <div className="relative aspect-[3/4]">
-                <div 
+                <div
                   className="absolute inset-0"
-                  style={{ 
+                  style={{
                     background: `linear-gradient(135deg, ${themeColors.accent2}40, ${themeColors.secondary}60)`
                   }}
                 ></div>
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
-                
+
                 {/* Overlay Actions */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
                   <div className="flex gap-3">
@@ -510,12 +510,12 @@ export default function GalleryPreview() {
                     </Button>
                   </div>
                 </div>
-                
+
                 {/* Price Tag */}
                 <div className="absolute top-4 right-4">
-                  <Badge 
+                  <Badge
                     className="text-white border-white/30"
-                    style={{ 
+                    style={{
                       backgroundColor: `${themeColors.success}90`,
                       ...getRoleStyle('price', '600')
                     }}
@@ -524,12 +524,12 @@ export default function GalleryPreview() {
                   </Badge>
                 </div>
               </div>
-              
+
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge 
+                  <Badge
                     variant="outline"
-                    style={{ 
+                    style={{
                       borderColor: themeColors.accent2,
                       color: themeColors.accent2,
                       ...getRoleStyle('category', '500')
@@ -537,9 +537,9 @@ export default function GalleryPreview() {
                   >
                     Digital Art
                   </Badge>
-                  <Badge 
+                  <Badge
                     variant="outline"
-                    style={{ 
+                    style={{
                       borderColor: themeColors.secondary,
                       color: themeColors.secondary,
                       ...getRoleStyle('category', '500')
@@ -564,7 +564,7 @@ export default function GalleryPreview() {
                   className="text-sm text-muted-foreground mb-4 leading-relaxed"
                   style={getRoleStyle('description', '400')}
                 >
-                  An innovative digital composition that blurs the boundaries between traditional and 
+                  An innovative digital composition that blurs the boundaries between traditional and
                   contemporary art, featuring ethereal landscapes and futuristic elements.
                 </p>
                 <div className="flex items-center justify-between">
@@ -581,9 +581,9 @@ export default function GalleryPreview() {
                       (18 reviews)
                     </span>
                   </div>
-                  <Button 
+                  <Button
                     size="sm"
-                    style={{ 
+                    style={{
                       backgroundColor: themeColors.primary,
                       ...getRoleStyle('button', '600')
                     }}
@@ -598,44 +598,44 @@ export default function GalleryPreview() {
           {/* Smaller Gallery Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { 
-                name: "Abstract Expressions", 
-                count: 23, 
+              {
+                name: "Abstract Expressions",
+                count: 23,
                 colors: [themeColors.accent2, themeColors.primary],
                 category: "abstract"
               },
-              { 
-                name: "Modern Sculptures", 
-                count: 17, 
+              {
+                name: "Modern Sculptures",
+                count: 17,
                 colors: [themeColors.info, themeColors.accent1],
                 category: "sculpture"
               },
-              { 
-                name: "Digital Innovations", 
-                count: 31, 
+              {
+                name: "Digital Innovations",
+                count: 31,
                 colors: [themeColors.secondary, themeColors.accent2],
                 category: "digital"
               },
-              { 
-                name: "Nature Studies", 
-                count: 28, 
+              {
+                name: "Nature Studies",
+                count: 28,
                 colors: [themeColors.success, themeColors.primary],
                 category: "nature"
               }
             ].map((collection, index) => (
               <Card key={index} className="group cursor-pointer hover:shadow-lg transition-all duration-300" data-slot="card">
                 <div className="relative aspect-square overflow-hidden">
-                  <div 
+                  <div
                     className="absolute inset-0 group-hover:scale-105 transition-transform duration-300"
-                    style={{ 
+                    style={{
                       background: `linear-gradient(135deg, ${collection.colors[0]}40, ${collection.colors[1]}60)`
                     }}
                   ></div>
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
                   <div className="absolute bottom-4 left-4 right-4">
-                    <Badge 
+                    <Badge
                       className="mb-2"
-                      style={{ 
+                      style={{
                         backgroundColor: `${collection.colors[0]}90`,
                         color: 'white',
                         ...getRoleStyle('category', '500')
@@ -663,17 +663,17 @@ export default function GalleryPreview() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             {/* Artist Image */}
             <div className="relative">
-              <div 
+              <div
                 className="aspect-square rounded-lg overflow-hidden"
-                style={{ 
+                style={{
                   background: `linear-gradient(135deg, ${themeColors.primary}30, ${themeColors.accent1}50)`
                 }}
               >
                 <div className="w-full h-full flex items-center justify-center">
                   <Avatar className="w-32 h-32">
-                    <AvatarFallback 
+                    <AvatarFallback
                       className="text-3xl text-white"
-                      style={{ 
+                      style={{
                         backgroundColor: themeColors.primary,
                         ...getRoleStyle('avatar', '700')
                       }}
@@ -683,7 +683,7 @@ export default function GalleryPreview() {
                   </Avatar>
                 </div>
               </div>
-              
+
               {/* Stats Overlay */}
               <div className="absolute bottom-4 left-4 right-4">
                 <Card className="p-4 bg-white/95 backdrop-blur-sm" data-slot="card">
@@ -734,12 +734,12 @@ export default function GalleryPreview() {
                 </Card>
               </div>
             </div>
-            
+
             {/* Artist Info */}
             <div>
-              <Badge 
+              <Badge
                 className="mb-4"
-                style={{ 
+                style={{
                   backgroundColor: `${themeColors.info}20`,
                   color: themeColors.info,
                   borderColor: themeColors.info,
@@ -758,24 +758,24 @@ export default function GalleryPreview() {
                 className="text-xl text-muted-foreground mb-6 leading-relaxed"
                 style={getRoleStyle('subtitle', '400')}
               >
-                Contemporary sculptor pushing the boundaries of mixed media art with her innovative 
+                Contemporary sculptor pushing the boundaries of mixed media art with her innovative
                 use of recycled materials and digital integration.
               </p>
               <p
                 className="text-base text-muted-foreground mb-8 leading-relaxed"
                 style={getRoleStyle('description', '400')}
               >
-                Based in New York, Aria's work has been featured in galleries across the world, 
-                from the MoMA to the Tate Modern. Her latest series explores the intersection 
-                of technology and nature, creating pieces that respond to environmental data 
+                Based in New York, Aria's work has been featured in galleries across the world,
+                from the MoMA to the Tate Modern. Her latest series explores the intersection
+                of technology and nature, creating pieces that respond to environmental data
                 and human interaction.
               </p>
-              
+
               {/* Achievement Badges */}
               <div className="flex flex-wrap gap-2 mb-8">
-                <Badge 
+                <Badge
                   variant="outline"
-                  style={{ 
+                  style={{
                     borderColor: themeColors.success,
                     color: themeColors.success,
                     ...getRoleStyle('badge', '500')
@@ -783,9 +783,9 @@ export default function GalleryPreview() {
                 >
                   MoMA Featured
                 </Badge>
-                <Badge 
+                <Badge
                   variant="outline"
-                  style={{ 
+                  style={{
                     borderColor: themeColors.warning,
                     color: themeColors.warning,
                     ...getRoleStyle('badge', '500')
@@ -793,9 +793,9 @@ export default function GalleryPreview() {
                 >
                   Art Basel Winner
                 </Badge>
-                <Badge 
+                <Badge
                   variant="outline"
-                  style={{ 
+                  style={{
                     borderColor: themeColors.accent2,
                     color: themeColors.accent2,
                     ...getRoleStyle('badge', '500')
@@ -804,10 +804,10 @@ export default function GalleryPreview() {
                   Rising Star 2024
                 </Badge>
               </div>
-              
+
               <div className="flex gap-4">
-                <Button 
-                  style={{ 
+                <Button
+                  style={{
                     backgroundColor: themeColors.primary,
                     ...getRoleStyle('button', '600')
                   }}
@@ -815,7 +815,7 @@ export default function GalleryPreview() {
                   <User className="w-4 h-4 mr-2" />
                   Follow Artist
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   style={getRoleStyle('button', '600')}
                 >
@@ -837,7 +837,7 @@ export default function GalleryPreview() {
             >
               Curated Collections
             </h2>
-            <p 
+            <p
               className="text-lg text-muted-foreground max-w-2xl mx-auto"
               style={getRoleStyle('p', '400')}
             >
@@ -847,15 +847,15 @@ export default function GalleryPreview() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
-              { 
-                bg: 'from-amber-200 via-orange-300 to-red-300', 
-                title: 'Contemporary Masters', 
+              {
+                bg: 'from-amber-200 via-orange-300 to-red-300',
+                title: 'Contemporary Masters',
                 count: '42 pieces',
                 description: 'Modern masterpieces from today\'s most influential artists'
               },
-              { 
-                bg: 'from-emerald-200 via-teal-300 to-cyan-300', 
-                title: 'Nature\'s Symphony', 
+              {
+                bg: 'from-emerald-200 via-teal-300 to-cyan-300',
+                title: 'Nature\'s Symphony',
                 count: '28 pieces',
                 description: 'Landscape photography celebrating the beauty of our natural world'
               }
@@ -883,7 +883,7 @@ export default function GalleryPreview() {
                       >
                         {collection.count}
                       </span>
-                      <Button 
+                      <Button
                         variant="outline"
                         className="border-white/30 text-white hover:bg-white/10"
                         style={getRoleStyle('button', '400')}
@@ -912,21 +912,21 @@ export default function GalleryPreview() {
               >
                 Stay Inspired
               </h3>
-              <p 
+              <p
                 className="text-xl opacity-90 mb-8 max-w-2xl mx-auto"
                 style={getRoleStyle('p', '400')}
               >
-                Get exclusive access to new exhibitions, artist insights, and behind-the-scenes content. 
+                Get exclusive access to new exhibitions, artist insights, and behind-the-scenes content.
                 Join our community of art enthusiasts.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 max-w-md mx-auto">
-                <Input 
-                  placeholder="Enter your email address" 
+                <Input
+                  placeholder="Enter your email address"
                   className="flex-1 bg-white/20 border-white/30 text-white placeholder:text-white/70 backdrop-blur-sm"
                   style={getRoleStyle('input', '400')}
-                  data-slot="input" 
+                  data-slot="input"
                 />
-                <Button 
+                <Button
                   className="whitespace-nowrap tracking-wide bg-white text-black hover:bg-white/90"
                   style={getRoleStyle('button', '500')}
                   data-slot="button"
@@ -952,7 +952,7 @@ export default function GalleryPreview() {
                 Lumina
               </span>
             </div>
-            
+
             <div className="flex items-center space-x-8 text-sm">
               <Button variant="link" className="p-0 h-auto" style={getRoleStyle('link', '400')}>
                 About
@@ -967,8 +967,8 @@ export default function GalleryPreview() {
                 Contact
               </Button>
             </div>
-            
-            <p 
+
+            <p
               className="text-sm text-muted-foreground"
               style={getRoleStyle('footer', '400')}
             >

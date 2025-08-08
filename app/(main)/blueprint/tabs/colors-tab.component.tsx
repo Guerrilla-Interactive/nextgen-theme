@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { useBrand, type EnrichedColorToken, type EnrichedShade } from "../BrandContext";
+import { useBrand, type EnrichedColorToken, type EnrichedShade, useUIContext } from "../BrandContext";
 import { ColorPicker } from "../../brand-colors/ColorPicker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/unorganized-components/ui/card";
 import { Badge } from "@/features/unorganized-components/ui/badge";
@@ -7,15 +7,15 @@ import { Button } from "@/features/unorganized-components/ui/button";
 import { Input } from "@/features/unorganized-components/ui/input";
 import { Label } from "@/features/unorganized-components/ui/label";
 import { formatHex, converter, parseHex } from "culori";
-import { 
-  Role, 
-  type OklchString, 
-  influenceHierarchy, 
-  getHighContrastTextColor 
+import {
+  Role,
+  type OklchString,
+  influenceHierarchy,
+  getHighContrastTextColor
 } from "../brand-utils";
-import { 
-  Palette, 
-  RotateCcw, 
+import {
+  Palette,
+  RotateCcw,
   Info,
   Hash,
   Target,
@@ -34,7 +34,7 @@ import { Plus } from 'lucide-react';
 // Define role categories and their display order (same as brandguide)
 const roleCategoriesOrder: string[] = [
   "Core Theming",
-  "Primary Interaction", 
+  "Primary Interaction",
   "Component Surfaces",
   "Feedback & State",
   "Charts & Data Visualization",
@@ -189,10 +189,10 @@ interface ColorsTabProps {
 }
 
 export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
-  const { 
-    brand, 
-    processedBrand, 
-    undo, 
+  const {
+    brand,
+    processedBrand,
+    undo,
     canUndo,
     handleRoleSwatchSelection,
     handleRoleDirectColorChange,
@@ -202,8 +202,17 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     updateColorName
   } = useBrand();
 
+  const { selectedColorRole } = useUIContext();
+
   // Replace search state with selected role state
   const [selectedRole, setSelectedRole] = useState<Role>('primary');
+
+  // Listen for selected color role from UI context and update selectedRole if it's a valid color role
+  useEffect(() => {
+    if (selectedColorRole && selectedColorRole in roleToCategoryMap) {
+      setSelectedRole(selectedColorRole as Role);
+    }
+  }, [selectedColorRole]);
   const [selectedSwatch, setSelectedSwatch] = useState<{ name: string; displayName?: string; color: string } | null>(null);
   const [colorName, setColorName] = useState('');
 
@@ -211,7 +220,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
   // This ensures we always have the most up-to-date color assignment
   const getCurrentColorForRole = useCallback((role: Role): string => {
     if (!brand?.colors) return '#666666';
-    
+
     // Find the color that currently has this role assigned
     const assignedColor = brand.colors.find(color => color.roles?.includes(role));
     if (assignedColor?.oklch) {
@@ -220,7 +229,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
         return hex;
       }
     }
-    
+
     return '#666666'; // Default color for unassigned roles
   }, [brand]);
 
@@ -229,17 +238,17 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     // Use brand directly if processedBrand is not available or is stale
     const sourceColors = processedBrand?.colors || brand?.colors;
     if (!sourceColors) return [];
-    
+
     return sourceColors.map((color): ProcessedColorToken => {
       // Filter out invalid roles that exist in data but not in types (warning, success, info)
       const validRoles = (color.roles || []).filter(role => {
         // Only keep roles that exist in our Role type (i.e., in influenceHierarchy)
         return role in influenceHierarchy;
       }) as Role[];
-      
+
       const maxInfluence = Math.max(...validRoles.map(role => influenceHierarchy[role] || 0));
       const topRoles = validRoles.filter(role => (influenceHierarchy[role] || 0) === maxInfluence);
-      
+
       let importanceSummary = "General";
       if (topRoles.includes("primary")) importanceSummary = "Primary";
       else if (topRoles.includes("background")) importanceSummary = "Background";
@@ -252,7 +261,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
       else if (topRoles.includes("input")) importanceSummary = "Input";
       else if (topRoles.includes("popover")) importanceSummary = "Popover";
       else if (topRoles.includes("card")) importanceSummary = "Card";
-      
+
       // Ensure we have the properties required for EnrichedColorToken
       const enrichedColor = {
         ...color,
@@ -263,7 +272,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
         sortedDisplayShades: ('sortedDisplayShades' in color ? color.sortedDisplayShades : []) as EnrichedShade[],
         tokenLevelMappedThemeVars: ('tokenLevelMappedThemeVars' in color ? color.tokenLevelMappedThemeVars : []) as string[],
       };
-      
+
       return {
         ...enrichedColor,
         effectiveInfluence: maxInfluence,
@@ -278,7 +287,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     // First, collect all roles and ensure each role is only assigned to one color
     const roleToColorMap = new Map<Role, ProcessedColorToken>();
     const duplicateRoles = new Set<Role>();
-    
+
     // Build role-to-color mapping and detect duplicates
     processedColors.forEach(color => {
       color.roles?.forEach(role => {
@@ -295,11 +304,11 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
         }
       });
     });
-    
+
     if (duplicateRoles.size > 0 && duplicateRoles.size > 5) {
       console.log(`[roleGroups] Found ${duplicateRoles.size} duplicate role assignments - this may indicate a data issue`);
     }
-    
+
     // Helper function to create role assignment from the clean mapping
     const createRoleAssignment = (role: Role): RoleColorAssignment => {
       const assignedColor = roleToColorMap.get(role);
@@ -314,14 +323,14 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
           subCategory: "Other"
         };
       }
-      
+
       const category = roleToCategoryMap[role] || "Default & General Use";
       const subCategory = roleToSubCategoryMap[role] || "Other";
       const influence = influenceHierarchy[role] || 0;
-      
+
       // Calculate colorHex from the assigned color
       const colorHex = assignedColor.oklch ? formatHex(assignedColor.oklch as string) : null;
-      
+
       return {
         role,
         assignedColor,
@@ -336,7 +345,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     const allRoles = Array.from(roleToColorMap.keys()) as Role[];
     const processedRoles = new Set<Role>();
     const groups: RoleGroup[] = [];
-    
+
     // Sophisticated role grouping system based on semantic relationships
     interface RoleGroupDefinition {
       name: string;
@@ -521,7 +530,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
       .sort((a, b) => a.priority - b.priority)
       .forEach(groupDef => {
         // Filter to only roles that exist in our data and haven't been processed
-        const availableRoles = groupDef.roles.filter(roleInfo => 
+        const availableRoles = groupDef.roles.filter(roleInfo =>
           allRoles.includes(roleInfo.role) && !processedRoles.has(roleInfo.role)
         );
 
@@ -551,12 +560,12 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     // Special handling for important roles that might get overshadowed by shared color assignments
     // Check for specific roles that should always have their own group if they exist but weren't grouped
     const importantSoloRoles: Role[] = ['ring', 'border', 'muted'];
-    
+
     importantSoloRoles.forEach(soloRole => {
       if (allRoles.includes(soloRole) && !processedRoles.has(soloRole)) {
         const roleAssignment = createRoleAssignment(soloRole);
         const subCategory = roleToSubCategoryMap[soloRole] || "Other";
-        
+
         // Get the appropriate description based on the role
         let description = `Individual role: ${soloRole.replace(/-/g, ' ')}`;
         if (soloRole === 'ring') {
@@ -566,7 +575,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
         } else if (soloRole === 'muted') {
           description = "Subdued colors for less important text, placeholders, and de-emphasized content.";
         }
-        
+
         groups.push({
           type: 'group',
           subCategoryName: subCategory,
@@ -580,36 +589,36 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
 
     // Handle any remaining ungrouped roles as individual groups
     const ungroupedRoles = allRoles.filter(role => !processedRoles.has(role));
-    
+
     // Sort ungrouped roles by their original priority (if they were in definitions) or by influence
     const sortedUngroupedRoles = ungroupedRoles.sort((a, b) => {
       // Find original priority from definitions if exists
       const aGroupDef = roleGroupDefinitions.find(def => def.roles.some(r => r.role === a));
       const bGroupDef = roleGroupDefinitions.find(def => def.roles.some(r => r.role === b));
-      
+
       const aPriority = aGroupDef?.priority || 999;
       const bPriority = bGroupDef?.priority || 999;
-      
+
       if (aPriority !== bPriority) {
         return aPriority - bPriority;
       }
-      
+
       // Fall back to influence hierarchy
       const aInfluence = influenceHierarchy[a] || 0;
       const bInfluence = influenceHierarchy[b] || 0;
       return bInfluence - aInfluence;
     });
-    
+
     // Debug logging to understand what's happening
     if (ungroupedRoles.length > 0) {
       // Check if important roles ended up ungrouped
-      const importantUngrouped = ungroupedRoles.filter(role => 
+      const importantUngrouped = ungroupedRoles.filter(role =>
         ['primary', 'secondary', 'accent', 'destructive'].includes(role)
       );
       if (importantUngrouped.length > 0) {
         console.log(`[roleGroups] WARNING: Important roles ended up ungrouped:`, importantUngrouped);
       }
-      
+
       // Check specifically for chart and sidebar roles
       const chartUngrouped = ungroupedRoles.filter(role => role.startsWith('chart-'));
       const sidebarUngrouped = ungroupedRoles.filter(role => role.startsWith('sidebar'));
@@ -620,13 +629,13 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
         console.log(`[roleGroups] Sidebar roles ungrouped:`, sidebarUngrouped);
       }
     }
-    
+
     // Instead of adding ungrouped roles at the end, insert them in the correct position
     // based on their priority
     sortedUngroupedRoles.forEach(role => {
       const groupDef = roleGroupDefinitions.find(def => def.roles.some(r => r.role === role));
       const priority = groupDef?.priority || 999;
-      
+
       const category = roleToCategoryMap[role] || "Default & General Use";
       const subCategory = roleToSubCategoryMap[role] || "Miscellaneous";
 
@@ -636,23 +645,23 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
         description: `Individual role: ${role.replace(/-/g, ' ')}`,
         roles: [createRoleAssignment(role)],
       };
-      
+
       // Find the correct insertion point based on priority
       let insertIndex = groups.length; // Default to end
       for (let i = 0; i < groups.length; i++) {
         // Find the group definition for the current group to get its priority
         const currentGroup = groups[i];
-        const currentGroupDef = roleGroupDefinitions.find(def => 
+        const currentGroupDef = roleGroupDefinitions.find(def =>
           def.roles.some(r => currentGroup.roles.some(assignment => assignment.role === r.role))
         );
         const currentPriority = currentGroupDef?.priority || 999;
-        
+
         if (priority < currentPriority) {
           insertIndex = i;
           break;
         }
       }
-      
+
       groups.splice(insertIndex, 0, newGroup);
       processedRoles.add(role);
     });
@@ -667,7 +676,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
 
   // Generate swatches for color picker - use original brand colors order to preserve insertion order
   // Show all colors always - no filtering based on chart roles
-  const swatches = useMemo(() => 
+  const swatches = useMemo(() =>
     brand?.colors?.map(c => ({
       name: c.variableName,
       displayName: c.name,
@@ -682,7 +691,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     const roleAssignment = roleGroups
       .flatMap(group => group.roles)
       .find(assignment => assignment.role === selectedRole);
-    
+
     return roleAssignment;
   }, [roleGroups, selectedRole]);
 
@@ -697,7 +706,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     if (selectedRoleInfo?.assignedColor) {
       const matchingSwatch = (selectedRole.startsWith('chart-') ? chartSwatches : swatches)
         .find(swatch => swatch.name === selectedRoleInfo.assignedColor?.variableName);
-      
+
       if (matchingSwatch) {
         setSelectedSwatch(matchingSwatch);
         setColorName(matchingSwatch.displayName || matchingSwatch.name);
@@ -720,7 +729,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
   const handleSwatchSelect = (swatch: { name: string; displayName?: string; color: string }) => {
     setSelectedSwatch(swatch);
     setColorName(swatch.displayName || swatch.name);
-    
+
     // Apply the swatch to the selected role
     handleRoleSwatchSelection(selectedRole, swatch.name);
   };
@@ -730,15 +739,15 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     // Generate a default name based on current color
     const generateColorName = (hexColor: string): string => {
       const colorCount = brand?.colors?.length || 0;
-      
+
       const r = parseInt(hexColor.slice(1, 3), 16);
       const g = parseInt(hexColor.slice(3, 5), 16);
       const b = parseInt(hexColor.slice(5, 7), 16);
-      
+
       const max = Math.max(r, g, b);
       const min = Math.min(r, g, b);
       const diff = max - min;
-      
+
       let hue = 0;
       if (diff !== 0) {
         switch (max) {
@@ -749,7 +758,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
       }
       hue = Math.round(hue * 60);
       if (hue < 0) hue += 360;
-      
+
       let colorName = 'Gray';
       if (diff > 20) {
         if (hue >= 0 && hue < 15) colorName = 'Red';
@@ -761,12 +770,12 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
         else if (hue >= 270 && hue < 330) colorName = 'Purple';
         else colorName = 'Pink';
       }
-      
+
       return `${colorName} Color ${colorCount + 1}`;
     };
-    
+
     const newColorName = generateColorName(currentColorValue);
-    
+
     // Simply create the new color - handleSwatchAdd will handle all selection logic
     handleSwatchAdd(newColorName, currentColorValue);
   };
@@ -774,7 +783,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
   // Handle color name changes
   const handleColorNameChange = (newName: string) => {
     setColorName(newName);
-    
+
     if (selectedSwatch && newName.trim()) {
       // Find the color by variable name to get its current display name
       const colorToUpdate = processedColors.find(c => c.variableName === selectedSwatch.name);
@@ -807,23 +816,23 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
   const handleSwatchAdd = (name: string, color: string, onColorCreated?: (variableName: string) => void) => {
     // Store the current role and expected color name for tracking
     const targetRole = selectedRole;
-    
+
     // Set up pending assignment tracking
     setPendingColorAssignment({
       targetRole,
       expectedColorName: name,
       createdAt: Date.now()
     });
-    
+
     // Use the brand context's addNewColor function with callback
     addNewColor(name, color, [], (newColorName) => {
-      
+
       // Update the pending assignment with the actual color name
       setPendingColorAssignment(prev => prev ? {
         ...prev,
         expectedColorName: newColorName
       } : null);
-      
+
       // Call the callback if provided
       if (onColorCreated) {
         onColorCreated(newColorName);
@@ -839,27 +848,27 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
 
     // Find the newly created color by display name
     const newlyCreatedColor = brand.colors.find(c => c.name === pendingColorAssignment.expectedColorName);
-    
+
     if (newlyCreatedColor) {
-      
+
       // Create the swatch object using the actual data from brand
       const newSwatch = {
         name: newlyCreatedColor.variableName,
         displayName: newlyCreatedColor.name,
         color: formatHex(newlyCreatedColor.oklch as string) || '#000000'
       };
-      
+
       // Set the new color as selected swatch
       setSelectedSwatch(newSwatch);
-      
+
       setColorName(newlyCreatedColor.name);
-      
+
       // Now assign the new color to the target role
       handleRoleSwatchSelection(pendingColorAssignment.targetRole, newlyCreatedColor.variableName);
-      
+
       // Clear the pending assignment
       setPendingColorAssignment(null);
-      
+
       // Add a follow-up check to verify the assignment worked
       setTimeout(() => {
         const verificationColor = brand?.colors?.find(c => c.roles?.includes(pendingColorAssignment.targetRole));
@@ -873,7 +882,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
           console.log('[pendingColorAssignment effect] ❌ Role assignment failed - no color assigned to role:', pendingColorAssignment.targetRole);
         }
       }, 100);
-      
+
     } else {
       // Check if this assignment has been pending too long (avoid infinite waiting)
       const isStale = Date.now() - pendingColorAssignment.createdAt > 5000; // 5 seconds timeout
@@ -892,7 +901,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     if (brand?.colors) {
       console.log('[brand effect] Brand colors updated, count:', brand.colors.length);
       console.log('[brand effect] Role assignments for current selectedRole (' + selectedRole + '):');
-      
+
       const assignedColor = brand.colors.find(c => c.roles?.includes(selectedRole));
       if (assignedColor) {
         console.log('[brand effect] Current role assignment:', {
@@ -918,19 +927,19 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
         // Convert hex to OKLCH and commit the change
         const oklchConverter = converter('oklch');
         const colorObj = parseHex(color);
-        
+
         if (colorObj) {
           const converted = oklchConverter(colorObj);
           if (converted) {
             let { l = 0, c = 0, h = 0 } = converted;
             h = isNaN(h) ? 0 : h;
-            
+
             const oklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})`;
             commitColorUpdate(colorToUpdate.name, oklchString);
           }
         }
       }
-      
+
       // Only update the name if it's different from current and provided
       if (newName && newName.trim() !== colorToUpdate.name) {
         updateColorName(colorToUpdate.name, newName.trim());
@@ -966,7 +975,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
             <Palette className="w-5 h-5" />
-            Colors 
+            Colors
             <span className="text-sm font-normal text-muted-foreground">
               ({filteredRoleGroups.length} role groups)
             </span>
@@ -993,7 +1002,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
             color={currentColorValue}
             onChange={handleColorPickerChange}
           />
-          
+
           {/* Color Swatches */}
           {currentSwatches && currentSwatches.length > 0 && (
             <div>
@@ -1008,15 +1017,15 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
                     title={`Assign to ${swatch.displayName || swatch.name}`}
                     className={cn(
                       "h-6 w-6 cursor-pointer rounded-md border transition-all hover:ring-1 hover:ring-ring focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background",
-                      selectedSwatch?.name === swatch.name 
-                        ? "border-ring ring-2 ring-ring" 
+                      selectedSwatch?.name === swatch.name
+                        ? "border-ring ring-2 ring-ring"
                         : "border-border/50"
                     )}
                     style={{ backgroundColor: swatch.color }}
                     onClick={() => handleSwatchSelect(swatch)}
                   />
                 ))}
-                
+
                 {/* Add new color button */}
                 <button
                   type="button"
@@ -1076,25 +1085,25 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
             const getGroupTitle = (group: RoleGroup) => {
               const subCategory = group.subCategoryName;
               const roles = group.roles.map(r => r.role);
-              
+
               // Handle special cases for better naming
               if (subCategory === "Sidebar") {
                 // Keep all sidebar roles under one unified title
                 return "Sidebar Navigation";
               }
-              
+
               if (subCategory === "Chart Palette") {
                 return "Chart Colors";
               }
-              
+
               if (subCategory === "Muted Content") {
                 return "Muted Text";
               }
-              
+
               if (subCategory === "Interaction State") {
                 return "Focus Ring";
               }
-              
+
               // For role pairs, use the primary role name
               if (roles.length === 2) {
                 const primaryRole = roles.find(role => !role.includes('-foreground'));
@@ -1102,7 +1111,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
                   return primaryRole.charAt(0).toUpperCase() + primaryRole.slice(1).replace(/-/g, ' ');
                 }
               }
-              
+
               // For single roles, use the role name if different from subcategory
               if (roles.length === 1) {
                 const roleName = roles[0].replace(/-/g, ' ');
@@ -1111,70 +1120,70 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
                   return formattedRole;
                 }
               }
-              
+
               return subCategory;
             };
-            
+
             return (
-            <div key={`${roleGroup.subCategoryName}-${groupIndex}`} className="p-2  rounded-lg  transition-all duration-200 s hover:bg-card/50 ">
-              {/* Role Group Content */}
-              <div className="space-y-2">
-                {/* Group Title */}
-                <h4 className="text-sm font-medium text-foreground opacity-60">{getGroupTitle(roleGroup)}</h4>
-                
-                {/* Overlapping Color Circles */}
-                <div className="flex -space-x-4">
-                  {roleGroup.roles.map((roleAssignment, index) => {
-                    // Get the current color directly from live brand state instead of using potentially stale data
-                    const colorHex = getCurrentColorForRole(roleAssignment.role);
-                    const assignedColor = roleAssignment.assignedColor;
-                    const roleTitle = roleAssignment.role.replace(/-/g, ' ');
-                    const isSelected = selectedRole === roleAssignment.role;
-                    
-                    return (
-                      <div key={roleAssignment.role} className="relative">
-                        {assignedColor ? (
-                          <Button
-                            className={cn(
-                              "w-14 h-14 rounded-full border border-border/60 shadow-sm hover:shadow-md transition-all duration-200 p-0 relative",
-                              isSelected && "ring-1 ring-ring ring-offset-2 ring-offset-background  shadow-lg z-20"
-                            )}
-                            style={{ 
-                              backgroundColor: colorHex,
-                              zIndex: isSelected ? 20 : 10 - index 
-                            }}
-                            title={`${roleTitle} - Click to edit`}
-                            onClick={() => handleRoleSelect(roleAssignment.role)}
-                            variant="outline"
-                          >
-                            <div className="h-full w-full" />
-                            {isSelected && (
-                              <div className="absolute inset-0 rounded-full border-2 border-white/80 dark:border-black/80" />
-                            )}
-                          </Button>
-                        ) : (
-                          <Button
-                            className={cn(
-                              "w-14 h-14 rounded-full border border-border/40 bg-muted shadow-sm hover:shadow-md transition-all duration-200 p-0 relative",
-                              isSelected && "ring-4 ring-ring ring-offset-4 ring-offset-background scale-110 shadow-lg z-20"
-                            )}
-                            style={{ zIndex: isSelected ? 20 : 10 - index }}
-                            title={`${roleTitle} - No color assigned, click to edit`}
-                            onClick={() => handleRoleSelect(roleAssignment.role)}
-                            variant="outline"
-                          >
-                            <Hash className="w-4 h-4 text-muted-foreground" />
-                            {isSelected && (
-                              <div className="absolute inset-0 rounded-full border-2 border-ring/60" />
-                            )}
-                          </Button>
-                        )}
-                      </div>
-                    );
-                  })}
+              <div key={`${roleGroup.subCategoryName}-${groupIndex}`} className="p-2  rounded-lg  transition-all duration-200 s hover:bg-card/50 ">
+                {/* Role Group Content */}
+                <div className="space-y-2">
+                  {/* Group Title */}
+                  <h4 className="text-sm font-medium text-foreground opacity-60">{getGroupTitle(roleGroup)}</h4>
+
+                  {/* Overlapping Color Circles */}
+                  <div className="flex -space-x-4">
+                    {roleGroup.roles.map((roleAssignment, index) => {
+                      // Get the current color directly from live brand state instead of using potentially stale data
+                      const colorHex = getCurrentColorForRole(roleAssignment.role);
+                      const assignedColor = roleAssignment.assignedColor;
+                      const roleTitle = roleAssignment.role.replace(/-/g, ' ');
+                      const isSelected = selectedRole === roleAssignment.role;
+
+                      return (
+                        <div key={roleAssignment.role} className="relative">
+                          {assignedColor ? (
+                            <Button
+                              className={cn(
+                                "w-14 h-14 rounded-full border border-border/60 shadow-sm hover:shadow-md transition-all duration-200 p-0 relative",
+                                isSelected && "ring-1 ring-ring ring-offset-2 ring-offset-background  shadow-lg z-20"
+                              )}
+                              style={{
+                                backgroundColor: colorHex,
+                                zIndex: isSelected ? 20 : 10 - index
+                              }}
+                              title={`${roleTitle} - Click to edit`}
+                              onClick={() => handleRoleSelect(roleAssignment.role)}
+                              variant="outline"
+                            >
+                              <div className="h-full w-full" />
+                              {isSelected && (
+                                <div className="absolute inset-0 rounded-full border-2 border-white/80 dark:border-black/80" />
+                              )}
+                            </Button>
+                          ) : (
+                            <Button
+                              className={cn(
+                                "w-14 h-14 rounded-full border border-border/40 bg-muted shadow-sm hover:shadow-md transition-all duration-200 p-0 relative",
+                                isSelected && "ring-4 ring-ring ring-offset-4 ring-offset-background scale-110 shadow-lg z-20"
+                              )}
+                              style={{ zIndex: isSelected ? 20 : 10 - index }}
+                              title={`${roleTitle} - No color assigned, click to edit`}
+                              onClick={() => handleRoleSelect(roleAssignment.role)}
+                              variant="outline"
+                            >
+                              <Hash className="w-4 h-4 text-muted-foreground" />
+                              {isSelected && (
+                                <div className="absolute inset-0 rounded-full border-2 border-ring/60" />
+                              )}
+                            </Button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
             );
           })}
         </div>
