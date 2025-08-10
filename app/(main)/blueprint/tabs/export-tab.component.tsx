@@ -4,17 +4,23 @@ import { useState } from "react";
 import { Button } from "@/features/unorganized-components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/unorganized-components/ui/card";
 import { Badge } from "@/features/unorganized-components/ui/badge";
-import { 
-  Copy, 
-  Download, 
-  Check, 
-  Palette, 
+import {
+  Copy,
+  Download,
+  Check,
+  Palette,
   Type,
   Info,
   Zap,
   Package
 } from "lucide-react";
-import { generateGlobalCss, type Brand, type ColorToken, type FontToken } from "../brand-utils";
+import {
+  generateGlobalCssV2, // ⬅️ use the new generator
+  type Brand,
+  type ColorToken,
+  type FontToken
+} from "../brand-utils";
+import { formatHex } from "culori";
 import { useBrand } from "../BrandContext";
 
 interface ExportTabProps {
@@ -28,21 +34,22 @@ export function ExportTab({ activeThemeKey }: ExportTabProps) {
   // Get theme display name
   const getThemeDisplayName = (key: string) => {
     const specialNames: Record<string, string> = {
-      'nextgen': 'Nextgen',
-      'violet-sky': 'Violet Sky',
-      'sageMeadow': 'Sage Meadow',
-      'neo-brutalism': 'Neo Brutalism',
-      'elegantLuxury': 'Elegant Luxury',
-      'lilacDaylight': 'Lilac Daylight',
-      'neonPop': 'Neon Pop',
-      'cyberPulse': 'Cyber Pulse',
-      'sageMinimal': 'Sage Minimal'
+      nextgen: "Nextgen",
+      "violet-sky": "Violet Sky",
+      sageMeadow: "Sage Meadow",
+      "neo-brutalism": "Neo Brutalism",
+      elegantLuxury: "Elegant Luxury",
+      lilacDaylight: "Lilac Daylight",
+      neonPop: "Neon Pop",
+      cyberPulse: "Cyber Pulse",
+      sageMinimal: "Sage Minimal"
     };
 
     if (specialNames[key]) return specialNames[key];
-    return key.split('-')
+    return key
+      .split("-")
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .join(" ");
   };
 
   // Handle copy functionality
@@ -54,15 +61,15 @@ export function ExportTab({ activeThemeKey }: ExportTabProps) {
         setCopiedItems(prev => ({ ...prev, [itemKey]: false }));
       }, 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 
   // Handle download functionality
-  const handleDownload = (content: string, filename: string, type: string = 'text/css') => {
+  const handleDownload = (content: string, filename: string, type: string = "text/css") => {
     const blob = new Blob([content], { type });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
@@ -75,12 +82,130 @@ export function ExportTab({ activeThemeKey }: ExportTabProps) {
   const generateExports = () => {
     if (!brand) return null;
 
-    const css = generateGlobalCss(brand);
-    
+    // NEW: use v2 generator (dark default; emits optional light overrides if you pass them)
+    const css = generateGlobalCssV2(brand, {
+      emitLightTheme: true
+      // lightOverrides: { /* you can override specific roles here later */ }
+    });
+
+    // Build a complete typography variable section from current brand and CSS vars
+    const roles = [
+      "body",
+      "p",
+      "default",
+      "blockquote",
+      "heading",
+      "display",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "button",
+      "label",
+      "input",
+      "caption",
+      "badge",
+      "code",
+      "mono",
+      "serif",
+      "sans"
+    ] as const;
+
+    const getCssVar = (name: string, fallback: string = ""): string => {
+      if (typeof window === "undefined") return fallback;
+      const v = getComputedStyle(document.documentElement).getPropertyValue(`--${name}`).trim();
+      return v || fallback;
+    };
+
+    // Snapshot all current custom properties from :root so exported CSS matches runtime precisely
+    const snapshotRoot = (() => {
+      if (typeof window === "undefined") return "";
+      const cs = getComputedStyle(document.documentElement);
+      const out: string[] = [];
+      for (let i = 0; i < cs.length; i++) {
+        const propName = cs.item(i);
+        if (!propName || !propName.startsWith("--")) continue;
+        const val = cs.getPropertyValue(propName).trim();
+        if (!val) continue;
+        out.push(`  ${propName}: ${val};`);
+      }
+      out.sort();
+      return out.join("\n");
+    })();
+
+    // Map role -> owning font token
+    const roleToFont = new Map<string, FontToken>();
+    brand.fonts.forEach(f => {
+      (f.roles || []).forEach(r => {
+        if (!roleToFont.has(r)) roleToFont.set(r, f);
+      });
+    });
+
+    const isHeadingRole = (r: string) =>
+      ["h1", "h2", "h3", "h4", "h5", "h6", "heading", "display"].includes(r);
+
+    const resolveFontForRole = (role: string): FontToken | undefined => {
+      return (
+        roleToFont.get(role) ||
+        (isHeadingRole(role)
+          ? roleToFont.get("heading") || roleToFont.get("display")
+          : undefined) ||
+        roleToFont.get("body") ||
+        brand.fonts[0]
+      );
+    };
+
+    const resolveWeightForRole = (role: string): number | undefined => {
+      const owner = resolveFontForRole(role);
+      if (!owner) return undefined;
+      const weightName = owner.fontWeights?.[role];
+      if (weightName && owner.weights?.[weightName] !== undefined) return owner.weights[weightName];
+      if (owner.weights?.regular !== undefined) return owner.weights.regular;
+      const first = owner.weights ? Object.values(owner.weights)[0] : undefined;
+      return typeof first === "number" ? first : undefined;
+    };
+
+    const resolveSizeForRole = (role: string): string | undefined => {
+      const owner = resolveFontForRole(role);
+      const rem = owner?.fontSizes?.[role];
+      return typeof rem === "number" ? `${rem}rem` : undefined;
+    };
+
+    const headingFont =
+      resolveFontForRole("heading")?.family ||
+      resolveFontForRole("display")?.family ||
+      resolveFontForRole("body")?.family ||
+      "system-ui, sans-serif";
+    const bodyFont = resolveFontForRole("body")?.family || "system-ui, sans-serif";
+
+    const extraTypographyCss = `
+/* === Typography Variables (generated) === */
+:root{
+${snapshotRoot}
+  --font-heading: ${headingFont};
+  --font-body: ${bodyFont};
+}
+
+/* === Typography Consumption (generated) === */
+h1{font-family:var(--font-h1,var(--font-heading,var(--font-body)));font-weight:var(--font-weight-h1,700);font-size:var(--font-size-h1,2.25rem);line-height:var(--line-height-h1,1.1);letter-spacing:var(--letter-spacing-h1,0em)}
+h2{font-family:var(--font-h2,var(--font-heading,var(--font-body)));font-weight:var(--font-weight-h2,700);font-size:var(--font-size-h2,1.875rem);line-height:var(--line-height-h2,1.15);letter-spacing:var(--letter-spacing-h2,0em)}
+h3{font-family:var(--font-h3,var(--font-heading,var(--font-body)));font-weight:var(--font-weight-h3,600);font-size:var(--font-size-h3,1.5rem);line-height:var(--line-height-h3,1.2);letter-spacing:var(--letter-spacing-h3,0em)}
+h4{font-family:var(--font-h4,var(--font-heading,var(--font-body)));font-weight:var(--font-weight-h4,600);font-size:var(--font-size-h4,1.25rem);line-height:var(--line-height-h4,1.25);letter-spacing:var(--letter-spacing-h4,0em)}
+h5{font-family:var(--font-h5,var(--font-heading,var(--font-body)));font-weight:var(--font-weight-h5,600);font-size:var(--font-size-h5,1.125rem);line-height:var(--line-height-h5,1.3);letter-spacing:var(--letter-spacing-h5,0em)}
+h6{font-family:var(--font-h6,var(--font-heading,var(--font-body)));font-weight:var(--font-weight-h6,600);font-size:var(--font-size-h6,1rem);line-height:var(--line-height-h6,1.35);letter-spacing:var(--letter-spacing-h6,0em)}
+p,span,li{font-family:var(--font-body);font-weight:var(--font-weight-p,400);font-size:var(--font-size-p,1rem);line-height:var(--line-height-p,1.5);letter-spacing:var(--letter-spacing-p,0em)}
+blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(--font-weight-blockquote,var(--font-weight-p,400));font-size:var(--font-size-blockquote,var(--font-size-p,1rem));line-height:var(--line-height-blockquote,var(--line-height-p,1.5));letter-spacing:var(--letter-spacing-blockquote,var(--letter-spacing-p,0em))}
+[data-slot="button"],button{font-family:var(--font-button,var(--font-body));font-weight:var(--font-weight-button,600);font-size:var(--font-size-button,0.875rem);line-height:var(--line-height-button,1.2);letter-spacing:var(--letter-spacing-button,0em)}
+`;
+
+    const fullCss = `${css}\n\n${extraTypographyCss}`;
+
     // Generate JSON config
     const jsonConfig = {
       name: getThemeDisplayName(activeThemeKey),
-      mode: 'light',
+      mode: "dark", // new generator is dark by default
       colors: brand.colors.map(color => ({
         name: color.name,
         variable: color.variableName,
@@ -91,54 +216,40 @@ export function ExportTab({ activeThemeKey }: ExportTabProps) {
       fonts: brand.fonts.map(font => ({
         family: font.family,
         roles: font.roles,
-        distributor: font.distributor
+        distributor: font.distributor,
+        weights: font.weights,
+        fontWeights: font.fontWeights,
+        fontSizes: font.fontSizes
       })),
-      cssVariables: brand.themeCssVariables
+      typography: Object.fromEntries(
+        roles.map(role => {
+          const owner = resolveFontForRole(role);
+          const weight = resolveWeightForRole(role);
+          const size = resolveSizeForRole(role);
+          const lh = getCssVar(`line-height-${role}`, "");
+          const ls = getCssVar(`letter-spacing-${role}`, "");
+          return [
+            role,
+            {
+              fontFamily: owner?.family || null,
+              fontWeight: weight ?? null,
+              fontSizeRem: size ? parseFloat(size) : null,
+              lineHeight: lh ? parseFloat(lh) : null,
+              letterSpacingEm: ls ? parseFloat(ls) : null
+            }
+          ];
+        })
+      )
     };
 
-    // Generate Tailwind v4 CSS snippet
-    const tailwindConfig = `
-/* Tailwind v4 CSS with @theme inline */
-@import "tailwindcss";
+    // Tailwind v4 CSS preview = same as full globals
+    const tailwindConfig = fullCss;
 
-:root {
-${brand.colors.map(color => {
-  return `  --${color.variableName}: ${color.oklch};`;
-}).join('\n')}
-${Object.entries(brand.themeCssVariables).map(([key, value]) => {
-  return `  --${key}: ${value};`;
-}).join('\n')}
-}
-
-@theme inline {
-${brand.colors.map(color => {
-  return `  --color-${color.variableName.replace('--', '')}: var(--${color.variableName});`;
-}).join('\n')}
-${Object.entries(brand.themeCssVariables).map(([key, value]) => {
-  if (key.includes('radius')) {
-    return `  --radius-lg: var(--${key});
-  --radius-md: calc(var(--${key}) - 2px);
-  --radius-sm: calc(var(--${key}) - 4px);
-  --radius-xl: calc(var(--${key}) + 4px);`;
-  }
-  return `  --color-${key}: var(--${key});`;
-}).join('\n')}
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}`;
-
-    return { css, jsonConfig: JSON.stringify(jsonConfig, null, 2), tailwindConfig };
+    return { css: fullCss, jsonConfig: JSON.stringify(jsonConfig, null, 2), tailwindConfig };
   };
 
   const exports = generateExports();
-  
+
   if (!brand || !exports) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -151,7 +262,7 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
     colors: brand.colors.length,
     fonts: brand.fonts.length,
     colorCategories: [...new Set(brand.colors.map(c => c.category))].length,
-    roles: [...new Set(brand.colors.flatMap(c => c.roles))].length,
+    roles: [...new Set(brand.colors.flatMap(c => c.roles))].length
   };
 
   return (
@@ -185,12 +296,14 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
             <div className="space-y-1">
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Theme:</span>
-                <span className="font-medium truncate ml-1 text-right">{getThemeDisplayName(activeThemeKey)}</span>
+                <span className="font-medium truncate ml-1 text-right">
+                  {getThemeDisplayName(activeThemeKey)}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Mode:</span>
                 <Badge variant="secondary" className="text-xs h-4 px-1.5">
-                  Light
+                  Dark (default)
                 </Badge>
               </div>
             </div>
@@ -211,16 +324,21 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
             <span className="text-xs font-medium">Primary Colors:</span>
             <div className="flex gap-1 flex-wrap">
               {brand.colors
-                .filter(color => color.roles.includes('primary') || color.roles.includes('secondary') || color.roles.includes('accent'))
+                .filter(
+                  color =>
+                    color.roles.includes("primary") ||
+                    color.roles.includes("secondary") ||
+                    color.roles.includes("accent")
+                )
                 .slice(0, 8)
-                .map((color, index) => (
+                .map(color => (
                   <div
                     key={color.variableName}
                     className="w-5 h-5 rounded border border-border shadow-sm flex-shrink-0"
                     style={{
-                      backgroundColor: color.oklchLight,
+                      backgroundColor: formatHex(color.oklch as string)
                     }}
-                    title={`${color.name} (${color.roles.join(', ')})`}
+                    title={`${color.name} (${color.roles.join(", ")})`}
                   />
                 ))}
             </div>
@@ -233,16 +351,11 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
               <div className="space-y-0.5">
                 {brand.fonts.slice(0, 2).map((font, index) => (
                   <div key={index} className="text-xs text-muted-foreground">
-                    <span 
-                      style={{ fontFamily: font.family }}
-                      className="font-medium text-foreground"
-                    >
-                      {font.family.split(',')[0].replace(/['"]/g, '').trim()}
+                    <span style={{ fontFamily: font.family }} className="font-medium text-foreground">
+                      {font.family.split(",")[0].replace(/['"]/g, "").trim()}
                     </span>
-                    {' · '}
-                    <span className="text-xs">
-                      {font.roles?.join(', ') || 'general'}
-                    </span>
+                    {" · "}
+                    <span className="text-xs">{font.roles?.join(", ") || "general"}</span>
                   </div>
                 ))}
               </div>
@@ -267,16 +380,14 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
                 <Type className="w-3 h-3 text-muted-foreground flex-shrink-0" />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium">Complete CSS File</p>
-                  <p className="text-xs text-muted-foreground">
-                    Full styles with variables and classes
-                  </p>
+                  <p className="text-xs text-muted-foreground">Full styles with variables and classes</p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5 ml-2">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleCopy(exports.css, 'css')}
+                  onClick={() => handleCopy(exports.css, "css")}
                   className="h-7 px-2.5 text-xs"
                 >
                   {copiedItems.css ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
@@ -300,16 +411,14 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
                 <Package className="w-3 h-3 text-muted-foreground flex-shrink-0" />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium">Theme Config (JSON)</p>
-                  <p className="text-xs text-muted-foreground">
-                    Structured data for integrations
-                  </p>
+                  <p className="text-xs text-muted-foreground">Structured data for integrations</p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5 ml-2">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleCopy(exports.jsonConfig, 'json')}
+                  onClick={() => handleCopy(exports.jsonConfig, "json")}
                   className="h-7 px-2.5 text-xs"
                 >
                   {copiedItems.json ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
@@ -317,7 +426,7 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleDownload(exports.jsonConfig, `${activeThemeKey}-config.json`, 'application/json')}
+                  onClick={() => handleDownload(exports.jsonConfig, `${activeThemeKey}-config.json`, "application/json")}
                   className="h-7 px-2.5 text-xs"
                 >
                   <Download className="w-3 h-3" />
@@ -334,7 +443,9 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
           <CardTitle className="text-sm flex items-center gap-2">
             <Palette className="w-3 h-3" />
             Tailwind v4 CSS
-            <Badge variant="outline" className="text-xs">Preview</Badge>
+            <Badge variant="outline" className="text-xs">
+              Preview
+            </Badge>
           </CardTitle>
         </CardHeader>
 
@@ -356,7 +467,7 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
               </div>
             </div>
           </div>
-          
+
           <div className="relative">
             <div className="h-64 overflow-auto bg-slate-950">
               <pre className="p-3 text-xs leading-relaxed">
@@ -365,7 +476,7 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
                 </code>
               </pre>
             </div>
-            
+
             {/* Gradient overlay */}
             <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-slate-950 to-transparent pointer-events-none"></div>
           </div>
@@ -380,12 +491,10 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
               </div>
               <div className="min-w-0 flex-1">
                 <h4 className="font-medium text-xs">Replace globals.css</h4>
-                <p className="text-xs text-muted-foreground">
-                  Download and replace your existing CSS file
-                </p>
+                <p className="text-xs text-muted-foreground">Download and replace your existing CSS file</p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-2">
               <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <span className="text-xs font-semibold text-primary">2</span>
@@ -393,7 +502,8 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
               <div className="min-w-0 flex-1">
                 <h4 className="font-medium text-xs">Use Tailwind classes</h4>
                 <p className="text-xs text-muted-foreground">
-                  <code className="bg-muted px-1 rounded text-xs">bg-primary</code>, <code className="bg-muted px-1 rounded text-xs">text-foreground</code>
+                  <code className="bg-muted px-1 rounded text-xs">bg-primary</code>,{" "}
+                  <code className="bg-muted px-1 rounded text-xs">text-foreground</code>
                 </p>
               </div>
             </div>
@@ -403,7 +513,7 @@ ${Object.entries(brand.themeCssVariables).map(([key, value]) => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => handleCopy(exports.tailwindConfig, 'tailwind')}
+              onClick={() => handleCopy(exports.tailwindConfig, "tailwind")}
               className="h-8 px-3 text-xs flex-1"
             >
               {copiedItems.tailwind ? <Check className="w-3 h-3 mr-1.5" /> : <Copy className="w-3 h-3 mr-1.5" />}

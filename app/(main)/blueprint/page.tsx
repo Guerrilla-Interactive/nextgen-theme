@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/features/unorganized-components/ui/button";
+import { Toggle } from "@/features/unorganized-components/ui/toggle";
 import HomepagePreview from "./previews/HomepagePreview";
 import GalleryPreview from "./previews/GalleryPreview";
 import ArtistPreview from "./previews/ArtistPreview";
@@ -22,7 +23,8 @@ import {
   Image,
   Palette,
   Settings,
-  Monitor
+  Monitor,
+  MousePointer
 } from "lucide-react";
 import { ExportTab } from "./tabs/export-tab.component";
 import { ColorsTab } from "./tabs/colors-tab.component";
@@ -52,7 +54,7 @@ function PageContent() {
     brand
   } = useBrand();
 
-  const { activeTab } = useUIContext();
+  const { activeTab, showTokenTargeting, setShowTokenTargeting } = useUIContext();
 
   /* ──────────────────────────────────────────────────────────
    * Local state
@@ -182,6 +184,25 @@ function PageContent() {
       <div className="flex flex-1 overflow-hidden">
         {/* Preview pane */}
         <div className="flex-1 relative bg-muted p-4 overflow-y-auto overflow-x-hidden">
+          {/* Token targeting toggle (top-left) */}
+          <div className="absolute top-6 left-6 z-50">
+            <div className="relative group">
+              <Toggle
+                size="default"
+                pressed={showTokenTargeting}
+                onPressedChange={(p) => setShowTokenTargeting(p)}
+                aria-label="Toggle token targeting overlays"
+                className="backdrop-blur supports-[backdrop-filter]:bg-card/70"
+                title={showTokenTargeting ? 'Hide token targeting' : 'Show token targeting'}
+              >
+                <MousePointer className="h-5 w-5" />
+              </Toggle>
+              <div className="pointer-events-none absolute left-12 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-popover text-popover-foreground border border-border rounded px-2 py-1 shadow">
+                {showTokenTargeting ? 'Targeting: On' : 'Targeting: Off'}
+              </div>
+            </div>
+          </div>
+
           {/* Preview‑type toggle */}
           <div className="absolute top-6 right-6 z-50">
             <Card className="p-2 shadow-lg">
@@ -215,6 +236,7 @@ function PageContent() {
               transform: `translateX(-50%) scale(${scale})`,
               transformOrigin: 'top center'
             }}
+            data-typography-scope
           >
             {previewType === 'saas' ? <HomepagePreview /> :
               previewType === 'gallery' ? <GalleryPreview /> :
@@ -225,7 +247,8 @@ function PageContent() {
 
         {/* Decision / controls */}
         <div className="w-[506px] min-w-[20rem] bg-popover border-l border-border p-8 overflow-y-auto">
-          {currentStep === 0 ? (
+          {/* Keep all tabs mounted; toggle visibility to preload effects */}
+          <div className={currentStep === 0 ? 'block' : 'hidden'}>
             <ThemeChooser
               themeKeys={Object.keys(availableThemes)}
               activeKey={activeThemeKey}
@@ -236,17 +259,22 @@ function PageContent() {
               getThemeFonts={getThemeFonts}
               cleanFamily={cleanFamily}
             />
-          ) : currentStep === 1 ? (
+          </div>
+          <div className={currentStep === 1 ? 'block' : 'hidden'}>
             <ColorsTab activeThemeKey={activeThemeKey} />
-          ) : currentStep === 2 ? (
+          </div>
+          <div className={currentStep === 2 ? 'block' : 'hidden'}>
             <TypographyTab activeThemeKey={activeThemeKey} />
-          ) : currentStep === 3 ? (
+          </div>
+          <div className={currentStep === 3 ? 'block' : 'hidden'}>
             <InteractionTab activeThemeKey={activeThemeKey} />
-          ) : currentStep === 4 ? (
+          </div>
+          <div className={currentStep === 4 ? 'block' : 'hidden'}>
             <ExportTab activeThemeKey={activeThemeKey} />
-          ) : (
+          </div>
+          <div className={currentStep >= 0 && currentStep <= 4 ? 'hidden' : 'block'}>
             <div>Decision Panel – {steps[currentStep]}</div>
-          )}
+          </div>
         </div>
       </div>
 

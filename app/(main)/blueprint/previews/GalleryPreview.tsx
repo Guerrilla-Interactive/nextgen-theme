@@ -8,13 +8,14 @@ import {
   CardFooter,
 } from "@/features/unorganized-components/ui/card";
 import { Button } from "@/features/unorganized-components/ui/button";
-import { Camera, Heart, Share2, User, Calendar, MapPin, Eye, Star, ArrowRight, Play } from "lucide-react";
+import { Camera, Heart, Share2, User, Eye, Star, ArrowRight, Play } from "lucide-react";
 import { Separator } from "@/features/unorganized-components/ui/separator";
 import { Input } from "@/features/unorganized-components/ui/input";
 import { Badge } from "@/features/unorganized-components/ui/badge";
 import { Avatar, AvatarFallback } from "@/features/unorganized-components/ui/avatar";
 import { useBrand } from "../BrandContext";
-import { FontToken } from "../brand-utils";
+import type { FontToken } from "../brand-utils";
+import { TypographyElement, CombinedElement, ColorElement } from "../components/token-targeting";
 
 export default function GalleryPreview() {
   const { brand, processedBrand, getFontWeightForRole, getFontSizeForRole } = useBrand();
@@ -58,6 +59,7 @@ export default function GalleryPreview() {
           }
         }
 
+        // Watch for changes to the brand theme style element
         if (mutation.type === 'childList') {
           mutation.addedNodes.forEach((node) => {
             if (node.nodeType === Node.ELEMENT_NODE) {
@@ -69,6 +71,7 @@ export default function GalleryPreview() {
           });
         }
 
+        // Watch for content changes in existing brand theme style element
         if (mutation.type === 'characterData') {
           const parentElement = mutation.target.parentElement;
           if (parentElement?.tagName === 'STYLE' && parentElement.hasAttribute('data-brand-theme')) {
@@ -188,14 +191,10 @@ export default function GalleryPreview() {
     const sizeKey = DEFAULT_ROLE_SIZE_ASSIGNMENTS[role] || 'text-base';
     const fontSize = `${TAILWIND_FONT_SIZES[sizeKey] || 1}rem`;
 
-    const fontWeight = assignedFont && getFontWeightForRole ?
-      assignedFont.weights?.[getFontWeightForRole(assignedFont.name, role) || 'regular'] || fallbackWeight
-      : fallbackWeight;
-
     return {
       fontFamily,
       fontSize,
-      fontWeight,
+      fontWeight: fallbackWeight,
     };
   };
 
@@ -256,38 +255,35 @@ export default function GalleryPreview() {
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                 <Camera className="w-4 h-4 text-white" />
               </div>
+              <TypographyElement elementType="SPAN">
               <span
                 className="text-2xl font-light tracking-wide"
                 style={getRoleStyle('logo', '300')}
               >
                 Lumina
               </span>
+              </TypographyElement>
             </div>
             <div className="hidden md:flex items-center space-x-8">
+              {[
+                { label: 'EXHIBITIONS', role: 'nav' },
+                { label: 'ARTISTS', role: 'nav' },
+                { label: 'COLLECTIONS', role: 'nav' },
+              ].map(item => (
+                <TypographyElement key={item.label} elementType="SPAN">
               <a
                 href="#"
                 className="text-sm tracking-wide hover:text-primary transition-colors"
-                style={getRoleStyle('nav', '400')}
+                    style={getRoleStyle(item.role, '400')}
               >
-                EXHIBITIONS
+                    {item.label}
               </a>
-              <a
-                href="#"
-                className="text-sm tracking-wide hover:text-primary transition-colors"
-                style={getRoleStyle('nav', '400')}
-              >
-                ARTISTS
-              </a>
-              <a
-                href="#"
-                className="text-sm tracking-wide hover:text-primary transition-colors"
-                style={getRoleStyle('nav', '400')}
-              >
-                COLLECTIONS
-              </a>
+                </TypographyElement>
+              ))}
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            <CombinedElement typographyRole="BUTTON" colorRole="secondary">
             <Button
               variant="ghost"
               className="tracking-wide"
@@ -295,6 +291,8 @@ export default function GalleryPreview() {
             >
               Search
             </Button>
+            </CombinedElement>
+            <CombinedElement typographyRole="BUTTON" colorRole="primary">
             <Button
               className="tracking-wide"
               style={getRoleStyle('button', '500')}
@@ -302,6 +300,7 @@ export default function GalleryPreview() {
             >
               Visit
             </Button>
+            </CombinedElement>
           </div>
         </nav>
 
@@ -317,25 +316,32 @@ export default function GalleryPreview() {
           <div className="absolute inset-0 bg-black/40"></div>
           <div className="relative h-full flex items-center justify-center px-8">
             <div className="text-center text-white max-w-4xl">
+              <TypographyElement elementType="H1">
               <h1
                 className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
                 style={getRoleStyle('display', '700')}
               >
                 Lumina Gallery
               </h1>
+              </TypographyElement>
+              <TypographyElement elementType="P">
               <p
                 className="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed"
                 style={getRoleStyle('subtitle', '400')}
               >
                 Discover extraordinary contemporary art from emerging and established artists around the world
               </p>
+              </TypographyElement>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <CombinedElement typographyRole="BUTTON" colorRole="primary">
                 <Button
                   className="bg-white text-black hover:bg-white/90 px-8 py-3 text-lg"
                   style={getRoleStyle('button', '600')}
                 >
                   Explore Collection
                 </Button>
+                </CombinedElement>
+                <CombinedElement typographyRole="BUTTON" colorRole="secondary">
                 <Button
                   variant="outline"
                   className="border-white text-white hover:bg-white hover:text-black px-8 py-3 text-lg"
@@ -343,6 +349,7 @@ export default function GalleryPreview() {
                 >
                   View Exhibitions
                 </Button>
+                </CombinedElement>
               </div>
             </div>
           </div>
@@ -945,12 +952,14 @@ export default function GalleryPreview() {
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                 <Camera className="w-4 h-4 text-white" />
               </div>
+              <TypographyElement elementType="SPAN">
               <span
                 className="text-xl font-light tracking-wide"
                 style={getRoleStyle('logo', '300')}
               >
                 Lumina
               </span>
+              </TypographyElement>
             </div>
 
             <div className="flex items-center space-x-8 text-sm">

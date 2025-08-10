@@ -202,7 +202,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     updateColorName
   } = useBrand();
 
-  const { selectedColorRole } = useUIContext();
+  const { selectedColorRole, setSelectedColorRole } = useUIContext();
 
   // Replace search state with selected role state
   const [selectedRole, setSelectedRole] = useState<Role>('primary');
@@ -723,6 +723,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
   // Handle role selection (when clicking on a color circle)
   const handleRoleSelect = (role: Role) => {
     setSelectedRole(role);
+    setSelectedColorRole(role);
   };
 
   // Handle swatch selection for the currently selected role
@@ -1146,7 +1147,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
                             <Button
                               className={cn(
                                 "w-14 h-14 rounded-full border border-border/60 shadow-sm hover:shadow-md transition-all duration-200 p-0 relative",
-                                isSelected && "ring-1 ring-ring ring-offset-2 ring-offset-background  shadow-lg z-20"
+                                isSelected && "ring-1 ring-ring ring-offset-2 ring-offset-background  shadow-lg z-20 scale-120"
                               )}
                               style={{
                                 backgroundColor: colorHex,

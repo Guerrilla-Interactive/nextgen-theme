@@ -1,124 +1,100 @@
 /*Mak
  * Shared types and utility functions for brand definitions.
+ * Tailwind v4 + shadcn/ui CSS generator included.
+ *
+ * Install peer deps if needed:
+ *   npm i culori
  */
+
 import { wcagContrast } from 'culori/fn';
+import { parse, converter } from 'culori';
+
+/* ────────────────────────────────────────────────────────────
+   Influence / roles
+   ──────────────────────────────────────────────────────────── */
 
 export const influenceHierarchy = {
-    /** Primary actionable hue or surface */                            primary: 10,
-    "primary-foreground": 9.9,
-    /** Highest contrast background colour */                         background: 9,
-    /** Highest contrast foreground (text) colour */                  foreground: 9,
-    /** Secondary actionable hue or surface */                         secondary: 8,
-    "secondary-foreground": 7.9,
-    /** Sidebar surface */                                               sidebar: 7.5,
-    "sidebar-foreground": 7.4,
-    "sidebar-primary": 7.3,
-    "sidebar-primary-foreground": 7.2,
-    "sidebar-accent": 7.1,
-    "sidebar-accent-foreground": 7.0,
-    "sidebar-border": 6.9,
-    "sidebar-ring": 6.8,
-    /** Standard border colour */                                         border: 7,
-    /** Form control foregrounds/backgrounds */                           input: 7,
-    "input-foreground": 6.9,
-    /** Outline / focus‑ring colour */                                      ring: 6,
-    /** Error & destructive messaging */                              destructive: 5,
-    "destructive-foreground": 4.9,
-    /** Subdued surface background */                                      muted: 4,
-    /** Subdued surface text */                                "muted-foreground": 4,
-    /** Accent highlight / tertiary CTA */                               accent: 3,
-    "accent-foreground": 2.9,
-    /** Shared low‑elevation surfaces */                                    card: 2,
-    popover: 2,
-    /** Specific foregrounds for surfaces, if directly assigned */
-    "card-foreground": 1.9, 
-    "popover-foreground": 1.9,
-    
-    "tooltip-background": 2,
-    "chart-outline": 2,
-    "chart-1": 1,
-    "chart-2": 1,
-    "chart-3": 1,
-    "chart-4": 1,
-    "chart-5": 1
-  } as const;
-  
+  /** Primary actionable hue or surface */                            primary: 10,
+  "primary-foreground": 9.9,
+  /** Highest contrast background colour */                         background: 9,
+  /** Highest contrast foreground (text) colour */                  foreground: 9,
+  /** Secondary actionable hue or surface */                         secondary: 8,
+  "secondary-foreground": 7.9,
+  /** Sidebar surface */                                               sidebar: 7.5,
+  "sidebar-foreground": 7.4,
+  "sidebar-primary": 7.3,
+  "sidebar-primary-foreground": 7.2,
+  "sidebar-accent": 7.1,
+  "sidebar-accent-foreground": 7.0,
+  "sidebar-border": 6.9,
+  "sidebar-ring": 6.8,
+  /** Standard border colour */                                         border: 7,
+  /** Form control foregrounds/backgrounds */                           input: 7,
+  "input-foreground": 6.9,
+  /** Outline / focus-ring colour */                                      ring: 6,
+  /** Error & destructive messaging */                              destructive: 5,
+  "destructive-foreground": 4.9,
+  /** Subdued surface background */                                      muted: 4,
+  /** Subdued surface text */                                "muted-foreground": 4,
+  /** Accent highlight / tertiary CTA */                               accent: 3,
+  "accent-foreground": 2.9,
+  /** Shared low-elevation surfaces */                                    card: 2,
+  popover: 2,
+  /** Specific foregrounds for surfaces, if directly assigned */
+  "card-foreground": 1.9,
+  "popover-foreground": 1.9,
+
+  "tooltip-background": 2,
+  "chart-outline": 2,
+  "chart-1": 1,
+  "chart-2": 1,
+  "chart-3": 1,
+  "chart-4": 1,
+  "chart-5": 1
+} as const;
+
 export type Role = keyof typeof influenceHierarchy;
-  
-// Define which roles are considered surfaces for applying "on" colors
+
 export const SURFACE_ROLES: ReadonlySet<Role> = new Set<Role>([
   "background", "card", "popover", "input", "muted", "secondary", "primary", "destructive", "accent", "sidebar"
 ]);
 
-/** Shade keys for color-mix lightness steps */
+/* ────────────────────────────────────────────────────────────
+   Types
+   ──────────────────────────────────────────────────────────── */
+
 export type LightnessStepKey = "bright" | "brighter" | "dark" | "darker";
-
-/**
- * Represents an OKLCH color value.
- * Example: "oklch(0.91 0.05 82.78)"
- */
 export type OklchString = `oklch(${string})`;
-
-/**
- * Represents a color-mix string.
- * Example: "color-mix(in oklch, var(--emerald-light) 92%, white 8%)"
- */
 export type ColorMixString = `color-mix(${string})`;
-  
-/**
- * Named colour shade, simplified. Value can be direct OKLCH or a color-mix.
- */
+
 export interface Shade {
-  /** CSS custom property reference (without the leading `--`) */
   variableName: string;
-  /** The actual color value for this shade (e.g., OklchString or ColorMixString) */
-  value: OklchString | ColorMixString; 
+  value: OklchString | ColorMixString;
 }
-  
-/**
- * Base colour token with its semantic roles and OKLCH definitions.
- */
+
 export interface ColorToken {
-  /** Human‑friendly name (e.g., "Emerald", "Sage 0") */
   name: string;
-  /** CSS variable-friendly name (e.g., "emerald", "sage-0") */
   variableName: string;
-  /** Usage explanation for designers & devs */
   description: string;
-  
-  /** Base OKLCH value */
   oklch: OklchString;
-
-  /** Original tokenSpecificName used to create this token (can be same as name) */
   rawTokenSpecificName: string;
-  /** Semantic roles sorted by influence priority */
   roles: Role[];
-  
-  /** Pre-calculated color-mix steps */
   themeSteps: Partial<Record<LightnessStepKey, ColorMixString>>;
-
-  /** Category of the color (e.g. a base foundation color or an accent) */
-  category: 'color' | 'shade'; // 'shade' could be foundation, 'color' for accents that get steps
-
-  /** Optional: Direct OKLCH definition for foreground/on-color. */
+  category: 'color' | 'shade';
   onColor?: OklchString;
 }
-  
-/**
- * Font family token.
- */
+
 export interface FontToken {
   name: string;
   distributor: string;
   description: string;
   family: string;
   roles: string[];
-  weights: Record<string, number>; // e.g., { regular: 400, bold: 700, light: 300 }
-  fontWeights?: Record<string, string>; // role -> weight name mapping, e.g., { "body": "regular", "heading": "bold" }
-  fontSizes?: Record<string, number>; // role -> font size in rem, e.g., { "body": 1, "heading": 2.25 }
+  weights: Record<string, number>;
+  fontWeights?: Record<string, string>;
+  fontSizes?: Record<string, number>;
 }
-  
-/** Personality slider scores (0‑100, where 0 = far‑left, 100 = far‑right). */
+
 export interface Personality {
   vintageModern: number;
   seasonedYouthful: number;
@@ -128,34 +104,17 @@ export interface Personality {
   structuredNatural: number;
   symbolicRealistic: number;
 }
-  
-/**
- * 7-axis design code that describes the visual characteristics of a theme.
- * Each axis represents a fundamental design dimension.
- */
+
 export interface SevenAxisCode {
-  /** Color complexity: Monochrome (simple) vs. Polychrome (complex) */
   colorComplexity: 'monochrome' | 'duotone' | 'triad' | 'polychrome';
-  
-  /** Default brightness preference */
   brightness: 'light' | 'adaptive';
-  
-  /** Color saturation: Muted/Pastel vs. Vibrant/Neon */
   saturation: 'muted' | 'pastel' | 'medium' | 'vibrant' | 'neon';
-  
-  /** Color relationships: Single-hue vs. Multi-hue gradients/schemes */
   colorHarmony: 'single-hue' | 'analogous' | 'complementary' | 'triadic' | 'tetradic';
-  
-  /** Visual hierarchy: Accent-heavy vs. Accent-neutral */
   accentUsage: 'minimal' | 'subtle' | 'balanced' | 'prominent' | 'dominant';
-  
-  /** Border radius: Sharp/Angular vs. Rounded */
   cornerStyle: 'sharp' | 'slightly-rounded' | 'rounded' | 'very-rounded' | 'pill';
-  
-  /** Visual depth: Flat vs. Elevated/Layered */
   elevation: 'flat' | 'minimal-shadow' | 'subtle-depth' | 'layered' | 'dramatic';
 }
-  
+
 export interface StyleGuide {
   primaryColors: { primary: string; primaryForeground: string };
   secondaryColors: { secondary: string; secondaryForeground: string };
@@ -181,17 +140,13 @@ export interface StyleGuide {
     spacingXl: string;
   };
 }
-  
+
 export interface BusinessDetails {
-  /** Industry vertical for analytics / theming context. */
   name: string;
   industry: string;
   personality: Personality;
 }
-  
-/**
- * Interface for theme-level CSS variables, mapping them to brand-specific variables.
- */
+
 export interface ThemeCssVars {
   background: string;
   foreground: string;
@@ -253,8 +208,7 @@ export interface ThemeCssVars {
   "spacing-xl"?: string;
 }
 
-// START: Added types for ComponentStyles and ComponentShowcaseConfig
-
+/* Component style types (unchanged, trimmed only by grouping) */
 export interface ComponentStateStyles {
   background?: string;
   backgroundImage?: string;
@@ -294,7 +248,6 @@ export interface ButtonVariantStyles {
   active?: ComponentStateStyles;
   disabled?: ComponentStateStyles;
 }
-
 export interface ButtonStyles {
   primary?: ButtonVariantStyles;
   secondary?: ButtonVariantStyles;
@@ -308,7 +261,6 @@ export interface ButtonStyles {
   fontFamily?: string;
   fontSize?: string;
 }
-
 export interface InputStyles extends ComponentStateStyles {
   focus?: ComponentStateStyles;
   error?: ComponentStateStyles;
@@ -317,290 +269,112 @@ export interface InputStyles extends ComponentStateStyles {
   fontFamily?: string;
   fontSize?: string;
 }
-
 export interface CardComponentStyles extends ComponentStateStyles {
-  header?: ComponentStateStyles & {
-    titleColor?: string;
-    descriptionColor?: string;
-  };
+  header?: ComponentStateStyles & { titleColor?: string; descriptionColor?: string; };
   content?: ComponentStateStyles;
   footer?: ComponentStateStyles;
 }
-
 export interface BadgeStyles extends ComponentStateStyles {
   variantDefault?: ComponentStateStyles;
   variantDestructive?: ComponentStateStyles;
   variantSuccess?: ComponentStateStyles;
 }
-
-export interface NavStyles extends ComponentStateStyles {
-  backdropFilter?: string;
-}
-
-export interface HeroStyles extends ComponentStateStyles {
-  backgroundSize?: string;
-  backgroundPosition?: string;
-}
-
+export interface NavStyles extends ComponentStateStyles { backdropFilter?: string; }
+export interface HeroStyles extends ComponentStateStyles { backgroundSize?: string; backgroundPosition?: string; }
 export interface TabsListStyles extends ComponentStateStyles {}
-
 export interface TabsTriggerStyles extends ComponentStateStyles {
-  textColorActive?: string;
-  backgroundActive?: string;
-  boxShadowActive?: string;
-  textColor?: string;
-  borderColor?: string;
+  textColorActive?: string; backgroundActive?: string; boxShadowActive?: string;
+  textColor?: string; borderColor?: string;
 }
-
 export interface OverviewCardStyles extends ComponentStateStyles {}
-
-// Using Record<string, any> for simplicity as in brands-types.ts
 export type ShowcaseCardStyles = Record<string, any>;
 export type ShowcaseTitleStyles = Record<string, any>;
-
-
-export interface BrandPickerContainerStyle extends ComponentStateStyles {
-  marginTop?: string;
-  marginBottom?: string;
-}
-
+export interface BrandPickerContainerStyle extends ComponentStateStyles { marginTop?: string; marginBottom?: string; }
 export interface PageCardStyles extends ComponentStateStyles {}
-
-export interface TooltipStyles extends ComponentStateStyles {
-  backdropFilter?: string;
-}
-
+export interface TooltipStyles extends ComponentStateStyles { backdropFilter?: string; }
 export interface ChartStyling {
-  gridStrokeColor?: string;
-  axisStrokeColor?: string;
-  axisTextColor?: string;
-  legendTextColor?: string;
-  tooltipCursorFill?: string;
+  gridStrokeColor?: string; axisStrokeColor?: string; axisTextColor?: string;
+  legendTextColor?: string; tooltipCursorFill?: string;
 }
-
-export interface LoadingIndicatorStyles extends ComponentStateStyles {
-  textColor?: string;
-}
-
+export interface LoadingIndicatorStyles extends ComponentStateStyles { textColor?: string; }
 export interface ComponentStyles {
-  nav?: NavStyles;
-  hero?: HeroStyles;
-  tabs?: {
-    list?: TabsListStyles;
-    trigger?: TabsTriggerStyles;
-  };
+  nav?: NavStyles; hero?: HeroStyles;
+  tabs?: { list?: TabsListStyles; trigger?: TabsTriggerStyles; };
   overviewCard?: OverviewCardStyles;
-  chartShowcaseCard?: ShowcaseCardStyles;
-  chartShowcaseTitle?: ShowcaseTitleStyles;
-  componentShowcaseCard?: ShowcaseCardStyles;
-  componentShowcaseTitle?: ShowcaseTitleStyles;
+  chartShowcaseCard?: ShowcaseCardStyles; chartShowcaseTitle?: ShowcaseTitleStyles;
+  componentShowcaseCard?: ShowcaseCardStyles; componentShowcaseTitle?: ShowcaseTitleStyles;
   brandPickerContainer?: BrandPickerContainerStyle;
-  button?: ButtonStyles;
-  input?: InputStyles;
-  card?: CardComponentStyles;
-  tokenShowcaseCard?: ShowcaseCardStyles; // Was TokenShowcaseCardStyles in brands-types
-  pageCard?: PageCardStyles;
-  tooltip?: TooltipStyles;
-  charts?: ChartStyling;
-  loadingIndicator?: LoadingIndicatorStyles;
-  badge?: BadgeStyles;
-  tokenGroupCard?: ComponentStateStyles;
+  button?: ButtonStyles; input?: InputStyles; card?: CardComponentStyles;
+  tokenShowcaseCard?: ShowcaseCardStyles; pageCard?: PageCardStyles;
+  tooltip?: TooltipStyles; charts?: ChartStyling; loadingIndicator?: LoadingIndicatorStyles;
+  badge?: BadgeStyles; tokenGroupCard?: ComponentStateStyles;
 }
-
 export interface ComponentShowcaseItem {
-  id: string;
-  name: string;
-  description: string;
-  displayComponent: string;
-  variant?: string;
-  state?: 'default' | 'hover' | 'focus' | 'active' | 'disabled';
+  id: string; name: string; description: string; displayComponent: string;
+  variant?: string; state?: 'default' | 'hover' | 'focus' | 'active' | 'disabled';
+}
+export interface ComponentShowcaseConfig {
+  title?: string; description?: string;
+  interactiveElements?: ComponentShowcaseItem[]; forms?: ComponentShowcaseItem[];
+  feedbackIndicators?: ComponentShowcaseItem[]; navigation?: ComponentShowcaseItem[];
+  dataDisplay?: ComponentShowcaseItem[]; overlays?: ComponentShowcaseItem[];
+  styleOverrides?: Record<string, string>;
 }
 
-export interface ComponentShowcaseConfig { // This was ComponentShowcaseDefinition in brands-types.ts
-  title?: string;
-  description?: string;
-  interactiveElements?: ComponentShowcaseItem[];
-  forms?: ComponentShowcaseItem[];
-  feedbackIndicators?: ComponentShowcaseItem[];
-  navigation?: ComponentShowcaseItem[];
-  dataDisplay?: ComponentShowcaseItem[];
-  overlays?: ComponentShowcaseItem[];
-  // Added from brands-types.ts BrandDefinition
-  styleOverrides?: Record<string, string>; // For styling the showcase UI itself
-}
-
-/**
- * Animation timing and easing configuration
- */
-export interface AnimationTiming {
-  /** Animation duration (e.g., "200ms", "0.2s") */
-  duration: string;
-  /** Animation easing function (e.g., "ease-in-out", "cubic-bezier(...)") */
-  easing: string;
-  /** Optional delay before animation starts */
-  delay?: string;
-}
-
-/**
- * Transform-based animation properties
- */
-export interface AnimationTransform {
-  /** Scale transformation (e.g., "scale(0.95)" for press effect) */
-  scale?: string;
-  /** Translation transformation (e.g., "translateY(2px)" for press effect) */
-  translate?: string;
-  /** Combined transform string if needed */
-  transform?: string;
-}
-
-/**
- * Animation state configuration for different interaction states
- */
+/* Animation types */
+export interface AnimationTiming { duration: string; easing: string; delay?: string; }
+export interface AnimationTransform { scale?: string; translate?: string; transform?: string; }
 export interface AnimationState extends AnimationTiming {
-  /** Transform properties for this state */
-  transform?: AnimationTransform;
-  /** Box shadow for this state (useful for neo-brutalism press effects) */
-  boxShadow?: string;
-  /** Filter effects (e.g., brightness, contrast) */
-  filter?: string;
-  /** Opacity for this state */
-  opacity?: string;
-  /** Border properties that animate */
-  border?: string;
-  /** Background color changes */
-  backgroundColor?: string;
-  /** Custom properties for theme-specific effects */
-  custom?: Record<string, string>;
+  transform?: AnimationTransform; boxShadow?: string; filter?: string; opacity?: string;
+  border?: string; backgroundColor?: string; custom?: Record<string, string>;
 }
-
-/**
- * Complete animation configuration for interactive elements
- */
 export interface InteractiveAnimationConfig {
-  /** Default/idle state */
-  default: AnimationState;
-  /** Hover state animation */
-  hover: AnimationState;
-  /** Focus state animation */
-  focus: AnimationState;
-  /** Active/pressed state animation */
-  active: AnimationState;
-  /** Disabled state animation */
+  default: AnimationState; hover: AnimationState; focus: AnimationState; active: AnimationState;
   disabled?: AnimationState;
-  /** Global animation settings that apply to all states */
-  global?: {
-    /** CSS transition property */
-    transition: string;
-    /** Transform origin for animations */
-    transformOrigin?: string;
-    /** Will-change property for performance */
-    willChange?: string;
-  };
+  global?: { transition: string; transformOrigin?: string; willChange?: string; };
 }
-
-/**
- * Variant-specific animation configuration for components that have multiple variants
- */
 export interface VariantAnimationConfig {
-  /** Default variant animations (fallback for variants not explicitly defined) */
-  default?: InteractiveAnimationConfig;
-  /** Destructive variant animations */
-  destructive?: InteractiveAnimationConfig;
-  /** Outline variant animations */
-  outline?: InteractiveAnimationConfig;
-  /** Secondary variant animations */
-  secondary?: InteractiveAnimationConfig;
-  /** Ghost variant animations */
-  ghost?: InteractiveAnimationConfig;
-  /** Link variant animations */
-  link?: InteractiveAnimationConfig;
-  /** Global settings that apply to all variants */
-  global?: {
-    /** CSS transition property */
-    transition: string;
-    /** Transform origin for animations */
-    transformOrigin?: string;
-    /** Will-change property for performance */
-    willChange?: string;
-  };
+  default?: InteractiveAnimationConfig; destructive?: InteractiveAnimationConfig;
+  outline?: InteractiveAnimationConfig; secondary?: InteractiveAnimationConfig;
+  ghost?: InteractiveAnimationConfig; link?: InteractiveAnimationConfig;
+  global?: { transition: string; transformOrigin?: string; willChange?: string; };
 }
-
-/**
- * Animation preset definitions for different themes
- */
 export interface AnimationPreset {
-  /** Preset identifier */
-  name: string;
-  /** Description of the animation style */
-  description: string;
-  /** Button animation configuration - can be variant-specific or universal */
+  name: string; description: string;
   button: InteractiveAnimationConfig | VariantAnimationConfig;
-  /** Link animation configuration */
-  link: InteractiveAnimationConfig;
-  /** Input field animation configuration */
-  input?: InteractiveAnimationConfig;
-  /** Card animation configuration */
-  card?: InteractiveAnimationConfig;
-  /** Custom CSS classes that get applied globally */
-  globalClasses?: Record<string, string>;
-  /** Custom CSS keyframes */
-  keyframes?: Record<string, string>;
+  link: InteractiveAnimationConfig; input?: InteractiveAnimationConfig; card?: InteractiveAnimationConfig;
+  globalClasses?: Record<string, string>; keyframes?: Record<string, string>;
 }
-
-/**
- * Theme-specific animation configuration
- */
 export interface ThemeAnimationConfig {
-  /** The animation preset to use */
-  preset: AnimationPreset;
-  /** Override specific animations for this theme */
-  overrides?: Partial<AnimationPreset>;
-  /** CSS class name that gets applied to the root element */
-  rootClassName: string;
+  preset: AnimationPreset; overrides?: Partial<AnimationPreset>; rootClassName: string;
 }
-
-// END: Added types
 
 export interface Brand {
   businessDetails: BusinessDetails;
-  /** Array of ColorToken objects */
   colors: ColorToken[];
-  /** Array of FontToken objects */
   fonts: FontToken[];
-  /** Style guide for easy CSS variable application */
   style: StyleGuide;
-  /** Theme-specific CSS variables */
   themeCssVariables: ThemeCssVars;
-  /** A human-friendly name for the brand theme */
-  name: string; 
-  /** 7-axis design code describing the visual characteristics of this theme */
+  name: string;
   sevenAxisCode: SevenAxisCode;
-  // Added optional properties
   componentStyles?: ComponentStyles;
   componentShowcase?: ComponentShowcaseConfig;
-  /** Animation configuration for interactive elements */
   animationConfig?: ThemeAnimationConfig;
 }
-  
-/**
- * Raw definition for a color before it is processed into a full ColorToken.
- */
+
 export interface RawColorDefinition {
   tokenSpecificName: string;
   description: string;
-  
   oklch: OklchString;
-  
   roles: Role[];
   category: 'color' | 'shade';
-
-  /** Optional: Explicit OKLCH string for the 'on' color. If not provided, one might be generated or aliased. */
   onColor?: OklchString;
 }
-  
-/**
- * Creates a full ColorToken object from a raw definition.
- */
+
+/* ────────────────────────────────────────────────────────────
+   Token factories
+   ──────────────────────────────────────────────────────────── */
+
 export const createColorToken = ({
   tokenSpecificName,
   description,
@@ -608,90 +382,68 @@ export const createColorToken = ({
   roles,
   category,
   onColor,
-}: RawColorDefinition, 
-brandNameForPrefix: string // brandNameForPrefix might become less relevant if var names are direct from tokenSpecificName
+}: RawColorDefinition,
+_brandNameForPrefix: string
 ): ColorToken => {
   const cssFriendlyName = tokenSpecificName.toLowerCase().replace(/\s+/g, '-');
-  const baseVariableName = cssFriendlyName;
+  const generateSteps = (baseVar: string): Partial<Record<LightnessStepKey, ColorMixString>> => ({
+    bright:   `color-mix(in oklch, var(--${baseVar}) 92%, white 8%)` as ColorMixString,
+    brighter: `color-mix(in oklch, var(--${baseVar}) 85%, white 15%)` as ColorMixString,
+    dark:     `color-mix(in oklch, var(--${baseVar}) 92%, black 8%)` as ColorMixString,
+    darker:   `color-mix(in oklch, var(--${baseVar}) 85%, black 15%)` as ColorMixString,
+  });
 
-  const generateSteps = (baseVar: string): Partial<Record<LightnessStepKey, ColorMixString>> => {
-    return {
-      bright: `color-mix(in oklch, var(--${baseVar}) 92%, white 8%)` as ColorMixString,
-      brighter: `color-mix(in oklch, var(--${baseVar}) 85%, white 15%)` as ColorMixString,
-      dark: `color-mix(in oklch, var(--${baseVar}) 92%, black 8%)` as ColorMixString,
-      darker: `color-mix(in oklch, var(--${baseVar}) 85%, black 15%)` as ColorMixString,
-    };
-  };
-  
   return {
     name: tokenSpecificName,
-    variableName: baseVariableName,
+    variableName: cssFriendlyName,
     description,
     oklch,
     rawTokenSpecificName: tokenSpecificName,
     roles: roles.sort((a, b) => (influenceHierarchy[b] ?? 0) - (influenceHierarchy[a] ?? 0)),
-    themeSteps: category === 'color' ? generateSteps(baseVariableName) : {},
+    themeSteps: category === 'color' ? generateSteps(cssFriendlyName) : {},
     category,
     onColor,
   };
 };
 
-/**
- * Generates an array of ColorToken objects from raw color definitions.
- */
 export const generateBrandColors = (
-  brandNameForPrefix: string, // May not be needed if var names are direct from tokenSpecificName
+  brandNameForPrefix: string,
   rawColorDefinitions: RawColorDefinition[]
 ): ColorToken[] => {
-  return rawColorDefinitions.map(rawColor => {
-    // Pass brandNameForPrefix for now, though createColorToken might ignore it
-    // if variableName is now directly from tokenSpecificName.
-    return createColorToken(rawColor, brandNameForPrefix);
-  });
-  // Second pass for 'on' colors or complex relations is removed for now,
-  // as 'on' colors are simpler (direct oklch or generated).
-  // The previous 'on' color logic based on SURFACE_ROLES and onColorAbstractRef is superseded
-  // by direct onColorLight in RawColorDefinition, or generated if not provided.
+  return rawColorDefinitions.map(raw => createColorToken(raw, brandNameForPrefix));
 };
+
+/* ────────────────────────────────────────────────────────────
+   Resolvers & Theme CSS var mapping
+   ──────────────────────────────────────────────────────────── */
 
 export const resolveAbstractColorRef = (
   abstractRef: string,
-  brandName: string, // e.g., "nextgen", "apple"
+  brandName: string,
   colorTokens: ColorToken[],
 ): string => {
   const [refTokenName, refStepKey = "base"] = abstractRef.split(':') as [string, LightnessStepKey | "base"];
-
   const targetToken = colorTokens.find(token => token.name === refTokenName || token.rawTokenSpecificName === refTokenName);
 
   if (!targetToken) {
-    console.warn(`[resolveAbstractColorRef] Color token with name "${refTokenName}" not found for brand "${brandName}". Using fallback.`);
-    return "var(--fallback-color-not-found)"; // Fallback CSS variable
+    console.warn(`[resolveAbstractColorRef] "${refTokenName}" not found for brand "${brandName}".`);
+    return "var(--fallback-color-not-found)";
   }
+  if (refStepKey === "base") return `var(--${targetToken.variableName})`;
 
-  if (refStepKey === "base") {
-    return `var(--${targetToken.variableName})`;
-  }
-
-  // Check if it's a valid LightnessStepKey for which a variable would be explicitly defined (e.g., --emerald-bright)
   const validStepKeys: LightnessStepKey[] = ["bright", "brighter", "dark", "darker"];
   if (validStepKeys.includes(refStepKey as LightnessStepKey)) {
-    // Construct the variable name for the step, e.g., var(--emerald-bright)
     return `var(--${targetToken.variableName}-${refStepKey})`;
   }
-  
-  console.warn(`[resolveAbstractColorRef] Invalid step key "${refStepKey}" for token "${targetToken.name}" (raw: "${refTokenName}") in brand "${brandName}". Using base or fallback.`);
-  // Fallback to base if the step key is not one of the standard ones for which we generate variables
-  return `var(--${targetToken.variableName})`; 
+  console.warn(`[resolveAbstractColorRef] Invalid step "${refStepKey}" for "${targetToken.name}"`);
+  return `var(--${targetToken.variableName})`;
 };
 
-/**
- * Creates the ThemeCssVars object from a StyleGuide and other theme-specific variables.
- */
 export const createThemeCssVars = (
   brandName: string,
   colorTokens: ColorToken[],
-  style: StyleGuide, // Values here are expected to be abstract color refs or direct CSS values for non-color props
-  otherVars: { // Values here are expected to be abstract color refs or direct CSS values
+  style: StyleGuide,
+  otherVars: {
     background: string;
     foreground: string;
     defaultCardBorder?: string;
@@ -714,44 +466,35 @@ export const createThemeCssVars = (
 ): ThemeCssVars => {
   const resolve = (ref: string | undefined) => {
     if (!ref) return undefined;
-    
-    const isNonColorCssValue = ref.startsWith("var(--") || ["px", "rem", "em", "%", "solid", "dashed", "rgba", "hsla"].some(u => ref.includes(u));
-    
-    if (isNonColorCssValue) {
-      // If it starts with var( or contains typical CSS units/keywords for non-color values, pass it through.
-      return ref; 
-    }
-    
-    // If it doesn't contain spaces, it might be a single-word abstract color ref or a non-color keyword we missed.
-    // If it contains spaces but no colon, it implies multi-word abstract color ref like "Vibrant Orange".
-    // If it contains a colon, it implies a specific shade like "Vibrant Orange:dark".
-    // For styleGuide and otherVars, we ONLY want the base color. So, we strip any shade declaration.
-    const colorNameOnly = ref.split(':')[0];
+    const isNonColorCssValue =
+      ref.startsWith("var(--") ||
+      ["px", "rem", "em", "%", "solid", "dashed", "rgba", "hsla"].some(u => ref.includes(u));
+    if (isNonColorCssValue) return ref;
 
-    // Now, resolve this colorNameOnly, which will default to its base shade in resolveAbstractColorRef
-    return resolveAbstractColorRef(colorNameOnly, brandName, colorTokens);
+    // IMPORTANT: keep the :step if provided (no stripping to base)
+    return resolveAbstractColorRef(ref, brandName, colorTokens);
   };
 
   const cssVars: ThemeCssVars = {
-    background: resolve(otherVars.background) || resolve(style.primaryColors.primary),
-    foreground: resolve(otherVars.foreground) || resolve(style.primaryColors.primaryForeground),
-    card: resolve(style.cardColors.card),
-    "card-foreground": resolve(style.cardColors.cardForeground),
-    popover: resolve(style.popoverColors.popover),
-    "popover-foreground": resolve(style.popoverColors.popoverForeground),
-    primary: resolve(style.primaryColors.primary),
-    "primary-foreground": resolve(style.primaryColors.primaryForeground),
-    secondary: resolve(style.secondaryColors.secondary),
-    "secondary-foreground": resolve(style.secondaryColors.secondaryForeground),
-    muted: resolve(style.mutedColors.muted),
-    "muted-foreground": resolve(style.mutedColors.mutedForeground),
-    accent: resolve(style.accentColors.accent),
-    "accent-foreground": resolve(style.accentColors.accentForeground),
-    destructive: resolve(style.destructiveColors.destructive),
-    "destructive-foreground": resolve(style.destructiveColors.destructiveForeground),
-    border: resolve(style.borderColors.border),
-    input: resolve(style.inputColors.input),
-    ring: resolve(style.ringColors.ring),
+    background: resolve(otherVars.background) || resolve(style.primaryColors.primary)!,
+    foreground: resolve(otherVars.foreground) || resolve(style.primaryColors.primaryForeground)!,
+    card: resolve(style.cardColors.card)!,
+    "card-foreground": resolve(style.cardColors.cardForeground)!,
+    popover: resolve(style.popoverColors.popover)!,
+    "popover-foreground": resolve(style.popoverColors.popoverForeground)!,
+    primary: resolve(style.primaryColors.primary)!,
+    "primary-foreground": resolve(style.primaryColors.primaryForeground)!,
+    secondary: resolve(style.secondaryColors.secondary)!,
+    "secondary-foreground": resolve(style.secondaryColors.secondaryForeground)!,
+    muted: resolve(style.mutedColors.muted)!,
+    "muted-foreground": resolve(style.mutedColors.mutedForeground)!,
+    accent: resolve(style.accentColors.accent)!,
+    "accent-foreground": resolve(style.accentColors.accentForeground)!,
+    destructive: resolve(style.destructiveColors.destructive)!,
+    "destructive-foreground": resolve(style.destructiveColors.destructiveForeground)!,
+    border: resolve(style.borderColors.border)!,
+    input: resolve(style.inputColors.input)!,
+    ring: resolve(style.ringColors.ring)!,
     "radius-sm": style.radius.radiusSm,
     "radius-md": style.radius.radiusMd,
     "radius-lg": style.radius.radiusLg,
@@ -782,455 +525,354 @@ export const createThemeCssVars = (
     cssVars.success = resolve(style.successColors.success);
     cssVars["success-foreground"] = resolve(style.successColors.successForeground);
   }
-
   if (style.inputColors.inputForeground) {
     cssVars["input-foreground"] = resolve(style.inputColors.inputForeground);
   }
-  
   return cssVars;
 };
 
-export const generateGlobalCss = (brand: Brand): string => {
-  let cssString = "";
+/* ────────────────────────────────────────────────────────────
+   Color conversion helpers (OKLCH → HSL triplets for shadcn)
+   ──────────────────────────────────────────────────────────── */
 
-  // Helper to add lines with indentation
-  const addLine = (line: string, indentLevel = 0) => {
-    cssString += "  ".repeat(indentLevel) + line + "\n";
-  };
+const toHsl = converter<'hsl'>('hsl');
+const clamp = (n: number, min = 0, max = 100) => Math.min(max, Math.max(min, n));
 
-  // Preamble
-  addLine("/* ┌──────────────────────────────────────────────────────────┐ */");
-  addLine("/*   global.css · Colour variants + bright / dark steps · Tailwind v4 ready   */");
-  addLine("/* └──────────────────────────────────────────────────────────┘ */");
-  addLine("");
-  addLine("/* Brand theme variables */");
-  addLine("");
+/** Format culori HSL to "H S% L%" triplet (what shadcn expects in CSS vars). */
+export function oklchToHslTriplet(oklchStr: OklchString): string {
+  const c = parse(oklchStr);
+  const hsl = c ? toHsl(c) : null;
+  if (!hsl || isNaN(hsl.h!) || isNaN(hsl.s!) || isNaN(hsl.l!)) {
+    return `28 95% 50%`; // safe warm fallback
+  }
+  const H = Math.round(((hsl.h ?? 0) + 360) % 360);
+  const S = clamp((hsl.s ?? 0) * 100);
+  const L = clamp((hsl.l ?? 0) * 100);
+  return `${H} ${S}% ${L}%`;
+}
 
-  // --- Light Theme Only --- 
-  addLine("/* ╔════════════════════════╗ */");
-  addLine("/* ║  THEME VARIABLES       ║ */");
-  addLine("/* ╚════════════════════════╝ */");
-  addLine(":root {");
-  addLine("  /* ——— Foundation swatches ——— */", 1);
-  brand.colors.forEach(color => {
-    if (color.category === 'shade' || color.category === 'color') { // All base colors
-      addLine(`--${color.variableName}: ${color.oklch};`, 2);
-    }
+const extractCssVarName = (v?: string) =>
+  v && v.startsWith('var(--') && v.endsWith(')') ? v.slice(6, -1) : undefined;
+
+function findTokenForCssVar(tokens: ColorToken[], cssVarOrName?: string): ColorToken | undefined {
+  if (!cssVarOrName) return undefined;
+  const varName = cssVarOrName.startsWith('var(--') ? extractCssVarName(cssVarOrName) : cssVarOrName;
+  return tokens.find(t => t.variableName === varName || t.name === cssVarOrName);
+}
+
+function resolveRoleToHslTriplet(roleKey: keyof ThemeCssVars, tokens: ColorToken[], ov: ThemeCssVars): string | undefined {
+  const ref = ov[roleKey];
+  const token = findTokenForCssVar(tokens, ref);
+  return token ? oklchToHslTriplet(token.oklch as OklchString) : undefined;
+}
+
+function emitRoleStepAliases(
+  roleKey: keyof ThemeCssVars,
+  tokens: ColorToken[],
+  ov: ThemeCssVars,
+  add: (s: string, i?: number) => void
+) {
+  const ref = ov[roleKey];
+  const token = findTokenForCssVar(tokens, ref);
+  if (!token || token.category !== 'color') return;
+  (['bright','brighter','dark','darker'] as LightnessStepKey[]).forEach(step => {
+    const stepExists = token.themeSteps?.[step];
+    if (stepExists) add(`--${roleKey}-${step}: var(--${token.variableName}-${step});`, 2);
   });
-  const sage2TokenLight = brand.colors.find(c => c.variableName === 'sage-2');
-  if (sage2TokenLight) {
-    addLine(`--sage-3: color-mix(in oklch, var(--sage-2) 70%, black 25%);`, 2);
-  }
-  const graphiteTokenLight = brand.colors.find(c => c.variableName === 'graphite');
-  if (graphiteTokenLight) {
-    addLine(`--graphite-strong: color-mix(in oklch, var(--graphite) 55%, black 45%);`, 2);
-  }
+}
 
-  addLine("", 1);
-  addLine("  /* ——— Relative lightness steps ——— */", 1);
-  brand.colors.forEach(color => {
-    if (color.category === 'color') { 
-      Object.entries(color.themeSteps).forEach(([stepKey, value]) => {
-        addLine(`--${color.variableName}-${stepKey}: ${value};`, 2);
+/* ────────────────────────────────────────────────────────────
+   CSS Generators
+   ──────────────────────────────────────────────────────────── */
+
+/**
+ * New: Tailwind v4 + shadcn/ui globals.css generator.
+ * - OKLCH foundations remain as-is
+ * - shadcn tokens are emitted as HSL triplets (H S% L%)
+ * - Dark theme as default; optional light override via `.light` or `[data-theme="light"]`
+ */
+export const generateGlobalCssV2 = (brand: Brand, options?: {
+  emitLightTheme?: boolean;
+  lightOverrides?: Partial<Record<keyof ThemeCssVars, string>>;
+}) => {
+  const { colors: tokens, themeCssVariables: ov } = brand;
+  const emitLight = options?.emitLightTheme ?? true;
+
+  let css = '';
+  const add = (line: string, i = 0) => (css += `${'  '.repeat(i)}${line}\n`);
+
+  /* Header + Tailwind layers */
+  add('/* ──────────────────────────────────────────────────────────── */');
+  add('/* globals.css · Tailwind v4 + shadcn/ui from Brand definition  */');
+  add('/* Foundations in OKLCH, shadcn tokens in HSL triplets          */');
+  add('/* ──────────────────────────────────────────────────────────── */\n');
+  add('@import "tailwindcss";\n');
+  add('@layer base, components, utilities;\n');
+
+  /* 1) Foundations (OKLCH) + mix steps */
+  add('@layer base {');
+  add(':root {', 1);
+  add('/* ——— Foundation swatches (OKLCH) ——— */', 2);
+  brand.colors.forEach(tok => add(`--${tok.variableName}: ${tok.oklch};`, 2));
+
+  const hasSage2 = tokens.some(t => t.variableName === 'sage-2');
+  if (hasSage2) add(`--sage-3: color-mix(in oklch, var(--sage-2) 70%, black 25%);`, 2);
+  if (tokens.some(t => t.variableName === 'graphite'))
+    add(`--graphite-strong: color-mix(in oklch, var(--graphite) 55%, black 45%);`, 2);
+
+  add('', 2);
+  add('/* ——— Color-mix steps (OKLCH) ——— */', 2);
+  tokens.forEach(tok => {
+    if (tok.category === 'color' && tok.themeSteps) {
+      (Object.keys(tok.themeSteps) as LightnessStepKey[]).forEach(step => {
+        add(`--${tok.variableName}-${step}: ${tok.themeSteps![step]};`, 2);
       });
     }
   });
-  addLine("", 1);
-  addLine("  /* ——— Semantic aliases ——— */", 1);
-  const sg = brand.style;
-  const ov = brand.themeCssVariables; 
 
-  const semanticRolesToGetSteps: Array<keyof ThemeCssVars> = [
-    'primary', 'secondary', 'accent', 'destructive', 'success', 'ring',
-    'chart1', 'chart2', 'chart3', 'chart4', 'chart5'
+  /* 2) Semantic HSL triplets (dark default) */
+  add('', 2);
+  add('/* ——— Semantic tokens (HSL triplets for shadcn) ——— */', 2);
+  const roles: (keyof ThemeCssVars)[] = [
+    'background','foreground','card','card-foreground','popover','popover-foreground',
+    'primary','primary-foreground','secondary','secondary-foreground',
+    'muted','muted-foreground','accent','accent-foreground',
+    'destructive','destructive-foreground','success','success-foreground',
+    'border','input','input-foreground','ring',
+    'chart1','chart2','chart3','chart4','chart5','chartOutline',
+    'sidebar','sidebar-foreground','sidebar-primary','sidebar-primary-foreground',
+    'sidebar-accent','sidebar-accent-foreground','sidebar-border','sidebar-ring'
   ];
+  const writeRoleHsl = (key: keyof ThemeCssVars) => {
+    const triplet = resolveRoleToHslTriplet(key, tokens, ov);
+    if (triplet) add(`--${key}: ${triplet};`, 2);
+  };
+  roles.forEach(writeRoleHsl);
 
-  const addStepAliases = () => {
-    semanticRolesToGetSteps.forEach(roleKeyStr => {
-      const roleKey = roleKeyStr as keyof ThemeCssVars;
-      const targetTokenVar = ov[roleKey];
+  // Step aliases
+  (['primary','secondary','accent','destructive','success','ring','chart1','chart2','chart3','chart4','chart5'] as (keyof ThemeCssVars)[])
+    .forEach(role => emitRoleStepAliases(role, tokens, ov, add));
 
-      if (roleKey === 'primary') {
-        console.log(`[BrandUtils Debug] Attempting to generate step aliases for role: ${roleKey}`);
-        console.log(`[BrandUtils Debug]   - TargetTokenVar for ${roleKey} from themeCssVariables (ov.${roleKey}):`, targetTokenVar);
-      }
+  // Typo/radii/shadows
+  add('', 2);
+  add('/* Typography + radii + shadows */', 2);
+  add(`--font-sans: ${brand.fonts.find(f=>f.roles.includes('sans'))?.family ?? "ui-sans-serif, system-ui, -apple-system, 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial"};`, 2);
+  add(`--font-mono: ${brand.fonts.find(f=>f.roles.includes('mono'))?.family ?? "ui-monospace, 'Fira Code', 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas"};`, 2);
+  add(`--radius: ${brand.themeCssVariables.radius ?? '0.75rem'};`, 2);
+  ['shadow-xs','shadow-sm','shadow-md','shadow-lg','shadow-xl'].forEach(sh => {
+    const v = (brand.themeCssVariables as any)[sh];
+    if (v) add(`--${sh}: ${v};`, 2);
+  });
 
-      if (!targetTokenVar || typeof targetTokenVar !== 'string' || !targetTokenVar.startsWith('var(--') || !targetTokenVar.endsWith(')')) {
-        if (roleKey === 'primary') {
-          console.log(`[BrandUtils Debug]   - Skipping ${roleKey}: targetTokenVar ('${targetTokenVar}') is not a valid 'var(--name)' string.`);
-        }
-        return;
-      }
-      
-      const tokenVarName = targetTokenVar.slice(6, -1);
-      const sourceToken = brand.colors.find(c => c.variableName === tokenVarName);
+  add('color-scheme: dark;', 2);
+  add('}', 1); // end :root
 
-      if (roleKey === 'primary') {
-        console.log(`[BrandUtils Debug]   - Extracted tokenVarName for ${roleKey}: ${tokenVarName}`);
-        if (sourceToken) {
-          console.log(`[BrandUtils Debug]   - Found sourceToken for ${roleKey}: ${sourceToken.name}, Category: ${sourceToken.category}`);
-        } else {
-          console.log(`[BrandUtils Debug]   - No sourceToken found for ${roleKey} with variableName: ${tokenVarName}`);
-        }
-      }
-      
-      if (sourceToken && sourceToken.category === 'color') {
-        if (roleKey === 'primary') {
-          console.log(`[BrandUtils Debug]   - Proceeding to generate steps for ${roleKey} (source: ${sourceToken.name})`);
-        }
-        const steps = sourceToken.themeSteps;
-        (Object.keys(steps) as LightnessStepKey[]).forEach(stepKey => {
-          if (steps[stepKey]) {
-             addLine(`--${roleKey}-${stepKey}: var(--${sourceToken.variableName}-${stepKey});`, 2);
-             if (roleKey === 'primary') {
-               console.log(`[BrandUtils Debug]     - Generated: --${roleKey}-${stepKey}: var(--${sourceToken.variableName}-${stepKey});`);
-             }
-          }
-        });
-      } else if (roleKey === 'primary') {
-        if (sourceToken) {
-          console.log(`[BrandUtils Debug]   - Skipping step generation for ${roleKey}: sourceToken ${sourceToken.name} is category '${sourceToken.category}', not 'color'.`);
-        } else {
-          console.log(`[BrandUtils Debug]   - Skipping step generation for ${roleKey}: sourceToken not found.`);
-        }
+  /* 3) Optional light overrides */
+  if (emitLight) {
+    add('', 1);
+    add('.light, [data-theme="light"] {', 1);
+    roles.forEach(key => {
+      const override = options?.lightOverrides?.[key];
+      if (override) {
+        const tok = findTokenForCssVar(tokens, override);
+        const trip = tok ? oklchToHslTriplet(tok.oklch as OklchString) : override;
+        add(`--${key}: ${trip};`, 2);
       }
     });
+    add('color-scheme: light;', 2);
+    add('}', 1);
+  }
+
+  add('}', 0); // end @layer base
+
+  /* 4) Base resets / focus / type */
+  add('');
+  add('@layer base {');
+  add('* { @apply border-border; }', 1);
+  add('html { @apply antialiased; text-rendering: optimizeLegibility; }', 1);
+  add('body { @apply bg-background text-foreground; font-family: var(--font-sans); }', 1);
+  add('::selection { background-color: hsl(var(--primary) / 0.18); color: hsl(var(--foreground)); }', 1);
+  add('h1,h2,h3,h4 { @apply tracking-tight text-balance; }', 1);
+  add('h1 { @apply text-4xl md:text-5xl font-bold; }', 1);
+  add('h2 { @apply text-3xl md:text-4xl font-semibold; }', 1);
+  add('h3 { @apply text-2xl md:text-3xl font-semibold; }', 1);
+  add('h4 { @apply text-xl md:text-2xl font-medium; }', 1);
+  add('p { @apply leading-7; }', 1);
+  add('p + p { @apply mt-4; }', 1);
+  add(':where(button,[role="button"],input,select,textarea,a,summary):focus-visible {', 1);
+  add('outline: none;', 2);
+  add('box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));', 2);
+  add('border-radius: var(--radius);', 2);
+  add('}', 1);
+
+  // Typography role mappings (CSS variable-driven)
+  add('', 1);
+  add('/* Typography role mappings driven by CSS variables */', 1);
+
+  // Headings
+  add('h1, [data-typography-role="h1"] {', 1);
+  add('  font-family: var(--font-h1, var(--font-heading, var(--font-body)));', 2);
+  add('  font-weight: var(--font-weight-h1, 700);', 2);
+  add('  font-size: var(--font-size-h1, 2.25rem);', 2);
+  add('  line-height: var(--line-height-h1, 1.1);', 2);
+  add('  letter-spacing: var(--letter-spacing-h1, 0em);', 2);
+  add('}', 1);
+
+  add('h2, [data-typography-role="h2"] {', 1);
+  add('  font-family: var(--font-h2, var(--font-heading, var(--font-body)));', 2);
+  add('  font-weight: var(--font-weight-h2, 700);', 2);
+  add('  font-size: var(--font-size-h2, 1.875rem);', 2);
+  add('  line-height: var(--line-height-h2, 1.15);', 2);
+  add('  letter-spacing: var(--letter-spacing-h2, 0em);', 2);
+  add('}', 1);
+
+  add('h3, [data-typography-role="h3"] {', 1);
+  add('  font-family: var(--font-h3, var(--font-heading, var(--font-body)));', 2);
+  add('  font-weight: var(--font-weight-h3, 600);', 2);
+  add('  font-size: var(--font-size-h3, 1.5rem);', 2);
+  add('  line-height: var(--line-height-h3, 1.2);', 2);
+  add('  letter-spacing: var(--letter-spacing-h3, 0em);', 2);
+  add('}', 1);
+
+  add('h4, [data-typography-role="h4"] {', 1);
+  add('  font-family: var(--font-h4, var(--font-heading, var(--font-body)));', 2);
+  add('  font-weight: var(--font-weight-h4, 600);', 2);
+  add('  font-size: var(--font-size-h4, 1.25rem);', 2);
+  add('  line-height: var(--line-height-h4, 1.25);', 2);
+  add('  letter-spacing: var(--letter-spacing-h4, 0em);', 2);
+  add('}', 1);
+
+  add('h5, [data-typography-role="h5"] {', 1);
+  add('  font-family: var(--font-h5, var(--font-heading, var(--font-body)));', 2);
+  add('  font-weight: var(--font-weight-h5, 600);', 2);
+  add('  font-size: var(--font-size-h5, 1.125rem);', 2);
+  add('  line-height: var(--line-height-h5, 1.3);', 2);
+  add('  letter-spacing: var(--letter-spacing-h5, 0em);', 2);
+  add('}', 1);
+
+  add('h6, [data-typography-role="h6"] {', 1);
+  add('  font-family: var(--font-h6, var(--font-heading, var(--font-body)));', 2);
+  add('  font-weight: var(--font-weight-h6, 600);', 2);
+  add('  font-size: var(--font-size-h6, 1rem);', 2);
+  add('  line-height: var(--line-height-h6, 1.35);', 2);
+  add('  letter-spacing: var(--letter-spacing-h6, 0em);', 2);
+  add('}', 1);
+
+  // Paragraph-like text (avoid styling bare span)
+  add('p, li, [data-typography-role="p"], [data-typography-role="span"], [data-typography-role="default"], [data-typography-role="div"] {', 1);
+  add('  font-family: var(--font-p, var(--font-body));', 2);
+  add('  font-weight: var(--font-weight-p, 400);', 2);
+  add('  font-size: var(--font-size-p, 1rem);', 2);
+  add('  line-height: var(--line-height-p, var(--line-height-body, 1.5));', 2);
+  add('  letter-spacing: var(--letter-spacing-p, var(--letter-spacing-body, 0em));', 2);
+  add('}', 1);
+
+  // Blockquote
+  add('blockquote, [data-typography-role="blockquote"] {', 1);
+  add('  font-family: var(--font-blockquote, var(--font-body));', 2);
+  add('  font-weight: var(--font-weight-blockquote, var(--font-weight-p, 400));', 2);
+  add('  font-size: var(--font-size-blockquote, var(--font-size-p, 1rem));', 2);
+  add('  line-height: var(--line-height-blockquote, var(--line-height-p, var(--line-height-body, 1.5)));', 2);
+  add('  letter-spacing: var(--letter-spacing-blockquote, var(--letter-spacing-p, 0em));', 2);
+  add('}', 1);
+
+  // Buttons
+  add('[data-slot="button"], button, [data-typography-role="button"] {', 1);
+  add('  font-family: var(--font-button, var(--font-body));', 2);
+  add('  font-weight: var(--font-weight-button, 600);', 2);
+  add('  font-size: var(--font-size-button, 0.875rem);', 2);
+  add('  line-height: var(--line-height-button, 1.2);', 2);
+  add('  letter-spacing: var(--letter-spacing-button, 0em);', 2);
+  add('}', 1);
+
+  // Scoped overrides inside preview to beat Tailwind utilities
+  add('', 1);
+  add('/* Scoped role overrides for preview (force precedence over utility classes) */', 1);
+
+  const scoped = (sel: string, role: string, fallbackSize: string) => {
+    add(`[data-typography-scope] ${sel}, [data-typography-scope] [data-typography-role="${role}"] {`, 1);
+    add(`  font-family: var(--font-${role}, var(--font-${role === 'p' ? 'body' : (role.startsWith('h') ? 'heading' : role)}, var(--font-body))) !important;`, 2);
+    add(`  font-weight: var(--font-weight-${role}, ${role.startsWith('h') ? '700' : (role === 'button' ? '600' : '400')}) !important;`, 2);
+    add(`  font-size: var(--font-size-${role}, ${fallbackSize}) !important;`, 2);
+    add(`  line-height: var(--line-height-${role}, ${role.startsWith('h') ? '1.2' : (role === 'button' ? '1.2' : '1.5')}) !important;`, 2);
+    add(`  letter-spacing: var(--letter-spacing-${role}, 0em) !important;`, 2);
+    add('}', 1);
   };
 
-  addLine(`--background: ${ov.background};`, 2); 
-  addLine(`--card: ${ov.card};`, 2);           
-  addLine(`--popover: ${ov.popover};`, 2);      
-  const sidebarVar = brand.colors.find(c => c.roles.includes('sidebar' as Role))?.variableName || 'sage-2';
-  addLine(`--sidebar: var(--${sidebarVar});`, 2);
-  
-  addLine(`--border: ${ov.border};`, 2);         
-  addLine(`--input: ${ov.input};`, 2);           
-  
-  addLine(`--foreground: ${ov.foreground};`, 2);   
-  addLine(`--ring: ${ov.ring};`, 2);             
-  
-  addLine(`--primary: ${ov.primary};`, 2);         
-  addLine(`--secondary: ${ov.secondary};`, 2);       
-  addLine(`--accent: ${ov.accent};`, 2);           
-  addLine(`--destructive: ${ov.destructive};`, 2);   
+  scoped('h1', 'h1', '2.25rem');
+  scoped('h2', 'h2', '1.875rem');
+  scoped('h3', 'h3', '1.5rem');
+  scoped('h4', 'h4', '1.25rem');
+  scoped('h5', 'h5', '1.125rem');
+  scoped('h6', 'h6', '1rem');
+  scoped('p, li', 'p', '1rem');
+  scoped('blockquote', 'blockquote', '1rem');
+  scoped('[data-slot="button"], button', 'button', '0.875rem');
 
-  // Add debugging for role assignments
-  console.log("[BrandUtils] Role assignments in generateGlobalCss:");
-  console.log(`  --primary: ${ov.primary}`);
-  console.log(`  --secondary: ${ov.secondary}`);
-  console.log(`  --accent: ${ov.accent}`);
-  console.log(`  --destructive: ${ov.destructive}`);
-  
-  // Show what actual colors these resolve to
-  if (ov.primary && ov.primary.startsWith('var(--') && ov.primary.endsWith(')')) {
-    const primaryVarName = ov.primary.slice(6, -1);
-    const primaryToken = brand.colors.find(c => c.variableName === primaryVarName);
-    if (primaryToken) {
-      console.log(`  🎨 --primary resolves to: "${primaryToken.name}" with color ${primaryToken.oklch}`);
-    }
-  }
-  
-  if (ov.accent && ov.accent.startsWith('var(--') && ov.accent.endsWith(')')) {
-    const accentVarName = ov.accent.slice(6, -1);
-    const accentToken = brand.colors.find(c => c.variableName === accentVarName);
-    if (accentToken) {
-      console.log(`  🎨 --accent resolves to: "${accentToken.name}" with color ${accentToken.oklch}`);
-    }
-  }
+  add('}', 0);
 
-  addStepAliases();
+  /* 5) Tailwind @theme inline: map utilities to tokens */
+  add('');
+  add('@theme inline {');
+  const semantic = [
+    'background','foreground','card','card-foreground','popover','popover-foreground',
+    'muted','muted-foreground','border','input','ring',
+    'primary','primary-foreground','secondary','secondary-foreground',
+    'accent','accent-foreground','destructive','destructive-foreground'
+  ];
+  semantic.forEach(key => add(`--color-${key}: hsl(var(--${key}));`, 1));
 
-  const primaryTokenName = sg.primaryColors.primary;
-  const primaryToken = brand.colors.find(c => c.name === primaryTokenName);
-  if (primaryToken?.onColor) addLine(`--primary-foreground: ${primaryToken.onColor};`, 2);
-  else if (sg.primaryColors.primaryForeground) addLine(`--primary-foreground: ${resolveAbstractColorRef(sg.primaryColors.primaryForeground, brand.name, brand.colors)};`,2);
-  
-  const secondaryTokenName = sg.secondaryColors.secondary;
-  const secondaryToken = brand.colors.find(c => c.name === secondaryTokenName);
-  if (secondaryToken?.onColor) addLine(`--secondary-foreground: ${secondaryToken.onColor};`, 2);
-  else if (sg.secondaryColors.secondaryForeground) addLine(`--secondary-foreground: ${resolveAbstractColorRef(sg.secondaryColors.secondaryForeground, brand.name, brand.colors)};`,2);
-
-  const accentTokenName = sg.accentColors.accent;
-  const accentToken = brand.colors.find(c => c.name === accentTokenName);
-  if (accentToken?.onColor) addLine(`--accent-foreground: ${accentToken.onColor};`, 2);
-  else if (sg.accentColors.accentForeground) addLine(`--accent-foreground: ${resolveAbstractColorRef(sg.accentColors.accentForeground, brand.name, brand.colors)};`,2);
-  
-  const destructiveTokenName = sg.destructiveColors.destructive;
-  const destructiveToken = brand.colors.find(c => c.name === destructiveTokenName);
-  if (destructiveToken?.onColor) addLine(`--destructive-foreground: ${destructiveToken.onColor};`,2);
-  else if (sg.destructiveColors.destructiveForeground) addLine(`--destructive-foreground: ${resolveAbstractColorRef(sg.destructiveColors.destructiveForeground, brand.name, brand.colors)};`,2);
-
-  // Sidebar variables
-  if (ov.sidebar) addLine(`--sidebar: ${ov.sidebar};`, 2);
-  if (ov["sidebar-foreground"]) addLine(`--sidebar-foreground: ${ov["sidebar-foreground"]};`, 2);
-  if (ov["sidebar-primary"]) addLine(`--sidebar-primary: ${ov["sidebar-primary"]};`, 2);
-  if (ov["sidebar-primary-foreground"]) addLine(`--sidebar-primary-foreground: ${ov["sidebar-primary-foreground"]};`, 2);
-  if (ov["sidebar-accent"]) addLine(`--sidebar-accent: ${ov["sidebar-accent"]};`, 2);
-  if (ov["sidebar-accent-foreground"]) addLine(`--sidebar-accent-foreground: ${ov["sidebar-accent-foreground"]};`, 2);
-  if (ov["sidebar-border"]) addLine(`--sidebar-border: ${ov["sidebar-border"]};`, 2);
-  if (ov["sidebar-ring"]) addLine(`--sidebar-ring: ${ov["sidebar-ring"]};`, 2);
-
-  const cardBaseTokenName = sg.cardColors.card;
-  const cardToken = brand.colors.find(c => c.name === cardBaseTokenName);
-  if (cardToken?.onColor) {
-    addLine(`--card-foreground: ${cardToken.onColor};`, 2);
-  } else if (sg.cardColors.cardForeground) { 
-    addLine(`--card-foreground: ${resolveAbstractColorRef(sg.cardColors.cardForeground, brand.name, brand.colors)};`, 2);
-  } else if (cardToken) { 
-    addLine(`--card-foreground: ${cardToken.oklch.includes("0.9") || cardToken.oklch.includes("1") ? "oklch(0.05 0.01 0)" : "oklch(0.95 0.01 0)"};`, 2);
-  }
-
-  const popoverBaseTokenName = sg.popoverColors.popover;
-  const popoverToken = brand.colors.find(c => c.name === popoverBaseTokenName);
-  if (popoverToken?.onColor) {
-    addLine(`--popover-foreground: ${popoverToken.onColor};`, 2);
-  } else if (sg.popoverColors.popoverForeground) {
-    addLine(`--popover-foreground: ${resolveAbstractColorRef(sg.popoverColors.popoverForeground, brand.name, brand.colors)};`, 2);
-  } else if (popoverToken) {
-    addLine(`--popover-foreground: ${popoverToken.oklch.includes("0.9") || popoverToken.oklch.includes("1") ? "oklch(0.05 0.01 0)" : "oklch(0.95 0.01 0)"};`, 2);
-  }
-  
-  if (sg.successColors) {
-    const successToken = brand.colors.find(c => c.name === sg.successColors?.success); // Corrected: find by name
-    if (successToken?.onColor) addLine(`--success-foreground: ${successToken.onColor};`,2);
-    else if (sg.successColors.successForeground) addLine(`--success-foreground: ${resolveAbstractColorRef(sg.successColors.successForeground, brand.name, brand.colors)};`,2);
-  }
- 
-  addLine("", 1);
-  addLine("  /* Typography etc. */", 1);
-  const fontSans = brand.fonts.find(f => f.roles.includes('sans'))?.family || "sans-serif";
-  const fontSerif = brand.fonts.find(f => f.roles.includes('serif'))?.family || "serif";
-  const fontMono = brand.fonts.find(f => f.roles.includes('mono'))?.family || "monospace";
-  addLine(`--font-sans: ${fontSans};`, 2);
-  addLine(`--font-serif: ${fontSerif};`, 2);
-  addLine(`--font-mono: ${fontMono};`, 2);
-  
-  // Add font weight variables for each role
-  const addFontWeightVariables = () => {
-    // Collect all unique roles that have font weight assignments
-    const roleWeightMap = new Map<string, string>();
-    
-    brand.fonts.forEach(font => {
-      if (font.fontWeights) {
-        Object.entries(font.fontWeights).forEach(([role, weightName]) => {
-          if (font.weights && font.weights[weightName]) {
-            const weightValue = font.weights[weightName];
-            roleWeightMap.set(role, weightValue.toString());
-          }
-        });
-      }
-    });
-    
-    // Generate CSS variables for font weights
-    if (roleWeightMap.size > 0) {
-      addLine("", 1);
-      addLine("  /* Font weights for roles */", 1);
-      roleWeightMap.forEach((weight, role) => {
-        addLine(`--font-weight-${role}: ${weight};`, 2);
-      });
-    }
-  };
-
-  // Add font size variables for each role
-  const addFontSizeVariables = () => {
-    // Collect all unique roles that have font size assignments
-    const roleSizeMap = new Map<string, string>();
-    
-    brand.fonts.forEach(font => {
-      if (font.fontSizes) {
-        Object.entries(font.fontSizes).forEach(([role, sizeValue]) => {
-          roleSizeMap.set(role, `${sizeValue}rem`);
-        });
-      }
-    });
-    
-    // Generate CSS variables for font sizes
-    if (roleSizeMap.size > 0) {
-      addLine("", 1);
-      addLine("  /* Font sizes for roles */", 1);
-      roleSizeMap.forEach((size, role) => {
-        addLine(`--font-size-${role}: ${size};`, 2);
-      });
-    }
-  };
-  
-  addFontWeightVariables();
-  addFontSizeVariables();
-  
-  const radiusBase = brand.themeCssVariables.radius || "0.625rem"; 
-  addLine(`--radius: ${radiusBase};`, 2);
-  
-  // Add shadow variables
-  if (brand.themeCssVariables["shadow-xs"]) addLine(`--shadow-xs: ${brand.themeCssVariables["shadow-xs"]};`, 2);
-  if (brand.themeCssVariables["shadow-sm"]) addLine(`--shadow-sm: ${brand.themeCssVariables["shadow-sm"]};`, 2);
-  if (brand.themeCssVariables["shadow-md"]) addLine(`--shadow-md: ${brand.themeCssVariables["shadow-md"]};`, 2);
-  if (brand.themeCssVariables["shadow-lg"]) addLine(`--shadow-lg: ${brand.themeCssVariables["shadow-lg"]};`, 2);
-  if (brand.themeCssVariables["shadow-xl"]) addLine(`--shadow-xl: ${brand.themeCssVariables["shadow-xl"]};`, 2);
-  
-  addLine("}");
-  addLine("");
-
-  // --- @theme inline --- 
-  addLine("/* ╔════════════════════════╗ */");
-  addLine("/* ║  @theme inline   ║ */");
-  addLine("/* ╚════════════════════════╝ */");
-  addLine("@theme inline {");
-  addLine("  /* Surface utilities */", 1);
-  const sageTokens = brand.colors.filter(c => c.variableName.startsWith('sage-'));
-  sageTokens.forEach(token => {
-    addLine(`--color-${token.variableName}: var(--${token.variableName});`, 2);
-  });
-  if (brand.colors.find(c => c.variableName === 'sage-2')) { 
-      addLine(`--color-sage-3: var(--sage-3);`, 2); 
-  }
-
-  const graphiteToken = brand.colors.find(c => c.variableName === 'graphite');
-  if (graphiteToken) {
-    addLine(`--color-border: var(--${graphiteToken.variableName});`, 2);
-    addLine(`--color-border-strong: var(--graphite-strong);`, 2); 
-  }
-
-  brand.colors.forEach(color => {
-    if (color.category === 'color') { 
-      addLine(`--color-${color.variableName}: var(--${color.variableName});`, 2);
-      Object.keys(color.themeSteps).forEach(stepKey => { 
-        addLine(`--color-${color.variableName}-${stepKey}: var(--${color.variableName}-${stepKey});`, 2);
-      });
-    }
-  });
-  addLine("", 1);
-  addLine("  /* Semantic exports for shadcn/ui defaults */", 1);
-  addLine(`--color-background: var(--background);`, 2);
-  addLine(`--color-card: var(--card);`, 2);
-  addLine(`--color-popover: var(--popover);`, 2);
-  addLine(`--color-primary: var(--primary);`, 2);
-  addLine(`--color-secondary: var(--secondary);`, 2);
-  addLine(`--color-accent: var(--accent);`, 2);
-  addLine(`--color-destructive: var(--destructive);`, 2);
-  addLine(`--color-ring: var(--ring);`, 2);
-  addLine(`--color-foreground: var(--foreground);`, 2);
-  addLine(`--color-primary-foreground: var(--primary-foreground);`, 2);
-  addLine(`--color-secondary-foreground: var(--secondary-foreground);`, 2);
-  addLine(`--color-accent-foreground: var(--accent-foreground);`, 2);
-  addLine(`--color-destructive-foreground: var(--destructive-foreground);`, 2);
-  if (sg.successColors?.successForeground) addLine(`--color-success-foreground: var(--success-foreground);`, 2);
-
-  addLine(`--color-card-foreground: var(--card-foreground);`,2); 
-  addLine(`--color-popover-foreground: var(--popover-foreground);`,2);
-  
-  semanticRolesToGetSteps.forEach(roleKeyStr => {
-    const roleKey = roleKeyStr as keyof ThemeCssVars;
-    const targetTokenVar = ov[roleKey]; 
-    if (!targetTokenVar || typeof targetTokenVar !== 'string' || !targetTokenVar.startsWith('var(--') || !targetTokenVar.endsWith(')')) return;
-    
-    const tokenVarName = targetTokenVar.slice(6, -1); 
-    const sourceToken = brand.colors.find(c => c.variableName === tokenVarName);
-    
-    if (sourceToken && sourceToken.category === 'color') {
-      const stepKeys: LightnessStepKey[] = ["bright", "brighter", "dark", "darker"];
-      stepKeys.forEach(stepKey => {
-        addLine(`--color-${roleKey}-${stepKey}: var(--${roleKey}-${stepKey});`, 2);
-      });
-    }
+  ['chart1','chart2','chart3','chart4','chart5','chartOutline'].forEach(k => {
+    add(`--color-${k.replace('chart','chart-')}: hsl(var(--${k}));`, 1);
   });
 
-  addLine("", 1);
-  addLine("  /* Radii for @apply */", 1);
-  addLine(`--radius-sm: ${sg.radius.radiusSm};`, 2); 
-  addLine(`--radius-md: ${sg.radius.radiusMd};`, 2);
-  addLine(`--radius-lg: ${sg.radius.radiusLg};`, 2);
-  addLine(`--radius-xl: ${sg.radius.radiusXl};`, 2);
+  // expose foundations as raw variables (handy)
+  tokens.forEach(t => add(`--color-${t.variableName}: var(--${t.variableName});`, 1));
 
-  addLine("", 1);
-  addLine("  /* Shadows for @apply */", 1);
-  if (brand.themeCssVariables["shadow-xs"]) addLine(`--shadow-xs: ${brand.themeCssVariables["shadow-xs"]};`, 2);
-  if (brand.themeCssVariables["shadow-sm"]) addLine(`--shadow-sm: ${brand.themeCssVariables["shadow-sm"]};`, 2);
-  if (brand.themeCssVariables["shadow-md"]) addLine(`--shadow-md: ${brand.themeCssVariables["shadow-md"]};`, 2);
-  if (brand.themeCssVariables["shadow-lg"]) addLine(`--shadow-lg: ${brand.themeCssVariables["shadow-lg"]};`, 2);
-  if (brand.themeCssVariables["shadow-xl"]) addLine(`--shadow-xl: ${brand.themeCssVariables["shadow-xl"]};`, 2);
+  // radii passthrough for @apply
+  add('--radius-sm: 2px;', 1);
+  add('--radius-md: 3px;', 1);
+  add('--radius-lg: 4px;', 1);
+  add('--radius-xl: 6px;', 1);
+  add('}', 0);
 
-  addLine("}");
-  addLine("");
+  /* 6) Component primitives */
+  add('');
+  add('@layer components {');
+  add('.surface { @apply bg-card text-card-foreground border rounded-xl; }', 1);
+  add('.muted-surface { @apply bg-muted text-muted-foreground rounded-xl; }', 1);
+  add('.interactive { @apply transition-colors duration-150; }', 1);
+  add('.interactive:hover { @apply bg-accent text-accent-foreground; }', 1);
+  add('}', 0);
 
-  // Helper function to get font family for a role
-  const getFontFamilyForRole = (role: string): string => {
-    const assignedFont = brand.fonts.find(font => font.roles?.includes(role));
-    if (assignedFont?.family) {
-      return assignedFont.family;
-    }
-    // Fallback logic
-    if (role.includes('h') || role === 'heading' || role === 'display') {
-      return brand.fonts.find(f => f.roles?.includes('heading') || f.roles?.includes('display'))?.family || 
-             brand.fonts.find(f => f.roles?.includes('sans'))?.family || 'sans-serif';
-    }
-    return brand.fonts.find(f => f.roles?.includes('body') || f.roles?.includes('p'))?.family ||
-           brand.fonts.find(f => f.roles?.includes('sans'))?.family || 'sans-serif';
-  };
-  
-  // Helper function to get default font size for a role
-  const getDefaultFontSizeForRole = (role: string): string => {
-    const sizeMap: Record<string, string> = {
-      'h1': '2.25rem', 'h2': '1.875rem', 'h3': '1.5rem', 'h4': '1.25rem', 'h5': '1.125rem', 'h6': '1rem',
-      'p': '1rem', 'body': '1rem', 'default': '1rem', 'display': '3rem',
-      'button': '0.875rem', 'caption': '0.75rem', 'badge': '0.75rem', 'code': '0.875rem'
-    };
-    return sizeMap[role] || '1rem';
-  };
-
-  // Create brand-specific class name for high specificity
-  const brandClassName = brand.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-
-  // FIXED: Typography selectors that allow Tailwind utilities to override brand styles
-  // Previous issue: High-specificity selectors with !important were overriding text-sm, text-lg, etc.
-  // Solution: Use :not() to exclude elements with specific Tailwind text size classes
-  const semanticElements = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'];
-  semanticElements.forEach(element => {
-    const fontFamily = getFontFamilyForRole(element);
-    const defaultFontSize = getDefaultFontSizeForRole(element);
-    const defaultWeight = element === 'p' ? '400' : element.includes('h') ? '700' : '400';
-    
-    // Only target elements without specific Tailwind text size classes
-    // This allows Tailwind size utilities to override brand defaults while preserving other functionality
-    const tailwindSizeClasses = 'text-xs,text-sm,text-base,text-lg,text-xl,text-2xl,text-3xl,text-4xl,text-5xl,text-6xl,text-7xl,text-8xl,text-9xl';
-    const notSelectors = tailwindSizeClasses.split(',').map(cls => `[class*="${cls}"]`).join(',');
-    
-    addLine(`html.theme-${brandClassName} ${element}:not(${notSelectors}), .theme-${brandClassName} ${element}:not(${notSelectors}) {`);
-    addLine(`font-family: ${fontFamily};`, 2);
-    addLine(`font-size: var(--font-size-${element}, ${defaultFontSize});`, 2);
-    addLine(`font-weight: var(--font-weight-${element}, ${defaultWeight});`, 2);
-    addLine(`}`, 0);
-    addLine("");
-    
-    // Only apply font-family with !important (but not size/weight) to maintain brand consistency
-    addLine(`html.theme-${brandClassName} ${element}, .theme-${brandClassName} ${element} {`);
-    addLine(`font-family: ${fontFamily} !important;`, 2);
-    addLine(`}`, 0);
-    addLine("");
-  });
-
-  return cssString;
+  return css;
 };
 
 /**
- * Generates CSS for animation configurations
+ * Back-compat shim: original API name.
+ * Delegates to V2 with defaults (light theme enabled but no overrides).
  */
+export const generateGlobalCss = (brand: Brand): string => {
+  return generateGlobalCssV2(brand, { emitLightTheme: true });
+};
+
+/* ────────────────────────────────────────────────────────────
+   Animation CSS generator (unchanged except tiny hygiene)
+   ──────────────────────────────────────────────────────────── */
+
 export const generateAnimationCss = (animationConfig: ThemeAnimationConfig): string => {
   const { preset, rootClassName } = animationConfig;
   let css = '';
+  const addLine = (line: string, indentLevel = 0) => { css += `${'  '.repeat(indentLevel)}${line}\n`; };
 
-  const addLine = (line: string, indentLevel = 0) => {
-    css += `${'  '.repeat(indentLevel)}${line}\n`;
-  };
-
-  // Universal reset - ALWAYS reset all animation styles first to prevent bleeding
+  // Universal animation reset
   addLine(`/* Universal animation reset - prevents style bleeding between themes */`);
   addLine(`[data-slot="button"]:not([class*="link"]) {`);
   addLine(`box-shadow: none !important;`, 1);
   addLine(`transform: translate(0px, 0px) !important;`, 1);
   addLine(`transition: all 200ms ease !important;`, 1);
   addLine(`}`, 0);
-  
-  // Reset all possible button states universally
+
   const universalStates = ['', ':hover:not(:disabled)', ':focus-visible:not(:disabled)', ':active:not(:disabled)', ':disabled'];
   universalStates.forEach(state => {
     addLine(`[data-slot="button"]:not([class*="link"])${state} {`);
@@ -1240,32 +882,29 @@ export const generateAnimationCss = (animationConfig: ThemeAnimationConfig): str
   });
   addLine('');
 
-  // Now apply theme-specific styles with higher specificity
+  // Theme-specific base
   addLine(`/* Theme-specific styles for ${preset.name} */`);
   addLine(`.${rootClassName} [data-slot="button"]:not([class*="link"]) {`);
-  
-  // Apply theme-specific base styles
-  if (preset.button.global?.transition) {
-    addLine(`transition: ${preset.button.global.transition} !important;`, 1);
+  if ((preset.button as any)?.global?.transition) {
+    addLine(`transition: ${(preset.button as any).global.transition} !important;`, 1);
   }
-  if (preset.button.global?.transformOrigin) {
-    addLine(`transform-origin: ${preset.button.global.transformOrigin} !important;`, 1);
+  if ((preset.button as any)?.global?.transformOrigin) {
+    addLine(`transform-origin: ${(preset.button as any).global.transformOrigin} !important;`, 1);
   }
-  if (preset.button.global?.willChange) {
-    addLine(`will-change: ${preset.button.global.willChange} !important;`, 1);
+  if ((preset.button as any)?.global?.willChange) {
+    addLine(`will-change: ${(preset.button as any).global.willChange} !important;`, 1);
   }
   addLine(`}`, 0);
   addLine('');
 
-  // Add keyframes first
+  // Keyframes
   if (preset.keyframes) {
     Object.values(preset.keyframes).forEach(keyframe => {
       addLine(keyframe);
       addLine('');
     });
   }
-
-  // Add global classes
+  // Global classes
   if (preset.globalClasses) {
     Object.entries(preset.globalClasses).forEach(([className, styles]) => {
       addLine(`.${rootClassName} .${className} {`);
@@ -1275,260 +914,123 @@ export const generateAnimationCss = (animationConfig: ThemeAnimationConfig): str
     });
   }
 
-  // Generate component-specific animation classes
-  const generateComponentCss = (
-    componentName: string,
-    componentConfig: InteractiveAnimationConfig
-  ) => {
+  // Helpers
+  const generateComponentCss = (componentName: string, componentConfig: InteractiveAnimationConfig) => {
     addLine(`/* ${componentName.charAt(0).toUpperCase() + componentName.slice(1)} animations for ${preset.name} theme */`);
-    
-    // State-specific styles
     const states = ['default', 'hover', 'focus', 'active', 'disabled'] as const;
     states.forEach(state => {
       const stateConfig = componentConfig[state];
       if (!stateConfig) return;
-
       let selector = `.${rootClassName} [data-slot="${componentName}"]`;
-      
-      // For buttons, exclude link variants from animations
-      if (componentName === 'button') {
-        selector += ':not([class*="link"])';
-      }
-      
+      if (componentName === 'button') selector += ':not([class*="link"])';
       switch (state) {
-        case 'hover':
-          selector += ':hover:not(:disabled)';
-          break;
-        case 'focus':
-          selector += ':focus-visible:not(:disabled)';
-          break;
-        case 'active':
-          selector += ':active:not(:disabled)';
-          break;
-        case 'disabled':
-          selector += ':disabled';
-          break;
+        case 'hover': selector += ':hover:not(:disabled)'; break;
+        case 'focus': selector += ':focus-visible:not(:disabled)'; break;
+        case 'active': selector += ':active:not(:disabled)'; break;
+        case 'disabled': selector += ':disabled'; break;
       }
-
       addLine(`${selector} {`);
-
-      // Add transform properties
       if (stateConfig.transform) {
         const { scale, translate, transform } = stateConfig.transform;
-        let transformValue = '';
-        
-        if (transform) {
-          transformValue = transform;
-        } else {
-          const transformParts = [];
-          if (translate) transformParts.push(translate);
-          if (scale) transformParts.push(`scale(${scale})`);
-          transformValue = transformParts.join(' ');
-        }
-        
-        if (transformValue) {
-          addLine(`transform: ${transformValue} !important;`, 1);
-        }
+        let transformValue = transform ?? [
+          translate ? translate : '',
+          scale ? `scale(${scale})` : ''
+        ].filter(Boolean).join(' ');
+        if (transformValue) addLine(`transform: ${transformValue} !important;`, 1);
       }
-
-      // Add other properties with !important to ensure they override previous theme styles
       if (stateConfig.boxShadow) {
-        // Normalize multiline box-shadow values by removing extra whitespace and newlines
-        const normalizedBoxShadow = stateConfig.boxShadow
-          .replace(/\s*\n\s*/g, ' ')  // Replace newlines and surrounding whitespace with single space
-          .replace(/\s+/g, ' ')       // Replace multiple spaces with single space
-          .trim();                    // Remove leading/trailing whitespace
+        const normalizedBoxShadow = stateConfig.boxShadow.replace(/\s*\n\s*/g, ' ').replace(/\s+/g, ' ').trim();
         addLine(`box-shadow: ${normalizedBoxShadow} !important;`, 1);
       }
-      
-      if (stateConfig.opacity) {
-        addLine(`opacity: ${stateConfig.opacity} !important;`, 1);
-      }
-      if (stateConfig.backgroundColor) {
-        addLine(`background-color: ${stateConfig.backgroundColor} !important;`, 1);
-      }
-      if (stateConfig.border) {
-        addLine(`border: ${stateConfig.border} !important;`, 1);
-      }
-      if (stateConfig.filter) {
-        addLine(`filter: ${stateConfig.filter} !important;`, 1);
-      }
-
-      // Add custom properties
-      if (stateConfig.custom) {
-        Object.entries(stateConfig.custom).forEach(([prop, value]) => {
-          addLine(`${prop}: ${value} !important;`, 1);
-        });
-      }
-
+      if (stateConfig.opacity) addLine(`opacity: ${stateConfig.opacity} !important;`, 1);
+      if (stateConfig.backgroundColor) addLine(`background-color: ${stateConfig.backgroundColor} !important;`, 1);
+      if (stateConfig.border) addLine(`border: ${stateConfig.border} !important;`, 1);
+      if (stateConfig.filter) addLine(`filter: ${stateConfig.filter} !important;`, 1);
+      if (stateConfig.custom) Object.entries(stateConfig.custom).forEach(([prop, value]) => addLine(`${prop}: ${value} !important;`, 1));
       addLine('}');
       addLine('');
     });
   };
 
-  // Helper function to check if animation config is variant-specific
-  const isVariantAnimationConfig = (config: InteractiveAnimationConfig | VariantAnimationConfig): config is VariantAnimationConfig => {
-    return 'default' in config || 'destructive' in config || 'outline' in config || 'secondary' in config || 'ghost' in config;
-  };
+  const isVariantAnimationConfig = (config: InteractiveAnimationConfig | VariantAnimationConfig): config is VariantAnimationConfig =>
+    'default' in config || 'destructive' in config || 'outline' in config || 'secondary' in config || 'ghost' in config;
 
-  // Generate variant-specific animation classes for buttons
-  const generateVariantSpecificCss = (
-    componentName: string,
-    variantConfig: VariantAnimationConfig
-  ) => {
+  const generateVariantSpecificCss = (componentName: string, variantConfig: VariantAnimationConfig) => {
     addLine(`/* ${componentName.charAt(0).toUpperCase() + componentName.slice(1)} variant-specific animations for ${preset.name} theme */`);
-    
-    // Define button variants that should get animations
     const buttonVariants = ['default', 'destructive', 'outline', 'secondary', 'ghost'] as const;
-    
     buttonVariants.forEach(variant => {
       const config = variantConfig[variant];
       if (!config) return;
-
       const states = ['default', 'hover', 'focus', 'active', 'disabled'] as const;
       states.forEach(state => {
         const stateConfig = config[state];
         if (!stateConfig) return;
-
         let selector = `.${rootClassName} [data-slot="${componentName}"][data-variant="${variant}"]`;
-        
         switch (state) {
-          case 'hover':
-            selector += ':hover:not(:disabled)';
-            break;
-          case 'focus':
-            selector += ':focus-visible:not(:disabled)';
-            break;
-          case 'active':
-            selector += ':active:not(:disabled)';
-            break;
-          case 'disabled':
-            selector += ':disabled';
-            break;
+          case 'hover': selector += ':hover:not(:disabled)'; break;
+          case 'focus': selector += ':focus-visible:not(:disabled)'; break;
+          case 'active': selector += ':active:not(:disabled)'; break;
+          case 'disabled': selector += ':disabled'; break;
         }
-
         addLine(`${selector} {`);
-
-        // Add transform properties
         if (stateConfig.transform) {
           const { scale, translate, transform } = stateConfig.transform;
-          let transformValue = '';
-          
-          if (transform) {
-            transformValue = transform;
-          } else {
-            const transformParts = [];
-            if (translate) transformParts.push(translate);
-            if (scale) transformParts.push(`scale(${scale})`);
-            transformValue = transformParts.join(' ');
-          }
-          
-          if (transformValue) {
-            addLine(`transform: ${transformValue} !important;`, 1);
-          }
+          let transformValue = transform ?? [
+            translate ? translate : '',
+            scale ? `scale(${scale})` : ''
+          ].filter(Boolean).join(' ');
+          if (transformValue) addLine(`transform: ${transformValue} !important;`, 1);
         }
-
-        // Add other properties with !important to ensure they override previous theme styles
         if (stateConfig.boxShadow) {
-          // Normalize multiline box-shadow values by removing extra whitespace and newlines
-          const normalizedBoxShadow = stateConfig.boxShadow
-            .replace(/\s*\n\s*/g, ' ')  // Replace newlines and surrounding whitespace with single space
-            .replace(/\s+/g, ' ')       // Replace multiple spaces with single space
-            .trim();                    // Remove leading/trailing whitespace
+          const normalizedBoxShadow = stateConfig.boxShadow.replace(/\s*\n\s*/g, ' ').replace(/\s+/g, ' ').trim();
           addLine(`box-shadow: ${normalizedBoxShadow} !important;`, 1);
         }
-        
-        if (stateConfig.opacity) {
-          addLine(`opacity: ${stateConfig.opacity} !important;`, 1);
-        }
-        if (stateConfig.backgroundColor) {
-          addLine(`background-color: ${stateConfig.backgroundColor} !important;`, 1);
-        }
-        if (stateConfig.border) {
-          addLine(`border: ${stateConfig.border} !important;`, 1);
-        }
-        if (stateConfig.filter) {
-          addLine(`filter: ${stateConfig.filter} !important;`, 1);
-        }
-
-        // Add custom properties
-        if (stateConfig.custom) {
-          Object.entries(stateConfig.custom).forEach(([prop, value]) => {
-            addLine(`${prop}: ${value} !important;`, 1);
-          });
-        }
-
+        if (stateConfig.opacity) addLine(`opacity: ${stateConfig.opacity} !important;`, 1);
+        if (stateConfig.backgroundColor) addLine(`background-color: ${stateConfig.backgroundColor} !important;`, 1);
+        if (stateConfig.border) addLine(`border: ${stateConfig.border} !important;`, 1);
+        if (stateConfig.filter) addLine(`filter: ${stateConfig.filter} !important;`, 1);
+        if (stateConfig.custom) Object.entries(stateConfig.custom).forEach(([prop, value]) => addLine(`${prop}: ${value} !important;`, 1));
         addLine('}');
         addLine('');
       });
     });
   };
 
-  // Generate CSS for each component type
+  // Emit
   if (isVariantAnimationConfig(preset.button)) {
-    // Handle variant-specific button animations
     generateVariantSpecificCss('button', preset.button);
-    
-    // Also apply global button styles if they exist
     if (preset.button.global) {
       addLine(`/* Global button styles for ${preset.name} theme */`);
       addLine(`.${rootClassName} [data-slot="button"] {`);
-      
-      if (preset.button.global.transition) {
-        addLine(`transition: ${preset.button.global.transition} !important;`, 1);
-      }
-      if (preset.button.global.transformOrigin) {
-        addLine(`transform-origin: ${preset.button.global.transformOrigin} !important;`, 1);
-      }
-      if (preset.button.global.willChange) {
-        addLine(`will-change: ${preset.button.global.willChange} !important;`, 1);
-      }
-      
+      if (preset.button.global.transition) addLine(`transition: ${preset.button.global.transition} !important;`, 1);
+      if (preset.button.global.transformOrigin) addLine(`transform-origin: ${preset.button.global.transformOrigin} !important;`, 1);
+      if (preset.button.global.willChange) addLine(`will-change: ${preset.button.global.willChange} !important;`, 1);
       addLine(`}`, 0);
       addLine('');
     }
   } else {
-    // Handle universal button animations (backwards compatibility)
-    generateComponentCss('button', preset.button);
+    generateComponentCss('button', preset.button as InteractiveAnimationConfig);
   }
-  
   generateComponentCss('link', preset.link);
-  
-  if (preset.input) {
-    generateComponentCss('input', preset.input);
-  }
-  
-  if (preset.card) {
-    generateComponentCss('card', preset.card);
-  }
+  if (preset.input) generateComponentCss('input', preset.input);
+  if (preset.card) generateComponentCss('card', preset.card);
 
   return css;
 };
 
-/**
- * Calculates the WCAG contrast ratio between two colors.
- * Note: This is a simplified luminance-based calculation. For more advanced
- * accessibility, especially for text, consider using an APCA-based method if possible.
- * @param fgColor - The foreground color (text color).
- * @param bgColor - The background color.
- * @returns The contrast ratio.
- */
+/* ────────────────────────────────────────────────────────────
+   Contrast helpers
+   ──────────────────────────────────────────────────────────── */
 
 /**
- * A simple utility to get a high-contrast text color (black or white) for a given background color.
- * @param backgroundColor - The background color in any format culori can parse (e.g., hex, oklch).
- * @returns 'oklch(0.15 0 0)' (near-black) or 'oklch(0.98 0 0)' (near-white).
+ * Returns near-black or near-white text color (OKLCH) with better contrast.
  */
 export const getHighContrastTextColor = (backgroundColor: string): OklchString => {
   try {
     const onWhiteContrast = wcagContrast(backgroundColor, 'white');
     const onBlackContrast = wcagContrast(backgroundColor, 'black');
-
-    // Return the color that provides higher contrast.
-    // Using near-black and near-white for a less harsh look.
-    return onWhiteContrast > onBlackContrast ? 'oklch(0.98 0 0)' : 'oklch(0.15 0 0)';
+    return (onWhiteContrast > onBlackContrast) ? 'oklch(0.98 0 0)' : 'oklch(0.15 0 0)';
   } catch (e) {
-    // If parsing fails, default to a safe value
     console.error("Failed to parse color for contrast check:", backgroundColor, e);
     return 'oklch(0.15 0 0)';
   }

@@ -24,6 +24,7 @@ import {
   Edit3
 } from "lucide-react";
 import { cn } from "@/features/unorganized-utils/utils";
+import { useBrand } from "../blueprint/BrandContext";
 
 interface FontSwatch {
   family: string; // Font family CSS value
@@ -96,6 +97,7 @@ export function FontPicker({
   title,
   ...props
 }: FontPickerProps) {
+  const { brand, processedBrand } = useBrand();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<'swatches' | 'google' | 'system' | 'custom'>('swatches');
@@ -106,8 +108,28 @@ export function FontPicker({
   const [editingSwatchName, setEditingSwatchName] = useState<string | null>(null);
   const [editingSwatchValue, setEditingSwatchValue] = useState("");
   const [previewText] = useState("The quick brown fox jumps over the lazy dog");
+  const [themeTick, setThemeTick] = useState(0);
 
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Re-render when BrandContext changes or the injected theme <style> updates
+  useEffect(() => {
+    setThemeTick((t) => t + 1);
+  }, [brand, processedBrand]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const observer = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.type === 'childList' || m.type === 'characterData') {
+          setThemeTick((t) => t + 1);
+          break;
+        }
+      }
+    });
+    observer.observe(document.head, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
+  }, []);
 
   // Get clean font name from family string
   const getCleanFontName = (fontFamily: string) => {
@@ -145,6 +167,14 @@ export function FontPicker({
     if (onDirectFontChange) {
       onDirectFontChange(swatch.family);
     }
+    // If a role is provided, set the CSS var for immediate preview consistency
+    if (role && typeof window !== 'undefined') {
+      document.documentElement.style.setProperty(`--font-${role}`, swatch.family);
+      if (role === 'body' || role === 'sans') {
+        document.documentElement.style.setProperty('--font-body', swatch.family);
+        document.documentElement.style.setProperty('--font-sans', 'var(--font-body)');
+      }
+    }
     setIsOpen(false);
   };
 
@@ -155,6 +185,13 @@ export function FontPicker({
     if (onDirectFontChange) {
       onDirectFontChange(googleFont.family);
     }
+    if (role && typeof window !== 'undefined') {
+      document.documentElement.style.setProperty(`--font-${role}`, googleFont.family);
+      if (role === 'body' || role === 'sans') {
+        document.documentElement.style.setProperty('--font-body', googleFont.family);
+        document.documentElement.style.setProperty('--font-sans', 'var(--font-body)');
+      }
+    }
     setIsOpen(false);
   };
 
@@ -163,6 +200,13 @@ export function FontPicker({
     onChange(systemFont.family);
     if (onDirectFontChange) {
       onDirectFontChange(systemFont.family);
+    }
+    if (role && typeof window !== 'undefined') {
+      document.documentElement.style.setProperty(`--font-${role}`, systemFont.family);
+      if (role === 'body' || role === 'sans') {
+        document.documentElement.style.setProperty('--font-body', systemFont.family);
+        document.documentElement.style.setProperty('--font-sans', 'var(--font-body)');
+      }
     }
     setIsOpen(false);
   };
@@ -173,6 +217,13 @@ export function FontPicker({
       onChange(customFontFamily.trim());
       if (onDirectFontChange) {
         onDirectFontChange(customFontFamily.trim());
+      }
+      if (role && typeof window !== 'undefined') {
+        document.documentElement.style.setProperty(`--font-${role}`, customFontFamily.trim());
+        if (role === 'body' || role === 'sans') {
+          document.documentElement.style.setProperty('--font-body', customFontFamily.trim());
+          document.documentElement.style.setProperty('--font-sans', 'var(--font-body)');
+        }
       }
       setCustomFontFamily("");
       setIsOpen(false);
@@ -278,13 +329,14 @@ export function FontPicker({
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
+          key={themeTick}
           className={cn(
             "justify-between text-left font-normal",
             className
           )}
           style={{
             ...style,
-            fontFamily: value || 'inherit'
+            fontFamily: role ? (`var(--font-${role}, ${value || 'inherit'})` as any) : (value || 'inherit')
           }}
           title={title}
           {...props}

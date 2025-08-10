@@ -13,6 +13,8 @@ import { Menu, ListFilter } from "lucide-react";
 import { cn } from "@/features/unorganized-utils/utils";
 import { useBrand } from "../BrandContext";
 import { FontToken } from "../brand-utils";
+import { TypographyElement, CombinedElement, ColorElement } from "../components/token-targeting";
+import { formatHex } from "culori";
 
 const categories = ["All", "Abstract", "Landscape", "Portrait", "Nature"];
 
@@ -50,6 +52,10 @@ function CategoryFilters({
         <ul className="space-y-2">
           {categories.map((cat) => (
             <li key={cat}>
+              <CombinedElement
+                typographyRole="nav"
+                colorRole={selectedCategory === cat ? 'foreground' : 'muted-foreground'}
+              >
               <Button
                 variant="ghost"
                 onClick={() => {
@@ -66,6 +72,7 @@ function CategoryFilters({
               >
                 {cat}
               </Button>
+              </CombinedElement>
             </li>
           ))}
         </ul>
@@ -318,8 +325,9 @@ export default function ArtistPreview() {
     const getColorByRole = (roles: string[], fallback: string) => {
       for (const role of roles) {
         const color = brand.colors.find(c => c.roles && Array.isArray(c.roles) && c.roles.includes(role as any));
-        if (color) {
-          return `rgb(${color.oklchLight})`;
+        if (color && color.oklch) {
+          const hex = formatHex(color.oklch as string);
+          if (hex) return hex;
         }
       }
       return fallback;
@@ -437,6 +445,7 @@ export default function ArtistPreview() {
     >
       <header className="w-full border-b border-border">
         <div className="max-w-screen-2xl mx-auto flex items-center justify-between py-4 px-8">
+          <TypographyElement elementType="SPAN">
           <Button
             variant="link"
             asChild
@@ -445,31 +454,24 @@ export default function ArtistPreview() {
           >
             <a href="#">Aurora Hart</a>
           </Button>
+          </TypographyElement>
           <nav className="hidden md:flex gap-8 text-sm items-center">
+            {[
+              { href: '#gallery', label: 'Gallery' },
+              { href: '#about', label: 'About' },
+              { href: '#contact', label: 'Contact' },
+            ].map((item) => (
+              <TypographyElement key={item.href} elementType="SPAN">
             <Button
               variant="link"
               asChild
               className="p-0 h-auto text-muted-foreground hover:text-foreground transition-colors hover:no-underline"
               style={getRoleStyle('nav', '400')}
             >
-              <a href="#gallery">Gallery</a>
+                  <a href={item.href}>{item.label}</a>
             </Button>
-            <Button
-              variant="link"
-              asChild
-              className="p-0 h-auto text-muted-foreground hover:text-foreground transition-colors hover:no-underline"
-              style={getRoleStyle('nav', '400')}
-            >
-              <a href="#about">About</a>
-            </Button>
-            <Button
-              variant="link"
-              asChild
-              className="p-0 h-auto text-muted-foreground hover:text-foreground transition-colors hover:no-underline"
-              style={getRoleStyle('nav', '400')}
-            >
-              <a href="#contact">Contact</a>
-            </Button>
+              </TypographyElement>
+            ))}
           </nav>
           <div className="md:hidden">
             <Sheet>
@@ -481,6 +483,7 @@ export default function ArtistPreview() {
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-xs bg-background">
                 <nav className="flex flex-col gap-6 text-lg p-6">
+                  <TypographyElement elementType="SPAN">
                   <Button
                     variant="link"
                     asChild
@@ -489,30 +492,23 @@ export default function ArtistPreview() {
                   >
                     <a href="#">Aurora Hart</a>
                   </Button>
+                  </TypographyElement>
+                  {[
+                    { href: '#gallery', label: 'Gallery' },
+                    { href: '#about', label: 'About' },
+                    { href: '#contact', label: 'Contact' },
+                  ].map((item) => (
+                    <TypographyElement key={item.href} elementType="SPAN">
                   <Button
                     variant="link"
                     asChild
                     className="p-0 h-auto text-muted-foreground hover:text-foreground transition-colors hover:no-underline justify-start"
                     style={getRoleStyle('nav', '400')}
                   >
-                    <a href="#gallery">Gallery</a>
+                        <a href={item.href}>{item.label}</a>
                   </Button>
-                  <Button
-                    variant="link"
-                    asChild
-                    className="p-0 h-auto text-muted-foreground hover:text-foreground transition-colors hover:no-underline justify-start"
-                    style={getRoleStyle('nav', '400')}
-                  >
-                    <a href="#about">About</a>
-                  </Button>
-                  <Button
-                    variant="link"
-                    asChild
-                    className="p-0 h-auto text-muted-foreground hover:text-foreground transition-colors hover:no-underline justify-start"
-                    style={getRoleStyle('nav', '400')}
-                  >
-                    <a href="#contact">Contact</a>
-                  </Button>
+                    </TypographyElement>
+                  ))}
                 </nav>
               </SheetContent>
             </Sheet>
@@ -534,12 +530,15 @@ export default function ArtistPreview() {
 
           <main className="flex-1">
             <section id="about" className="pt-16 pb-20 md:pt-24 md:pb-28 px-12">
+              <TypographyElement elementType="H1">
               <h1
                 className="text-5xl md:text-7xl text-foreground max-w-3xl"
                 style={getRoleStyle('h1', '700')}
               >
                 Hi there.
               </h1>
+              </TypographyElement>
+              <TypographyElement elementType="P" textColorRole="muted-foreground">
               <p
                 className="mt-4 max-w-2xl text-lg text-muted-foreground"
                 style={getRoleStyle('p', '400')}
@@ -547,6 +546,7 @@ export default function ArtistPreview() {
                 I'm Aurora Hart, a Norwegian painter based in Oslo, deeply inspired by the ethereal beauty of the fjords
                 and the enchanting glow of the midnight sun.
               </p>
+              </TypographyElement>
             </section>
 
             <section id="gallery" className="px-12 pb-24">
@@ -560,8 +560,8 @@ export default function ArtistPreview() {
                 <div className="flex items-center gap-4">
                   <div className="hidden sm:flex items-center gap-2">
                     {(["All", "Available", "Sold"] as const).map((filter) => (
+                      <CombinedElement key={filter} typographyRole="BUTTON" colorRole={availabilityFilter === filter ? 'foreground' : 'muted-foreground'}>
                       <Button
-                        key={filter}
                         variant="ghost"
                         onClick={() => setAvailabilityFilter(filter)}
                         className={cn(
@@ -574,6 +574,7 @@ export default function ArtistPreview() {
                       >
                         {filter}
                       </Button>
+                      </CombinedElement>
                     ))}
                   </div>
                   <div className="lg:hidden">
@@ -600,15 +601,36 @@ export default function ArtistPreview() {
 
               <div className="columns-1 sm:columns-2 xl:columns-2 gap-6">
                 {filteredImages.map((img) => (
-                  <SmartImage
-                    key={img.src}
-                    src={img.src}
+                  <Card key={img.src} className="group cursor-pointer hover:shadow-lg transition-all duration-300" data-slot="card">
+                    <div className="relative overflow-hidden">
+                      <Image
+                        src={img.src || "/placeholder.svg"}
                     alt={`Artwork by Aurora Hart - ${img.category}`}
-                    category={img.category}
-                    title={img.title}
-                    price={img.price}
-                    year={img.year}
-                  />
+                        width={800}
+                        height={1200}
+                        className="object-cover shadow-sm w-full h-auto"
+                        unoptimized
+                        priority={false}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent via-60% to-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        <div className="absolute top-4 left-4 text-white text-sm font-medium">
+                          {img.year}
+                        </div>
+                        <div className="absolute bottom-4 left-4 text-white">
+                          <TypographyElement elementType="H3">
+                            <h3 className="text-lg font-semibold">{img.title}</h3>
+                          </TypographyElement>
+                        </div>
+                        <div className="absolute bottom-4 right-4 text-white">
+                          <TypographyElement elementType="SPAN">
+                            <span className="text-lg font-semibold">{img.price}</span>
+                          </TypographyElement>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
                 ))}
               </div>
             </section>

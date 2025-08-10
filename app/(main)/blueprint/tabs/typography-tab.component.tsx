@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/features/unorganized-components/ui/select";
+import { Slider } from "@/features/unorganized-components/ui/slider";
 
 // Tailwind font size scale - this is what users will modify
 const TAILWIND_FONT_SIZES = [
@@ -34,6 +35,34 @@ const TAILWIND_FONT_SIZES = [
   { key: 'text-5xl', label: '5XL', defaultValue: 3 },
   { key: 'text-6xl', label: '6XL', defaultValue: 3.75 }
 ];
+
+// Tailwind line-height utilities
+const TAILWIND_LINE_HEIGHTS = [
+  { key: 'leading-none', label: 'None', value: 1 },
+  { key: 'leading-tight', label: 'Tight', value: 1.25 },
+  { key: 'leading-snug', label: 'Snug', value: 1.375 },
+  { key: 'leading-normal', label: 'Normal', value: 1.5 },
+  { key: 'leading-relaxed', label: 'Relaxed', value: 1.625 },
+  { key: 'leading-loose', label: 'Loose', value: 2 },
+];
+
+// Tailwind letter-spacing utilities
+const TAILWIND_TRACKING = [
+  { key: 'tracking-tighter', label: 'Tighter', value: -0.05 },
+  { key: 'tracking-tight', label: 'Tight', value: -0.025 },
+  { key: 'tracking-normal', label: 'Normal', value: 0 },
+  { key: 'tracking-wide', label: 'Wide', value: 0.025 },
+  { key: 'tracking-wider', label: 'Wider', value: 0.05 },
+  { key: 'tracking-widest', label: 'Widest', value: 0.1 },
+];
+
+// Computed slider ranges from utilities
+const SIZE_MIN = Math.min(...TAILWIND_FONT_SIZES.map(s => s.defaultValue));
+const SIZE_MAX = Math.max(...TAILWIND_FONT_SIZES.map(s => s.defaultValue));
+const LH_MIN = Math.min(...TAILWIND_LINE_HEIGHTS.map(s => s.value));
+const LH_MAX = Math.max(...TAILWIND_LINE_HEIGHTS.map(s => s.value));
+const TRACK_MIN = Math.min(...TAILWIND_TRACKING.map(s => s.value));
+const TRACK_MAX = Math.max(...TAILWIND_TRACKING.map(s => s.value));
 
 // Define font role categories and their display order
 const fontRoleCategoriesOrder: string[] = [
@@ -50,6 +79,7 @@ const fontRoleToCategoryMap: Record<string, string> = {
   p: "Content Text",
   default: "Content Text",
   sans: "Content Text",
+  blockquote: "Content Text",
 
   // Headings
   h1: "Headings",
@@ -59,7 +89,7 @@ const fontRoleToCategoryMap: Record<string, string> = {
   h5: "Headings",
   h6: "Headings",
   heading: "Headings",
-  display: "Headings",
+  // display: hidden below
 
   // UI Elements
   button: "UI Elements",
@@ -73,6 +103,13 @@ const fontRoleToCategoryMap: Record<string, string> = {
   mono: "Special Purpose",
   serif: "Special Purpose",
 };
+// Roles to hide from UI
+const HIDDEN_ROLE_NAMES = new Set([
+  'display',
+  'hero-title', 'hero title', 'hero',
+  'nav-title', 'nav title', 'nav',
+  'title'
+]);
 
 // Font role group definitions
 interface FontRoleGroupDefinition {
@@ -100,17 +137,30 @@ const fontRoleGroupDefinitions: FontRoleGroupDefinition[] = [
       { role: 'h5' },
       { role: 'h6' },
       { role: 'heading' },
-      { role: 'display' }
+      // display removed
+    ]
+  },
+  {
+    name: "Font Stacks",
+    description: "Base font stacks used throughout the theme, including mono and body.",
+    priority: 2,
+    category: "Special Purpose",
+    roles: [
+      { role: 'sans', isPrimary: true },
+      { role: 'serif' },
+      { role: 'mono' },
+      { role: 'body' }
     ]
   },
   {
     name: "Body Text",
     description: "Main content text used throughout your application for paragraphs and readable content.",
-    priority: 2,
+    priority: 3,
     category: "Content Text",
     roles: [
-      { role: 'body', isPrimary: true },
+      // body moved to Font Stacks group
       { role: 'p' },
+      { role: 'blockquote' },
       { role: 'default' }
     ]
   },
@@ -152,6 +202,7 @@ const rolePreviewTexts: Record<string, string> = {
   body: "This is body text for reading",
   p: "Paragraph text content",
   default: "Default text content",
+  blockquote: "“Quoted content with emphasis”",
   h1: "Main Heading",
   h2: "Section Heading",
   h3: "Subsection Heading",
@@ -210,10 +261,12 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     updateFontWeightAssignment,
     getFontWeightForRole,
     updateFontSizeAssignment,
-    getFontSizeForRole
+    getFontSizeForRole,
+    updateLineHeightForRole,
+    updateLetterSpacingForRole
   } = useBrand();
 
-  const { selectedTypographyRole } = useUIContext();
+  const { selectedTypographyRole, setSelectedTypographyRole } = useUIContext();
 
   const [selectedRole, setSelectedRole] = useState<string>('h1');
 
@@ -240,6 +293,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     body: 'text-base',
     p: 'text-base',
     default: 'text-base',
+    blockquote: 'text-base',
     h1: 'text-4xl',
     h2: 'text-3xl',
     h3: 'text-2xl',
@@ -286,7 +340,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
   // Create role-based view data with proper categorization and grouping
   const fontRoleGroups = useMemo(() => {
     // Build role-to-font mapping
-    const roleToFontMap = new Map<string, ProcessedFontToken>();
+    const roleToFontMap = new Map<string, ProcessedFontToken | null>();
 
     processedFonts.forEach(font => {
       font.roles?.forEach(role => {
@@ -296,8 +350,27 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
       });
     });
 
+    // Inject the currently selected role (from UI targeting) if it doesn't exist yet
+    if (selectedTypographyRole && !roleToFontMap.has(selectedTypographyRole)) {
+      roleToFontMap.set(selectedTypographyRole, null);
+    }
+    // Ensure blockquote appears even if no font claims it yet
+    if (!roleToFontMap.has('blockquote')) {
+      roleToFontMap.set('blockquote', null);
+    }
+    // Ensure stacks appear
+    ['sans','serif','mono','body'].forEach(r => { if (!roleToFontMap.has(r)) roleToFontMap.set(r, null); });
+
+    // Remove hidden roles from the map
+    Array.from(roleToFontMap.keys()).forEach(r => {
+      const norm = r.replace(/\s+/g, '-').toLowerCase();
+      if (HIDDEN_ROLE_NAMES.has(norm)) {
+        roleToFontMap.delete(r);
+      }
+    });
+
     const createRoleAssignment = (role: string): FontRoleAssignment => {
-      const assignedFont = roleToFontMap.get(role);
+      const assignedFont = roleToFontMap.get(role) || null;
       const category = fontRoleToCategoryMap[role] || "Special Purpose";
       const influence = assignedFont?.effectiveInfluence || 0;
       const assignedSize = roleSizeAssignments[role] || 'text-base';
@@ -321,21 +394,18 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
       .sort((a, b) => a.priority - b.priority)
       .forEach(groupDef => {
         const availableRoles = groupDef.roles.filter(roleInfo =>
-          allRoles.includes(roleInfo.role) && !processedRoles.has(roleInfo.role)
+          allRoles.includes(roleInfo.role) && !processedRoles.has(roleInfo.role) && !HIDDEN_ROLE_NAMES.has(roleInfo.role)
         );
 
         if (availableRoles.length === 0) {
           return;
         }
 
-        const primaryRole = availableRoles.find(r => r.isPrimary)?.role || availableRoles[0].role;
-        const subCategory = groupDef.name;
-
         const roleAssignments = availableRoles.map(roleInfo => createRoleAssignment(roleInfo.role));
 
         groups.push({
           type: 'group',
-          subCategoryName: subCategory,
+          subCategoryName: groupDef.name,
           description: groupDef.description,
           roles: roleAssignments,
         });
@@ -343,11 +413,10 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
         availableRoles.forEach(roleInfo => processedRoles.add(roleInfo.role));
       });
 
-    // Handle any remaining ungrouped roles
+    // Handle any remaining ungrouped roles (including injected selected role)
     const ungroupedRoles = allRoles.filter(role => !processedRoles.has(role));
     ungroupedRoles.forEach(role => {
-      const category = fontRoleToCategoryMap[role] || "Special Purpose";
-
+      if (HIDDEN_ROLE_NAMES.has(role)) return;
       groups.push({
         type: 'group',
         subCategoryName: role.charAt(0).toUpperCase() + role.slice(1).replace(/-/g, ' '),
@@ -357,7 +426,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     });
 
     return groups;
-  }, [processedFonts, roleSizeAssignments]);
+  }, [processedFonts, roleSizeAssignments, selectedTypographyRole]);
 
   // Generate font swatches
   const fontSwatches = useMemo(() =>
@@ -440,6 +509,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
         body: 'text-base',
         p: 'text-base',
         default: 'text-base',
+        blockquote: 'text-base',
         h1: 'text-4xl',
         h2: 'text-3xl',
         h3: 'text-2xl',
@@ -479,6 +549,14 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     return roleAssignment;
   }, [fontRoleGroups, selectedRole]);
 
+  // Derive weight name from CSS variable if brand has none
+  const cssWeightForSelectedRole = useMemo(() => {
+    if (typeof window === 'undefined') return null as number | null;
+    const w = getComputedStyle(document.documentElement).getPropertyValue(`--font-weight-${selectedRole}`).trim();
+    const parsed = w ? parseInt(w, 10) : NaN;
+    return Number.isNaN(parsed) ? null : parsed;
+  }, [selectedRole]);
+
   // Initialize selectedFont when selectedRole changes
   useEffect(() => {
     if (selectedRoleInfo?.assignedFont) {
@@ -497,9 +575,9 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     }
   }, [selectedRole, selectedRoleInfo, fontSwatches]);
 
-  // Handle role selection
   const handleRoleSelect = (role: string) => {
     setSelectedRole(role);
+    setSelectedTypographyRole(role);
   };
 
   // Handle font selection
@@ -534,6 +612,22 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
   const handleWeightChange = (weightName: string) => {
     if (selectedRoleInfo?.assignedFont) {
       updateFontWeightAssignment(selectedRoleInfo.assignedFont.name, selectedRole, weightName);
+      return;
+    }
+
+    // Auto-assign a sensible default font if none is assigned to this role
+    const fallbackFont = processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0];
+    if (fallbackFont) {
+      updateFontRoleAssignment(selectedRole, fallbackFont.name);
+      updateFontWeightAssignment(fallbackFont.name, selectedRole, weightName);
+      // Also update local UI selection
+      const matching = fontSwatches.find(s => s.displayName === fallbackFont.name);
+      if (matching) setSelectedFont(matching);
+      // Set role-level CSS var immediately for live preview
+      if (typeof window !== 'undefined') {
+        const w = fallbackFont.weights?.[weightName];
+        if (w) document.documentElement.style.setProperty(`--font-weight-${selectedRole}`, String(w));
+      }
     }
   };
 
@@ -545,10 +639,165 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     }));
 
     const sizeValue = fontSizeScale[sizeKey];
-    if (sizeValue && selectedRoleInfo?.assignedFont) {
+    if (!sizeValue) return;
+
+    if (selectedRoleInfo?.assignedFont) {
       updateFontSizeAssignment(selectedRoleInfo.assignedFont.name, selectedRole, sizeValue);
+      return;
+    }
+
+    // Auto-assign default font when none is assigned
+    const fallbackFont = processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0];
+    if (fallbackFont) {
+      updateFontRoleAssignment(selectedRole, fallbackFont.name);
+      updateFontSizeAssignment(fallbackFont.name, selectedRole, sizeValue);
+      const matching = fontSwatches.find(s => s.displayName === fallbackFont.name);
+      if (matching) setSelectedFont(matching);
+      if (typeof window !== 'undefined') {
+        document.documentElement.style.setProperty(`--font-size-${selectedRole}`, `${sizeValue}rem`);
+      }
     }
   };
+
+  // Handle line-height change (per role)
+  const [lineHeight, setLineHeight] = useState<number>(1.2);
+  const snapLineHeight = (value: number) => TAILWIND_LINE_HEIGHTS.reduce((a,b)=>Math.abs(b.value-value)<Math.abs(a.value-value)?b:a, TAILWIND_LINE_HEIGHTS[0]);
+  const handleLineHeightChange = (value: number) => {
+    const snapped = snapLineHeight(value);
+    setLineHeight(snapped.value);
+    setLineHeightKey(snapped.key);
+    updateLineHeightForRole(selectedRole, snapped.value);
+  };
+
+  // Handle letter-spacing change (per role, in em)
+  const [letterSpacing, setLetterSpacing] = useState<number>(0);
+  const snapTracking = (value: number) => TAILWIND_TRACKING.reduce((a,b)=>Math.abs(b.value-value)<Math.abs(a.value-value)?b:a, TAILWIND_TRACKING[2]);
+  const handleLetterSpacingChange = (value: number) => {
+    const snapped = snapTracking(value);
+    setLetterSpacing(snapped.value);
+    setTrackingKey(snapped.key);
+    updateLetterSpacingForRole(selectedRole, snapped.value);
+  };
+
+  // Tailwind-based line-height and letter-spacing selections
+  const [lineHeightKey, setLineHeightKey] = useState<string>('leading-normal');
+  const [trackingKey, setTrackingKey] = useState<string>('tracking-normal');
+
+  // Font size (rem) slider with Tailwind snapping
+  const [sizeRem, setSizeRem] = useState<number>(1);
+  useEffect(() => {
+    const getDefaultRemForRole = (role: string) => {
+      const sizeKey = roleSizeAssignments[role] || 'text-base';
+      return fontSizeScale[sizeKey] || 1;
+    };
+    if (typeof window === 'undefined') {
+      setSizeRem(getDefaultRemForRole(selectedRole));
+      return;
+    }
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue(`--font-size-${selectedRole}`)
+      .trim();
+    const parsed = raw.endsWith('rem') ? parseFloat(raw) : parseFloat(raw || '');
+    if (!Number.isNaN(parsed)) setSizeRem(parsed);
+    else setSizeRem(getDefaultRemForRole(selectedRole));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedRole]);
+
+  const snapSize = (val: number) => [...TAILWIND_FONT_SIZES].reduce((a,b)=>Math.abs(b.defaultValue-val)<Math.abs(a.defaultValue-val)?b:a);
+  const handleSizeRemChange = (val: number) => {
+    const snapped = snapSize(val).defaultValue;
+    setSizeRem(snapped);
+    setRoleSizeAssignments(prev => ({ ...prev, [selectedRole]: snapSize(val).key }));
+    if (selectedRoleInfo?.assignedFont) {
+      updateFontSizeAssignment(selectedRoleInfo.assignedFont.name, selectedRole, snapped);
+      return;
+    }
+    const fallbackFont = processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0];
+    if (fallbackFont) {
+      updateFontRoleAssignment(selectedRole, fallbackFont.name);
+      updateFontSizeAssignment(fallbackFont.name, selectedRole, snapped);
+      if (typeof window !== 'undefined') {
+        document.documentElement.style.setProperty(`--font-size-${selectedRole}`, `${snapped}rem`);
+      }
+    }
+  };
+  const handleSizeRemCommit = (val: number) => {
+    // Snap to nearest Tailwind size step and update roleSizeAssignments mapping
+    const closest = [...TAILWIND_FONT_SIZES].reduce((a, b) => Math.abs(b.defaultValue - val) < Math.abs(a.defaultValue - val) ? b : a);
+    setRoleSizeAssignments(prev => ({ ...prev, [selectedRole]: closest.key }));
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const cs = getComputedStyle(document.documentElement);
+    const lhRaw = cs.getPropertyValue(`--line-height-${selectedRole}`).trim();
+    const lsRaw = cs.getPropertyValue(`--letter-spacing-${selectedRole}`).trim();
+    const parsedLh = lhRaw ? parseFloat(lhRaw) : NaN;
+    const parsedLs = lsRaw ? parseFloat(lsRaw) : NaN;
+    if (!Number.isNaN(parsedLh)) {
+      const closest = TAILWIND_LINE_HEIGHTS.reduce((a, b) => Math.abs(b.value - parsedLh) < Math.abs(a.value - parsedLh) ? b : a, TAILWIND_LINE_HEIGHTS[0]);
+      setLineHeightKey(closest.key);
+    } else setLineHeightKey('leading-normal');
+    if (!Number.isNaN(parsedLs)) {
+      const closestT = TAILWIND_TRACKING.reduce((a, b) => Math.abs(b.value - parsedLs) < Math.abs(a.value - parsedLs) ? b : a, TAILWIND_TRACKING[2]);
+      setTrackingKey(closestT.key);
+    } else setTrackingKey('tracking-normal');
+  }, [selectedRole]);
+
+  // Re-sync when theme is applied/updated so values match instantly without entering the tab
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const cs = getComputedStyle(document.documentElement);
+    // size
+    const sizeRaw = cs.getPropertyValue(`--font-size-${selectedRole}`).trim();
+    const parsedSize = sizeRaw.endsWith('rem') ? parseFloat(sizeRaw) : parseFloat(sizeRaw || '');
+    if (!Number.isNaN(parsedSize)) {
+      const closest = snapSize(parsedSize);
+      setSizeRem(closest.defaultValue);
+      setRoleSizeAssignments(prev => ({ ...prev, [selectedRole]: closest.key }));
+    }
+    // line-height
+    const lhRaw = cs.getPropertyValue(`--line-height-${selectedRole}`).trim();
+    const parsedLh = lhRaw ? parseFloat(lhRaw) : NaN;
+    if (!Number.isNaN(parsedLh)) {
+      const lhStep = snapLineHeight(parsedLh);
+      setLineHeight(lhStep.value);
+      setLineHeightKey(lhStep.key);
+    }
+    // letter-spacing
+    const lsRaw = cs.getPropertyValue(`--letter-spacing-${selectedRole}`).trim();
+    const parsedLs = lsRaw ? parseFloat(lsRaw) : NaN;
+    if (!Number.isNaN(parsedLs)) {
+      const trStep = snapTracking(parsedLs);
+      setLetterSpacing(trStep.value);
+      setTrackingKey(trStep.key);
+    }
+  }, [processedBrand, selectedRole]);
+
+  const handleLineHeightKeyChange = (key: string) => {
+    setLineHeightKey(key);
+    const found = TAILWIND_LINE_HEIGHTS.find(x => x.key === key);
+    if (found) handleLineHeightChange(found.value);
+  };
+  const handleTrackingKeyChange = (key: string) => {
+    setTrackingKey(key);
+    const found = TAILWIND_TRACKING.find(x => x.key === key);
+    if (found) handleLetterSpacingChange(found.value);
+  };
+
+  // Initialize line-height and letter-spacing from CSS variables when role changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const cs = getComputedStyle(document.documentElement);
+    const lhRaw = cs.getPropertyValue(`--line-height-${selectedRole}`).trim();
+    const lsRaw = cs.getPropertyValue(`--letter-spacing-${selectedRole}`).trim();
+    const parsedLh = lhRaw ? parseFloat(lhRaw) : NaN;
+    const parsedLs = lsRaw ? parseFloat(lsRaw) : NaN;
+    if (!Number.isNaN(parsedLh)) setLineHeight(parsedLh);
+    else setLineHeight(1.2);
+    if (!Number.isNaN(parsedLs)) setLetterSpacing(parsedLs);
+    else setLetterSpacing(0);
+  }, [selectedRole]);
 
   const updateFontSizeScale = (sizeKey: string, value: number) => {
     setFontSizeScale(prev => ({
@@ -581,7 +830,13 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
   // Ensure we have a valid current weight - fallback to 'regular' if the font has it, or first available weight
   const effectiveCurrentWeight = useMemo(() => {
     if (!selectedRoleInfo?.assignedFont?.weights) {
-      console.log(`[effectiveCurrentWeight] No weights available for selected font`);
+      // Try to map from CSS var using fallback font weights
+      const fallbackFont = processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0];
+      const map = fallbackFont?.weights;
+      if (map && cssWeightForSelectedRole) {
+        const entry = Object.entries(map).find(([_, val]) => val === cssWeightForSelectedRole);
+        if (entry) return entry[0];
+      }
       return null;
     }
 
@@ -598,6 +853,12 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
       return brandWeight;
     }
 
+    // Otherwise, try CSS var mapping
+    if (cssWeightForSelectedRole) {
+      const cssMapped = Object.entries(weights).find(([name, value]) => value === cssWeightForSelectedRole);
+      if (cssMapped) return cssMapped[0];
+    }
+
     // Otherwise, prefer 'regular' if it exists
     if (weights['regular']) {
       console.log(`[effectiveCurrentWeight] Using fallback: regular`);
@@ -608,7 +869,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     const firstWeight = Object.keys(weights)[0];
     console.log(`[effectiveCurrentWeight] Using first available weight: ${firstWeight}`);
     return firstWeight || null;
-  }, [selectedRoleInfo, selectedRole, getFontWeightForRole]);
+  }, [selectedRoleInfo, selectedRole, getFontWeightForRole, cssWeightForSelectedRole, processedFonts]);
 
   return (
     <div className="space-y-6 h-full overflow-hidden flex flex-col">
@@ -618,10 +879,17 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
           <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
             <Type className="w-5 h-5" />
             Typography
-            <span className="text-sm font-normal text-muted-foreground">
-              ({fontRoleGroups.length} role groups)
-            </span>
+            <span className="text-sm font-normal text-muted-foreground">({fontRoleGroups.length} role groups)</span>
           </h3>
+          <div className="text-xs text-muted-foreground flex items-center gap-2">
+            <span className="text-foreground/80">Active:</span>
+            <span className="font-medium text-foreground">{selectedRole}</span>
+            {selectedFont?.family && (
+              <span className="truncate max-w-[200px]" title={selectedFont.family}>
+                • {selectedFont.family.split(',')[0].replace(/['"]/g, '').trim()}
+              </span>
+            )}
+          </div>
           <Button
             variant="ghost"
             size="sm"
@@ -644,12 +912,16 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
               style={{
                 fontFamily: selectedFont?.family || 'inherit',
                 fontSize: `${fontSizeScale[currentSize]}rem`,
-                fontWeight: selectedRoleInfo?.assignedFont?.weights?.[effectiveCurrentWeight || 'regular'] || 'normal'
+                fontWeight: selectedRoleInfo?.assignedFont?.weights?.[effectiveCurrentWeight || 'regular'] || 'normal',
+                lineHeight: lineHeight,
+                letterSpacing: `${letterSpacing}em`
               }}
             >
               {rolePreviewTexts[selectedRole] || `Sample ${selectedRole} text`}
             </div>
           </div>
+
+          {/* Removed preview-adjacent line height and letter spacing controls to enforce Tailwind-only selection below */}
 
           {/* Font Family Selection */}
           <div>
@@ -708,46 +980,152 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
           {/* Font Size Selection */}
           <div>
             <p className="mb-2 text-xs font-medium text-muted-foreground">Font Size</p>
-            <Select value={currentSize} onValueChange={handleSizeChange}>
-              <SelectTrigger className="w-full h-8">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {TAILWIND_FONT_SIZES.map(({ key, label }) => (
-                  <SelectItem key={key} value={key}>
-                    {label} ({fontSizeScale[key]}rem)
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Font Weight Selection */}
-          {selectedRoleInfo?.assignedFont && selectedRoleInfo.assignedFont.weights && Object.keys(selectedRoleInfo.assignedFont.weights).length > 1 && (
-            <div>
-              <p className="mb-2 text-xs font-medium text-muted-foreground">Font Weight</p>
-              <div className="grid grid-cols-4 gap-1">
-                {Object.keys(selectedRoleInfo.assignedFont.weights).map((weightName) => (
-                  <button
-                    key={weightName}
-                    onClick={() => handleWeightChange(weightName)}
-                    className={cn(
-                      "px-2 py-1 text-xs rounded transition-all",
-                      effectiveCurrentWeight === weightName
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {weightName === 'regular' ? '400' :
-                      weightName === 'medium' ? '500' :
-                        weightName === 'semibold' ? '600' :
-                          weightName === 'bold' ? '700' :
-                            selectedRoleInfo.assignedFont.weights![weightName]}
-                  </button>
-                ))}
+            <div className="space-y-2">
+              <Slider
+                value={[sizeRem]}
+                onValueChange={(vals) => handleSizeRemChange(vals[0])}
+                onValueCommit={(vals) => handleSizeRemCommit(vals[0])}
+                min={SIZE_MIN}
+                max={SIZE_MAX}
+                step={0.01}
+              />
+              <div className="text-[10px] text-muted-foreground px-1 text-right">
+                {(() => {
+                  const activeKey = roleSizeAssignments[selectedRole] || 'text-base';
+                  const active = TAILWIND_FONT_SIZES.find(s => s.key === activeKey);
+                  return <span>{active?.label} ({sizeRem.toFixed(2)}rem)</span>;
+                })()}
               </div>
             </div>
-          )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+              <div>
+                <p className="mb-2 text-xs font-medium text-muted-foreground">Line Height</p>
+                <div className="space-y-2">
+                  <Slider
+                    value={[lineHeight]}
+                    onValueChange={(vals) => handleLineHeightChange(vals[0])}
+                    onValueCommit={(vals) => {
+                      // Snap to nearest Tailwind step on commit
+                      const v = vals[0];
+                      const closest = TAILWIND_LINE_HEIGHTS.reduce((a,b)=>Math.abs(b.value-v)<Math.abs(a.value-v)?b:a, TAILWIND_LINE_HEIGHTS[0]);
+                      handleLineHeightKeyChange(closest.key);
+                    }}
+                    min={LH_MIN}
+                    max={LH_MAX}
+                    step={0.005}
+                  />
+                  <div className="text-[10px] text-muted-foreground px-1 text-right">
+                    {(() => {
+                      const active = TAILWIND_LINE_HEIGHTS.find(s => s.key === lineHeightKey);
+                      return <span>{active?.label} ({lineHeight.toFixed(2)})</span>;
+                    })()}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p className="mb-2 text-xs font-medium text-muted-foreground">Letter Spacing</p>
+                <div className="space-y-2">
+                  <Slider
+                    value={[letterSpacing]}
+                    onValueChange={(vals) => handleLetterSpacingChange(vals[0])}
+                    onValueCommit={(vals) => {
+                      // Snap to nearest Tailwind tracking step on commit
+                      const v = vals[0];
+                      const closest = TAILWIND_TRACKING.reduce((a,b)=>Math.abs(b.value-v)<Math.abs(a.value-v)?b:a, TAILWIND_TRACKING[2]);
+                      handleTrackingKeyChange(closest.key);
+                    }}
+                    min={TRACK_MIN}
+                    max={TRACK_MAX}
+                    step={0.001}
+                  />
+                  <div className="text-[10px] text-muted-foreground px-1 text-right">
+                    {(() => {
+                      const active = TAILWIND_TRACKING.find(s => s.key === trackingKey);
+                      return <span>{active?.label} ({letterSpacing.toFixed(3)}em)</span>;
+                    })()}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Font Weight Selection (with fallback if no font assigned) */}
+          {(() => {
+            const assignedWeights = selectedRoleInfo?.assignedFont?.weights;
+            const fallbackFont = !assignedWeights || Object.keys(assignedWeights).length === 0
+              ? (processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0])
+              : null;
+            const weightSource = assignedWeights && Object.keys(assignedWeights).length > 0
+              ? assignedWeights
+              : (fallbackFont?.weights || undefined);
+            if (!weightSource || Object.keys(weightSource).length <= 0) return null;
+            const activeWeight = effectiveCurrentWeight;
+
+            // Build ordered weight steps from available weights
+            const weightSteps = Object.entries(weightSource)
+              .map(([name, val]) => ({ name, value: Number(val) }))
+              .filter(s => !Number.isNaN(s.value))
+              .sort((a, b) => a.value - b.value);
+            const WEIGHT_MIN = weightSteps[0]?.value ?? 100;
+            const WEIGHT_MAX = weightSteps[weightSteps.length - 1]?.value ?? 900;
+
+            const getActiveValue = () => {
+              const found = weightSteps.find(s => s.name === activeWeight);
+              if (found) return found.value;
+              // Fallback to closest by CSS var if present
+              if (typeof window !== 'undefined') {
+                const w = getComputedStyle(document.documentElement)
+                  .getPropertyValue(`--font-weight-${selectedRole}`)
+                  .trim();
+                const parsed = parseInt(w || '', 10);
+                if (!Number.isNaN(parsed)) {
+                  const closest = weightSteps.reduce((a, b) => Math.abs(b.value - parsed) < Math.abs(a.value - parsed) ? b : a, weightSteps[0]);
+                  return closest.value;
+                }
+              }
+              return weightSteps[Math.max(0, Math.floor(weightSteps.length / 2))].value;
+            };
+
+            const [weightVal, setWeightVal] = React.useState<number>(getActiveValue());
+            React.useEffect(() => {
+              setWeightVal(getActiveValue());
+              // eslint-disable-next-line react-hooks/exhaustive-deps
+            }, [selectedRole, effectiveCurrentWeight, selectedRoleInfo?.assignedFont]);
+
+            const snapWeight = (val: number) => weightSteps.reduce((a, b) => Math.abs(b.value - val) < Math.abs(a.value - val) ? b : a, weightSteps[0]);
+
+            const handleWeightSliderChange = (val: number) => {
+              const snapped = snapWeight(val);
+              setWeightVal(snapped.value);
+              // Apply using weight name
+              handleWeightChange(snapped.name);
+            };
+
+            return (
+              <div>
+                <p className="mb-2 text-xs font-medium text-muted-foreground">Font Weight</p>
+                <div className="space-y-2">
+                  <Slider
+                    value={[weightVal]}
+                    onValueChange={(vals) => handleWeightSliderChange(vals[0])}
+                    onValueCommit={(vals) => handleWeightSliderChange(vals[0])}
+                    min={WEIGHT_MIN}
+                    max={WEIGHT_MAX}
+                    step={1}
+                  />
+                  <div className="text-[10px] text-muted-foreground px-1 text-right">
+                    {(() => {
+                      const active = weightSteps.find(s => s.value === weightVal);
+                      const label = active?.value ?? 400;
+                      return <span>{label}</span>;
+                    })()}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Removed duplicate bottom line-height and letter-spacing controls */}
         </div>
       </div>
 
@@ -798,7 +1176,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
                         {roleAssignment.assignedFont ? (
                           <Button
                             className={cn(
-                              "w-14 h-14 rounded-full border border-border/60 shadow-sm hover:shadow-md transition-all duration-200 p-0 relative text-xs leading-tight",
+                              "w-14 h-14 rounded-full border border-border shadow-sm hover:shadow-md transition-all duration-200 p-0 relative text-xs leading-tight",
                               isSelected && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-xl z-20 scale-110 border-primary/50"
                             )}
                             style={{
@@ -819,13 +1197,14 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
                               >
                                 {roleAssignment.role === 'h1' ? 'H1' :
                                   roleAssignment.role === 'h2' ? 'H2' :
-                                    roleAssignment.role === 'h3' ? 'H3' :
-                                      roleAssignment.role === 'h4' ? 'H4' :
-                                        roleAssignment.role === 'h5' ? 'H5' :
-                                          roleAssignment.role === 'h6' ? 'H6' :
-                                            roleAssignment.role === 'body' ? 'Abc' :
-                                              roleAssignment.role === 'code' ? '</>' :
-                                                roleAssignment.role.charAt(0).toUpperCase()}
+                                  roleAssignment.role === 'h3' ? 'H3' :
+                                  roleAssignment.role === 'h4' ? 'H4' :
+                                  roleAssignment.role === 'h5' ? 'H5' :
+                                  roleAssignment.role === 'h6' ? 'H6' :
+                                  roleAssignment.role === 'body' ? 'Abc' :
+                                  roleAssignment.role === 'code' ? '</>' :
+                                    roleAssignment.role === 'blockquote' ? 'BQ' :
+                                      roleAssignment.role.charAt(0).toUpperCase()}
                               </span>
                             </div>
                             {isSelected && (
@@ -835,7 +1214,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
                         ) : (
                           <Button
                             className={cn(
-                              "w-14 h-14 rounded-full border border-border/40 bg-muted shadow-sm hover:shadow-md transition-all duration-200 p-0 relative",
+                              "w-14 h-14 rounded-full border border-border bg-muted/60 shadow-sm hover:shadow-md transition-all duration-200 p-0 relative",
                               isSelected && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-xl z-20 scale-110 border-primary/50 bg-primary/10"
                             )}
                             style={{ zIndex: isSelected ? 20 : 10 - index }}
