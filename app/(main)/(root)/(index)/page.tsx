@@ -8,7 +8,7 @@ import { UseClientConfigs } from '../[slug]/_page-slug-core-utilities/use-client
 import { Card, CardDescription, CardContent, CardFooter, CardHeader, CardTitle } from '@/features/unorganized-components/ui/card';
 import { Button } from '@/features/unorganized-components/ui/button';
 import PostCard from '@/features/unorganized-components/ui/post-card';
-import { AllComponentsShowcaseLite } from '../../brandguide/components/all-components-showcase-lite.component';
+import { AllComponentsShowcaseLite } from '../../blueprint/components/component-map/all-components-showcase-lite.component';
 import HomepageExample from '../../blueprint/previews/HomepageExample';
 // Add ISR with revalidation every 30 seconds
 export const revalidate = 30;

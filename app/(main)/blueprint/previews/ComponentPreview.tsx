@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useBrand } from "../BrandContext";
-import { AllComponentsShowcase } from "../../brandguide/components/all-components-showcase.component";
+import { AllComponentsShowcase } from "../components/component-map/all-components-showcase.component";
 import { FontToken } from "../brand-utils";
 import { Badge } from "@/features/unorganized-components/inspect-ui/badge";
 import { Separator } from "@/features/unorganized-components/inspect-ui/separator";
@@ -189,7 +189,7 @@ export default function ComponentPreview() {
   }
 
   // Count total components for stats
-  const componentCount = Object.keys(import("../../brandguide/components/component-token-map")).length || 50;
+  const componentCount = Object.keys(import("../components/component-map/component-token-map")).length || 50;
   const variantCount = componentCount * 3; // Rough estimate of variants
 
   return (
