@@ -1,11 +1,5 @@
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from '../brand-utils';
+import { generateBrandColors, createThemeCssVars } from '../brand-utils';
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from './theme-types';
   
   const summerThemeDefinition = {
     rawColors: [
@@ -211,7 +205,7 @@ import {
       chart5: "Burnt Orange",
   
       // Sidebar tokens
-      sidebarBackground:        "Cream",
+      sidebar:                  "Cream",
       sidebarForeground:        "Olive",
       sidebarPrimary:           "Orange",
       sidebarPrimaryForeground: "White",
@@ -231,6 +225,7 @@ import {
   
   export const summerBrand: Brand = {
     name: "Summer",
+    rating: 94,
     businessDetails: {
       name: "Summer Co",
       industry: "digital_design",

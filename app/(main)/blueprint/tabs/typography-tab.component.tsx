@@ -9,7 +9,10 @@ import {
   ChevronDown,
   Sliders,
   Hash,
-  Plus
+  Plus,
+  Bold,
+  MoveVertical,
+  MoveHorizontal,
 } from "lucide-react";
 import { cn } from "@/features/unorganized-utils/utils";
 import type { FontToken } from "../brand-utils";
@@ -110,6 +113,21 @@ const HIDDEN_ROLE_NAMES = new Set([
   'nav-title', 'nav title', 'nav',
   'title'
 ]);
+
+// Canonicalization and aliasing for interactive typography roles
+const INTERACTIVE_ROLE_ALIASES: Record<string, string[]> = {
+  button: ['button-label', 'btn', 'cta'],
+  input: ['form-input', 'field', 'text-input'],
+  label: ['form-label']
+};
+
+const normalizeTypographyRole = (role: string): string => {
+  const normalized = role.replace(/\s+/g, '-').toLowerCase();
+  for (const [canonical, aliases] of Object.entries(INTERACTIVE_ROLE_ALIASES)) {
+    if (normalized === canonical || aliases.includes(normalized)) return canonical;
+  }
+  return normalized;
+};
 
 // Font role group definitions
 interface FontRoleGroupDefinition {
@@ -222,6 +240,37 @@ const rolePreviewTexts: Record<string, string> = {
   mono: "Monospace",
 };
 
+// Best-practice guidance for typography roles (mirrors Colors tab target description approach)
+const getTypographyRoleGuidance = (role: string): { title: string; description: string } => {
+  const pretty = (r: string) => r.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const map: Partial<Record<string, string>> = {
+    h1: 'Primary page headline. Use for key page titles; ensure strong hierarchy with adequate size, weight, and spacing.',
+    h2: 'Section headline. Distinguishes major sections below H1. Maintain consistent spacing above/below.',
+    h3: 'Subsection headline. Use within H2 sections for additional structure.',
+    h4: 'Minor headline. Use sparingly for deep hierarchies or component-level headings.',
+    h5: 'Small headline. Typically used in compact UI contexts.',
+    h6: 'Smallest headline. Prefer increasing content clarity over excessive depth.',
+    heading: 'Generic heading style. Use when content is not tied to a specific H-level.',
+    body: 'Default reading text for paragraphs. Prioritize readability: comfortable size, line-height, and letter-spacing.',
+    p: 'Paragraph text for long-form content. Keep line length readable and line-height relaxed.',
+    default: 'Fallback text style. Use for general text when no specific role applies.',
+    blockquote: 'Quoted content with emphasis. Increase line-height and add spacing for clarity.',
+    button: 'Interactive button labels. Balance legibility with compact sizing; avoid excessive letter-spacing.',
+    label: 'Form and UI labels. Ensure readable contrast and clear hierarchy versus body text.',
+    input: 'Text inside inputs and controls. Maintain clarity at small sizes; avoid tight tracking.',
+    caption: 'Low-emphasis captions and helper text. Smaller size with adequate contrast for accessibility.',
+    badge: 'Small, compact markers. Use uppercase or tighter tracking sparingly to retain legibility.',
+    code: 'Monospace text for code or data. Use consistent width fonts; avoid excessive size or tight line-height.',
+    mono: 'Monospace stack. Best for code snippets, tables, and technical content.',
+    sans: 'Primary sans-serif stack. Use for body and UI for modern, readable text.',
+    serif: 'Serif stack. Consider for long-form reading or brand tone; ensure consistent sizes with sans.',
+  };
+  return {
+    title: pretty(role),
+    description: map[role] ?? `${pretty(role)} maps to the CSS variables and roles used across the theme for consistent typography.`
+  };
+};
+
 interface ProcessedFontToken extends FontToken {
   effectiveInfluence: number;
   importanceSummary: string;
@@ -267,13 +316,14 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
   } = useBrand();
 
   const { selectedTypographyRole, setSelectedTypographyRole } = useUIContext();
+  const { setActiveTargetKey } = useUIContext();
 
   const [selectedRole, setSelectedRole] = useState<string>('h1');
 
   // Listen for selected typography role from UI context
   useEffect(() => {
     if (selectedTypographyRole) {
-      setSelectedRole(selectedTypographyRole);
+      setSelectedRole(normalizeTypographyRole(selectedTypographyRole));
     }
   }, [selectedTypographyRole]);
   const [selectedFont, setSelectedFont] = useState<{ name: string; displayName?: string; family: string } | null>(null);
@@ -344,15 +394,19 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
 
     processedFonts.forEach(font => {
       font.roles?.forEach(role => {
-        if (!roleToFontMap.has(role)) {
-          roleToFontMap.set(role, font);
+        const canonical = normalizeTypographyRole(role);
+        if (!roleToFontMap.has(canonical)) {
+          roleToFontMap.set(canonical, font);
         }
       });
     });
 
     // Inject the currently selected role (from UI targeting) if it doesn't exist yet
-    if (selectedTypographyRole && !roleToFontMap.has(selectedTypographyRole)) {
-      roleToFontMap.set(selectedTypographyRole, null);
+    if (selectedTypographyRole) {
+      const canonical = normalizeTypographyRole(selectedTypographyRole);
+      if (!roleToFontMap.has(canonical)) {
+        roleToFontMap.set(canonical, null);
+      }
     }
     // Ensure blockquote appears even if no font claims it yet
     if (!roleToFontMap.has('blockquote')) {
@@ -370,13 +424,19 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     });
 
     const createRoleAssignment = (role: string): FontRoleAssignment => {
-      const assignedFont = roleToFontMap.get(role) || null;
+      const canonical = normalizeTypographyRole(role);
+      let assignedFont = roleToFontMap.get(canonical) || null;
+      // Provide a visual fallback for roles like blockquote so they don't render as an empty hash
+      if (!assignedFont && canonical === 'blockquote') {
+        const fallback = processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0];
+        if (fallback) assignedFont = fallback;
+      }
       const category = fontRoleToCategoryMap[role] || "Special Purpose";
       const influence = assignedFont?.effectiveInfluence || 0;
-      const assignedSize = roleSizeAssignments[role] || 'text-base';
+      const assignedSize = roleSizeAssignments[canonical] || 'text-base';
 
       return {
-        role,
+        role: canonical,
         assignedFont,
         fontFamily: assignedFont?.family || null,
         influence,
@@ -552,7 +612,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
   // Derive weight name from CSS variable if brand has none
   const cssWeightForSelectedRole = useMemo(() => {
     if (typeof window === 'undefined') return null as number | null;
-    const w = getComputedStyle(document.documentElement).getPropertyValue(`--font-weight-${selectedRole}`).trim();
+    const w = getComputedStyle(document.documentElement).getPropertyValue(`--font-weight-${normalizeTypographyRole(selectedRole)}`).trim();
     const parsed = w ? parseInt(w, 10) : NaN;
     return Number.isNaN(parsed) ? null : parsed;
   }, [selectedRole]);
@@ -576,8 +636,11 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
   }, [selectedRole, selectedRoleInfo, fontSwatches]);
 
   const handleRoleSelect = (role: string) => {
-    setSelectedRole(role);
-    setSelectedTypographyRole(role);
+    const canonical = normalizeTypographyRole(role);
+    setSelectedRole(canonical);
+    setSelectedTypographyRole(canonical);
+    // Activate variable-level targeting so all matching preview elements are marked
+    setActiveTargetKey(`var:typo:${canonical}` as any);
   };
 
   // Handle font selection
@@ -611,22 +674,22 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
   // Handle weight changes
   const handleWeightChange = (weightName: string) => {
     if (selectedRoleInfo?.assignedFont) {
-      updateFontWeightAssignment(selectedRoleInfo.assignedFont.name, selectedRole, weightName);
+      updateFontWeightAssignment(selectedRoleInfo.assignedFont.name, normalizeTypographyRole(selectedRole), weightName);
       return;
     }
 
     // Auto-assign a sensible default font if none is assigned to this role
     const fallbackFont = processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0];
     if (fallbackFont) {
-      updateFontRoleAssignment(selectedRole, fallbackFont.name);
-      updateFontWeightAssignment(fallbackFont.name, selectedRole, weightName);
+      updateFontRoleAssignment(normalizeTypographyRole(selectedRole), fallbackFont.name);
+      updateFontWeightAssignment(fallbackFont.name, normalizeTypographyRole(selectedRole), weightName);
       // Also update local UI selection
       const matching = fontSwatches.find(s => s.displayName === fallbackFont.name);
       if (matching) setSelectedFont(matching);
       // Set role-level CSS var immediately for live preview
       if (typeof window !== 'undefined') {
         const w = fallbackFont.weights?.[weightName];
-        if (w) document.documentElement.style.setProperty(`--font-weight-${selectedRole}`, String(w));
+        if (w) document.documentElement.style.setProperty(`--font-weight-${normalizeTypographyRole(selectedRole)}`, String(w));
       }
     }
   };
@@ -635,26 +698,26 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
   const handleSizeChange = (sizeKey: string) => {
     setRoleSizeAssignments(prev => ({
       ...prev,
-      [selectedRole]: sizeKey
+      [normalizeTypographyRole(selectedRole)]: sizeKey
     }));
 
     const sizeValue = fontSizeScale[sizeKey];
     if (!sizeValue) return;
 
     if (selectedRoleInfo?.assignedFont) {
-      updateFontSizeAssignment(selectedRoleInfo.assignedFont.name, selectedRole, sizeValue);
+      updateFontSizeAssignment(selectedRoleInfo.assignedFont.name, normalizeTypographyRole(selectedRole), sizeValue);
       return;
     }
 
     // Auto-assign default font when none is assigned
     const fallbackFont = processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0];
     if (fallbackFont) {
-      updateFontRoleAssignment(selectedRole, fallbackFont.name);
-      updateFontSizeAssignment(fallbackFont.name, selectedRole, sizeValue);
+      updateFontRoleAssignment(normalizeTypographyRole(selectedRole), fallbackFont.name);
+      updateFontSizeAssignment(fallbackFont.name, normalizeTypographyRole(selectedRole), sizeValue);
       const matching = fontSwatches.find(s => s.displayName === fallbackFont.name);
       if (matching) setSelectedFont(matching);
       if (typeof window !== 'undefined') {
-        document.documentElement.style.setProperty(`--font-size-${selectedRole}`, `${sizeValue}rem`);
+        document.documentElement.style.setProperty(`--font-size-${normalizeTypographyRole(selectedRole)}`, `${sizeValue}rem`);
       }
     }
   };
@@ -707,31 +770,31 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
   const handleSizeRemChange = (val: number) => {
     const snapped = snapSize(val).defaultValue;
     setSizeRem(snapped);
-    setRoleSizeAssignments(prev => ({ ...prev, [selectedRole]: snapSize(val).key }));
+    setRoleSizeAssignments(prev => ({ ...prev, [normalizeTypographyRole(selectedRole)]: snapSize(val).key }));
     if (selectedRoleInfo?.assignedFont) {
-      updateFontSizeAssignment(selectedRoleInfo.assignedFont.name, selectedRole, snapped);
+      updateFontSizeAssignment(selectedRoleInfo.assignedFont.name, normalizeTypographyRole(selectedRole), snapped);
       return;
     }
     const fallbackFont = processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0];
     if (fallbackFont) {
-      updateFontRoleAssignment(selectedRole, fallbackFont.name);
-      updateFontSizeAssignment(fallbackFont.name, selectedRole, snapped);
+      updateFontRoleAssignment(normalizeTypographyRole(selectedRole), fallbackFont.name);
+      updateFontSizeAssignment(fallbackFont.name, normalizeTypographyRole(selectedRole), snapped);
       if (typeof window !== 'undefined') {
-        document.documentElement.style.setProperty(`--font-size-${selectedRole}`, `${snapped}rem`);
+        document.documentElement.style.setProperty(`--font-size-${normalizeTypographyRole(selectedRole)}`, `${snapped}rem`);
       }
     }
   };
   const handleSizeRemCommit = (val: number) => {
     // Snap to nearest Tailwind size step and update roleSizeAssignments mapping
     const closest = [...TAILWIND_FONT_SIZES].reduce((a, b) => Math.abs(b.defaultValue - val) < Math.abs(a.defaultValue - val) ? b : a);
-    setRoleSizeAssignments(prev => ({ ...prev, [selectedRole]: closest.key }));
+    setRoleSizeAssignments(prev => ({ ...prev, [normalizeTypographyRole(selectedRole)]: closest.key }));
   };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const cs = getComputedStyle(document.documentElement);
-    const lhRaw = cs.getPropertyValue(`--line-height-${selectedRole}`).trim();
-    const lsRaw = cs.getPropertyValue(`--letter-spacing-${selectedRole}`).trim();
+    const lhRaw = cs.getPropertyValue(`--line-height-${normalizeTypographyRole(selectedRole)}`).trim();
+    const lsRaw = cs.getPropertyValue(`--letter-spacing-${normalizeTypographyRole(selectedRole)}`).trim();
     const parsedLh = lhRaw ? parseFloat(lhRaw) : NaN;
     const parsedLs = lsRaw ? parseFloat(lsRaw) : NaN;
     if (!Number.isNaN(parsedLh)) {
@@ -749,7 +812,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     if (typeof window === 'undefined') return;
     const cs = getComputedStyle(document.documentElement);
     // size
-    const sizeRaw = cs.getPropertyValue(`--font-size-${selectedRole}`).trim();
+    const sizeRaw = cs.getPropertyValue(`--font-size-${normalizeTypographyRole(selectedRole)}`).trim();
     const parsedSize = sizeRaw.endsWith('rem') ? parseFloat(sizeRaw) : parseFloat(sizeRaw || '');
     if (!Number.isNaN(parsedSize)) {
       const closest = snapSize(parsedSize);
@@ -757,7 +820,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
       setRoleSizeAssignments(prev => ({ ...prev, [selectedRole]: closest.key }));
     }
     // line-height
-    const lhRaw = cs.getPropertyValue(`--line-height-${selectedRole}`).trim();
+    const lhRaw = cs.getPropertyValue(`--line-height-${normalizeTypographyRole(selectedRole)}`).trim();
     const parsedLh = lhRaw ? parseFloat(lhRaw) : NaN;
     if (!Number.isNaN(parsedLh)) {
       const lhStep = snapLineHeight(parsedLh);
@@ -765,7 +828,7 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
       setLineHeightKey(lhStep.key);
     }
     // letter-spacing
-    const lsRaw = cs.getPropertyValue(`--letter-spacing-${selectedRole}`).trim();
+    const lsRaw = cs.getPropertyValue(`--letter-spacing-${normalizeTypographyRole(selectedRole)}`).trim();
     const parsedLs = lsRaw ? parseFloat(lsRaw) : NaN;
     if (!Number.isNaN(parsedLs)) {
       const trStep = snapTracking(parsedLs);
@@ -841,7 +904,17 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     }
 
     const weights = selectedRoleInfo.assignedFont.weights;
-    const brandWeight = getFontWeightForRole(selectedRoleInfo.assignedFont.name, selectedRole);
+    const brandWeight = (() => {
+      const canonical = normalizeTypographyRole(selectedRole);
+      const direct = getFontWeightForRole(selectedRoleInfo.assignedFont.name, canonical);
+      if (direct) return direct;
+      const aliases = INTERACTIVE_ROLE_ALIASES[canonical] || [];
+      for (const alias of aliases) {
+        const w = getFontWeightForRole(selectedRoleInfo.assignedFont.name, alias);
+        if (w) return w;
+      }
+      return null;
+    })();
 
     console.log(`[effectiveCurrentWeight] Role: ${selectedRole}, Font: ${selectedRoleInfo.assignedFont.name}`);
     console.log(`[effectiveCurrentWeight] Brand weight from context: ${brandWeight}`);
@@ -871,8 +944,25 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
     return firstWeight || null;
   }, [selectedRoleInfo, selectedRole, getFontWeightForRole, cssWeightForSelectedRole, processedFonts]);
 
+  const typographyRoleGuidance = useMemo(() => getTypographyRoleGuidance(selectedRole), [selectedRole]);
+  const sampleWeightValue = useMemo(() => (
+    selectedRoleInfo?.assignedFont?.weights?.[effectiveCurrentWeight || 'regular'] || 'normal'
+  ), [selectedRoleInfo?.assignedFont?.weights, effectiveCurrentWeight]);
+  const getRoleAbbrev = (role: string) => (
+    role === 'h1' ? 'H1' :
+    role === 'h2' ? 'H2' :
+    role === 'h3' ? 'H3' :
+    role === 'h4' ? 'H4' :
+    role === 'h5' ? 'H5' :
+    role === 'h6' ? 'H6' :
+    role === 'body' ? 'Abc' :
+    role === 'code' ? '</>' :
+    role === 'blockquote' ? 'BQ' :
+    role.charAt(0).toUpperCase()
+  );
+
   return (
-    <div className="space-y-6 h-full overflow-hidden flex flex-col">
+    <div className="space-y-6 h-full flex flex-col">
       {/* Header */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -901,236 +991,271 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
             <RotateCcw className="w-4 h-4" />
           </Button>
         </div>
-
-        {/* Integrated Font Editor */}
-        <div className="space-y-4">
-          {/* Font Preview */}
-          <div className="p-3 rounded-md bg-muted/30 border">
-            <p className="text-xs text-muted-foreground mb-2">Preview</p>
-            <div
-              className="text-foreground"
-              style={{
-                fontFamily: selectedFont?.family || 'inherit',
-                fontSize: `${fontSizeScale[currentSize]}rem`,
-                fontWeight: selectedRoleInfo?.assignedFont?.weights?.[effectiveCurrentWeight || 'regular'] || 'normal',
-                lineHeight: lineHeight,
-                letterSpacing: `${letterSpacing}em`
-              }}
-            >
-              {rolePreviewTexts[selectedRole] || `Sample ${selectedRole} text`}
-            </div>
-          </div>
-
-          {/* Removed preview-adjacent line height and letter spacing controls to enforce Tailwind-only selection below */}
-
-          {/* Font Family Selection */}
-          <div>
-            <p className="mb-2 text-xs font-medium text-muted-foreground">Font Family</p>
-            <FontPicker
-              value={selectedFont?.family || ''}
-              className="w-full h-9"
-              role={selectedRole}
-              swatches={fontSwatches}
-              onSwatchSelect={handleFontSelect}
-              onChange={(newFamily) => handleFontRoleDirectChange(selectedRole, newFamily)}
-              onDirectFontChange={(newFamily) => handleFontRoleDirectChange(selectedRole, newFamily)}
-              onSwatchAdd={handleFontAdd}
-              onSwatchUpdate={() => { }}
-              onSwatchDelete={() => { }}
-            />
-          </div>
-
-          {/* Font Swatches */}
-          {fontSwatches && fontSwatches.length > 0 && (
-            <div>
-              <p className="mb-2 text-xs font-medium text-muted-foreground">Theme Fonts</p>
-              <div className="grid grid-cols-2 gap-2">
-                {fontSwatches.map((font) => (
-                  <button
-                    key={font.name}
-                    type="button"
-                    title={`Assign ${font.displayName} to ${selectedRole}`}
-                    className={cn(
-                      "h-8 px-3 text-left text-sm rounded-md border transition-all hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background",
-                      selectedFont?.name === font.name
-                        ? "border-ring ring-1 ring-ring bg-muted"
-                        : "border-border/50"
-                    )}
-                    style={{ fontFamily: font.family }}
-                    onClick={() => handleFontSelect(font)}
-                  >
-                    {font.displayName}
-                  </button>
-                ))}
-
-                {/* Add new font button */}
-                <button
-                  type="button"
-                  title="Add new font"
-                  className="h-8 px-3 text-left text-sm rounded-md border border-dashed border-border bg-muted/30 hover:bg-muted/50 transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background flex items-center gap-2"
-                  onClick={handleCreateNewFont}
-                >
-                  <Plus className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-muted-foreground">Add Font</span>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Font Size Selection */}
-          <div>
-            <p className="mb-2 text-xs font-medium text-muted-foreground">Font Size</p>
-            <div className="space-y-2">
-              <Slider
-                value={[sizeRem]}
-                onValueChange={(vals) => handleSizeRemChange(vals[0])}
-                onValueCommit={(vals) => handleSizeRemCommit(vals[0])}
-                min={SIZE_MIN}
-                max={SIZE_MAX}
-                step={0.01}
-              />
-              <div className="text-[10px] text-muted-foreground px-1 text-right">
-                {(() => {
-                  const activeKey = roleSizeAssignments[selectedRole] || 'text-base';
-                  const active = TAILWIND_FONT_SIZES.find(s => s.key === activeKey);
-                  return <span>{active?.label} ({sizeRem.toFixed(2)}rem)</span>;
-                })()}
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-              <div>
-                <p className="mb-2 text-xs font-medium text-muted-foreground">Line Height</p>
-                <div className="space-y-2">
-                  <Slider
-                    value={[lineHeight]}
-                    onValueChange={(vals) => handleLineHeightChange(vals[0])}
-                    onValueCommit={(vals) => {
-                      // Snap to nearest Tailwind step on commit
-                      const v = vals[0];
-                      const closest = TAILWIND_LINE_HEIGHTS.reduce((a,b)=>Math.abs(b.value-v)<Math.abs(a.value-v)?b:a, TAILWIND_LINE_HEIGHTS[0]);
-                      handleLineHeightKeyChange(closest.key);
-                    }}
-                    min={LH_MIN}
-                    max={LH_MAX}
-                    step={0.005}
-                  />
-                  <div className="text-[10px] text-muted-foreground px-1 text-right">
-                    {(() => {
-                      const active = TAILWIND_LINE_HEIGHTS.find(s => s.key === lineHeightKey);
-                      return <span>{active?.label} ({lineHeight.toFixed(2)})</span>;
-                    })()}
-                  </div>
-                </div>
-              </div>
-              <div>
-                <p className="mb-2 text-xs font-medium text-muted-foreground">Letter Spacing</p>
-                <div className="space-y-2">
-                  <Slider
-                    value={[letterSpacing]}
-                    onValueChange={(vals) => handleLetterSpacingChange(vals[0])}
-                    onValueCommit={(vals) => {
-                      // Snap to nearest Tailwind tracking step on commit
-                      const v = vals[0];
-                      const closest = TAILWIND_TRACKING.reduce((a,b)=>Math.abs(b.value-v)<Math.abs(a.value-v)?b:a, TAILWIND_TRACKING[2]);
-                      handleTrackingKeyChange(closest.key);
-                    }}
-                    min={TRACK_MIN}
-                    max={TRACK_MAX}
-                    step={0.001}
-                  />
-                  <div className="text-[10px] text-muted-foreground px-1 text-right">
-                    {(() => {
-                      const active = TAILWIND_TRACKING.find(s => s.key === trackingKey);
-                      return <span>{active?.label} ({letterSpacing.toFixed(3)}em)</span>;
-                    })()}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Font Weight Selection (with fallback if no font assigned) */}
-          {(() => {
-            const assignedWeights = selectedRoleInfo?.assignedFont?.weights;
-            const fallbackFont = !assignedWeights || Object.keys(assignedWeights).length === 0
-              ? (processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0])
-              : null;
-            const weightSource = assignedWeights && Object.keys(assignedWeights).length > 0
-              ? assignedWeights
-              : (fallbackFont?.weights || undefined);
-            if (!weightSource || Object.keys(weightSource).length <= 0) return null;
-            const activeWeight = effectiveCurrentWeight;
-
-            // Build ordered weight steps from available weights
-            const weightSteps = Object.entries(weightSource)
-              .map(([name, val]) => ({ name, value: Number(val) }))
-              .filter(s => !Number.isNaN(s.value))
-              .sort((a, b) => a.value - b.value);
-            const WEIGHT_MIN = weightSteps[0]?.value ?? 100;
-            const WEIGHT_MAX = weightSteps[weightSteps.length - 1]?.value ?? 900;
-
-            const getActiveValue = () => {
-              const found = weightSteps.find(s => s.name === activeWeight);
-              if (found) return found.value;
-              // Fallback to closest by CSS var if present
-              if (typeof window !== 'undefined') {
-                const w = getComputedStyle(document.documentElement)
-                  .getPropertyValue(`--font-weight-${selectedRole}`)
-                  .trim();
-                const parsed = parseInt(w || '', 10);
-                if (!Number.isNaN(parsed)) {
-                  const closest = weightSteps.reduce((a, b) => Math.abs(b.value - parsed) < Math.abs(a.value - parsed) ? b : a, weightSteps[0]);
-                  return closest.value;
-                }
-              }
-              return weightSteps[Math.max(0, Math.floor(weightSteps.length / 2))].value;
-            };
-
-            const [weightVal, setWeightVal] = React.useState<number>(getActiveValue());
-            React.useEffect(() => {
-              setWeightVal(getActiveValue());
-              // eslint-disable-next-line react-hooks/exhaustive-deps
-            }, [selectedRole, effectiveCurrentWeight, selectedRoleInfo?.assignedFont]);
-
-            const snapWeight = (val: number) => weightSteps.reduce((a, b) => Math.abs(b.value - val) < Math.abs(a.value - val) ? b : a, weightSteps[0]);
-
-            const handleWeightSliderChange = (val: number) => {
-              const snapped = snapWeight(val);
-              setWeightVal(snapped.value);
-              // Apply using weight name
-              handleWeightChange(snapped.name);
-            };
-
-            return (
-              <div>
-                <p className="mb-2 text-xs font-medium text-muted-foreground">Font Weight</p>
-                <div className="space-y-2">
-                  <Slider
-                    value={[weightVal]}
-                    onValueChange={(vals) => handleWeightSliderChange(vals[0])}
-                    onValueCommit={(vals) => handleWeightSliderChange(vals[0])}
-                    min={WEIGHT_MIN}
-                    max={WEIGHT_MAX}
-                    step={1}
-                  />
-                  <div className="text-[10px] text-muted-foreground px-1 text-right">
-                    {(() => {
-                      const active = weightSteps.find(s => s.value === weightVal);
-                      const label = active?.value ?? 400;
-                      return <span>{label}</span>;
-                    })()}
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* Removed duplicate bottom line-height and letter-spacing controls */}
-        </div>
       </div>
 
-      {/* Content - Typography Roles */}
-      <div className="flex-1 overflow-y-auto">
+      {/* Preview + Editing (moved up to top like Colors tab) */
+      }
+      <div className="space-y-4">
+        {/* Font Preview */}
+        <div className="p-3 rounded-md bg-muted/30 border">
+          <p className="text-xs text-muted-foreground mb-2">Preview</p>
+          <div
+            className="text-foreground"
+            style={{
+              fontFamily: selectedFont?.family || 'inherit',
+              fontSize: `${fontSizeScale[currentSize]}rem`,
+              fontWeight: selectedRoleInfo?.assignedFont?.weights?.[effectiveCurrentWeight || 'regular'] || 'normal',
+              lineHeight: lineHeight,
+              letterSpacing: `${letterSpacing}em`
+            }}
+          >
+            {rolePreviewTexts[selectedRole] || `Sample ${selectedRole} text`}
+          </div>
+        </div>
+
+        {/* Selected Typography summary panel (placed directly under Preview) */}
+        <div className="grid grid-cols-[auto] md:grid-cols-[auto_1fr] gap-4 items-center">
+          {/* Left: circular sample matching role style */}
+          <div className="flex items-center">
+            <div className="relative flex items-center justify-center">
+              <div
+                className={cn(
+                  "w-16 h-16 rounded-full border border-border/60 shadow-sm bg-card",
+                  "ring-offset-background"
+                )}
+                style={{
+                  fontFamily: selectedFont?.family || selectedRoleInfo?.fontFamily || 'inherit',
+                  fontWeight: sampleWeightValue as any
+                }}
+                role="img"
+                aria-label={`Typography sample for ${selectedRole}`}
+              >
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-sm text-foreground">
+                    {getRoleAbbrev(selectedRole)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: role name and best practice guidance */}
+          <div className="space-y-1">
+            <div className="text-sm font-medium text-foreground flex items-center gap-2">
+              <span className="text-muted-foreground">
+                <Type className="w-4 h-4" aria-hidden="true" />
+              </span>
+              {typographyRoleGuidance.title}
+            </div>
+            <p className="text-sm text-muted-foreground">{typographyRoleGuidance.description}</p>
+          </div>
+        </div>
+
+        {/* Font Family Selection */}
+        <div>
+          <p className="mb-2 text-xs font-medium text-muted-foreground">Font Family</p>
+          <FontPicker
+            value={selectedFont?.family || ''}
+            className="w-full h-9"
+            role={selectedRole}
+            swatches={fontSwatches}
+            onSwatchSelect={handleFontSelect}
+            onChange={(newFamily) => handleFontRoleDirectChange(selectedRole, newFamily)}
+            onDirectFontChange={(newFamily) => handleFontRoleDirectChange(selectedRole, newFamily)}
+            onSwatchAdd={handleFontAdd}
+            onSwatchUpdate={() => { }}
+            onSwatchDelete={() => { }}
+          />
+        </div>
+
+        {/* Font Swatches */}
+        {fontSwatches && fontSwatches.length > 0 && (
+          <div>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">Theme Fonts</p>
+            <div className="grid grid-cols-2 gap-2">
+              {fontSwatches.map((font) => (
+                <button
+                  key={font.name}
+                  type="button"
+                  title={`Assign ${font.displayName} to ${selectedRole}`}
+                  className={cn(
+                    "h-8 px-3 text-left text-sm rounded-md border transition-all hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background",
+                    selectedFont?.name === font.name
+                      ? "border-ring ring-1 ring-ring bg-muted"
+                      : "border-border/50"
+                  )}
+                  style={{ fontFamily: font.family }}
+                  onClick={() => handleFontSelect(font)}
+                >
+                  {font.displayName}
+                </button>
+              ))}
+
+              {/* Add new font button */}
+              <button
+                type="button"
+                title="Add new font"
+                className="h-8 px-3 text-left text-sm rounded-md border border-dashed border-border bg-muted/30 hover:bg-muted/50 transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background flex items-center gap-2"
+                onClick={handleCreateNewFont}
+              >
+                <Plus className="w-3 h-3 text-muted-foreground" />
+                <span className="text-muted-foreground">Add Font</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Font Size Selection */}
+        <div>
+          <p className="mb-2 text-xs font-medium text-muted-foreground flex items-center gap-1"><Type className="w-3 h-3" /> Font Size</p>
+          <div className="space-y-2">
+            <Slider
+              value={[sizeRem]}
+              onValueChange={(vals) => handleSizeRemChange(vals[0])}
+              onValueCommit={(vals) => handleSizeRemCommit(vals[0])}
+              min={SIZE_MIN}
+              max={SIZE_MAX}
+              step={0.01}
+            />
+            <div className="text-[10px] text-muted-foreground px-1 text-right">
+              {(() => {
+                const activeKey = roleSizeAssignments[selectedRole] || 'text-base';
+                const active = TAILWIND_FONT_SIZES.find(s => s.key === activeKey);
+                return <span>{active?.label} ({sizeRem.toFixed(2)}rem)</span>;
+              })()}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            <div>
+              <p className="mb-2 text-xs font-medium text-muted-foreground flex items-center gap-1"><MoveVertical className="w-3 h-3" /> Line Height</p>
+              <div className="space-y-2">
+                <Slider
+                  value={[lineHeight]}
+                  onValueChange={(vals) => handleLineHeightChange(vals[0])}
+                  onValueCommit={(vals) => {
+                    // Snap to nearest Tailwind step on commit
+                    const v = vals[0];
+                    const closest = TAILWIND_LINE_HEIGHTS.reduce((a,b)=>Math.abs(b.value-v)<Math.abs(a.value-v)?b:a, TAILWIND_LINE_HEIGHTS[0]);
+                    handleLineHeightKeyChange(closest.key);
+                  }}
+                  min={LH_MIN}
+                  max={LH_MAX}
+                  step={0.005}
+                />
+                <div className="text-[10px] text-muted-foreground px-1 text-right">
+                  {(() => {
+                    const active = TAILWIND_LINE_HEIGHTS.find(s => s.key === lineHeightKey);
+                    return <span>{active?.label} ({lineHeight.toFixed(2)})</span>;
+                  })()}
+                </div>
+              </div>
+            </div>
+            <div>
+              <p className="mb-2 text-xs font-medium text-muted-foreground flex items-center gap-1"><MoveHorizontal className="w-3 h-3" /> Letter Spacing</p>
+              <div className="space-y-2">
+                <Slider
+                  value={[letterSpacing]}
+                  onValueChange={(vals) => handleLetterSpacingChange(vals[0])}
+                  onValueCommit={(vals) => {
+                    // Snap to nearest Tailwind tracking step on commit
+                    const v = vals[0];
+                    const closest = TAILWIND_TRACKING.reduce((a,b)=>Math.abs(b.value-v)<Math.abs(a.value-v)?b:a, TAILWIND_TRACKING[2]);
+                    handleTrackingKeyChange(closest.key);
+                  }}
+                  min={TRACK_MIN}
+                  max={TRACK_MAX}
+                  step={0.001}
+                />
+                <div className="text-[10px] text-muted-foreground px-1 text-right">
+                  {(() => {
+                    const active = TAILWIND_TRACKING.find(s => s.key === trackingKey);
+                    return <span>{active?.label} ({letterSpacing.toFixed(3)}em)</span>;
+                  })()}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Font Weight Selection (with fallback if no font assigned) */}
+        {(() => {
+          const assignedWeights = selectedRoleInfo?.assignedFont?.weights;
+          const fallbackFont = !assignedWeights || Object.keys(assignedWeights).length === 0
+            ? (processedFonts.find(f => f.roles?.includes('body')) || processedFonts[0])
+            : null;
+          const weightSource = assignedWeights && Object.keys(assignedWeights).length > 0
+            ? assignedWeights
+            : (fallbackFont?.weights || undefined);
+          if (!weightSource || Object.keys(weightSource).length <= 0) return null;
+          const activeWeight = effectiveCurrentWeight;
+
+          // Build ordered weight steps from available weights
+          const weightSteps = Object.entries(weightSource)
+            .map(([name, val]) => ({ name, value: Number(val) }))
+            .filter(s => !Number.isNaN(s.value))
+            .sort((a, b) => a.value - b.value);
+          const WEIGHT_MIN = weightSteps[0]?.value ?? 100;
+          const WEIGHT_MAX = weightSteps[weightSteps.length - 1]?.value ?? 900;
+
+          const getActiveValue = () => {
+            const found = weightSteps.find(s => s.name === activeWeight);
+            if (found) return found.value;
+            // Fallback to closest by CSS var if present
+            if (typeof window !== 'undefined') {
+              const w = getComputedStyle(document.documentElement)
+                .getPropertyValue(`--font-weight-${selectedRole}`)
+                .trim();
+              const parsed = parseInt(w || '', 10);
+              if (!Number.isNaN(parsed)) {
+                const closest = weightSteps.reduce((a, b) => Math.abs(b.value - parsed) < Math.abs(a.value - parsed) ? b : a, weightSteps[0]);
+                return closest.value;
+              }
+            }
+            return weightSteps[Math.max(0, Math.floor(weightSteps.length / 2))].value;
+          };
+
+          const [weightVal, setWeightVal] = React.useState<number>(getActiveValue());
+          React.useEffect(() => {
+            setWeightVal(getActiveValue());
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+          }, [selectedRole, effectiveCurrentWeight, selectedRoleInfo?.assignedFont]);
+
+          const snapWeight = (val: number) => weightSteps.reduce((a, b) => Math.abs(b.value - val) < Math.abs(a.value - val) ? b : a, weightSteps[0]);
+
+          const handleWeightSliderChange = (val: number) => {
+            const snapped = snapWeight(val);
+            setWeightVal(snapped.value);
+            // Apply using weight name
+            handleWeightChange(snapped.name);
+          };
+
+          return (
+            <div>
+              <p className="mb-2 text-xs font-medium text-muted-foreground flex items-center gap-1"><Bold className="w-3 h-3" /> Font Weight</p>
+              <div className="space-y-2">
+                <Slider
+                  value={[weightVal]}
+                  onValueChange={(vals) => handleWeightSliderChange(vals[0])}
+                  onValueCommit={(vals) => handleWeightSliderChange(vals[0])}
+                  min={WEIGHT_MIN}
+                  max={WEIGHT_MAX}
+                  step={1}
+                />
+                <div className="text-[10px] text-muted-foreground px-1 text-right">
+                  {(() => {
+                    const active = weightSteps.find(s => s.value === weightVal);
+                    const label = active?.value ?? 400;
+                    return <span>{label}</span>;
+                  })()}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+      </div>
+
+      {/* Content - Typography Roles (Variables) */}
+      <div className="flex-1 overflow-y-auto border-t pt-4">
         <div className="flex flex-wrap gap-5 gap-y-4">
           {fontRoleGroups.map((roleGroup, groupIndex) => (
             <div key={`${roleGroup.subCategoryName}-${groupIndex}`} className="p-2 rounded-lg transition-all duration-200 hover:bg-card/50">
@@ -1144,9 +1269,20 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
                     const isSelected = selectedRole === roleAssignment.role;
                     const roleTitle = roleAssignment.role.replace(/-/g, ' ');
 
-                    // Get the current weight for this role
-                    const currentRoleWeight = roleAssignment.assignedFont ?
-                      getFontWeightForRole(roleAssignment.assignedFont.name, roleAssignment.role) : null;
+                    // Get the current weight for this role (with alias fallback)
+                    const currentRoleWeight = (() => {
+                      if (!roleAssignment.assignedFont) return null;
+                      const fontName = roleAssignment.assignedFont.name;
+                      const canonical = normalizeTypographyRole(roleAssignment.role);
+                      const direct = getFontWeightForRole(fontName, canonical);
+                      if (direct) return direct;
+                      const aliases = INTERACTIVE_ROLE_ALIASES[canonical] || [];
+                      for (const alias of aliases) {
+                        const w = getFontWeightForRole(fontName, alias);
+                        if (w) return w;
+                      }
+                      return null;
+                    })();
 
                     // Get effective weight with fallbacks
                     const getEffectiveWeight = () => {
@@ -1214,18 +1350,23 @@ export function TypographyTab({ activeThemeKey }: TypographyTabProps) {
                         ) : (
                           <Button
                             className={cn(
-                              "w-14 h-14 rounded-full border border-border bg-muted/60 shadow-sm hover:shadow-md transition-all duration-200 p-0 relative",
+                              "w-14 h-14 rounded-full border border-border shadow-sm hover:shadow-md transition-all duration-200 p-0 relative text-xs leading-tight bg-muted/40",
                               isSelected && "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-xl z-20 scale-110 border-primary/50 bg-primary/10"
                             )}
                             style={{ zIndex: isSelected ? 20 : 10 - index }}
-                            title={`${roleTitle} - No font assigned, click to edit`}
+                            title={`${roleTitle} - No font explicitly assigned, using fallback`}
                             onClick={() => handleRoleSelect(roleAssignment.role)}
                             variant="outline"
                           >
-                            <Hash className={cn(
-                              "w-4 h-4 text-muted-foreground",
-                              isSelected && "text-primary"
-                            )} />
+                            <div className="flex flex-col items-center justify-center h-full w-full px-1">
+                              <span className={cn(
+                                "text-[10px] font-medium truncate w-full text-center",
+                                isSelected && "text-primary font-bold"
+                              )}
+                              >
+                                {roleAssignment.role === 'blockquote' ? 'BQ' : roleAssignment.role.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
                             {isSelected && (
                               <div className="absolute inset-0 rounded-full border-2 border-primary/60" />
                             )}

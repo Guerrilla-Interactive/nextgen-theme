@@ -2,41 +2,42 @@
 
 import React from 'react';
 import { componentTokenMap, type ComponentDocumentation } from './component-token-map';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/features/unorganized-components/ui/card';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/features/unorganized-components/ui/accordion';
-import { Avatar, AvatarFallback, AvatarImage } from '@/features/unorganized-components/ui/avatar';
-import { Badge, type BadgeProps } from '@/features/unorganized-components/ui/badge';
-import { Button } from '@/features/unorganized-components/ui/button';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, BreadcrumbEllipsis } from '@/features/unorganized-components/ui/breadcrumb';
-import Breadcrumbs from '@/features/unorganized-components/ui/breadcrumbs';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/features/unorganized-components/ui/carousel';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/features/unorganized-components/ui/chart';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/features/unorganized-components/inspect-ui/card';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/features/unorganized-components/inspect-ui/accordion';
+import { Avatar, AvatarFallback, AvatarImage } from '@/features/unorganized-components/inspect-ui/avatar';
+import { Badge, type BadgeProps } from '@/features/unorganized-components/inspect-ui/badge';
+import { Button } from '@/features/unorganized-components/inspect-ui/button';
+import { TokenElement } from '../../blueprint/components/token-targeting';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, BreadcrumbEllipsis } from '@/features/unorganized-components/inspect-ui/breadcrumb';
+import Breadcrumbs from '@/features/unorganized-components/inspect-ui/breadcrumbs';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/features/unorganized-components/inspect-ui/carousel';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/features/unorganized-components/inspect-ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Checkbox } from '@/features/unorganized-components/ui/checkbox';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/features/unorganized-components/ui/command';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/features/unorganized-components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/features/unorganized-components/ui/dropdown-menu';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/features/unorganized-components/ui/form';
-import { Input } from '@/features/unorganized-components/ui/input';
-import { Label } from '@/features/unorganized-components/ui/label';
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarTrigger } from '@/features/unorganized-components/ui/menubar';
-import MissingSanityPage from '@/features/unorganized-components/ui/missing-sanity-page';
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/features/unorganized-components/ui/navigation-menu';
-import { Popover, PopoverContent, PopoverTrigger } from '@/features/unorganized-components/ui/popover';
-import PostCard from '@/features/unorganized-components/ui/post-card';
-import { Progress } from '@/features/unorganized-components/ui/progress';
-import { RadioGroup, RadioGroupItem } from '@/features/unorganized-components/ui/radio-group';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/features/unorganized-components/ui/select';
-import { Separator } from '@/features/unorganized-components/ui/separator';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/features/unorganized-components/ui/sheet';
+import { Checkbox } from '@/features/unorganized-components/inspect-ui/checkbox';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/features/unorganized-components/inspect-ui/command';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/features/unorganized-components/inspect-ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/features/unorganized-components/inspect-ui/dropdown-menu';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/features/unorganized-components/inspect-ui/form';
+import { Input } from '@/features/unorganized-components/inspect-ui/input';
+import { Label } from '@/features/unorganized-components/inspect-ui/label';
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarTrigger } from '@/features/unorganized-components/inspect-ui/menubar';
+import MissingSanityPage from '@/features/unorganized-components/inspect-ui/missing-sanity-page';
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/features/unorganized-components/inspect-ui/navigation-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/features/unorganized-components/inspect-ui/popover';
+import PostCard from '@/features/unorganized-components/inspect-ui/post-card';
+import { Progress } from '@/features/unorganized-components/inspect-ui/progress';
+import { RadioGroup, RadioGroupItem } from '@/features/unorganized-components/inspect-ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/features/unorganized-components/inspect-ui/select';
+import { Separator } from '@/features/unorganized-components/inspect-ui/separator';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/features/unorganized-components/inspect-ui/sheet';
 import { toast } from "sonner";
-import { StarRating } from '@/features/unorganized-components/ui/star-rating';
-import { Switch } from '@/features/unorganized-components/ui/switch';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableCaption } from '@/features/unorganized-components/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/features/unorganized-components/ui/tabs';
-import TagLine from '@/features/unorganized-components/ui/tag-line';
-import { Textarea } from '@/features/unorganized-components/ui/textarea';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/features/unorganized-components/ui/tooltip';
+import { StarRating } from '@/features/unorganized-components/inspect-ui/star-rating';
+import { Switch } from '@/features/unorganized-components/inspect-ui/switch';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableCaption } from '@/features/unorganized-components/inspect-ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/features/unorganized-components/inspect-ui/tabs';
+import TagLine from '@/features/unorganized-components/inspect-ui/tag-line';
+import { Textarea } from '@/features/unorganized-components/inspect-ui/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/features/unorganized-components/inspect-ui/tooltip';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -654,7 +655,7 @@ export const AllComponentsShowcase = () => {
         }).map(c => ({
             name: c.variableName,
             displayName: c.name,
-            color: formatHex(c.oklchLight as string) || '#000000'
+            color: formatHex(c.oklch as string) || '#000000'
         })).filter(s => s.color !== '#000000') || [], 
         [brand]
     );

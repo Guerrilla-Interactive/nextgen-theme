@@ -106,6 +106,8 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
   const cssUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastCssSignatureRef = useRef<string>("");
   const themeConstructedSheetRef = useRef<CSSStyleSheet | null>(null);
+  const cssCacheRef = useRef<Map<string, string>>(new Map());
+  const processedBrandCacheRef = useRef<Map<string, EnrichedBrand>>(new Map());
 
   const currentThemeData = initialThemes[activeThemeKey] || nextgenBrand;
 
@@ -503,6 +505,9 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       if (targetFont && targetFont.weights && targetFont.weights[weightName]) {
         document.documentElement.style.setProperty(`--font-weight-${role}`, String(targetFont.weights[weightName]));
       }
+      try {
+        window.dispatchEvent(new CustomEvent('brand-typography-updated', { detail: { kind: 'font-weight', role } }));
+      } catch {}
       // No full CSS regeneration needed; variables drive typography
     }
   }, [liveBrand, history, currentHistoryIndex, currentThemeData]);
@@ -530,6 +535,9 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
 
     if (typeof window !== "undefined") {
       document.documentElement.style.setProperty(`--font-size-${role}`, `${sizeValue}rem`);
+      try {
+        window.dispatchEvent(new CustomEvent('brand-typography-updated', { detail: { kind: 'font-size', role } }));
+      } catch {}
       // No full CSS regeneration; variables are sufficient
     }
   }, [liveBrand, history, currentHistoryIndex, currentThemeData]);
@@ -606,7 +614,16 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
       const applyCss = () => {
         const sig = computeBrandSignature(brandForCSS);
         if (sig === lastCssSignatureRef.current) return; // skip if unchanged
-        const completeCss = generateGlobalCss(brandForCSS);
+        let completeCss = cssCacheRef.current.get(sig);
+        if (!completeCss) {
+          completeCss = generateGlobalCss(brandForCSS);
+          cssCacheRef.current.set(sig, completeCss);
+        }
+        const notifyApplied = () => {
+          try {
+            window.dispatchEvent(new CustomEvent('brand-css-applied', { detail: { key: activeThemeKey } }));
+          } catch {}
+        };
         if (supportsAdopted) {
           try {
             if (!themeConstructedSheetRef.current) {
@@ -618,6 +635,7 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
             }
             themeConstructedSheetRef.current!.replaceSync(completeCss);
             lastCssSignatureRef.current = sig;
+            notifyApplied();
             return;
           } catch {
             // fall through to style tag
@@ -626,120 +644,182 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
         const existing = document.querySelector('style[data-brand-theme]');
         let el = existing as HTMLStyleElement;
         if (!el) {
-          el = document.createElement('style');
-          el.setAttribute('data-brand-theme', 'true');
-          el.setAttribute('type', 'text/css');
-          document.head.appendChild(el);
+          const first = document.createElement('style');
+          first.setAttribute('data-brand-theme', 'true');
+          first.setAttribute('type', 'text/css');
+          first.textContent = completeCss;
+          document.head.appendChild(first);
+          lastCssSignatureRef.current = sig;
+          notifyApplied();
+        } else {
+          const temp = document.createElement('style');
+          temp.setAttribute('data-brand-theme-temp', 'true');
+          temp.setAttribute('type', 'text/css');
+          temp.textContent = completeCss;
+          el.parentNode?.insertBefore(temp, el.nextSibling);
+          Promise.resolve().then(() => {
+            el.remove();
+            temp.removeAttribute('data-brand-theme-temp');
+            temp.setAttribute('data-brand-theme', 'true');
+            lastCssSignatureRef.current = sig;
+            notifyApplied();
+          });
         }
-        el.textContent = completeCss;
-        lastCssSignatureRef.current = sig;
       };
 
       // Generate/apply CSS off the critical path when possible
+      const scheduleApply = () => requestAnimationFrame(applyCss);
       if ('requestIdleCallback' in window) {
-        (window as any).requestIdleCallback(applyCss, { timeout: 150 });
+        (window as any).requestIdleCallback(scheduleApply, { timeout: 100 });
       } else {
-        requestAnimationFrame(applyCss);
+        scheduleApply();
       }
 
-      // Fonts → CSS vars (quick preview sync)
-      const root = document.documentElement.style;
-      const fonts = brandForCSS.fonts || [];
-      const fontSans = fonts.find(f => f.roles.includes('sans'))?.family
-                    || fonts.find(f => f.roles.includes('body'))?.family
-                    || 'sans-serif';
-      const fontMono = fonts.find(f => f.roles.includes('mono'))?.family || 'monospace';
-      const fontBody = fonts.find(f => f.roles.includes('body'))?.family || fontSans;
-      const fontDisplay = fonts.find(f => f.roles.includes('display'))?.family || fontSans;
-      const fontButton = fonts.find(f => f.roles.includes('button'))?.family || fontBody;
+      // Defer non-critical work until after CSS is applied and the frame is rendered
+      const schedulePostWork = () => {
+        const run = () => {
+          const sig = computeBrandSignature(brandForCSS);
+          const root = document.documentElement.style;
+          const fonts = brandForCSS.fonts || [];
+          const fontSans = fonts.find(f => f.roles.includes('sans'))?.family
+                        || fonts.find(f => f.roles.includes('body'))?.family
+                        || 'sans-serif';
+          const fontMono = fonts.find(f => f.roles.includes('mono'))?.family || 'monospace';
+          const fontBody = fonts.find(f => f.roles.includes('body'))?.family || fontSans;
+          const fontDisplay = fonts.find(f => f.roles.includes('display'))?.family || fontSans;
+          const fontButton = fonts.find(f => f.roles.includes('button'))?.family || fontBody;
 
-      root.setProperty('--font-sans', 'var(--font-body)');
-      root.setProperty('--font-body', fontBody);
-      root.setProperty('--font-mono', fontMono);
-      root.setProperty('--font-display', fontDisplay);
-      root.setProperty('--font-button', fontButton);
+          root.setProperty('--font-sans', 'var(--font-body)');
+          root.setProperty('--font-body', fontBody);
+          root.setProperty('--font-mono', fontMono);
+          root.setProperty('--font-display', fontDisplay);
+          root.setProperty('--font-button', fontButton);
 
-      const headingFamily =
-        fonts.find(f => f.roles.includes('heading'))?.family ||
-        fonts.find(f => f.roles.some(r => ['display','h1','h2','h3','h4','h5','h6'].includes(r)))?.family ||
-        fontDisplay || fontBody || fontSans;
-      root.setProperty('--font-heading', headingFamily);
+          const headingFamily =
+            fonts.find(f => f.roles.includes('heading'))?.family ||
+            fonts.find(f => f.roles.some(r => ['display','h1','h2','h3','h4','h5','h6'].includes(r)))?.family ||
+            fontDisplay || fontBody || fontSans;
+          root.setProperty('--font-heading', headingFamily);
 
-      const getFamilyForRole = (role: string): string => {
-        const assigned = fonts.find(f => f.roles?.includes(role))?.family;
-        if (assigned) return assigned;
-        if (role.startsWith('h') || role === 'heading' || role === 'display') return headingFamily;
-        if (role === 'button') return fontButton;
-        if (role === 'code' || role === 'mono') return fontMono;
-        return fontBody;
+          const getFamilyForRole = (role: string): string => {
+            const assigned = fonts.find(f => f.roles?.includes(role))?.family;
+            if (assigned) return assigned;
+            if (role.startsWith('h') || role === 'heading' || role === 'display') return headingFamily;
+            if (role === 'button') return fontButton;
+            if (role === 'code' || role === 'mono') return fontMono;
+            return fontBody;
+          };
+
+          const rolesToSeed = [
+            'h1','h2','h3','h4','h5','h6','heading',
+            'p','body','default','blockquote',
+            'button','label','input',
+            'code','mono','caption','badge'
+          ];
+          rolesToSeed.forEach(role => {
+            root.setProperty(`--font-${role}` as any, getFamilyForRole(role));
+          });
+
+          const rootEl = document.documentElement;
+          if (brandForCSS.animationConfig) {
+            const animationCss = generateAnimationCss(brandForCSS.animationConfig);
+            let animEl = document.querySelector('style[data-theme-animations]') as HTMLStyleElement | null;
+            if (!animEl) {
+              animEl = document.createElement('style');
+              animEl.setAttribute('data-theme-animations', 'true');
+              document.head.appendChild(animEl);
+            }
+            animEl.textContent = animationCss;
+
+            const animationRoot = brandForCSS.animationConfig.rootClassName;
+            Array.from(rootEl.classList).filter(cls => cls.endsWith('-theme') || cls.includes('animation') || cls.includes('brutal') || cls.includes('modern'))
+              .forEach(cls => rootEl.classList.remove(cls));
+            if (animationRoot) rootEl.classList.add(animationRoot);
+          } else {
+            const existingAnim = document.querySelector('style[data-theme-animations]');
+            existingAnim?.remove();
+            Array.from(rootEl.classList).filter(cls => cls.endsWith('-theme') || cls.includes('animation') || cls.includes('brutal') || cls.includes('modern'))
+              .forEach(cls => rootEl.classList.remove(cls));
+          }
+
+          const brandClassName = brandForCSS.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+          const themeClassName = `theme-${brandClassName}`;
+          Array.from(rootEl.classList).filter(cls => cls.startsWith('theme-')).forEach(cls => rootEl.classList.remove(cls));
+          rootEl.classList.add(themeClassName);
+
+          const cachedProcessed = processedBrandCacheRef.current.get(sig);
+          if (cachedProcessed) {
+            setProcessedBrand(cachedProcessed);
+          } else {
+            const oklchConv = converter('oklch');
+            const enriched: EnrichedColorToken[] = brandForCSS.colors.map(t => {
+              const base = oklchConv(t.oklch);
+              const L = base?.l ?? 0;
+              const shades: EnrichedColorToken['shades'] = {
+                base: { variableName: t.variableName, value: t.oklch, resolvedValue: t.oklch, isAlias: false, calculatedLightness: L, mappedThemeVars: [] }
+              };
+              (Object.keys(t.themeSteps) as LightnessStepKey[]).forEach(step => {
+                const stepV = t.themeSteps[step];
+                if (stepV) shades[step] = { variableName: `${t.variableName}-${step}`, value: stepV, resolvedValue: stepV, isAlias: false, calculatedLightness: L, mappedThemeVars: [] };
+              });
+              const sorted: EnrichedShade[] = [];
+              (['brighter','bright','base','dark','darker'] as const).forEach(k => { const s = shades[k]; if (s) sorted.push(s); });
+              return { ...t, shades, sortedDisplayShades: sorted, tokenLevelMappedThemeVars: [], referrers: [] };
+            });
+            const processed: EnrichedBrand = { ...brandForCSS, colors: enriched } as EnrichedBrand;
+            processedBrandCacheRef.current.set(sig, processed);
+            setProcessedBrand(processed);
+          }
+        };
+        if ('requestIdleCallback' in window) {
+          (window as any).requestIdleCallback(run, { timeout: 200 });
+        } else {
+          setTimeout(run, 0);
+        }
       };
 
-      const rolesToSeed = [
-        'h1','h2','h3','h4','h5','h6','heading',
-        'p','body','default','blockquote',
-        'button','label','input',
-        'code','mono','caption','badge'
-      ];
-      rolesToSeed.forEach(role => {
-        root.setProperty(`--font-${role}` as any, getFamilyForRole(role));
-      });
-
-      const rootEl = document.documentElement;
-      if (brandForCSS.animationConfig) {
-        const animationCss = generateAnimationCss(brandForCSS.animationConfig);
-        let animEl = document.querySelector('style[data-theme-animations]') as HTMLStyleElement | null;
-        if (!animEl) {
-          animEl = document.createElement('style');
-          animEl.setAttribute('data-theme-animations', 'true');
-          document.head.appendChild(animEl);
-        }
-        animEl.textContent = animationCss;
-
-        const animationRoot = brandForCSS.animationConfig.rootClassName;
-        Array.from(rootEl.classList).filter(cls => cls.endsWith('-theme') || cls.includes('animation') || cls.includes('brutal') || cls.includes('modern'))
-          .forEach(cls => rootEl.classList.remove(cls));
-        if (animationRoot) rootEl.classList.add(animationRoot);
-      } else {
-        const existingAnim = document.querySelector('style[data-theme-animations]');
-        existingAnim?.remove();
-        Array.from(rootEl.classList).filter(cls => cls.endsWith('-theme') || cls.includes('animation') || cls.includes('brutal') || cls.includes('modern'))
-          .forEach(cls => rootEl.classList.remove(cls));
-      }
-
-      const brandClassName = brandForCSS.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-      const themeClassName = `theme-${brandClassName}`;
-      Array.from(rootEl.classList).filter(cls => cls.startsWith('theme-')).forEach(cls => rootEl.classList.remove(cls));
-      rootEl.classList.add(themeClassName);
-
-      const oklchConv = converter('oklch');
-      const enriched: EnrichedColorToken[] = brandForCSS.colors.map(t => {
-        const base = oklchConv(t.oklch);
-        const L = base?.l ?? 0;
-        const shades: EnrichedColorToken['shades'] = {
-          base: { variableName: t.variableName, value: t.oklch, resolvedValue: t.oklch, isAlias: false, calculatedLightness: L, mappedThemeVars: [] }
-        };
-        (Object.keys(t.themeSteps) as LightnessStepKey[]).forEach(step => {
-          const stepV = t.themeSteps[step];
-          if (stepV) shades[step] = { variableName: `${t.variableName}-${step}`, value: stepV, resolvedValue: stepV, isAlias: false, calculatedLightness: L, mappedThemeVars: [] };
-        });
-        const sorted: EnrichedShade[] = [];
-        (['brighter','bright','base','dark','darker'] as const).forEach(k => { const s = shades[k]; if (s) sorted.push(s); });
-        return { ...t, shades, sortedDisplayShades: sorted, tokenLevelMappedThemeVars: [], referrers: [] };
-      });
-
-      setProcessedBrand({ ...brandForCSS, colors: enriched });
+      // Schedule post work after CSS has been applied (next frame)
+      requestAnimationFrame(schedulePostWork);
     }
   }, [brandToDisplay, currentThemeData, activeThemeKey, computeBrandSignature, supportsAdopted]);
 
+  // Pre-warm CSS cache for top themes during idle time
   useEffect(() => {
-    if (isUpdatingCssRef.current) {
-      if (cssUpdateTimeoutRef.current) clearTimeout(cssUpdateTimeoutRef.current);
-      cssUpdateTimeoutRef.current = setTimeout(() => {
-        if (!isUpdatingCssRef.current) performMainCssUpdate();
-      }, 100);
-      return;
+    if (typeof window === 'undefined') return;
+    const entries = Object.entries(initialThemes);
+    if (!entries.length) return;
+    const top = entries
+      .sort(([, A], [, B]) => (B.rating ?? 0) - (A.rating ?? 0) || (A.name || '').localeCompare(B.name || ''))
+      .slice(0, 4);
+    const warm = () => {
+      top.forEach(([key, brand]) => {
+        try {
+          const sig = computeBrandSignature(brand);
+          if (!cssCacheRef.current.has(sig)) {
+            const css = generateGlobalCss(brand);
+            cssCacheRef.current.set(sig, css);
+          }
+        } catch {}
+      });
+    };
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(warm, { timeout: 300 });
+    } else {
+      setTimeout(warm, 0);
     }
-    performMainCssUpdate();
+  }, [initialThemes, computeBrandSignature]);
+
+  useEffect(() => {
+    if (cssUpdateTimeoutRef.current) clearTimeout(cssUpdateTimeoutRef.current);
+    cssUpdateTimeoutRef.current = setTimeout(() => {
+      if (!isUpdatingCssRef.current) performMainCssUpdate();
+    }, 1);
+    return () => {
+      if (cssUpdateTimeoutRef.current) {
+        clearTimeout(cssUpdateTimeoutRef.current);
+        cssUpdateTimeoutRef.current = null;
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brandToDisplay, currentThemeData, activeThemeKey]);
 
@@ -758,12 +838,18 @@ export const BrandProvider = ({ children, initialThemes, initialThemeKey }: Bran
   const updateLineHeightForRole = useCallback((role: string, lineHeight: number) => {
     if (typeof window !== "undefined") {
       document.documentElement.style.setProperty(`--line-height-${role}`, String(lineHeight));
+      try {
+        window.dispatchEvent(new CustomEvent('brand-typography-updated', { detail: { kind: 'line-height', role } }));
+      } catch {}
     }
   }, []);
 
   const updateLetterSpacingForRole = useCallback((role: string, letterSpacingEm: number) => {
     if (typeof window !== "undefined") {
       document.documentElement.style.setProperty(`--letter-spacing-${role}`, `${letterSpacingEm}em`);
+      try {
+        window.dispatchEvent(new CustomEvent('brand-typography-updated', { detail: { kind: 'letter-spacing', role } }));
+      } catch {}
     }
   }, []);
 
@@ -835,6 +921,8 @@ interface UIContextType {
   setSelectedColorRole: (role: string) => void;
   showTokenTargeting: boolean;
   setShowTokenTargeting: (visible: boolean) => void;
+  activeTargetKey: string | null;
+  setActiveTargetKey: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
@@ -856,6 +944,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children, initialTab = '
   const [selectedTypographyRole, setSelectedTypographyRoleState] = useState<string | null>(null);
   const [selectedColorRole, setSelectedColorRoleState] = useState<string | null>(null);
   const [showTokenTargeting, setShowTokenTargeting] = useState<boolean>(initialShowTokenTargeting);
+  const [activeTargetKey, setActiveTargetKey] = useState<string | null>(null);
 
   const setSelectedTypographyRole = (role: string) => {
     setSelectedTypographyRoleState(role);
@@ -875,7 +964,9 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children, initialTab = '
     setSelectedColorRole,
     showTokenTargeting,
     setShowTokenTargeting,
-  }), [activeTab, selectedTypographyRole, selectedColorRole, showTokenTargeting]);
+    activeTargetKey,
+    setActiveTargetKey,
+  }), [activeTab, selectedTypographyRole, selectedColorRole, showTokenTargeting, activeTargetKey]);
 
   return (
     <UIContext.Provider value={value}>

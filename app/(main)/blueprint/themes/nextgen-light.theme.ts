@@ -1,4 +1,5 @@
-import { type Brand, generateBrandColors, type RawColorDefinition, type StyleGuide, createThemeCssVars, OklchString } from '../brand-utils';
+import { generateBrandColors, createThemeCssVars } from '../brand-utils';
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from './theme-types';
 import { glowingBorderAnimationPreset } from '../animation-presets';
 
 const nextgenLightThemeDefinition = {
@@ -8,7 +9,11 @@ const nextgenLightThemeDefinition = {
       tokenSpecificName: "Pure White",
       description: "Clean, bright white background for professional appearance.",
       oklch: "oklch(1.00 0 0)" as OklchString,
-      roles: ["background"],
+      roles: [
+        "background",
+        "sidebar-primary-foreground",
+        "sidebar-accent-foreground"
+      ],
       category: 'shade',
       onColor: "oklch(0.15 0.01 260)" as OklchString,  // Tech Charcoal
     },
@@ -22,13 +27,10 @@ const nextgenLightThemeDefinition = {
         "secondary-foreground",
         "accent-foreground",
         "destructive-foreground",
-        "info-foreground",
-        "warning-foreground",
         "card-foreground",
         "popover-foreground",
         "input-foreground",
-        "success-foreground",
-        "default"
+        "sidebar-foreground"
       ],
       category: 'shade',
     },
@@ -36,7 +38,7 @@ const nextgenLightThemeDefinition = {
       tokenSpecificName: "Light Panel",
       description: "Light surface for cards, popovers; slightly darker than background.",
       oklch: "oklch(0.98 0.005 260)" as OklchString,
-      roles: ["card", "popover", "secondary", "tooltip-background"],
+      roles: ["card", "popover", "secondary", "tooltip-background", "sidebar"],
       category: 'shade',
       onColor: "oklch(0.15 0.01 260)" as OklchString,  // Tech Charcoal
     },
@@ -61,7 +63,7 @@ const nextgenLightThemeDefinition = {
       tokenSpecificName: "Inferno Orange",
       description: "Primary action color, #FF3600 signature color for high-energy actions, also used for accents, success, and info states.",
       oklch: "oklch(0.6484 0.239166 33.0098)" as OklchString,
-      roles: ["primary", "ring",  "accent", "success", "info", "chart-1", "text-brand"],
+      roles: ["primary", "ring",  "accent", "success", "info", "chart-1", "text-brand", "sidebar-primary", "sidebar-accent"],
       category: 'color',
       onColor: "oklch(1.00 0 0)" as OklchString,  // Pure White
     },
@@ -90,22 +92,23 @@ const nextgenLightThemeDefinition = {
       onColor: "oklch(1.00 0 0)" as OklchString,
     },
     {
+      tokenSpecificName: "Chart Corporate Purple",
+      oklch: "oklch(0.60 0.20 300)" as OklchString,
+      roles: ["chart-4"],
+      category: 'color',
+      onColor: "oklch(1.00 0 0)" as OklchString,
+    },
+    {
       tokenSpecificName: "Chart Corporate Teal",
       oklch: "oklch(0.64 0.18 190)" as OklchString,
       roles: ["chart-5"],
       category: 'color',
       onColor: "oklch(1.00 0 0)" as OklchString,
     },
-    {
-      tokenSpecificName: "Chart Border Gray",
-      oklch: "oklch(0.65 0.005 250)" as OklchString,
-      roles: ["chart-outline"],
-      category: 'shade',
-    },
-
   ] as RawColorDefinition[],
 
   styleGuide: {
+    rootColors: { background: "Pure White", foreground: "Tech Charcoal" },
     primaryColors: { primary: "Inferno Orange", primaryForeground: "Pure White" },
     secondaryColors: { secondary: "Inferno Orange", secondaryForeground: "Pure White" },
     accentColors: { accent: "Inferno Orange", accentForeground: "Pure White" },
@@ -114,9 +117,28 @@ const nextgenLightThemeDefinition = {
     mutedColors: { muted: "Silver Border", mutedForeground: "Graphite Text" },
     destructiveColors: { destructive: "Crimson Warning", destructiveForeground: "Pure White" },
     successColors: { success: "Inferno Orange", successForeground: "Pure White" },
+    infoColors: { info: "Inferno Orange", infoForeground: "Pure White" },
+    warningColors: { warning: "Crimson Warning", warningForeground: "Pure White" },
     inputColors: { input: "Silver Border", inputForeground: "Tech Charcoal" },
     borderColors: { border: "Silver Border" },
     ringColors: { ring: "Inferno Orange" },
+    sidebarColors: {
+      sidebar: "Light Panel",
+      sidebarForeground: "Tech Charcoal",
+      sidebarPrimary: "Inferno Orange",
+      sidebarPrimaryForeground: "Pure White",
+      sidebarAccent: "Inferno Orange",
+      sidebarAccentForeground: "Pure White",
+      sidebarBorder: "Silver Border",
+      sidebarRing: "Inferno Orange",
+    },
+    chartColors: {
+      chart1: "Inferno Orange",
+      chart2: "Chart Professional Blue",
+      chart3: "Chart Tech Pink",
+      chart4: "Chart Corporate Purple",
+      chart5: "Chart Corporate Teal",
+    },
     radius: {
       radiusSm: "2px",
       radiusMd: "3px",
@@ -132,20 +154,8 @@ const nextgenLightThemeDefinition = {
   } as StyleGuide,
 
   otherVars: {
-    background: "Pure White",
-    foreground: "Tech Charcoal",
     generalTextLightOnDark: "Pure White",
     generalTextDarkOnLight: "Tech Charcoal",
-
-    // Sidebar mappings - using existing colors
-    sidebar: "Light Panel",
-    sidebarForeground: "Tech Charcoal",
-    sidebarPrimary: "Inferno Orange",
-    sidebarPrimaryForeground: "Pure White",
-    sidebarAccent: "Inferno Orange",
-    sidebarAccentForeground: "Pure White",
-    sidebarBorder: "Silver Border",
-    sidebarRing: "Inferno Orange",
 
     // Professional, clean shadows for light mode
     shadowXs: "0px 1px 2px 0px hsla(260, 10%, 20%, 0.08)",
@@ -153,15 +163,11 @@ const nextgenLightThemeDefinition = {
     shadowMd: "0px 3px 6px -1px hsla(260, 10%, 20%, 0.15), 0px 2px 4px -2px hsla(260, 10%, 20%, 0.12)",
     shadowLg: "0px 5px 10px -2px hsla(260, 10%, 20%, 0.18), 0px 3px 6px -3px hsla(260, 10%, 20%, 0.15)",
     shadowXl: "0px 8px 16px -4px hsla(260, 10%, 20%, 0.22), 0px 4px 8px -4px hsla(260, 10%, 20%, 0.18)",
+    "shadow-2xs": "0px 1px 1px 0px hsla(260, 10%, 20%, 0.06)",
+    "shadow-2xl": "0px 12px 24px -6px hsla(260, 10%, 20%, 0.28), 0px 6px 12px -6px hsla(260, 10%, 20%, 0.22)",
 
     borderWidthDefault: "1px",
     borderStyleDefault: "solid",
-
-    chart1: "Inferno Orange",
-    chart2: "Chart Professional Blue",
-    chart3: "Chart Tech Pink",
-    chart5: "Chart Corporate Teal",
-    chartOutline: "Chart Border Gray",
     radiusBase: "3px",
   }
 };
@@ -170,6 +176,7 @@ const nextgenLightBrandColors = generateBrandColors("nextgen-light", nextgenLigh
 
 export const nextgenLightBrand: Brand = {
   name: "Nextgen Light",
+  rating: 99,
   businessDetails: {
     name: "Nextgen Light Systems",
     industry: "technology_innovation",

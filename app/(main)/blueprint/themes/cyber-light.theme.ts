@@ -3,14 +3,8 @@
 // Duotone · Complementary · Light · Professional · Clean · Tech-Corporate
 // Bright cyan + red accents on clean white backgrounds with professional shadows.
 
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from "./theme-types";
   
 import { glowingBorderAnimationPreset } from '../animation-presets';
   
@@ -209,6 +203,7 @@ import { glowingBorderAnimationPreset } from '../animation-presets';
   const cyberLightColors = generateBrandColors("cyber-light", cyberLightRawColors);
   
   export const cyberLightBrand: Brand = {
+    rating: 90,
     name: "Cyber Light",
     businessDetails: {
       name: "Cyber Light Systems",

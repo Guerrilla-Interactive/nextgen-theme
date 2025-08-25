@@ -5,14 +5,8 @@
 // UI surfaces use subtle noise texture; components have gentle 8 px rounding and
 // an inset "pressed" shadow to echo physical letter‑press.
 
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from "./theme-types";
   
   /* ----------------------------------------------------------------
      1. RAW COLOR TOKENS - Sage Meadow Light Palette
@@ -58,7 +52,7 @@ import {
       tokenSpecificName: "Sage",
       description: "Primary actions & focus ring (muted green)",
       oklch: "oklch(0.85 0.05 140)" as OklchString, // pastel sage
-      roles: ["primary", "ring", "chart-1", "sidebar-primary"],
+      roles: ["primary", "ring", "chart-1", "chart-2", "sidebar-primary"],
       category: "color",
       onColor: "oklch(1 0 0)" as OklchString,
     },
@@ -205,7 +199,7 @@ import {
     borderStyleDefault: "solid",
   
     chart1: "Sage",
-    chart2: "Chart Sage 2",
+    chart2: "Sage",
     chart3: "Chart Olive 2",
     chart4: "Chart Sage 3",
     chart5: "Chart Olive 3",
@@ -218,6 +212,7 @@ import {
   
   export const sageMeadowBrand: Brand = {
     name: "Sage Meadow",
+    rating: 90,
     businessDetails: {
       name: "Sage Meadow Light Studio",
       industry: "wellness_app",

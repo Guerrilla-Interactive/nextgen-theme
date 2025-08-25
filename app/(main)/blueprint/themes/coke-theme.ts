@@ -4,14 +4,8 @@
   – light‑first · energetic · minimal shadows · crisp rounded corners
 \*───────────────────────────────────────────────────────────────────────────*/
 
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from "./theme-types";
   
   /*───────────────────────────────────────────────────────────────────────────*\
     1. RAW COLOUR TOKENS – Coca‑Cola Signature Palette
@@ -27,9 +21,6 @@ import {
           "background",
           "primary-foreground",
           "destructive-foreground",
-          "success-foreground",
-          "info-foreground",
-          "warning-foreground",
         ],
         category: "shade",
         onColor: "oklch(0.05 0 0)" as OklchString,
@@ -161,6 +152,7 @@ import {
       2. STYLE GUIDE – Bold Red Minimal
     \*───────────────────────────────────────────────────────────────────────*/
     styleGuide: {
+      rootColors: { background: "Pure White", foreground: "Coke Black" },
       primaryColors:       { primary: "Coke Red", primaryForeground: "Pure White" },
       secondaryColors:     { secondary: "Light Gray Surface", secondaryForeground: "Coke Black" },
       accentColors:        { accent: "Coke Dark Red", accentForeground: "Pure White" },
@@ -174,6 +166,24 @@ import {
       inputColors:         { input: "Light Gray Surface", inputForeground: "Coke Black" },
       borderColors:        { border: "Light Gray Surface" },
       ringColors:          { ring: "Coke Red" },
+      sidebarColors: {
+        sidebar: "Card White",
+        sidebarForeground: "Coke Black",
+        sidebarPrimary: "Coke Red",
+        sidebarPrimaryForeground: "Pure White",
+        sidebarAccent: "Coke Dark Red",
+        sidebarAccentForeground: "Pure White",
+        sidebarBorder: "Light Gray Surface",
+        sidebarRing: "Coke Red",
+      },
+      chartColors: {
+        chart1: "Chart Red",
+        chart2: "Chart Dark Red",
+        chart3: "Chart Black",
+        chart4: "Chart Gray",
+        chart5: "Chart Dark Red",
+        chartOutline: "Chart Outline",
+      },
       radius: {
         radiusSm: "0.25rem",
         radiusMd: "0.5rem",
@@ -192,18 +202,7 @@ import {
       3. OTHER VARS – Shadows & Sidebar
     \*───────────────────────────────────────────────────────────────────────*/
     otherVars: {
-      background: "Pure White",
-      foreground: "Coke Black",
       radiusBase: "0.5rem",
-  
-      sidebar: "Card White",
-      sidebarForeground: "Coke Black",
-      sidebarPrimary: "Coke Red",
-      sidebarPrimaryForeground: "Pure White",
-      sidebarAccent: "Coke Dark Red",
-      sidebarAccentForeground: "Pure White",
-      sidebarBorder: "Light Gray Surface",
-      sidebarRing: "Coke Red",
   
       shadowXs: "0px 0px 0px 0px transparent",
       shadowSm: "0px 1px 1px 0px hsla(0, 0%, 0%, 0.05)",
@@ -214,12 +213,6 @@ import {
       borderWidthDefault: "1px",
       borderStyleDefault: "solid",
   
-      chart1: "Chart Red",
-      chart2: "Chart Dark Red",
-      chart3: "Chart Black",
-      chart4: "Chart Gray",
-      chart5: "Chart Dark Red",
-      chartOutline: "Chart Outline",
     },
   };
   
@@ -232,6 +225,7 @@ import {
   );
   
   export const cocaColaBrand: Brand = {
+    rating: 88,
     name: "Coca‑Cola Classic",
     businessDetails: {
       name: "The Coca‑Cola Company",

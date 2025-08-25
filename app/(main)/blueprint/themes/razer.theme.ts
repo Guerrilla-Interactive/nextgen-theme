@@ -1,11 +1,5 @@
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from '../brand-utils';
+import { generateBrandColors, createThemeCssVars } from '../brand-utils';
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from './theme-types';
   
 import { glowingBorderAnimationPreset } from '../animation-presets';
   
@@ -210,6 +204,7 @@ import { glowingBorderAnimationPreset } from '../animation-presets';
   
   export const razerBrand: Brand = {
     name: "Razer",
+    rating: 85,
     businessDetails: {
       name: "Razer",
       industry: "gaming",

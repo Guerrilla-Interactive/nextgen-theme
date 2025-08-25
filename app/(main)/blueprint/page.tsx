@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { Button } from "@/features/unorganized-components/ui/button";
 import { Toggle } from "@/features/unorganized-components/ui/toggle";
 import HomepagePreview from "./previews/HomepagePreview";
@@ -12,8 +12,7 @@ import { themes } from "./brandguide";
 import {
   FontToken,
   influenceHierarchy,
-  type Role,
-  generateGlobalCss
+  type Role
 } from "./brand-utils";
 import {
   Card,
@@ -30,16 +29,60 @@ import { ExportTab } from "./tabs/export-tab.component";
 import { ColorsTab } from "./tabs/colors-tab.component";
 import { TypographyTab } from "./tabs/typography-tab.component";
 import { InteractionTab } from "./tabs/interaction-tab.component";
-import { BrandContextDebugPanel } from "./components/BrandContextDebugPanel";
+import HomepageExample from "./previews/HomepageExample";
+import HomepageExampleTokenized from "./previews/HomepageExampleTokenized";
+
+// Cache of Google font families already requested
+const loadedGoogleFontFamilies: Set<string> = typeof window !== 'undefined' ? (window as any).__loadedGoogleFonts ?? new Set<string>() : new Set<string>();
+if (typeof window !== 'undefined' && !(window as any).__loadedGoogleFonts) {
+  (window as any).__loadedGoogleFonts = loadedGoogleFontFamilies;
+}
+
+const ensureUnionFontLink = () => {
+  if (typeof document === 'undefined') return;
+  const id = 'blueprint-fonts-union';
+  let link = document.getElementById(id) as HTMLLinkElement | null;
+  const families = Array.from(loadedGoogleFontFamilies);
+  if (families.length === 0) return;
+  const href = `https://fonts.googleapis.com/css?family=${families
+    .map((f) => `${f.replace(/\s+/g, '+')}:300,400,500,600,700`)
+    .join('|')}&display=swap`;
+  if (!link) {
+    link = document.createElement('link');
+    link.id = id;
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.setAttribute('data-font-loader', 'blueprint-union');
+    document.head.appendChild(link);
+  } else if (link.href !== href) {
+    link.href = href;
+  }
+};
+// ---------- ORDER THEMES BY RATING THEN NAME ----------
+const ORDERED_THEME_KEYS = Object.entries(themes)
+  .sort(([, A], [, B]) => {
+    const rA = A?.rating ?? 0;
+    const rB = B?.rating ?? 0;
+    if (rA !== rB) return rB - rA; // higher rating first
+    const nA = A?.name ?? "";
+    const nB = B?.name ?? "";
+    return nA.localeCompare(nB);
+  })
+  .map(([k]) => k);
+
+// Pick the highest-rated as the start theme, with fallbacks
+const FIRST_THEME_KEY =
+  ORDERED_THEME_KEYS[0] ??
+  (themes["nextgen"] ? "nextgen" : undefined) ??
+  (themes["default"] ? "default" : "default");
 
 /* -------------------------------------------------------------------------------------------------
- * BlueprintPage – one‑file demo for brand system builder (July 2025)
+ * BlueprintPage
  * ------------------------------------------------------------------------------------------------*/
-
 export default function BlueprintPage() {
   return (
-    <BrandProvider initialThemes={themes} initialThemeKey="default">
-      <UIProvider initialTab="colors">
+    <BrandProvider initialThemes={themes} initialThemeKey={FIRST_THEME_KEY}>
+      <UIProvider initialTab="preset">
         <PageContent />
       </UIProvider>
     </BrandProvider>
@@ -56,16 +99,10 @@ function PageContent() {
 
   const { activeTab, showTokenTargeting, setShowTokenTargeting } = useUIContext();
 
-  /* ──────────────────────────────────────────────────────────
-   * Local state
-   * ────────────────────────────────────────────────────────*/
   const [previewType, setPreviewType] = useState<'saas' | 'gallery' | 'artist' | 'components'>('saas');
-
-  // wizard steps (simple array so we can step fwd/backwards)
   const steps = ["Preset", "Colors", "Typography", "Interaction", "Export"] as const;
   const [currentStep, setCurrentStep] = useState<number>(0);
 
-  // Listen for activeTab changes from UI context and update currentStep
   useEffect(() => {
     const tabToStepMap: Record<string, number> = {
       'preset': 0,
@@ -74,51 +111,29 @@ function PageContent() {
       'interaction': 3,
       'export': 4
     };
-
     if (activeTab && tabToStepMap[activeTab] !== undefined) {
       setCurrentStep(tabToStepMap[activeTab]);
     }
   }, [activeTab]);
 
-  /* ──────────────────────────────────────────────────────────
-   * Font pre‑loading (Google Fonts)
-   * ────────────────────────────────────────────────────────*/
+  // ----- Font preloading -----
   useEffect(() => {
-    if (!availableThemes) return;
-
-    // remove prior loaders
-    document.querySelectorAll('link[data-font-loader="blueprint"]').forEach(el => el.remove());
-
+    if (!availableThemes || !activeThemeKey) return;
+    const activeTheme = (availableThemes as any)[activeThemeKey];
     const googleFamilies = new Set<string>();
-    Object.values(availableThemes).forEach(theme => {
-      theme?.fonts?.forEach((font: FontToken) => {
-        if (font.distributor === 'Google Fonts') {
-          const family = font.family.split(',')[0].replace(/['"]/g, '').trim();
-          googleFamilies.add(family);
-        }
-      });
+    activeTheme?.fonts?.forEach((font: FontToken) => {
+      if (font.distributor === 'Google Fonts') {
+        const family = font.family.split(',')[0].replace(/["']/g, '').trim();
+        if (family && !loadedGoogleFontFamilies.has(family)) googleFamilies.add(family);
+      }
     });
-
     if (googleFamilies.size) {
-      const familyParams = Array.from(googleFamilies)
-        .map(f => `${f.replace(/\s+/g, '+')}:300,400,500,600,700`)
-        .join('|');
-
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.setAttribute('data-font-loader', 'blueprint');
-      link.href = `https://fonts.googleapis.com/css?family=${familyParams}&display=swap`;
-      document.head.appendChild(link);
+      Array.from(googleFamilies).forEach(f => loadedGoogleFontFamilies.add(f));
+      ensureUnionFontLink();
     }
+  }, [availableThemes, activeThemeKey]);
 
-    return () => {
-      document.querySelectorAll('link[data-font-loader="blueprint"]').forEach(el => el.remove());
-    };
-  }, [availableThemes]);
-
-  /* ──────────────────────────────────────────────────────────
-   * Inline CSS‑vars for active brand (immediate paint)
-   * ────────────────────────────────────────────────────────*/
+  // ----- Inline CSS vars -----
   const inlineThemeVars = useMemo(() => {
     if (!brand?.themeCssVariables) return {};
     return Object.fromEntries(
@@ -126,11 +141,9 @@ function PageContent() {
     );
   }, [brand]);
 
-  /* ──────────────────────────────────────────────────────────
-   * Preview scaling (fixed 1 600 px canvas → max 60 vw)
-   * ────────────────────────────────────────────────────────*/
   const PREVIEW_WIDTH = 1600;
   const [scale, setScale] = useState(1);
+
   useEffect(() => {
     const update = () => setScale(Math.min(1, (window.innerWidth * 0.6) / PREVIEW_WIDTH));
     update();
@@ -138,12 +151,12 @@ function PageContent() {
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  /* ──────────────────────────────────────────────────────────
-   * Helper callbacks
-   * ────────────────────────────────────────────────────────*/
-  const handleThemeSelection = (key: string) => {
+  const handleThemeSelection = useCallback((key: string) => {
+    if (!availableThemes || !key || key === activeThemeKey) return;
+    const targetTheme: any = (availableThemes as any)[key];
+    if (!targetTheme) return;
     setActiveTheme(key);
-  };
+  }, [availableThemes, activeThemeKey, setActiveTheme]);
 
   const prettify = (k: string) =>
     ({
@@ -170,64 +183,45 @@ function PageContent() {
       usage: f.roles?.some(r => ['heading', 'display'].includes(r)) ? 'heading' : 'body'
     }));
 
-  const cleanFamily = (family: string) => family.split(',')[0].replace(/['"]/g, '').trim();
+  const cleanFamily = (family: string) => family.split(',')[0].replace(/["']/g, '').trim();
 
-  /* ──────────────────────────────────────────────────────────
-   * Render
-   * ────────────────────────────────────────────────────────*/
   return (
-    <div
-      className="h-screen flex flex-col bg-background text-foreground font-sans"
-      style={inlineThemeVars}
-    >
-      {/* Main viewport */}
+    <div className={`h-screen flex flex-col bg-background text-foreground font-sans`} style={inlineThemeVars}>
       <div className="flex flex-1 overflow-hidden">
-        {/* Preview pane */}
         <div className="flex-1 relative bg-muted p-4 overflow-y-auto overflow-x-hidden">
-          {/* Token targeting toggle (top-left) */}
+          {/* Targeting toggle */}
           <div className="absolute top-6 left-6 z-50">
-            <div className="relative group">
-              <Toggle
-                size="default"
-                pressed={showTokenTargeting}
-                onPressedChange={(p) => setShowTokenTargeting(p)}
-                aria-label="Toggle token targeting overlays"
-                className="backdrop-blur supports-[backdrop-filter]:bg-card/70"
-                title={showTokenTargeting ? 'Hide token targeting' : 'Show token targeting'}
-              >
-                <MousePointer className="h-5 w-5" />
-              </Toggle>
-              <div className="pointer-events-none absolute left-12 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-popover text-popover-foreground border border-border rounded px-2 py-1 shadow">
-                {showTokenTargeting ? 'Targeting: On' : 'Targeting: Off'}
-              </div>
-            </div>
+            <Toggle
+              size="default"
+              pressed={showTokenTargeting}
+              onPressedChange={(p) => setShowTokenTargeting(p)}
+              aria-label="Toggle token targeting overlays"
+              className="backdrop-blur supports-[backdrop-filter]:bg-card/70"
+              title={showTokenTargeting ? 'Hide token targeting' : 'Show token targeting'}
+            >
+              <MousePointer className="h-5 w-5" />
+            </Toggle>
           </div>
-
-          {/* Preview‑type toggle */}
+          {/* Preview-type toggle */}
           <div className="absolute top-6 right-6 z-50">
             <Card className="p-2 shadow-lg">
               <div className="flex items-center space-x-2">
-                <Button variant={previewType === 'saas' ? 'default' : 'ghost'} size="sm" onClick={() => setPreviewType('saas')} className="flex items-center space-x-1">
-                  <Monitor className="w-4 h-4" />
-                  <span className="text-xs">SaaS</span>
+                <Button variant={previewType === 'saas' ? 'default' : 'ghost'} size="sm" onClick={() => setPreviewType('saas')}>
+                  <Monitor className="w-4 h-4" /><span className="text-xs">SaaS</span>
                 </Button>
-                <Button variant={previewType === 'gallery' ? 'default' : 'ghost'} size="sm" onClick={() => setPreviewType('gallery')} className="flex items-center space-x-1">
-                  <Image className="w-4 h-4" />
-                  <span className="text-xs">Gallery</span>
+                <Button variant={previewType === 'gallery' ? 'default' : 'ghost'} size="sm" onClick={() => setPreviewType('gallery')}>
+                  <Image className="w-4 h-4" /><span className="text-xs">Gallery</span>
                 </Button>
-                <Button variant={previewType === 'artist' ? 'default' : 'ghost'} size="sm" onClick={() => setPreviewType('artist')} className="flex items-center space-x-1">
-                  <Palette className="w-4 h-4" />
-                  <span className="text-xs">Artist</span>
+                <Button variant={previewType === 'artist' ? 'default' : 'ghost'} size="sm" onClick={() => setPreviewType('artist')}>
+                  <Palette className="w-4 h-4" /><span className="text-xs">Artist</span>
                 </Button>
-                <Button variant={previewType === 'components' ? 'default' : 'ghost'} size="sm" onClick={() => setPreviewType('components')} className="flex items-center space-x-1">
-                  <Settings className="w-4 h-4" />
-                  <span className="text-xs">Components</span>
+                <Button variant={previewType === 'components' ? 'default' : 'ghost'} size="sm" onClick={() => setPreviewType('components')}>
+                  <Settings className="w-4 h-4" /><span className="text-xs">Components</span>
                 </Button>
               </div>
             </Card>
           </div>
-
-          {/* Preview root (scaled) */}
+          {/* Preview root */}
           <div
             className="absolute left-1/2 bg-card border border-border rounded-lg shadow-lg"
             style={{
@@ -237,20 +231,16 @@ function PageContent() {
               transformOrigin: 'top center'
             }}
             data-typography-scope
+            id="preview-root"
           >
-            {previewType === 'saas' ? <HomepagePreview /> :
-              previewType === 'gallery' ? <GalleryPreview /> :
-                previewType === 'artist' ? <ArtistPreview /> :
-                  <ComponentPreview />}
+           <HomepageExampleTokenized />
           </div>
         </div>
-
-        {/* Decision / controls */}
+        {/* Sidebar */}
         <div className="w-[506px] min-w-[20rem] bg-popover border-l border-border p-8 overflow-y-auto">
-          {/* Keep all tabs mounted; toggle visibility to preload effects */}
-          <div className={currentStep === 0 ? 'block' : 'hidden'}>
+          {currentStep === 0 && (
             <ThemeChooser
-              themeKeys={Object.keys(availableThemes)}
+              themeKeys={ORDERED_THEME_KEYS}
               activeKey={activeThemeKey}
               availableThemes={availableThemes}
               onThemeSelect={handleThemeSelection}
@@ -259,56 +249,31 @@ function PageContent() {
               getThemeFonts={getThemeFonts}
               cleanFamily={cleanFamily}
             />
-          </div>
-          <div className={currentStep === 1 ? 'block' : 'hidden'}>
-            <ColorsTab activeThemeKey={activeThemeKey} />
-          </div>
-          <div className={currentStep === 2 ? 'block' : 'hidden'}>
-            <TypographyTab activeThemeKey={activeThemeKey} />
-          </div>
-          <div className={currentStep === 3 ? 'block' : 'hidden'}>
-            <InteractionTab activeThemeKey={activeThemeKey} />
-          </div>
-          <div className={currentStep === 4 ? 'block' : 'hidden'}>
-            <ExportTab activeThemeKey={activeThemeKey} />
-          </div>
-          <div className={currentStep >= 0 && currentStep <= 4 ? 'hidden' : 'block'}>
-            <div>Decision Panel – {steps[currentStep]}</div>
-          </div>
+          )}
+          {currentStep === 1 && <ColorsTab activeThemeKey={activeThemeKey} />}
+          {currentStep === 2 && <TypographyTab activeThemeKey={activeThemeKey} />}
+          {currentStep === 3 && <InteractionTab activeThemeKey={activeThemeKey} />}
+          {currentStep === 4 && <ExportTab activeThemeKey={activeThemeKey} />}
         </div>
       </div>
-
-      {/* Footer navigation */}
       <nav className="h-16 bg-popover border-t border-border flex items-center justify-between px-6">
-        <Button variant="ghost" onClick={() => setCurrentStep(p => Math.max(0, p - 1))} disabled={currentStep === 0}>
-          Back
-        </Button>
+        <Button variant="ghost" onClick={() => setCurrentStep(p => Math.max(0, p - 1))} disabled={currentStep === 0}>Back</Button>
         <div className="flex space-x-6">
           {steps.map((label, i) => (
-            <button
-              key={label}
-              onClick={() => setCurrentStep(i)}
-              className={`text-sm font-medium ${i === currentStep ? 'text-foreground border-b-2 border-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-            >
+            <button key={label} onClick={() => setCurrentStep(i)} className={`text-sm font-medium ${i === currentStep ? 'text-foreground border-b-2 border-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
               {label}
             </button>
           ))}
         </div>
-        <Button onClick={() => setCurrentStep(p => Math.min(steps.length - 1, p + 1))} disabled={currentStep === steps.length - 1}>
-          Next
-        </Button>
+        <Button onClick={() => setCurrentStep(p => Math.min(steps.length - 1, p + 1))} disabled={currentStep === steps.length - 1}>Next</Button>
       </nav>
-
-      {/* Diagnostic overlay */}
-      <BrandContextDebugPanel />
     </div>
   );
 }
 
 /* -------------------------------------------------------------------------------------------------
- * ThemeChooser sub‑component
+ * ThemeChooser
  * ------------------------------------------------------------------------------------------------*/
-
 interface ThemeChooserProps {
   themeKeys: string[];
   activeKey: string;
@@ -330,118 +295,76 @@ function ThemeChooser({
   getThemeFonts,
   cleanFamily
 }: ThemeChooserProps) {
+  useEffect(() => {
+    try {
+      if (!themeKeys?.length) return;
+      const families = new Set<string>();
+      themeKeys.forEach((key) => {
+        const th = availableThemes?.[key];
+        (th?.fonts || []).forEach((font: FontToken) => {
+          if (font.distributor === 'Google Fonts') {
+            const family = font.family.split(',')[0].replace(/["']/g, '').trim();
+            if (family && !loadedGoogleFontFamilies.has(family)) families.add(family);
+          }
+        });
+      });
+      const LIMITED_MAX = 12;
+      const limited = Array.from(families).slice(0, LIMITED_MAX);
+      if (limited.length === 0) return;
+      limited.forEach(f => loadedGoogleFontFamilies.add(f));
+      ensureUnionFontLink();
+    } catch {}
+  }, [themeKeys, availableThemes]);
+
+  const ThemeCard = memo(({ themeKey, th, active }: { themeKey: string; th: any; active: boolean }) => {
+    const displayName = prettify(themeKey);
+    const importantColors = useMemo(() => getMostImportantColors(th.colors), [th, getMostImportantColors]);
+    const themeFonts = useMemo(() => getThemeFonts(th.fonts), [th, getThemeFonts]);
+    const headingFont = themeFonts.find((f: any) => f.usage === 'heading')?.family ?? th.fonts?.[0]?.family;
+    const bodyFont = themeFonts.find((f: any) => f.usage === 'body')?.family ?? th.fonts?.[1]?.family ?? th.fonts?.[0]?.family;
+    return (
+      <Card
+        key={themeKey}
+        onClick={() => onThemeSelect(themeKey)}
+        className={`cursor-pointer transition-all duration-200 ${active ? 'ring-1 ring-primary/40 bg-accent/30 border-primary/20' : ''}`}
+        style={{ fontFamily: bodyFont || 'inherit' }}
+      >
+        <CardContent className="p-4">
+          <div className="flex items-center space-x-3">
+            <div className="flex -space-x-1">
+              {importantColors.map((c: any, idx: number) => (
+                <div key={c.variableName} className="w-8 h-8 rounded-full shadow-sm" style={{ backgroundColor: c.oklch }} />
+              ))}
+            </div>
+            <div>
+              <h5 style={{ fontFamily: headingFont || 'inherit' }}>{displayName}</h5>
+              <p className="text-sm text-muted-foreground">{th.colors.length} colors • {th.fonts.length} fonts</p>
+            </div>
+          </div>
+          {themeFonts.length > 0 && (
+            <div className="text-xs mt-2 opacity-70">
+              {themeFonts.map((f, idx) => (
+                <span key={idx} style={{ fontFamily: f.family }} title={f.family}>
+                  {idx > 0 && " · "}
+                  {cleanFamily(f.family)}
+                </span>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    );
+  });
+
   return (
-    <div className="space-y-8">
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-foreground">Choose Your Theme</h3>
-        <div className="grid gap-3">
-          {themeKeys.map(key => {
-            const th = availableThemes[key];
-            if (!th) return null;
-
-            const displayName = prettify(key);
-            const importantColors = getMostImportantColors(th.colors);
-            const themeFonts = getThemeFonts(th.fonts);
-
-            // Better logic for finding heading and body fonts
-            const headingFont = th.fonts?.find(f =>
-              f.roles?.some(r => ['heading', 'display', 'h1', 'h2', 'h3'].includes(r))
-            )?.family || th.fonts?.[0]?.family;
-
-            const bodyFont = th.fonts?.find(f =>
-              f.roles?.some(r => ['body', 'p', 'default', 'sans'].includes(r))
-            )?.family || th.fonts?.find(f => !f.roles?.some(r => ['heading', 'display', 'h1', 'h2', 'h3', 'code', 'mono'].includes(r)))?.family || th.fonts?.[0]?.family;
-
-            console.log(`Theme ${key}:`, {
-              displayName,
-              totalFonts: th.fonts?.length,
-              headingFont: headingFont ? headingFont.split(',')[0].replace(/['"]/g, '').trim() : 'none',
-              bodyFont: bodyFont ? bodyFont.split(',')[0].replace(/['"]/g, '').trim() : 'none',
-              allFonts: th.fonts?.map(f => ({
-                name: f.name,
-                family: f.family.split(',')[0].replace(/['"]/g, '').trim(),
-                roles: f.roles
-              }))
-            });
-
-            return (
-              <Card
-                key={key}
-                onClick={() => onThemeSelect(key)}
-                className={`group relative cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md ${activeKey === key ? 'ring-1 ring-primary/40 bg-accent/30 border-primary/20 shadow-lg' : 'hover:bg-accent/20'
-                  }`}
-                style={{ fontFamily: bodyFont || 'inherit' }}
-              >
-                <CardContent className="p-4">
-                  <div className="space-y-4">
-                    {/* Top row: swatches + name */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="flex -space-x-1">
-                          {importantColors.map((c, idx) => (
-                            <div
-                              key={c.variableName}
-                              className="w-8 h-8 rounded-full shadow-sm"
-                              style={{ backgroundColor: c.oklch, zIndex: 5 - idx }}
-                              title={`${c.name} (${c.roles.join(', ')})`}
-                            />
-                          ))}
-                        </div>
-                        <div>
-                          <h5
-                            className="text-foreground"
-                            style={{
-                              fontFamily: `${headingFont ? headingFont.split(',')[0].replace(/['"]/g, '').trim() : 'sans-serif'}, sans-serif !important`,
-                              fontWeight: '600 !important',
-                              fontSize: '1rem !important',
-                              fontStyle: 'normal !important'
-                            }}
-                            title={`Using font: ${headingFont ? headingFont.split(',')[0].replace(/['"]/g, '').trim() : 'default'}`}
-                          >
-                            {displayName}
-                          </h5>
-                          <p
-                            className="text-sm text-muted-foreground"
-                            style={{
-                              fontFamily: `${bodyFont ? bodyFont.split(',')[0].replace(/['"]/g, '').trim() : 'sans-serif'}, sans-serif !important`,
-                              fontSize: '0.875rem !important'
-                            }}
-                          >
-                            {th.colors.length} colors • {th.fonts.length} font{th.fonts.length !== 1 ? 's' : ''}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Font sample row */}
-                    {themeFonts.length > 0 && (
-                      <div
-                        className="text-xs font-normal text-muted-foreground truncate"
-                        style={{ fontSize: '0.75rem' }}
-                      >
-                        {themeFonts.map((f, idx) => (
-                          <span key={idx}>
-                            {idx > 0 && <span className="mx-2 opacity-30">·</span>}
-                            <span
-                              style={{
-                                fontFamily: f.family,
-                                fontWeight: 400
-                              }}
-                              className="opacity-70"
-                              title={`${cleanFamily(f.family)} — ${f.usage} typeface`}
-                            >
-                              {cleanFamily(f.family)}
-                            </span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">Choose Your Theme</h3>
+      <div className="grid gap-3">
+        {themeKeys.map(key => {
+          const th = availableThemes[key];
+          if (!th) return null;
+          return <ThemeCard key={key} themeKey={key} th={th} active={activeKey === key} />;
+        })}
       </div>
     </div>
   );

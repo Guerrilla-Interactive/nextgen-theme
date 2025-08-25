@@ -6,14 +6,8 @@
 // ---------------------------------------------------------------------
 
 import { modernAnimationPreset } from "../animation-presets";
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from "./theme-types";
   
   /*──────────────────────────────────────────────────────────────────────────*
     1. RAW COLOR DEFINITIONS (light mode only)
@@ -105,6 +99,7 @@ import {
     2. STYLE GUIDE
    *──────────────────────────────────────────────────────────────────────────*/
   const styleGuide: StyleGuide = {
+    rootColors: { background: "Ivory", foreground: "Charcoal‑Deep" },
     primaryColors: { primary: "Terracotta", primaryForeground: "Snow" },
     secondaryColors: { secondary: "Butter", secondaryForeground: "Charcoal‑Deep" },
     accentColors: { accent: "Butter‑Accent", accentForeground: "Charcoal‑Deep" },
@@ -116,6 +111,23 @@ import {
     inputColors: { input: "Butter", inputForeground: "Charcoal‑Deep" },
     borderColors: { border: "Butter" },
     ringColors: { ring: "Terracotta" },
+    sidebarColors: {
+      sidebar: "Butter",
+      sidebarForeground: "Charcoal‑Deep",
+      sidebarPrimary: "Terracotta",
+      sidebarPrimaryForeground: "Snow",
+      sidebarAccent: "Butter‑Accent",
+      sidebarAccentForeground: "Charcoal‑Deep",
+      sidebarBorder: "Sand",
+      sidebarRing: "Terracotta",
+    },
+    chartColors: {
+      chart1: "Success‑Terracotta",
+      chart2: "Terracotta",
+      chart3: "Brick",
+      chart4: "Butter‑Accent",
+      chart5: "Chart‑Butter‑Mid",
+    },
     radius: {
       radiusSm: "calc(var(--radius) - 4px)",
       radiusMd: "calc(var(--radius) - 2px)",
@@ -134,21 +146,9 @@ import {
     3. OTHER VARIABLES (radius, shadows, aliases)
    *──────────────────────────────────────────────────────────────────────────*/
   const otherVars = {
-    background: "Ivory",
-    foreground: "Charcoal‑Deep",
     radiusBase: "0.375rem",
     textBrand: "Terracotta",
     chartOutline: "Terracotta",
-  
-    // Sidebar mappings - using colors already defined in rawColors
-    sidebar: "Butter",
-    sidebarForeground: "Charcoal‑Deep",
-    sidebarPrimary: "Terracotta",
-    sidebarPrimaryForeground: "Snow",
-    sidebarAccent: "Butter‑Accent",
-    sidebarAccentForeground: "Charcoal‑Deep",
-    sidebarBorder: "Sand",
-    sidebarRing: "Terracotta",
   
     // Shadows (soft flat)
     "shadow-2xs": "1px 1px 16px -2px hsl(0 63% 18% / 0.06)",
@@ -163,12 +163,6 @@ import {
     borderWidthDefault: "1px",
     borderStyleDefault: "solid",
   
-    // Chart alias tokens matching roles
-    chart1: "Success‑Terracotta",
-    chart2: "Terracotta",
-    chart3: "Brick",
-    chart4: "Butter‑Accent",
-    chart5: "Chart‑Butter‑Mid",
   };
   
   /*──────────────────────────────────────────────────────────────────────────*
@@ -178,6 +172,7 @@ import {
   
   export const elegantLuxuryBrand: Brand = {
     name: "Elegant Luxury",
+    rating: 95,
     businessDetails: {
       name: "Elegant Luxury Ltd.",
       industry: "premium_lifestyle",
@@ -198,7 +193,14 @@ import {
         distributor: "Google Fonts",
         description: "Geometric sans‑serif for body text.",
         family: "'Poppins', system-ui, sans-serif",
-        roles: ["body", "default", "sans"],
+        roles: [
+          "body", "default", "sans", "p", "a", "li",
+          "button", "button-label",
+          "input", "form-input",
+          "label",
+          "serif-body", "serif",
+          "h4", "h5", "h6"
+        ],
         weights: { thin: 100, light: 300, regular: 400, medium: 500, semibold: 600, bold: 700 }
       },
       {
@@ -206,7 +208,7 @@ import {
         distributor: "Google Fonts",
         description: "Classic serif to emphasise luxury headings.",
         family: "'Libre Baskerville', serif",
-        roles: ["display", "h1", "h2", "h3"],
+        roles: ["display", "h1", "h2", "h3", "h4", "h5", "h6", "hero-title", "nav-title", "serif", "serif-body"],
         weights: { regular: 400, bold: 700 }
       },
       {

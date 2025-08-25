@@ -13,7 +13,7 @@ import { Menu, ListFilter } from "lucide-react";
 import { cn } from "@/features/unorganized-utils/utils";
 import { useBrand } from "../BrandContext";
 import { FontToken } from "../brand-utils";
-import { TypographyElement, CombinedElement, ColorElement } from "../components/token-targeting";
+import { TokenElement } from "../components/token-targeting";
 import { formatHex } from "culori";
 
 const categories = ["All", "Abstract", "Landscape", "Portrait", "Nature"];
@@ -52,9 +52,9 @@ function CategoryFilters({
         <ul className="space-y-2">
           {categories.map((cat) => (
             <li key={cat}>
-              <CombinedElement
-                typographyRole="nav"
-                colorRole={selectedCategory === cat ? 'foreground' : 'muted-foreground'}
+              <TokenElement
+                typographyRoles={["nav"]}
+                colorRoles={[selectedCategory === cat ? 'foreground' : 'muted-foreground']}
               >
               <Button
                 variant="ghost"
@@ -72,7 +72,7 @@ function CategoryFilters({
               >
                 {cat}
               </Button>
-              </CombinedElement>
+              </TokenElement>
             </li>
           ))}
         </ul>
@@ -445,7 +445,7 @@ export default function ArtistPreview() {
     >
       <header className="w-full border-b border-border">
         <div className="max-w-screen-2xl mx-auto flex items-center justify-between py-4 px-8">
-          <TypographyElement elementType="SPAN">
+          <TokenElement typographyRoles={["SPAN"]}>
           <Button
             variant="link"
             asChild
@@ -454,14 +454,14 @@ export default function ArtistPreview() {
           >
             <a href="#">Aurora Hart</a>
           </Button>
-          </TypographyElement>
+          </TokenElement>
           <nav className="hidden md:flex gap-8 text-sm items-center">
             {[
               { href: '#gallery', label: 'Gallery' },
               { href: '#about', label: 'About' },
               { href: '#contact', label: 'Contact' },
             ].map((item) => (
-              <TypographyElement key={item.href} elementType="SPAN">
+              <TokenElement key={item.href} typographyRoles={["SPAN"]}>
             <Button
               variant="link"
               asChild
@@ -470,7 +470,7 @@ export default function ArtistPreview() {
             >
                   <a href={item.href}>{item.label}</a>
             </Button>
-              </TypographyElement>
+              </TokenElement>
             ))}
           </nav>
           <div className="md:hidden">
@@ -483,7 +483,7 @@ export default function ArtistPreview() {
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-xs bg-background">
                 <nav className="flex flex-col gap-6 text-lg p-6">
-                  <TypographyElement elementType="SPAN">
+                  <TokenElement typographyRoles={["SPAN"]}>
                   <Button
                     variant="link"
                     asChild
@@ -492,13 +492,13 @@ export default function ArtistPreview() {
                   >
                     <a href="#">Aurora Hart</a>
                   </Button>
-                  </TypographyElement>
+                  </TokenElement>
                   {[
                     { href: '#gallery', label: 'Gallery' },
                     { href: '#about', label: 'About' },
                     { href: '#contact', label: 'Contact' },
                   ].map((item) => (
-                    <TypographyElement key={item.href} elementType="SPAN">
+                    <TokenElement key={item.href} typographyRoles={["SPAN"]}>
                   <Button
                     variant="link"
                     asChild
@@ -507,7 +507,7 @@ export default function ArtistPreview() {
                   >
                         <a href={item.href}>{item.label}</a>
                   </Button>
-                    </TypographyElement>
+                    </TokenElement>
                   ))}
                 </nav>
               </SheetContent>
@@ -530,15 +530,15 @@ export default function ArtistPreview() {
 
           <main className="flex-1">
             <section id="about" className="pt-16 pb-20 md:pt-24 md:pb-28 px-12">
-              <TypographyElement elementType="H1">
+              <TokenElement typographyRoles={["H1"]}>
               <h1
                 className="text-5xl md:text-7xl text-foreground max-w-3xl"
                 style={getRoleStyle('h1', '700')}
               >
                 Hi there.
               </h1>
-              </TypographyElement>
-              <TypographyElement elementType="P" textColorRole="muted-foreground">
+              </TokenElement>
+              <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
               <p
                 className="mt-4 max-w-2xl text-lg text-muted-foreground"
                 style={getRoleStyle('p', '400')}
@@ -546,7 +546,7 @@ export default function ArtistPreview() {
                 I'm Aurora Hart, a Norwegian painter based in Oslo, deeply inspired by the ethereal beauty of the fjords
                 and the enchanting glow of the midnight sun.
               </p>
-              </TypographyElement>
+              </TokenElement>
             </section>
 
             <section id="gallery" className="px-12 pb-24">
@@ -560,7 +560,7 @@ export default function ArtistPreview() {
                 <div className="flex items-center gap-4">
                   <div className="hidden sm:flex items-center gap-2">
                     {(["All", "Available", "Sold"] as const).map((filter) => (
-                      <CombinedElement key={filter} typographyRole="BUTTON" colorRole={availabilityFilter === filter ? 'foreground' : 'muted-foreground'}>
+                      <TokenElement key={filter} typographyRoles={["BUTTON"]} colorRoles={[availabilityFilter === filter ? 'foreground' : 'muted-foreground']}> 
                       <Button
                         variant="ghost"
                         onClick={() => setAvailabilityFilter(filter)}
@@ -574,7 +574,7 @@ export default function ArtistPreview() {
                       >
                         {filter}
                       </Button>
-                      </CombinedElement>
+                      </TokenElement>
                     ))}
                   </div>
                   <div className="lg:hidden">
@@ -619,14 +619,14 @@ export default function ArtistPreview() {
                           {img.year}
                         </div>
                         <div className="absolute bottom-4 left-4 text-white">
-                          <TypographyElement elementType="H3">
+                          <TokenElement typographyRoles={["H3"]}>
                             <h3 className="text-lg font-semibold">{img.title}</h3>
-                          </TypographyElement>
+                          </TokenElement>
                         </div>
                         <div className="absolute bottom-4 right-4 text-white">
-                          <TypographyElement elementType="SPAN">
+                          <TokenElement typographyRoles={["SPAN"]}>
                             <span className="text-lg font-semibold">{img.price}</span>
-                          </TypographyElement>
+                          </TokenElement>
                         </div>
                       </div>
                     </div>

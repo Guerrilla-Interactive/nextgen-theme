@@ -4,14 +4,8 @@
   – duotone · light-first · medium saturation · complementary harmony
 \*───────────────────────────────────────────────────────────────────────*/
 
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from "./theme-types";
   
   /*───────────────────────────────────────────────────────────────────────*\
     1. RAW COLOUR TOKENS - Twitter/X Light Palette
@@ -244,6 +238,7 @@ import {
   const twitterXLightBrandColors = generateBrandColors("twitter-x-light", twitterXLightThemeDefinition.rawColors);
 
   export const twitterXTheme: Brand = {
+    rating: 77,
     name: "Twitter/X Light",
     businessDetails: {
       name: "Twitter/X Light Theme",

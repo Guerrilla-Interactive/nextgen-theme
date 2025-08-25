@@ -4,40 +4,10 @@
   – light‑first · vibrant accents · minimal shadows · clean rounded corners
 \*───────────────────────────────────────────────────────────────────────────────*/
 
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString, SevenAxisCode } from "./theme-types";
   
-  /*───────────────────────────────────────────────────────────────────────────────*\
-    Seven‑Axis Personality Interface (shared)
-  \*───────────────────────────────────────────────────────────────────────────────*/
-  export interface SevenAxisCode {
-    /** Color complexity: Monochrome (simple) vs. Polychrome (complex) */
-    colorComplexity: 'monochrome' | 'duotone' | 'triad' | 'polychrome';
-  
-    /** Default brightness preference */
-    brightness: 'light' | 'adaptive';
-  
-    /** Color saturation: Muted/Pastel vs. Vibrant/Neon */
-    saturation: 'muted' | 'pastel' | 'medium' | 'vibrant' | 'neon';
-  
-    /** Color relationships: Single‑hue vs. Multi‑hue gradients/schemes */
-    colorHarmony: 'single-hue' | 'analogous' | 'complementary' | 'triadic' | 'tetradic';
-  
-    /** Visual hierarchy: Accent‑heavy vs. Accent‑neutral */
-    accentUsage: 'minimal' | 'subtle' | 'balanced' | 'prominent' | 'dominant';
-  
-    /** Border radius: Sharp/Angular vs. Rounded */
-    cornerStyle: 'sharp' | 'slightly-rounded' | 'rounded' | 'very-rounded' | 'pill';
-  
-    /** Visual depth: Flat vs. Elevated/Layered */
-    elevation: 'flat' | 'minimal-shadow' | 'subtle-depth' | 'layered' | 'dramatic';
-  }
+  /* Seven‑Axis Personality Interface imported from theme-types */
   
   /*───────────────────────────────────────────────────────────────────────────────*\
     1. RAW COLOUR TOKENS – IKEA Blue & Yellow Palette
@@ -53,9 +23,6 @@ import {
           "background",
           "primary-foreground",
           "destructive-foreground",
-          "success-foreground",
-          "info-foreground",
-          "warning-foreground",
         ],
         category: "shade",
         onColor: "oklch(0.05 0 0)" as OklchString,
@@ -187,6 +154,7 @@ import {
       2. STYLE GUIDE – Blue Primary, Yellow Accent
     \*───────────────────────────────────────────────────────────────────────────*/
     styleGuide: {
+      rootColors: { background: "Pure White", foreground: "IKEA Black" },
       primaryColors:       { primary: "IKEA Blue", primaryForeground: "Pure White" },
       secondaryColors:     { secondary: "Light Gray Surface", secondaryForeground: "IKEA Black" },
       accentColors:        { accent: "IKEA Yellow", accentForeground: "IKEA Black" },
@@ -200,6 +168,24 @@ import {
       inputColors:         { input: "Light Gray Surface", inputForeground: "IKEA Black" },
       borderColors:        { border: "Light Gray Surface" },
       ringColors:          { ring: "IKEA Blue" },
+      sidebarColors: {
+        sidebar: "Card White",
+        sidebarForeground: "IKEA Black",
+        sidebarPrimary: "IKEA Blue",
+        sidebarPrimaryForeground: "Pure White",
+        sidebarAccent: "IKEA Yellow",
+        sidebarAccentForeground: "IKEA Black",
+        sidebarBorder: "Light Gray Surface",
+        sidebarRing: "IKEA Blue",
+      },
+      chartColors: {
+        chart1: "Chart Blue",
+        chart2: "Chart Yellow",
+        chart3: "Chart Black",
+        chart4: "Chart Gray",
+        chart5: "Chart Yellow",
+        chartOutline: "Chart Outline",
+      },
       radius: {
         radiusSm: "0.25rem",
         radiusMd: "0.5rem",
@@ -218,19 +204,7 @@ import {
       3. OTHER VARS – Shadows & Sidebar
     \*───────────────────────────────────────────────────────────────────────────*/
     otherVars: {
-      background: "Pure White",
-      foreground: "IKEA Black",
       radiusBase: "0.5rem",
-  
-      // Sidebar mappings (kept neutral to avoid too much yellow)  
-      sidebar: "Card White",
-      sidebarForeground: "IKEA Black",
-      sidebarPrimary: "IKEA Blue",
-      sidebarPrimaryForeground: "Pure White",
-      sidebarAccent: "IKEA Yellow",
-      sidebarAccentForeground: "IKEA Black",
-      sidebarBorder: "Light Gray Surface",
-      sidebarRing: "IKEA Blue",
   
       // Minimal flat shadows (matches other themes)
       shadowXs: "0px 0px 0px 0px transparent",
@@ -242,12 +216,6 @@ import {
       borderWidthDefault: "1px",
       borderStyleDefault: "solid",
   
-      chart1: "Chart Blue",
-      chart2: "Chart Yellow",
-      chart3: "Chart Black",
-      chart4: "Chart Gray",
-      chart5: "Chart Yellow",
-      chartOutline: "Chart Outline",
     },
   };
   
@@ -261,6 +229,7 @@ import {
   
   export const ikeaBrand: Brand = {
     name: "IKEA Bright",
+    rating: 92,
     businessDetails: {
       name: "IKEA",
       industry: "furniture_retail",

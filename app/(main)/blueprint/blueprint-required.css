@@ -1,0 +1,74 @@
+  /* Preview scope overrides with higher precedence, avoiding !important */
+  [data-typography-scope] :is(h1, [data-typography-role="h1"]) {
+    font: inherit;
+    font-family: var(--font-h1, var(--font-heading, var(--font-body)));
+    font-weight: var(--font-weight-h1, 700);
+    font-size: var(--font-size-h1, 2.25rem);
+    line-height: var(--line-height-h1, 1.2);
+    letter-spacing: var(--letter-spacing-h1, 0em);
+}
+[data-typography-scope] :is(h2, [data-typography-role="h2"]) {
+    font: inherit;
+    font-family: var(--font-h2, var(--font-heading, var(--font-body)));
+    font-weight: var(--font-weight-h2, 700);
+    font-size: var(--font-size-h2, 1.875rem);
+    line-height: var(--line-height-h2, 1.2);
+    letter-spacing: var(--letter-spacing-h2, 0em);
+}
+[data-typography-scope] :is(h3, [data-typography-role="h3"]) {
+    font: inherit;
+    font-family: var(--font-h3, var(--font-heading, var(--font-body)));
+    font-weight: var(--font-weight-h3, 700);
+    font-size: var(--font-size-h3, 1.5rem);
+    line-height: var(--line-height-h3, 1.2);
+    letter-spacing: var(--letter-spacing-h3, 0em);
+}
+[data-typography-scope] :is(h4, [data-typography-role="h4"]) {
+    font: inherit;
+    font-family: var(--font-h4, var(--font-heading, var(--font-body)));
+    font-weight: var(--font-weight-h4, 700);
+    font-size: var(--font-size-h4, 1.25rem);
+    line-height: var(--line-height-h4, 1.2);
+    letter-spacing: var(--letter-spacing-h4, 0em);
+}
+[data-typography-scope] :is(h5, [data-typography-role="h5"]) {
+    font: inherit;
+    font-family: var(--font-h5, var(--font-heading, var(--font-body)));
+    font-weight: var(--font-weight-h5, 700);
+    font-size: var(--font-size-h5, 1.125rem);
+    line-height: var(--line-height-h5, 1.2);
+    letter-spacing: var(--letter-spacing-h5, 0em);
+}
+[data-typography-scope] :is(h6, [data-typography-role="h6"]) {
+    font: inherit;
+    font-family: var(--font-h6, var(--font-heading, var(--font-body)));
+    font-weight: var(--font-weight-h6, 700);
+    font-size: var(--font-size-h6, 1rem);
+    line-height: var(--line-height-h6, 1.2);
+    letter-spacing: var(--letter-spacing-h6, 0em);
+}
+[data-typography-scope] :is(p, li, [data-typography-role="p"]) {
+    font: inherit;
+    font-family: var(--font-p, var(--font-body, var(--font-body)));
+    font-weight: var(--font-weight-p, 400);
+    font-size: var(--font-size-p, 1rem);
+    line-height: var(--line-height-p, 1.5);
+    letter-spacing: var(--letter-spacing-p, 0em);
+}
+[data-typography-scope] :is(blockquote, [data-typography-role="blockquote"]) {
+    font: inherit;
+    font-family: var(--font-blockquote, var(--font-blockquote, var(--font-body)));
+    font-weight: var(--font-weight-blockquote, 400);
+    font-size: var(--font-size-blockquote, 1rem);
+    line-height: var(--line-height-blockquote, 1.5);
+    letter-spacing: var(--letter-spacing-blockquote, 0em);
+}
+[data-typography-scope] :is([data-slot="button"], button, [data-typography-role="button"]) {
+    font: inherit;
+    font-family: var(--font-button, var(--font-button, var(--font-body)));
+    font-weight: var(--font-weight-button, 600);
+    font-size: var(--font-size-button, 0.875rem);
+    line-height: var(--line-height-button, 1.2);
+    letter-spacing: var(--letter-spacing-button, 0em);
+}
+}

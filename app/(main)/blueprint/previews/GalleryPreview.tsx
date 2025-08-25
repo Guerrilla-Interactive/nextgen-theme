@@ -15,7 +15,7 @@ import { Badge } from "@/features/unorganized-components/ui/badge";
 import { Avatar, AvatarFallback } from "@/features/unorganized-components/ui/avatar";
 import { useBrand } from "../BrandContext";
 import type { FontToken } from "../brand-utils";
-import { TypographyElement, CombinedElement, ColorElement } from "../components/token-targeting";
+import { TokenElement } from "../components/token-targeting";
 
 export default function GalleryPreview() {
   const { brand, processedBrand, getFontWeightForRole, getFontSizeForRole } = useBrand();
@@ -255,14 +255,14 @@ export default function GalleryPreview() {
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                 <Camera className="w-4 h-4 text-white" />
               </div>
-              <TypographyElement elementType="SPAN">
+              <TokenElement elementType="SPAN">
               <span
                 className="text-2xl font-light tracking-wide"
                 style={getRoleStyle('logo', '300')}
               >
                 Lumina
               </span>
-              </TypographyElement>
+              </TokenElement>
             </div>
             <div className="hidden md:flex items-center space-x-8">
               {[
@@ -270,7 +270,7 @@ export default function GalleryPreview() {
                 { label: 'ARTISTS', role: 'nav' },
                 { label: 'COLLECTIONS', role: 'nav' },
               ].map(item => (
-                <TypographyElement key={item.label} elementType="SPAN">
+                <TokenElement key={item.label} elementType="SPAN">
               <a
                 href="#"
                 className="text-sm tracking-wide hover:text-primary transition-colors"
@@ -278,12 +278,12 @@ export default function GalleryPreview() {
               >
                     {item.label}
               </a>
-                </TypographyElement>
+                </TokenElement>
               ))}
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <CombinedElement typographyRole="BUTTON" colorRole="secondary">
+            <TokenElement typographyRole="BUTTON" colorRole="secondary">
             <Button
               variant="ghost"
               className="tracking-wide"
@@ -291,8 +291,8 @@ export default function GalleryPreview() {
             >
               Search
             </Button>
-            </CombinedElement>
-            <CombinedElement typographyRole="BUTTON" colorRole="primary">
+            </TokenElement>
+            <TokenElement typographyRole="BUTTON" colorRole="primary">
             <Button
               className="tracking-wide"
               style={getRoleStyle('button', '500')}
@@ -300,7 +300,7 @@ export default function GalleryPreview() {
             >
               Visit
             </Button>
-            </CombinedElement>
+            </TokenElement>
           </div>
         </nav>
 
@@ -316,32 +316,32 @@ export default function GalleryPreview() {
           <div className="absolute inset-0 bg-black/40"></div>
           <div className="relative h-full flex items-center justify-center px-8">
             <div className="text-center text-white max-w-4xl">
-              <TypographyElement elementType="H1">
+              <TokenElement elementType="H1">
               <h1
                 className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
                 style={getRoleStyle('display', '700')}
               >
                 Lumina Gallery
               </h1>
-              </TypographyElement>
-              <TypographyElement elementType="P">
+              </TokenElement>
+              <TokenElement elementType="P">
               <p
                 className="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed"
                 style={getRoleStyle('subtitle', '400')}
               >
                 Discover extraordinary contemporary art from emerging and established artists around the world
               </p>
-              </TypographyElement>
+              </TokenElement>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <CombinedElement typographyRole="BUTTON" colorRole="primary">
+                <TokenElement typographyRole="BUTTON" colorRole="primary">
                 <Button
                   className="bg-white text-black hover:bg-white/90 px-8 py-3 text-lg"
                   style={getRoleStyle('button', '600')}
                 >
                   Explore Collection
                 </Button>
-                </CombinedElement>
-                <CombinedElement typographyRole="BUTTON" colorRole="secondary">
+                </TokenElement>
+                <TokenElement typographyRole="BUTTON" colorRole="secondary">
                 <Button
                   variant="outline"
                   className="border-white text-white hover:bg-white hover:text-black px-8 py-3 text-lg"
@@ -349,7 +349,7 @@ export default function GalleryPreview() {
                 >
                   View Exhibitions
                 </Button>
-                </CombinedElement>
+                </TokenElement>
               </div>
             </div>
           </div>
@@ -952,14 +952,14 @@ export default function GalleryPreview() {
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                 <Camera className="w-4 h-4 text-white" />
               </div>
-              <TypographyElement elementType="SPAN">
+              <TokenElement elementType="SPAN">
               <span
                 className="text-xl font-light tracking-wide"
                 style={getRoleStyle('logo', '300')}
               >
                 Lumina
               </span>
-              </TypographyElement>
+              </TokenElement>
             </div>
 
             <div className="flex items-center space-x-8 text-sm">

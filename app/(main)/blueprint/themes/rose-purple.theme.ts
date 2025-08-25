@@ -4,14 +4,8 @@
   – duotone · light-first · medium saturation · analogous harmony
 \*───────────────────────────────────────────────────────────────────────*/
 
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from "./theme-types";
   
   /*───────────────────────────────────────────────────────────────────────*\
     1. RAW COLOUR TOKENS - Rose Purple Light Palette
@@ -319,6 +313,7 @@ import {
 
   export const rosePurpleTheme: Brand = {
     name: "Rose Purple",
+    rating: 85,
     businessDetails: {
       name: "Rose Purple Light Theme",
       industry: "creative",

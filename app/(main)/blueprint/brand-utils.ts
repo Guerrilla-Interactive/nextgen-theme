@@ -8,6 +8,8 @@
 
 import { wcagContrast } from 'culori/fn';
 import { parse, converter } from 'culori';
+import type { Brand, StyleGuide, RawColorDefinition, OklchString, BusinessDetails, Personality, SevenAxisCode } from './themes/theme-types';
+export type { Brand, OklchString } from './themes/theme-types';
 
 /* ────────────────────────────────────────────────────────────
    Influence / roles
@@ -64,7 +66,6 @@ export const SURFACE_ROLES: ReadonlySet<Role> = new Set<Role>([
    ──────────────────────────────────────────────────────────── */
 
 export type LightnessStepKey = "bright" | "brighter" | "dark" | "darker";
-export type OklchString = `oklch(${string})`;
 export type ColorMixString = `color-mix(${string})`;
 
 export interface Shade {
@@ -95,57 +96,8 @@ export interface FontToken {
   fontSizes?: Record<string, number>;
 }
 
-export interface Personality {
-  vintageModern: number;
-  seasonedYouthful: number;
-  gracefulBold: number;
-  playfulElegant: number;
-  valueSmartLuxurious: number;
-  structuredNatural: number;
-  symbolicRealistic: number;
-}
-
-export interface SevenAxisCode {
-  colorComplexity: 'monochrome' | 'duotone' | 'triad' | 'polychrome';
-  brightness: 'light' | 'adaptive';
-  saturation: 'muted' | 'pastel' | 'medium' | 'vibrant' | 'neon';
-  colorHarmony: 'single-hue' | 'analogous' | 'complementary' | 'triadic' | 'tetradic';
-  accentUsage: 'minimal' | 'subtle' | 'balanced' | 'prominent' | 'dominant';
-  cornerStyle: 'sharp' | 'slightly-rounded' | 'rounded' | 'very-rounded' | 'pill';
-  elevation: 'flat' | 'minimal-shadow' | 'subtle-depth' | 'layered' | 'dramatic';
-}
-
-export interface StyleGuide {
-  primaryColors: { primary: string; primaryForeground: string };
-  secondaryColors: { secondary: string; secondaryForeground: string };
-  accentColors: { accent: string; accentForeground: string };
-  cardColors: { card: string; cardForeground: string };
-  popoverColors: { popover: string; popoverForeground: string };
-  mutedColors: { muted: string; mutedForeground: string };
-  destructiveColors: { destructive: string; destructiveForeground: string };
-  successColors: { success: string; successForeground: string };
-  inputColors: { input: string; inputForeground?: string };
-  borderColors: { border: string };
-  ringColors: { ring: string };
-  radius: {
-    radiusSm: string;
-    radiusMd: string;
-    radiusLg: string;
-    radiusXl: string;
-  };
-  spacing: {
-    spacingSm: string;
-    spacingMd: string;
-    spacingLg: string;
-    spacingXl: string;
-  };
-}
-
-export interface BusinessDetails {
-  name: string;
-  industry: string;
-  personality: Personality;
-}
+// Theme-related types (Brand, StyleGuide, RawColorDefinition, OklchString, etc.)
+// are defined in ./themes/theme-types and imported as types above.
 
 export interface ThemeCssVars {
   background: string;
@@ -164,28 +116,30 @@ export interface ThemeCssVars {
   "accent-foreground": string;
   destructive: string;
   "destructive-foreground": string;
-  success?: string;
-  "success-foreground"?: string;
+  success: string;
+  "success-foreground": string;
 
-  sidebar?: string;
-  "sidebar-foreground"?: string;
-  "sidebar-primary"?: string;
-  "sidebar-primary-foreground"?: string;
-  "sidebar-accent"?: string;
-  "sidebar-accent-foreground"?: string;
-  "sidebar-border"?: string;
-  "sidebar-ring"?: string;
+  /** Sidebar tokens (required across all themes) */
+  sidebar: string;
+  "sidebar-foreground": string;
+  "sidebar-primary": string;
+  "sidebar-primary-foreground": string;
+  "sidebar-accent": string;
+  "sidebar-accent-foreground": string;
+  "sidebar-border": string;
+  "sidebar-ring": string;
 
   border: string;
   input: string;
-  "input-foreground"?: string;
+  "input-foreground": string;
   ring: string;
-  chart1?: string;
-  chart2?: string;
-  chart3?: string;
-  chart4?: string;
-  chart5?: string;
-  chartOutline?: string;
+  /** Chart tokens (required across all themes) */
+  chart1: string;
+  chart2: string;
+  chart3: string;
+  chart4: string;
+  chart5: string;
+  chartOutline: string;
 
   "radius-sm"?: string;
   "radius-md"?: string;
@@ -206,119 +160,6 @@ export interface ThemeCssVars {
   "spacing-md"?: string;
   "spacing-lg"?: string;
   "spacing-xl"?: string;
-}
-
-/* Component style types (unchanged, trimmed only by grouping) */
-export interface ComponentStateStyles {
-  background?: string;
-  backgroundImage?: string;
-  color?: string;
-  borderColor?: string;
-  borderWidth?: string;
-  borderStyle?: string;
-  borderRadius?: string;
-  boxShadow?: string;
-  padding?: string;
-  fontWeight?: string | number;
-  letterSpacing?: string;
-  textTransform?: string;
-  overlayImage?: string;
-  showOverlay?: boolean;
-  fontSize?: string;
-  transform?: string;
-  fontFamily?: string;
-  cursor?: string;
-  opacity?: number;
-  minHeight?: string;
-  display?: string;
-  alignItems?: string;
-  justifyContent?: string;
-  whiteSpace?: string;
-  lineHeight?: string | number;
-  border?: string;
-  backdropFilter?: string;
-  textDecoration?: string;
-  textUnderlineOffset?: string;
-}
-
-export interface ButtonVariantStyles {
-  default?: ComponentStateStyles;
-  hover?: ComponentStateStyles;
-  focus?: ComponentStateStyles;
-  active?: ComponentStateStyles;
-  disabled?: ComponentStateStyles;
-}
-export interface ButtonStyles {
-  primary?: ButtonVariantStyles;
-  secondary?: ButtonVariantStyles;
-  ghost?: ButtonVariantStyles;
-  destructive?: ButtonVariantStyles;
-  outline?: ButtonVariantStyles;
-  link?: ButtonVariantStyles;
-  tertiary?: ButtonVariantStyles;
-  quaternary?: ButtonVariantStyles;
-  disabled?: ButtonVariantStyles;
-  fontFamily?: string;
-  fontSize?: string;
-}
-export interface InputStyles extends ComponentStateStyles {
-  focus?: ComponentStateStyles;
-  error?: ComponentStateStyles;
-  disabled?: ComponentStateStyles;
-  placeholderColor?: string;
-  fontFamily?: string;
-  fontSize?: string;
-}
-export interface CardComponentStyles extends ComponentStateStyles {
-  header?: ComponentStateStyles & { titleColor?: string; descriptionColor?: string; };
-  content?: ComponentStateStyles;
-  footer?: ComponentStateStyles;
-}
-export interface BadgeStyles extends ComponentStateStyles {
-  variantDefault?: ComponentStateStyles;
-  variantDestructive?: ComponentStateStyles;
-  variantSuccess?: ComponentStateStyles;
-}
-export interface NavStyles extends ComponentStateStyles { backdropFilter?: string; }
-export interface HeroStyles extends ComponentStateStyles { backgroundSize?: string; backgroundPosition?: string; }
-export interface TabsListStyles extends ComponentStateStyles {}
-export interface TabsTriggerStyles extends ComponentStateStyles {
-  textColorActive?: string; backgroundActive?: string; boxShadowActive?: string;
-  textColor?: string; borderColor?: string;
-}
-export interface OverviewCardStyles extends ComponentStateStyles {}
-export type ShowcaseCardStyles = Record<string, any>;
-export type ShowcaseTitleStyles = Record<string, any>;
-export interface BrandPickerContainerStyle extends ComponentStateStyles { marginTop?: string; marginBottom?: string; }
-export interface PageCardStyles extends ComponentStateStyles {}
-export interface TooltipStyles extends ComponentStateStyles { backdropFilter?: string; }
-export interface ChartStyling {
-  gridStrokeColor?: string; axisStrokeColor?: string; axisTextColor?: string;
-  legendTextColor?: string; tooltipCursorFill?: string;
-}
-export interface LoadingIndicatorStyles extends ComponentStateStyles { textColor?: string; }
-export interface ComponentStyles {
-  nav?: NavStyles; hero?: HeroStyles;
-  tabs?: { list?: TabsListStyles; trigger?: TabsTriggerStyles; };
-  overviewCard?: OverviewCardStyles;
-  chartShowcaseCard?: ShowcaseCardStyles; chartShowcaseTitle?: ShowcaseTitleStyles;
-  componentShowcaseCard?: ShowcaseCardStyles; componentShowcaseTitle?: ShowcaseTitleStyles;
-  brandPickerContainer?: BrandPickerContainerStyle;
-  button?: ButtonStyles; input?: InputStyles; card?: CardComponentStyles;
-  tokenShowcaseCard?: ShowcaseCardStyles; pageCard?: PageCardStyles;
-  tooltip?: TooltipStyles; charts?: ChartStyling; loadingIndicator?: LoadingIndicatorStyles;
-  badge?: BadgeStyles; tokenGroupCard?: ComponentStateStyles;
-}
-export interface ComponentShowcaseItem {
-  id: string; name: string; description: string; displayComponent: string;
-  variant?: string; state?: 'default' | 'hover' | 'focus' | 'active' | 'disabled';
-}
-export interface ComponentShowcaseConfig {
-  title?: string; description?: string;
-  interactiveElements?: ComponentShowcaseItem[]; forms?: ComponentShowcaseItem[];
-  feedbackIndicators?: ComponentShowcaseItem[]; navigation?: ComponentShowcaseItem[];
-  dataDisplay?: ComponentShowcaseItem[]; overlays?: ComponentShowcaseItem[];
-  styleOverrides?: Record<string, string>;
 }
 
 /* Animation types */
@@ -349,27 +190,7 @@ export interface ThemeAnimationConfig {
   preset: AnimationPreset; overrides?: Partial<AnimationPreset>; rootClassName: string;
 }
 
-export interface Brand {
-  businessDetails: BusinessDetails;
-  colors: ColorToken[];
-  fonts: FontToken[];
-  style: StyleGuide;
-  themeCssVariables: ThemeCssVars;
-  name: string;
-  sevenAxisCode: SevenAxisCode;
-  componentStyles?: ComponentStyles;
-  componentShowcase?: ComponentShowcaseConfig;
-  animationConfig?: ThemeAnimationConfig;
-}
-
-export interface RawColorDefinition {
-  tokenSpecificName: string;
-  description: string;
-  oklch: OklchString;
-  roles: Role[];
-  category: 'color' | 'shade';
-  onColor?: OklchString;
-}
+// Brand and RawColorDefinition are imported as types from theme-types
 
 /* ────────────────────────────────────────────────────────────
    Token factories
@@ -444,8 +265,8 @@ export const createThemeCssVars = (
   colorTokens: ColorToken[],
   style: StyleGuide,
   otherVars: {
-    background: string;
-    foreground: string;
+    background?: string;
+    foreground?: string;
     defaultCardBorder?: string;
     defaultCardBorderHover?: string;
     shadowXs?: string;
@@ -455,12 +276,22 @@ export const createThemeCssVars = (
     shadowXl?: string;
     borderWidthDefault?: string;
     borderStyleDefault?: string;
+    // Chart tokens are optional inputs but required in output; fallbacks will be applied
     chart1?: string;
     chart2?: string;
     chart3?: string;
     chart4?: string;
     chart5?: string;
     chartOutline?: string;
+    // Sidebar tokens — optional here (may come from styleGuide.sidebarColors)
+    sidebar?: string;
+    sidebarForeground?: string;
+    sidebarPrimary?: string;
+    sidebarPrimaryForeground?: string;
+    sidebarAccent?: string;
+    sidebarAccentForeground?: string;
+    sidebarBorder?: string;
+    sidebarRing?: string;
     radiusBase?: string;
   }
 ): ThemeCssVars => {
@@ -476,8 +307,8 @@ export const createThemeCssVars = (
   };
 
   const cssVars: ThemeCssVars = {
-    background: resolve(otherVars.background) || resolve(style.primaryColors.primary)!,
-    foreground: resolve(otherVars.foreground) || resolve(style.primaryColors.primaryForeground)!,
+    background: resolve((style as any).rootColors?.background) || resolve(otherVars.background) || resolve(style.primaryColors.primary)!,
+    foreground: resolve((style as any).rootColors?.foreground) || resolve(otherVars.foreground) || resolve(style.primaryColors.primaryForeground)!,
     card: resolve(style.cardColors.card)!,
     "card-foreground": resolve(style.cardColors.cardForeground)!,
     popover: resolve(style.popoverColors.popover)!,
@@ -492,8 +323,21 @@ export const createThemeCssVars = (
     "accent-foreground": resolve(style.accentColors.accentForeground)!,
     destructive: resolve(style.destructiveColors.destructive)!,
     "destructive-foreground": resolve(style.destructiveColors.destructiveForeground)!,
+    // Success defaults to primary if not provided in style
+    success: resolve((style as any).successColors?.success) || resolve(style.primaryColors.primary)!,
+    "success-foreground": resolve((style as any).successColors?.successForeground) || resolve(style.primaryColors.primaryForeground)!,
+    // Sidebar tokens — prefer style.sidebarColors, then otherVars, then sensible fallbacks
+    sidebar: resolve((style as any).sidebarColors?.sidebar) || resolve((otherVars as any).sidebar) || resolve(style.cardColors.card)!,
+    "sidebar-foreground": resolve((style as any).sidebarColors?.sidebarForeground) || resolve((otherVars as any).sidebarForeground) || resolve(style.cardColors.cardForeground)!,
+    "sidebar-primary": resolve((style as any).sidebarColors?.sidebarPrimary) || resolve((otherVars as any).sidebarPrimary) || resolve(style.primaryColors.primary)!,
+    "sidebar-primary-foreground": resolve((style as any).sidebarColors?.sidebarPrimaryForeground) || resolve((otherVars as any).sidebarPrimaryForeground) || resolve(style.primaryColors.primaryForeground)!,
+    "sidebar-accent": resolve((style as any).sidebarColors?.sidebarAccent) || resolve((otherVars as any).sidebarAccent) || resolve(style.accentColors.accent)!,
+    "sidebar-accent-foreground": resolve((style as any).sidebarColors?.sidebarAccentForeground) || resolve((otherVars as any).sidebarAccentForeground) || resolve(style.accentColors.accentForeground)!,
+    "sidebar-border": resolve((style as any).sidebarColors?.sidebarBorder) || resolve((otherVars as any).sidebarBorder) || resolve(style.borderColors.border)!,
+    "sidebar-ring": resolve((style as any).sidebarColors?.sidebarRing) || resolve((otherVars as any).sidebarRing) || resolve(style.ringColors.ring)!,
     border: resolve(style.borderColors.border)!,
     input: resolve(style.inputColors.input)!,
+    "input-foreground": resolve(style.inputColors.inputForeground) || resolve(style.secondaryColors.secondaryForeground) || resolve(style.primaryColors.primaryForeground)!,
     ring: resolve(style.ringColors.ring)!,
     "radius-sm": style.radius.radiusSm,
     "radius-md": style.radius.radiusMd,
@@ -512,22 +356,17 @@ export const createThemeCssVars = (
     "border-style-default": otherVars.borderStyleDefault,
     "default-card-border": otherVars.defaultCardBorder,
     "default-card-border-hover": otherVars.defaultCardBorderHover,
-    chart1: resolve(otherVars.chart1),
-    chart2: resolve(otherVars.chart2),
-    chart3: resolve(otherVars.chart3),
-    chart4: resolve(otherVars.chart4),
-    chart5: resolve(otherVars.chart5),
-    chartOutline: resolve(otherVars.chartOutline),
+    // Charts — prefer style.chartColors, then otherVars, with robust fallbacks
+    chart1: resolve((style as any).chartColors?.chart1) || resolve(otherVars.chart1) || resolve(style.primaryColors.primary)!,
+    chart2: resolve((style as any).chartColors?.chart2) || resolve(otherVars.chart2) || resolve(style.secondaryColors.secondary)!,
+    chart3: resolve((style as any).chartColors?.chart3) || resolve(otherVars.chart3) || resolve(style.accentColors.accent)!,
+    chart4: resolve((style as any).chartColors?.chart4) || resolve(otherVars.chart4) || resolve(style.ringColors.ring)!,
+    chart5: resolve((style as any).chartColors?.chart5) || resolve(otherVars.chart5) || resolve(style.borderColors.border)!,
+    chartOutline: resolve((style as any).chartColors?.chartOutline) || resolve(otherVars.chartOutline) || resolve(style.borderColors.border)!,
     radius: otherVars.radiusBase,
   };
 
-  if (style.successColors) {
-    cssVars.success = resolve(style.successColors.success);
-    cssVars["success-foreground"] = resolve(style.successColors.successForeground);
-  }
-  if (style.inputColors.inputForeground) {
-    cssVars["input-foreground"] = resolve(style.inputColors.inputForeground);
-  }
+  // Already set success and input-foreground above with fallbacks
   return cssVars;
 };
 
@@ -604,7 +443,7 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
   /* Header + Tailwind layers */
   add('/* ──────────────────────────────────────────────────────────── */');
   add('/* globals.css · Tailwind v4 + shadcn/ui from Brand definition  */');
-  add('/* Foundations in OKLCH, shadcn tokens in HSL triplets          */');
+  add('/* Foundations in OKLCH, shadcn tokens in HSL/OKLCH via CSS vars */');
   add('/* ──────────────────────────────────────────────────────────── */\n');
   add('@import "tailwindcss";\n');
   add('@layer base, components, utilities;\n');
@@ -630,9 +469,9 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
     }
   });
 
-  /* 2) Semantic HSL triplets (dark default) */
+  /* 2) Semantic tokens (aliases to attached foundation variables) */
   add('', 2);
-  add('/* ——— Semantic tokens (HSL triplets for shadcn) ——— */', 2);
+  add('/* ——— Semantic tokens (aliases to attached foundation variables) ——— */', 2);
   const roles: (keyof ThemeCssVars)[] = [
     'background','foreground','card','card-foreground','popover','popover-foreground',
     'primary','primary-foreground','secondary','secondary-foreground',
@@ -643,11 +482,12 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
     'sidebar','sidebar-foreground','sidebar-primary','sidebar-primary-foreground',
     'sidebar-accent','sidebar-accent-foreground','sidebar-border','sidebar-ring'
   ];
-  const writeRoleHsl = (key: keyof ThemeCssVars) => {
-    const triplet = resolveRoleToHslTriplet(key, tokens, ov);
-    if (triplet) add(`--${key}: ${triplet};`, 2);
-  };
-  roles.forEach(writeRoleHsl);
+  roles.forEach(key => {
+    const ref = (ov as any)[key];
+    if (typeof ref === 'string' && ref.length > 0) {
+      add(`--${key}: ${ref};`, 2);
+    }
+  });
 
   // Step aliases
   (['primary','secondary','accent','destructive','success','ring','chart1','chart2','chart3','chart4','chart5'] as (keyof ThemeCssVars)[])
@@ -657,31 +497,25 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
   add('', 2);
   add('/* Typography + radii + shadows */', 2);
   add(`--font-sans: ${brand.fonts.find(f=>f.roles.includes('sans'))?.family ?? "ui-sans-serif, system-ui, -apple-system, 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial"};`, 2);
+  add(`--font-serif: ${brand.fonts.find(f=>f.roles.includes('serif'))?.family ?? "ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif"};`, 2);
   add(`--font-mono: ${brand.fonts.find(f=>f.roles.includes('mono'))?.family ?? "ui-monospace, 'Fira Code', 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas"};`, 2);
   add(`--radius: ${brand.themeCssVariables.radius ?? '0.75rem'};`, 2);
   ['shadow-xs','shadow-sm','shadow-md','shadow-lg','shadow-xl'].forEach(sh => {
     const v = (brand.themeCssVariables as any)[sh];
     if (v) add(`--${sh}: ${v};`, 2);
   });
+  // Optionally expose general shadow aliases if not present
+  const fallbackShadow = (brand.themeCssVariables as any)['shadow-sm'] || (brand.themeCssVariables as any)['shadow-md'];
+  if (fallbackShadow) add(`--shadow: ${fallbackShadow};`, 2);
 
-  add('color-scheme: dark;', 2);
+  add('color-scheme: light;', 2);
   add('}', 1); // end :root
 
-  /* 3) Optional light overrides */
-  if (emitLight) {
-    add('', 1);
-    add('.light, [data-theme="light"] {', 1);
-    roles.forEach(key => {
-      const override = options?.lightOverrides?.[key];
-      if (override) {
-        const tok = findTokenForCssVar(tokens, override);
-        const trip = tok ? oklchToHslTriplet(tok.oklch as OklchString) : override;
-        add(`--${key}: ${trip};`, 2);
-      }
-    });
-    add('color-scheme: light;', 2);
-    add('}', 1);
-  }
+  /* 3) Optional dark aliases (no new colors — just remaps if provided by overrides) */
+  add('', 1);
+  add('.dark, [data-theme="dark"] {', 1);
+  add('color-scheme: dark;', 2);
+  add('}', 1);
 
   add('}', 0); // end @layer base
 
@@ -691,17 +525,14 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
   add('* { @apply border-border; }', 1);
   add('html { @apply antialiased; text-rendering: optimizeLegibility; }', 1);
   add('body { @apply bg-background text-foreground; font-family: var(--font-sans); }', 1);
-  add('::selection { background-color: hsl(var(--primary) / 0.18); color: hsl(var(--foreground)); }', 1);
-  add('h1,h2,h3,h4 { @apply tracking-tight text-balance; }', 1);
-  add('h1 { @apply text-4xl md:text-5xl font-bold; }', 1);
-  add('h2 { @apply text-3xl md:text-4xl font-semibold; }', 1);
-  add('h3 { @apply text-2xl md:text-3xl font-semibold; }', 1);
-  add('h4 { @apply text-xl md:text-2xl font-medium; }', 1);
+  add('::selection { background-color: color-mix(in oklch, var(--primary) 18%, transparent); color: var(--foreground); }', 1);
+  // Avoid forcing letter-spacing so role variables control tracking
+  add('h1,h2,h3,h4 { @apply text-balance; }', 1);
   add('p { @apply leading-7; }', 1);
   add('p + p { @apply mt-4; }', 1);
   add(':where(button,[role="button"],input,select,textarea,a,summary):focus-visible {', 1);
   add('outline: none;', 2);
-  add('box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));', 2);
+  add('box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);', 2);
   add('border-radius: var(--radius);', 2);
   add('}', 1);
 
@@ -710,56 +541,56 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
   add('/* Typography role mappings driven by CSS variables */', 1);
 
   // Headings
-  add('h1, [data-typography-role="h1"] {', 1);
+  add(':where(h1), :where([data-typography-role="h1"]) {', 1);
   add('  font-family: var(--font-h1, var(--font-heading, var(--font-body)));', 2);
-  add('  font-weight: var(--font-weight-h1, 700);', 2);
+  add('  font-weight: var(--font-weight-h1, var(--font-weight-heading, 700));', 2);
   add('  font-size: var(--font-size-h1, 2.25rem);', 2);
-  add('  line-height: var(--line-height-h1, 1.1);', 2);
-  add('  letter-spacing: var(--letter-spacing-h1, 0em);', 2);
+  add('  line-height: var(--line-height-h1, var(--line-height-heading, var(--line-height-body, 1.1)));', 2);
+  add('  letter-spacing: var(--letter-spacing-h1, var(--letter-spacing-heading, 0em));', 2);
   add('}', 1);
 
-  add('h2, [data-typography-role="h2"] {', 1);
+  add(':where(h2), :where([data-typography-role="h2"]) {', 1);
   add('  font-family: var(--font-h2, var(--font-heading, var(--font-body)));', 2);
-  add('  font-weight: var(--font-weight-h2, 700);', 2);
+  add('  font-weight: var(--font-weight-h2, var(--font-weight-heading, 700));', 2);
   add('  font-size: var(--font-size-h2, 1.875rem);', 2);
-  add('  line-height: var(--line-height-h2, 1.15);', 2);
-  add('  letter-spacing: var(--letter-spacing-h2, 0em);', 2);
+  add('  line-height: var(--line-height-h2, var(--line-height-heading, var(--line-height-body, 1.15)));', 2);
+  add('  letter-spacing: var(--letter-spacing-h2, var(--letter-spacing-heading, 0em));', 2);
   add('}', 1);
 
-  add('h3, [data-typography-role="h3"] {', 1);
+  add(':where(h3), :where([data-typography-role="h3"]) {', 1);
   add('  font-family: var(--font-h3, var(--font-heading, var(--font-body)));', 2);
-  add('  font-weight: var(--font-weight-h3, 600);', 2);
+  add('  font-weight: var(--font-weight-h3, var(--font-weight-heading, 600));', 2);
   add('  font-size: var(--font-size-h3, 1.5rem);', 2);
-  add('  line-height: var(--line-height-h3, 1.2);', 2);
-  add('  letter-spacing: var(--letter-spacing-h3, 0em);', 2);
+  add('  line-height: var(--line-height-h3, var(--line-height-heading, var(--line-height-body, 1.2)));', 2);
+  add('  letter-spacing: var(--letter-spacing-h3, var(--letter-spacing-heading, 0em));', 2);
   add('}', 1);
 
-  add('h4, [data-typography-role="h4"] {', 1);
+  add(':where(h4), :where([data-typography-role="h4"]) {', 1);
   add('  font-family: var(--font-h4, var(--font-heading, var(--font-body)));', 2);
-  add('  font-weight: var(--font-weight-h4, 600);', 2);
+  add('  font-weight: var(--font-weight-h4, var(--font-weight-heading, 600));', 2);
   add('  font-size: var(--font-size-h4, 1.25rem);', 2);
-  add('  line-height: var(--line-height-h4, 1.25);', 2);
-  add('  letter-spacing: var(--letter-spacing-h4, 0em);', 2);
+  add('  line-height: var(--line-height-h4, var(--line-height-heading, var(--line-height-body, 1.25)));', 2);
+  add('  letter-spacing: var(--letter-spacing-h4, var(--letter-spacing-heading, 0em));', 2);
   add('}', 1);
 
-  add('h5, [data-typography-role="h5"] {', 1);
+  add(':where(h5), :where([data-typography-role="h5"]) {', 1);
   add('  font-family: var(--font-h5, var(--font-heading, var(--font-body)));', 2);
-  add('  font-weight: var(--font-weight-h5, 600);', 2);
+  add('  font-weight: var(--font-weight-h5, var(--font-weight-heading, 600));', 2);
   add('  font-size: var(--font-size-h5, 1.125rem);', 2);
-  add('  line-height: var(--line-height-h5, 1.3);', 2);
-  add('  letter-spacing: var(--letter-spacing-h5, 0em);', 2);
+  add('  line-height: var(--line-height-h5, var(--line-height-heading, var(--line-height-body, 1.3)));', 2);
+  add('  letter-spacing: var(--letter-spacing-h5, var(--letter-spacing-heading, 0em));', 2);
   add('}', 1);
 
-  add('h6, [data-typography-role="h6"] {', 1);
+  add(':where(h6), :where([data-typography-role="h6"]) {', 1);
   add('  font-family: var(--font-h6, var(--font-heading, var(--font-body)));', 2);
-  add('  font-weight: var(--font-weight-h6, 600);', 2);
+  add('  font-weight: var(--font-weight-h6, var(--font-weight-heading, 600));', 2);
   add('  font-size: var(--font-size-h6, 1rem);', 2);
-  add('  line-height: var(--line-height-h6, 1.35);', 2);
-  add('  letter-spacing: var(--letter-spacing-h6, 0em);', 2);
+  add('  line-height: var(--line-height-h6, var(--line-height-heading, var(--line-height-body, 1.35)));', 2);
+  add('  letter-spacing: var(--letter-spacing-h6, var(--letter-spacing-heading, 0em));', 2);
   add('}', 1);
 
   // Paragraph-like text (avoid styling bare span)
-  add('p, li, [data-typography-role="p"], [data-typography-role="span"], [data-typography-role="default"], [data-typography-role="div"] {', 1);
+  add(':where(p, li), :where([data-typography-role="p"]), :where([data-typography-role="span"]), :where([data-typography-role="default"]), :where([data-typography-role="div"]) {', 1);
   add('  font-family: var(--font-p, var(--font-body));', 2);
   add('  font-weight: var(--font-weight-p, 400);', 2);
   add('  font-size: var(--font-size-p, 1rem);', 2);
@@ -768,7 +599,7 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
   add('}', 1);
 
   // Blockquote
-  add('blockquote, [data-typography-role="blockquote"] {', 1);
+  add(':where(blockquote), :where([data-typography-role="blockquote"]) {', 1);
   add('  font-family: var(--font-blockquote, var(--font-body));', 2);
   add('  font-weight: var(--font-weight-blockquote, var(--font-weight-p, 400));', 2);
   add('  font-size: var(--font-size-blockquote, var(--font-size-p, 1rem));', 2);
@@ -777,7 +608,7 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
   add('}', 1);
 
   // Buttons
-  add('[data-slot="button"], button, [data-typography-role="button"] {', 1);
+  add(':where([data-slot="button"], button, [data-typography-role="button"]) {', 1);
   add('  font-family: var(--font-button, var(--font-body));', 2);
   add('  font-weight: var(--font-weight-button, 600);', 2);
   add('  font-size: var(--font-size-button, 0.875rem);', 2);
@@ -785,30 +616,13 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
   add('  letter-spacing: var(--letter-spacing-button, 0em);', 2);
   add('}', 1);
 
-  // Scoped overrides inside preview to beat Tailwind utilities
-  add('', 1);
-  add('/* Scoped role overrides for preview (force precedence over utility classes) */', 1);
+  add('}', 0);
 
-  const scoped = (sel: string, role: string, fallbackSize: string) => {
-    add(`[data-typography-scope] ${sel}, [data-typography-scope] [data-typography-role="${role}"] {`, 1);
-    add(`  font-family: var(--font-${role}, var(--font-${role === 'p' ? 'body' : (role.startsWith('h') ? 'heading' : role)}, var(--font-body))) !important;`, 2);
-    add(`  font-weight: var(--font-weight-${role}, ${role.startsWith('h') ? '700' : (role === 'button' ? '600' : '400')}) !important;`, 2);
-    add(`  font-size: var(--font-size-${role}, ${fallbackSize}) !important;`, 2);
-    add(`  line-height: var(--line-height-${role}, ${role.startsWith('h') ? '1.2' : (role === 'button' ? '1.2' : '1.5')}) !important;`, 2);
-    add(`  letter-spacing: var(--letter-spacing-${role}, 0em) !important;`, 2);
-    add('}', 1);
-  };
-
-  scoped('h1', 'h1', '2.25rem');
-  scoped('h2', 'h2', '1.875rem');
-  scoped('h3', 'h3', '1.5rem');
-  scoped('h4', 'h4', '1.25rem');
-  scoped('h5', 'h5', '1.125rem');
-  scoped('h6', 'h6', '1rem');
-  scoped('p, li', 'p', '1rem');
-  scoped('blockquote', 'blockquote', '1rem');
-  scoped('[data-slot="button"], button', 'button', '0.875rem');
-
+  // Motion preferences
+  add('');
+  add('@media (prefers-reduced-motion: reduce) {');
+  add('  :root { scroll-behavior: auto; }');
+  add('  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }');
   add('}', 0);
 
   /* 5) Tailwind @theme inline: map utilities to tokens */
@@ -820,20 +634,25 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
     'primary','primary-foreground','secondary','secondary-foreground',
     'accent','accent-foreground','destructive','destructive-foreground'
   ];
-  semantic.forEach(key => add(`--color-${key}: hsl(var(--${key}));`, 1));
+  semantic.forEach(key => add(`--color-${key}: var(--${key});`, 1));
 
   ['chart1','chart2','chart3','chart4','chart5','chartOutline'].forEach(k => {
-    add(`--color-${k.replace('chart','chart-')}: hsl(var(--${k}));`, 1);
+    const cssKey = k === 'chartOutline' ? 'chart-outline' : `chart-${k.replace('chart','')}`;
+    add(`--color-${cssKey}: var(--${k});`, 1);
   });
 
   // expose foundations as raw variables (handy)
   tokens.forEach(t => add(`--color-${t.variableName}: var(--${t.variableName});`, 1));
 
   // radii passthrough for @apply
-  add('--radius-sm: 2px;', 1);
-  add('--radius-md: 3px;', 1);
-  add('--radius-lg: 4px;', 1);
-  add('--radius-xl: 6px;', 1);
+  add('--radius-sm: calc(var(--radius) - 4px);', 1);
+  add('--radius-md: calc(var(--radius) - 2px);', 1);
+  add('--radius-lg: var(--radius);', 1);
+  add('--radius-xl: calc(var(--radius) + 4px);', 1);
+
+  // forward shadows into theme variables for utilities/components
+  ['shadow-2xs','shadow-xs','shadow-sm','shadow','shadow-md','shadow-lg','shadow-xl','shadow-2xl']
+    .forEach(sh => add(`--${sh}: var(--${sh});`, 1));
   add('}', 0);
 
   /* 6) Component primitives */
@@ -854,6 +673,198 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
  */
 export const generateGlobalCss = (brand: Brand): string => {
   return generateGlobalCssV2(brand, { emitLightTheme: true });
+};
+
+/**
+ * Export-oriented CSS generator that mirrors the 6-section globals.css template:
+ * 1) Brand swatches in OKLCH
+ * 2) Brand pure color aliases
+ * 3) shadcn role tokens (HSL triplets) with dark + light blocks
+ * 4) Pure shadcn aliases (hsl(var(--...)))
+ * 5) @theme inline bridge
+ * 6) Base defaults + accessibility
+ */
+export const generateGlobalCssTemplate = (brand: Brand): string => {
+  const { colors: tokens, themeCssVariables: ov } = brand;
+
+  let css = '';
+  const add = (line: string, i = 0) => (css += `${'  '.repeat(i)}${line}\n`);
+
+  // Header
+  add('/* ──────────────────────────────────────────────────────────────────────────────');
+  add('   globals.css — Tailwind v4 + shadcn/ui + Brand palette');
+  add('   Layers:');
+  add('   1. Brand tokens (OKLCH)');
+  add('   2. Brand aliases (pure colors, named)');
+  add('   3. shadcn HSL triplets');
+  add('   4. Pure shadcn aliases');
+  add('   5. Tailwind @theme inline bridge');
+  add('   6. Base + A11y + sugar');
+  add('   ───────────────────────────────────────────────────────────────────────────── */');
+  add('');
+  add('@import "tailwindcss";');
+  add('');
+  add('@layer base, components, utilities;');
+  add('');
+
+  // 1) BRAND SWATCHES — OKLCH
+  add('/* -----------------------------------------------------------------------------');
+  add('   1) BRAND SWATCHES — Authoring colors in OKLCH');
+  add('   --------------------------------------------------------------------------- */');
+  add('@layer base {');
+  add(':root {', 1);
+  add('/* ——— Foundation swatches (OKLCH) ——— */', 2);
+  tokens.forEach(tok => add(`--${tok.variableName}: ${tok.oklch};`, 2));
+  add('', 2);
+  add('/* ——— Tint/shade steps (auto-generated for color tokens) ——— */', 2);
+  tokens.forEach(tok => {
+    if (tok.category === 'color' && tok.themeSteps) {
+      (Object.keys(tok.themeSteps) as LightnessStepKey[]).forEach(step => {
+        const stepVal = tok.themeSteps![step];
+        if (stepVal) add(`--${tok.variableName}-${step}: ${stepVal};`, 2);
+      });
+    }
+  });
+  add('', 2);
+  // Fonts and radius from brand
+  const fontSans = brand.fonts.find(f => f.roles?.includes('sans') || f.roles?.includes('body'))?.family
+    ?? "ui-sans-serif, system-ui, 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif";
+  const fontMono = brand.fonts.find(f => f.roles?.includes('mono') || f.roles?.includes('code'))?.family
+    ?? "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
+  const radius = brand.themeCssVariables.radius ?? '0.5rem';
+  add(`--font-sans: ${fontSans};`, 2);
+  add(`--font-mono: ${fontMono};`, 2);
+  add(`--radius: ${radius};`, 2);
+  add('}', 1);
+  add('}');
+  add('');
+
+  // 2) BRAND PURE COLOR ALIASES
+  add('/* -----------------------------------------------------------------------------');
+  add('   2) BRAND PURE COLOR ALIASES — ready-to-use');
+  add('   --------------------------------------------------------------------------- */');
+  add('@layer base {');
+  add(':root {', 1);
+  tokens.forEach(tok => add(`--color-${tok.variableName}: var(--${tok.variableName});`, 2));
+  tokens.forEach(tok => {
+    if (tok.category === 'color' && tok.themeSteps) {
+      (Object.keys(tok.themeSteps) as LightnessStepKey[]).forEach(step => {
+        const stepVal = tok.themeSteps![step];
+        if (stepVal) add(`--color-${tok.variableName}-${step}: var(--${tok.variableName}-${step});`, 2);
+      });
+    }
+  });
+  add('}', 1);
+  add('}');
+  add('');
+
+  // 3) shadcn/ui ROLE TOKENS — HSL triplets
+  add('/* -----------------------------------------------------------------------------');
+  add('   3) shadcn/ui ROLE TOKENS — HSL triplets');
+  add('   --------------------------------------------------------------------------- */');
+  add('@layer base {');
+  add(':root,', 1);
+  add(':root[data-theme="dark"],', 1);
+  add('.dark {', 1);
+  const roleKeys: (keyof ThemeCssVars)[] = [
+    'background','foreground','card','card-foreground','primary','primary-foreground',
+    'secondary','secondary-foreground','muted','muted-foreground','accent','accent-foreground',
+    'destructive','destructive-foreground','success','success-foreground','border','input','ring',
+    'chart1','chart2','chart3','chart4','chart5','chartOutline'
+  ];
+  roleKeys.forEach(key => {
+    const triplet = resolveRoleToHslTriplet(key, tokens, ov);
+    if (triplet) add(`--${key}: ${triplet};`, 2);
+  });
+  add('}', 1);
+  add('');
+  add('/* Light mode */', 1);
+  add('.light,', 1);
+  add(':root.light,', 1);
+  add('[data-theme="light"] {', 1);
+  roleKeys.forEach(key => {
+    const triplet = resolveRoleToHslTriplet(key, tokens, ov);
+    if (triplet) add(`--${key}: ${triplet};`, 2);
+  });
+  add('}', 1);
+  add('}');
+  add('');
+
+  // 4) PURE shadcn ROLE COLOR ALIASES
+  add('/* -----------------------------------------------------------------------------');
+  add('   4) PURE shadcn ROLE COLOR ALIASES (hsl() wrapped)');
+  add('   --------------------------------------------------------------------------- */');
+  add('@layer base {');
+  add(':root, .light, .dark {', 1);
+  const aliasRoles: (keyof ThemeCssVars)[] = [
+    'background','foreground','card','card-foreground','primary','primary-foreground',
+    'secondary','secondary-foreground','muted','muted-foreground','accent','accent-foreground',
+    'destructive','destructive-foreground','success','success-foreground','border','input','ring',
+    'chart1','chart2','chart3','chart4','chart5','chartOutline'
+  ];
+  aliasRoles.forEach(key => {
+    if (String(key).startsWith('chart')) {
+      const mapped = key === 'chartOutline' ? 'chart-outline' : `chart-${String(key).replace('chart','')}`;
+      add(`--color-${mapped}: hsl(var(--${key}));`, 2);
+    } else {
+      add(`--color-${key}: hsl(var(--${key}));`, 2);
+    }
+  });
+  add('}', 1);
+  add('}');
+  add('');
+
+  // 5) TAILWIND THEME BRIDGE — @theme inline
+  add('/* -----------------------------------------------------------------------------');
+  add('   5) TAILWIND THEME BRIDGE — @theme inline');
+  add('   --------------------------------------------------------------------------- */');
+  add('@theme inline {');
+  [
+    'background','foreground','primary','secondary','accent','muted','border','ring'
+  ].forEach(key => add(`--color-${key}: hsl(var(--${key}));`, 1));
+  // Charts as Tailwind colors
+  const chartMap: Array<[string, string]> = [
+    ['chart-1','chart1'],
+    ['chart-2','chart2'],
+    ['chart-3','chart3'],
+    ['chart-4','chart4'],
+    ['chart-5','chart5'],
+    ['chart-outline','chartOutline']
+  ];
+  chartMap.forEach(([cssKey, varKey]) => add(`--color-${cssKey}: hsl(var(--${varKey}));`, 1));
+  add('--font-sans: var(--font-sans);', 1);
+  add('--font-serif: var(--font-serif);', 1);
+  add('--font-mono: var(--font-mono);', 1);
+  add('--radius: var(--radius);', 1);
+  // spacing scale passthrough (if present)
+  add('--spacing-sm: var(--spacing-sm);', 1);
+  add('--spacing-md: var(--spacing-md);', 1);
+  add('--spacing-lg: var(--spacing-lg);', 1);
+  add('--spacing-xl: var(--spacing-xl);', 1);
+  // border defaults passthrough (if present)
+  add('--border-width-default: var(--border-width-default);', 1);
+  add('--border-style-default: var(--border-style-default);', 1);
+  add('}');
+  add('');
+
+  // 6) BASE DEFAULTS + ACCESSIBILITY
+  add('/* -----------------------------------------------------------------------------');
+  add('   6) BASE DEFAULTS + ACCESSIBILITY');
+  add('   --------------------------------------------------------------------------- */');
+  add('@layer base {');
+  add('* { @apply border-border; }', 1);
+  add('body { @apply bg-background text-foreground font-sans antialiased; }', 1);
+  add('h1,h2,h3,h4 { @apply tracking-tight text-balance; }', 1);
+  add('p { @apply leading-7; }', 1);
+  add('p + p { @apply mt-4; }', 1);
+  add('', 1);
+  add('::selection {', 1);
+  add('background-color: hsl(var(--primary) / 0.15);', 2);
+  add('color: hsl(var(--foreground));', 2);
+  add('}', 1);
+  add('}');
+
+  return css;
 };
 
 /* ────────────────────────────────────────────────────────────
@@ -885,15 +896,9 @@ export const generateAnimationCss = (animationConfig: ThemeAnimationConfig): str
   // Theme-specific base
   addLine(`/* Theme-specific styles for ${preset.name} */`);
   addLine(`.${rootClassName} [data-slot="button"]:not([class*="link"]) {`);
-  if ((preset.button as any)?.global?.transition) {
-    addLine(`transition: ${(preset.button as any).global.transition} !important;`, 1);
-  }
-  if ((preset.button as any)?.global?.transformOrigin) {
-    addLine(`transform-origin: ${(preset.button as any).global.transformOrigin} !important;`, 1);
-  }
-  if ((preset.button as any)?.global?.willChange) {
-    addLine(`will-change: ${(preset.button as any).global.willChange} !important;`, 1);
-  }
+  if ((preset.button as any)?.global?.transition) addLine(`transition: ${(preset.button as any).global.transition} !important;`, 1);
+  if ((preset.button as any)?.global?.transformOrigin) addLine(`transform-origin: ${(preset.button as any).global.transformOrigin} !important;`, 1);
+  if ((preset.button as any)?.global?.willChange) addLine(`will-change: ${(preset.button as any).global.willChange} !important;`, 1);
   addLine(`}`, 0);
   addLine('');
 

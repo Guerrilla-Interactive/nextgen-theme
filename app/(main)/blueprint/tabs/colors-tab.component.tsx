@@ -1,11 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useBrand, type EnrichedColorToken, type EnrichedShade, useUIContext } from "../BrandContext";
-import { ColorPicker } from "../../brand-colors/ColorPicker";
-import { Card, CardContent, CardHeader, CardTitle } from "@/features/unorganized-components/ui/card";
-import { Badge } from "@/features/unorganized-components/ui/badge";
 import { Button } from "@/features/unorganized-components/ui/button";
 import { Input } from "@/features/unorganized-components/ui/input";
-import { Label } from "@/features/unorganized-components/ui/label";
 import { formatHex, converter, parseHex } from "culori";
 import {
   Role,
@@ -18,30 +14,22 @@ import {
   RotateCcw,
   Info,
   Hash,
-  Target,
-  Layers,
   MousePointerClick,
   Square,
   BarChart,
   Type,
   Puzzle,
-  Package
+  Package,
+  Plus,
+  PanelLeft,
+  PanelTopOpen,
+  TextCursorInput,
+  SquareDashed,
+  SquareStack
 } from "lucide-react";
 import { HexColorPicker } from 'react-colorful';
 import { cn } from '@/features/unorganized-utils/utils';
-import { Plus } from 'lucide-react';
 
-// Define role categories and their display order (same as brandguide)
-const roleCategoriesOrder: string[] = [
-  "Core Theming",
-  "Primary Interaction",
-  "Component Surfaces",
-  "Feedback & State",
-  "Charts & Data Visualization",
-  "Text & Muted Content",
-  "Structural & Decorative",
-  "Default & General Use",
-];
 
 // Map roles to categories (same as brandguide)
 const roleToCategoryMap: Record<Role, string> = {
@@ -131,35 +119,39 @@ const roleToSubCategoryMap: Record<Role, string> = {
   border: "Structural",
 };
 
-// Define role pairs (same as brandguide)
-const rolePairs: Partial<Record<Role, Role>> = {
-  background: 'foreground',
-  primary: 'primary-foreground',
-  secondary: 'secondary-foreground',
-  accent: 'accent-foreground',
-  card: 'card-foreground',
-  popover: 'popover-foreground',
-  destructive: 'destructive-foreground',
-  muted: 'muted-foreground',
-  input: 'input-foreground',
-  "sidebar": "sidebar-foreground",
-  "sidebar-primary": "sidebar-primary-foreground",
-  "sidebar-accent": "sidebar-accent-foreground",
-};
 
-const rolePairDescriptions: Partial<Record<Role, string>> = {
-  background: 'Defines the primary background and text color for the entire application.',
-  primary: 'Used for the most important interactive elements, such as main call-to-action buttons.',
-  secondary: 'Provides an alternative for less critical interactive elements.',
-  accent: 'Highlights secondary information or actions, often used for links and icons.',
-  card: 'Sets the background and text color for card-like container components.',
-  popover: 'Specifies the look of temporary pop-up elements like menus and dialogs.',
-  destructive: 'Reserved for actions that result in data loss or other significant changes.',
-  muted: 'For de-emphasized content or text that should be less prominent.',
-  input: 'Defines the appearance of text input fields.',
-  sidebar: 'Sidebar background and foreground colors.',
-  "sidebar-primary": 'Primary sidebar interactive elements.',
-  "sidebar-accent": 'Accent sidebar interactive elements.',
+
+
+// Best-practice guidance aligned with shadcn/ui variables and components
+const getRoleGuidance = (role: Role): { title: string; description: string } => {
+  const pretty = (r: Role) => r.replace(/-/g, ' ').replace(/^\w/, c => c.toUpperCase());
+  const map: Partial<Record<Role, string>> = {
+    primary: "Use for highest-emphasis actions (CTA buttons, primary toggles).",
+    'primary-foreground': "Text/icon color placed on primary backgrounds. Ensure AA contrast with --primary.",
+    secondary: "Lower-emphasis interactive elements.",
+    'secondary-foreground': "Text/icon on secondary surfaces. Keep contrast high.",
+    accent: "Highlights, selection states, subtle emphasis. Used by components like Checkbox/Radio for selected states.",
+    'accent-foreground': "Text/icon on accent surfaces if used as backgrounds.",
+    destructive: "Danger actions (delete, irreversible).",
+    'destructive-foreground': "Text/icon on destructive background. Must meet contrast guidelines.",
+    background: "App base background (page). Should be comfortable at scale. Many surfaces inherit from this.",
+    foreground: "Default text color. Ensure readable contrast on --background.",
+    card: "Elevated surfaces (cards, panels). Subtle contrast from --background.",
+    'card-foreground': "Text/icon on card surfaces.",
+    popover: "Floating surfaces (menus, dropdowns, tooltips).",
+    'popover-foreground': "Text/icon on popover surfaces.",
+    input: "Form fields and input borders. Keep neutral and accessible.",
+    'input-foreground': "Text/icon inside inputs.",
+    muted: "Low-emphasis text and UI (placeholders, captions).",
+    'muted-foreground': "Text on muted surfaces.",
+    border: "Dividers, outlines, and component borders.",
+    ring: "Focus rings and keyboard focus indicators. Ensure visible on both light/dark.",
+    'tooltip-background': "Tooltip surface color when used.",
+  };
+  return {
+    title: pretty(role),
+    description: map[role] ?? `${pretty(role)} role maps directly to the shadcn/ui CSS variable --${role}.`
+  };
 };
 
 interface ProcessedColorToken extends EnrichedColorToken {
@@ -203,6 +195,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
   } = useBrand();
 
   const { selectedColorRole, setSelectedColorRole } = useUIContext();
+  const { setActiveTargetKey } = useUIContext();
 
   // Replace search state with selected role state
   const [selectedRole, setSelectedRole] = useState<Role>('primary');
@@ -215,6 +208,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
   }, [selectedColorRole]);
   const [selectedSwatch, setSelectedSwatch] = useState<{ name: string; displayName?: string; color: string } | null>(null);
   const [colorName, setColorName] = useState('');
+  const [livePreviewColor, setLivePreviewColor] = useState<string | null>(null);
 
   // Helper function to get the current color for a role directly from live brand state
   // This ensures we always have the most up-to-date color assignment
@@ -617,7 +611,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
       );
       if (importantUngrouped.length > 0) {
         console.log(`[roleGroups] WARNING: Important roles ended up ungrouped:`, importantUngrouped);
-      }
+        }
 
       // Check specifically for chart and sidebar roles
       const chartUngrouped = ungroupedRoles.filter(role => role.startsWith('chart-'));
@@ -697,9 +691,9 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
 
   // Get current color value for the selected role
   const currentColorValue = useMemo(() => {
-    const value = selectedRoleInfo?.colorHex || '#000000';
-    return value;
-  }, [selectedRoleInfo, selectedRole]);
+    if (livePreviewColor) return livePreviewColor;
+    return getCurrentColorForRole(selectedRole);
+  }, [livePreviewColor, selectedRole, getCurrentColorForRole]);
 
   // Initialize selectedSwatch when selectedRole changes
   useEffect(() => {
@@ -718,12 +712,17 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
       setSelectedSwatch(null);
       setColorName('');
     }
+    // Reset any transient preview when role changes or role info updates
+    setLivePreviewColor(null);
   }, [selectedRole, selectedRoleInfo, swatches, chartSwatches]);
 
   // Handle role selection (when clicking on a color circle)
   const handleRoleSelect = (role: Role) => {
     setSelectedRole(role);
     setSelectedColorRole(role);
+    // Activate variable-level targeting so all matching preview elements are marked
+    setActiveTargetKey(`var:color:${role}` as any);
+    setLivePreviewColor(null);
   };
 
   // Handle swatch selection for the currently selected role
@@ -733,6 +732,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
 
     // Apply the swatch to the selected role
     handleRoleSwatchSelection(selectedRole, swatch.name);
+    setLivePreviewColor(null);
   };
 
   // Handle creating new color
@@ -798,12 +798,32 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
 
   // Handle color picker changes
   const handleColorPickerChange = (newColor: string) => {
+    setLivePreviewColor(newColor);
     previewRoleDirectColorChange(selectedRole, newColor);
   };
 
   // Handle hex input changes
   const handleHexInputChange = (hexValue: string) => {
+    setLivePreviewColor(hexValue);
     handleRoleDirectColorChange(selectedRole, hexValue);
+  };
+
+  // Define a handler to commit hex input as actual color update
+  const handleHexSubmit = (hex: string) => {
+    // Find the color token assigned to this role
+    const colorToken = processedColors.find(c => c.roles?.includes(selectedRole));
+    if (colorToken) {
+      const parsed = parseHex(hex);
+      if (parsed) {
+        const converted = converter('oklch')(parsed);
+        if (converted) {
+          let { l = 0, c = 0, h = 0 } = converted;
+          h = isNaN(h) ? 0 : h;
+          const oklchString: OklchString = `oklch(${l.toFixed(4)} ${c.toFixed(4)} ${h.toFixed(2)})`;
+          commitColorUpdate(colorToken.name, oklchString);
+        }
+      }
+    }
   };
 
   // Add state to track when we're expecting a new color to be created
@@ -969,8 +989,34 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
 
   const currentSwatches = selectedRole.startsWith('chart-') ? chartSwatches : swatches;
 
+  // Derive selected variable details for the info panel
+  const roleGuidance = getRoleGuidance(selectedRole);
+
+  // Resolve an icon for a given role (used for swatch and title)
+  const getRoleIconForRole = (role: Role) => {
+    const baseRole = (role as string).replace(/-foreground$/, '') as Role;
+    if (baseRole.startsWith('sidebar')) {
+      return <PanelLeft className="w-4 h-4" aria-hidden="true" />;
+    }
+    if (baseRole === 'border') {
+      return <SquareDashed className="w-4 h-4" aria-hidden="true" />;
+    }
+    if (baseRole === 'card') {
+      return <SquareStack className="w-4 h-4" aria-hidden="true" />;
+    }
+    if (baseRole === 'input') {
+      return <TextCursorInput className="w-4 h-4" aria-hidden="true" />;
+    }
+    if (baseRole === 'popover' || baseRole === 'tooltip-background') {
+      return <PanelTopOpen className="w-4 h-4" aria-hidden="true" />;
+    }
+    const category = roleToCategoryMap[baseRole as Role] || "Default & General Use";
+    const Icon = categoryIcons[category] || Package;
+    return <Icon className="w-4 h-4" aria-hidden="true" />;
+  };
+
   return (
-    <div className="space-y-6 h-full overflow-hidden flex flex-col">
+    <div className="space-y-6 h-full  flex flex-col">
       {/* Header */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -989,28 +1035,71 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
               disabled={!canUndo}
               className="h-8 w-8 p-0"
               title="Undo last change"
+              type="button"
             >
               <RotateCcw className="w-4 h-4" />
             </Button>
           </div>
         </div>
+      </div>
 
-        {/* Integrated Color Picker */}
+      {/* Selected Color summary panel */}
+      <div className="space-y-4">
+        {/* Large color preview strip */}
+        <div
+          className="w-full h-20 rounded-md border border-border shadow-sm"
+          style={{ backgroundColor: currentColorValue }}
+          aria-label={`Selected ${selectedRole} color ${currentColorValue}`}
+        />
+
+        {/* Two-column: circle + variable/best practice */}
+        <div className="grid grid-cols-[auto] md:grid-cols-[auto_1fr] gap-4 items-center">
+          {/* Left: circular sample matching variable style */}
+          <div className="flex items-center">
+            <div className="relative flex items-center justify-center">
+              <div
+                className={cn(
+                  "w-16 h-16 rounded-full border border-border/60 shadow-sm",
+                  "ring-offset-background",
+                )}
+                style={{ backgroundColor: currentColorValue }}
+                role="img"
+                aria-label={`Color sample for ${selectedRole}`}
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span style={{ color: getHighContrastTextColor(currentColorValue) }}>
+                  {getRoleIconForRole(selectedRole)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: variable name and best practice guidance */}
+          <div className="space-y-1">
+            <div className="text-sm font-medium text-foreground flex items-center gap-2">
+              <span className="text-muted-foreground">
+                {getRoleIconForRole(selectedRole)}
+              </span>
+              {roleGuidance.title}
+            </div>
+            <p className="text-sm text-muted-foreground">{roleGuidance.description}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Color Selector */}
+      <div className="space-y-4">
         <div className="space-y-4">
-          {/* Color Picker */}
           <HexColorPicker
             className="!w-full !h-auto aspect-[16/10]"
             color={currentColorValue}
             onChange={handleColorPickerChange}
           />
 
-          {/* Color Swatches */}
           {currentSwatches && currentSwatches.length > 0 && (
             <div>
-              <p className="mb-2 text-xs font-medium text-muted-foreground">
-                Theme Colors
-              </p>
-              <div className="grid grid-cols-8 gap-2">
+              <p className="mb-2 text-xs font-medium text-muted-foreground">Theme Colors</p>
+              <div className="flex flex-wrap gap-2">
                 {currentSwatches.map((swatch) => (
                   <button
                     key={swatch.name}
@@ -1018,16 +1107,13 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
                     title={`Assign to ${swatch.displayName || swatch.name}`}
                     className={cn(
                       "h-6 w-6 cursor-pointer rounded-md border transition-all hover:ring-1 hover:ring-ring focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background",
-                      selectedSwatch?.name === swatch.name
-                        ? "border-ring ring-2 ring-ring"
-                        : "border-border/50"
+                      selectedSwatch?.name === swatch.name ? "border-2 border-ring" : "border-border/50"
                     )}
                     style={{ backgroundColor: swatch.color }}
                     onClick={() => handleSwatchSelect(swatch)}
                   />
                 ))}
 
-                {/* Add new color button */}
                 <button
                   type="button"
                   title="Add new color"
@@ -1042,44 +1128,50 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
             </div>
           )}
 
-          {/* Color Name Input */}
-          {selectedSwatch && (
-            <div>
-              <p className="mb-2 text-xs font-medium text-muted-foreground">
-                {selectedSwatch?.name.includes('Color ') ? 'Rename Color' : 'Color Name'}
-              </p>
+          <div className="flex items-end space-x-4">
+            {selectedSwatch && (
+              <div className="flex-1">
+                <p className="mb-2 text-xs font-medium text-muted-foreground">
+                  {selectedSwatch?.name.includes('Color ') ? 'Rename Color' : 'Color Name'}
+                </p>
+                <Input
+                  className="h-8 px-3 py-1 text-sm"
+                  placeholder="Enter color name..."
+                  value={colorName}
+                  onChange={(e) => setColorName(e.target.value)}
+                  onBlur={() => handleColorNameChange(colorName)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleColorNameChange(colorName);
+                      e.currentTarget.blur();
+                    }
+                  }}
+                />
+              </div>
+            )}
+            <div className="flex-1">
+              <p className="mb-2 text-xs font-medium text-muted-foreground">Hex Value</p>
               <Input
-                className="h-8 px-3 py-1 text-sm"
-                placeholder="Enter color name..."
-                value={colorName}
-                onChange={(e) => setColorName(e.target.value)}
-                onBlur={() => handleColorNameChange(colorName)}
+                className="h-8 px-3 py-1 text-sm font-mono"
+                maxLength={7}
+                onChange={(e) => handleHexInputChange(e.target.value)}
+                onBlur={() => handleHexSubmit(currentColorValue)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    handleColorNameChange(colorName);
+                    handleHexSubmit(currentColorValue);
                     e.currentTarget.blur();
                   }
                 }}
+                value={currentColorValue}
+                placeholder="#RRGGBB"
               />
             </div>
-          )}
-
-          {/* Hex Input */}
-          <div>
-            <p className="mb-2 text-xs font-medium text-muted-foreground">Hex Value</p>
-            <Input
-              className="h-8 px-3 py-1 text-sm font-mono"
-              maxLength={7}
-              onChange={(e) => handleHexInputChange(e.target.value)}
-              value={currentColorValue}
-              placeholder="#RRGGBB"
-            />
           </div>
         </div>
       </div>
 
-      {/* Content - Colors by Role view */}
-      <div className="flex-1 overflow-y-auto">
+      {/* Content - Colors by Role (Variables) */}
+      <div className="flex-1 overflow-y-auto border-t pt-4">
         <div className="flex flex-wrap gap-5 gap-y-4">
           {filteredRoleGroups.map((roleGroup, groupIndex) => {
             // Create a more descriptive title
@@ -1125,12 +1217,42 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
               return subCategory;
             };
 
+            // Choose an icon based on the group's category inferred from its roles
+            const getGroupIcon = (group: RoleGroup) => {
+              const roles = group.roles.map(r => (r.role as string).replace(/-foreground$/, '') as Role);
+              // Specific overrides first
+              if (roles.some(r => r.startsWith('sidebar'))) {
+                return <PanelLeft className="w-4 h-4 text-muted-foreground" aria-hidden="true" />;
+              }
+              if (roles.includes('border')) {
+                return <SquareDashed className="w-4 h-4 text-muted-foreground" aria-hidden="true" />;
+              }
+              if (roles.includes('card') || group.subCategoryName === 'Card') {
+                return <SquareStack className="w-4 h-4 text-muted-foreground" aria-hidden="true" />;
+              }
+              if (roles.includes('input') || group.subCategoryName === 'Input') {
+                return <TextCursorInput className="w-4 h-4 text-muted-foreground" aria-hidden="true" />;
+              }
+              if (roles.includes('popover') || group.subCategoryName === 'Popover') {
+                return <PanelTopOpen className="w-4 h-4 text-muted-foreground" aria-hidden="true" />;
+              }
+              const categories = roles
+                .map(r => roleToCategoryMap[r])
+                .filter((c): c is string => Boolean(c));
+              const category = categories[0] || "Default & General Use";
+              const Icon = categoryIcons[category] || Package;
+              return <Icon className="w-4 h-4 text-muted-foreground" aria-hidden="true" />;
+            };
+
             return (
               <div key={`${roleGroup.subCategoryName}-${groupIndex}`} className="p-2  rounded-lg  transition-all duration-200 s hover:bg-card/50 ">
                 {/* Role Group Content */}
                 <div className="space-y-2">
                   {/* Group Title */}
-                  <h4 className="text-sm font-medium text-foreground opacity-60">{getGroupTitle(roleGroup)}</h4>
+                  <h4 className="!text-sm font-medium text-foreground opacity-60 flex items-center gap-2">
+                    {getGroupIcon(roleGroup)}
+                    {getGroupTitle(roleGroup)}
+                  </h4>
 
                   {/* Overlapping Color Circles */}
                   <div className="flex -space-x-4">
@@ -1145,6 +1267,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
                         <div key={roleAssignment.role} className="relative">
                           {assignedColor ? (
                             <Button
+                              type="button"
                               className={cn(
                                 "w-14 h-14 rounded-full border border-border/60 shadow-sm hover:shadow-md transition-all duration-200 p-0 relative",
                                 isSelected && "ring-1 ring-ring ring-offset-2 ring-offset-background  shadow-lg z-20 scale-120"
@@ -1164,6 +1287,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
                             </Button>
                           ) : (
                             <Button
+                              type="button"
                               className={cn(
                                 "w-14 h-14 rounded-full border border-border/40 bg-muted shadow-sm hover:shadow-md transition-all duration-200 p-0 relative",
                                 isSelected && "ring-4 ring-ring ring-offset-4 ring-offset-background scale-110 shadow-lg z-20"
@@ -1189,6 +1313,7 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
           })}
         </div>
       </div>
+      
     </div>
   );
 } 

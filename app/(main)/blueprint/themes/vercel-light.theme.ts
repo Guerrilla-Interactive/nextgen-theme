@@ -4,14 +4,8 @@
   – monochrome-duotone · light-first · sophisticated · modern-minimal
 \*───────────────────────────────────────────────────────────────────────*/
 
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from "./theme-types";
   
   /*───────────────────────────────────────────────────────────────────────*\
     1. RAW COLOUR TOKENS - Precision-Crafted Light Palette
@@ -186,6 +180,7 @@ import {
     ] as RawColorDefinition[],
 
     styleGuide: {
+      rootColors: { background: "Pure White", foreground: "Deep Black" },
       primaryColors:       { primary: "Primary Black", primaryForeground: "White Text" },
       secondaryColors:     { secondary: "Light Gray Surface", secondaryForeground: "Deep Black" },
       accentColors:        { accent: "Subtle Gray", accentForeground: "Deep Black" },
@@ -199,6 +194,24 @@ import {
       inputColors:         { input: "Light Gray Surface", inputForeground: "Deep Black" },
       borderColors:        { border: "Light Gray Surface" },
       ringColors:          { ring: "Primary Black" },
+      sidebarColors: {
+        sidebar: "Card White",
+        sidebarForeground: "Deep Black",
+        sidebarPrimary: "Primary Black",
+        sidebarPrimaryForeground: "White Text",
+        sidebarAccent: "Subtle Gray",
+        sidebarAccentForeground: "Deep Black",
+        sidebarBorder: "Light Gray Surface",
+        sidebarRing: "Primary Black",
+      },
+      chartColors: {
+        chart1: "Chart Black",
+        chart2: "Chart Violet",
+        chart3: "Chart Green",
+        chart4: "Chart Gray",
+        chart5: "Chart Dark Gray",
+        chartOutline: "Chart Outline",
+      },
       radius: {
         radiusSm: "0.375rem",
         radiusMd: "0.5rem",
@@ -214,19 +227,7 @@ import {
     } as StyleGuide,
 
     otherVars: {
-      background: "Pure White",
-      foreground: "Deep Black",
       radiusBase: "0.5rem",
-
-      // Sidebar mappings
-      sidebar: "Card White",
-      sidebarForeground: "Deep Black",
-      sidebarPrimary: "Primary Black",
-      sidebarPrimaryForeground: "White Text",
-      sidebarAccent: "Subtle Gray",
-      sidebarAccentForeground: "Deep Black",
-      sidebarBorder: "Light Gray Surface",
-      sidebarRing: "Primary Black",
 
       // Clean light shadows
       shadowXs: "0px 0px 0px 0px transparent",
@@ -237,13 +238,6 @@ import {
 
       borderWidthDefault: "1px",
       borderStyleDefault: "solid",
-
-      chart1: "Chart Black",
-      chart2: "Chart Violet",
-      chart3: "Chart Green",
-      chart4: "Chart Gray",
-      chart5: "Chart Dark Gray",
-      chartOutline: "Chart Outline",
     }
   };
 
@@ -254,6 +248,7 @@ import {
 
   export const vercelMinimalBrand: Brand = {
     name: "Vercel Light",
+    rating: 92,
     businessDetails: {
       name: "Vercel Light",
       industry: "developer_platform",

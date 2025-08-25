@@ -4,14 +4,8 @@
 // Monochrome · Light · Pastel · Single‑hue Gradient · Accent‑neutral · Rounded‑Flat
 // Uses a single peach hue (OKLCH hue ≈ 40°) plus neutral grays.
 
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from "./theme-types";
   
   /* --------------------------------------------------------
      1. RAW COLOR TOKENS (Light mode theme)
@@ -196,6 +190,7 @@ import {
   const peachParfaitColors = generateBrandColors("peach-parfait", peachParfaitRawColors);
   
   export const peachParfaitBrand: Brand = {
+    rating: 90,
     name: "Peach Parfait",
     businessDetails: {
       name: "Peach Parfait Studio",
@@ -217,7 +212,14 @@ import {
         distributor: "Google Fonts",
         description: "Neutral, highly legible sans-serif for body text.",
         family: "'Inter', system-ui, -apple-system, sans-serif",
-        roles: ["body", "default", "sans", "p", "a", "li"],
+        roles: [
+          "body", "default", "sans", "p", "a", "li",
+          "button", "button-label",
+          "input", "form-input",
+          "label",
+          "serif-body", "serif",
+          "h4", "h5", "h6"
+        ],
         weights: { thin: 100, light: 300, regular: 400, medium: 500, semibold: 600, bold: 700 },
       },
       {

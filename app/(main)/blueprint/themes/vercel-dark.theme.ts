@@ -4,14 +4,8 @@
   – monochrome-duotone · dark-first · sophisticated · modern-minimal
 \*───────────────────────────────────────────────────────────────────────*/
 
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from "./theme-types";
   
   /*───────────────────────────────────────────────────────────────────────*\
     1. RAW COLOUR TOKENS - Precision-Crafted Dark Palette
@@ -244,6 +238,7 @@ import {
 
   export const vercelDarkBrand: Brand = {
     name: "Vercel Dark",
+    rating: 92,
     businessDetails: {
       name: "Vercel Dark",
       industry: "developer_platform",

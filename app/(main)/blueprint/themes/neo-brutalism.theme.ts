@@ -1,4 +1,5 @@
-import { type Brand, generateBrandColors, type RawColorDefinition, type StyleGuide, createThemeCssVars, OklchString } from '../brand-utils';
+import { generateBrandColors, createThemeCssVars } from '../brand-utils';
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from './theme-types';
 import { neoBrutalismAnimationPreset } from '../animation-presets';
 
 const neoBrutalismThemeDefinition = {
@@ -152,7 +153,7 @@ const neoBrutalismThemeDefinition = {
     chart5: "Purple Chart",
 
     // Sidebar tokens
-    sidebarBackground: "Light Gray",
+    sidebar: "Light Gray",
     sidebarForeground: "Black",
     sidebarPrimary: "Red Primary",
     sidebarPrimaryForeground: "White",
@@ -167,6 +168,7 @@ const neoBrutalismBrandColors = generateBrandColors("neo-brutalism", neoBrutalis
 
 export const neoBrutalismBrand: Brand = {
   name: "Neo-Brutalism",
+  rating: 93,
   businessDetails: {
     name: "Neo-Brutalism Systems",
     industry: "digital_art_design",

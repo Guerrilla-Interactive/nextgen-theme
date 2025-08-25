@@ -4,14 +4,8 @@
   – duotone-adjacent · light-first · muted · flat · rounded-large
 \*───────────────────────────────────────────────────────────────────────*/
 
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from "../brand-utils";
+import { generateBrandColors, createThemeCssVars } from "../brand-utils";
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from "./theme-types";
   
   /*───────────────────────────────────────────────────────────────────────*\
     1. RAW COLOUR TOKENS (light mode theme)
@@ -173,6 +167,7 @@ import {
   
   export const lilacDaylightBrand: Brand = {
     name: "Lilac Daylight",
+    rating: 91,
     businessDetails: {
       name: "Lilac Daylight Studio",
       industry: "design",

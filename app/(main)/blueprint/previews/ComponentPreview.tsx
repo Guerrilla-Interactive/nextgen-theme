@@ -2,9 +2,10 @@ import * as React from "react";
 import { useBrand } from "../BrandContext";
 import { AllComponentsShowcase } from "../../brandguide/components/all-components-showcase.component";
 import { FontToken } from "../brand-utils";
-import { Badge } from "@/features/unorganized-components/ui/badge";
-import { Separator } from "@/features/unorganized-components/ui/separator";
-import { TooltipProvider } from "@/features/unorganized-components/ui/tooltip";
+import { Badge } from "@/features/unorganized-components/inspect-ui/badge";
+import { Separator } from "@/features/unorganized-components/inspect-ui/separator";
+import { TooltipProvider } from "@/features/unorganized-components/inspect-ui/tooltip";
+import { TokenElement } from "../components/token-targeting";
 
 
 export default function ComponentPreview() {
@@ -220,20 +221,24 @@ export default function ComponentPreview() {
                 </Badge>
               </div>
 
-              <h1
-                className="text-5xl font-bold mb-6 leading-tight"
-                style={getRoleStyle('h1', '800')}
-              >
-                Complete Component
-                <span className="text-primary"> Design System</span>
-              </h1>
+              <TokenElement typographyRoles={["H1"]}>
+                <h1
+                  className="text-5xl font-bold mb-6 leading-tight"
+                  style={getRoleStyle('h1', '800')}
+                >
+                  Complete Component
+                  <span className="text-primary"> Design System</span>
+                </h1>
+              </TokenElement>
 
-              <p
-                className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8"
-                style={getRoleStyle('p', '400')}
-              >
-                Browse our complete collection of components. Each one is built with accessibility in mind and supports all theme customizations. Hover over the info icon to see which design tokens influence each component.
-              </p>
+              <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
+                <p
+                  className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8"
+                  style={getRoleStyle('p', '400')}
+                >
+                  Browse our complete collection of components. Each one is built with accessibility in mind and supports all theme customizations. Hover over the info icon to see which design tokens influence each component.
+                </p>
+              </TokenElement>
 
             </div>
           </section>
@@ -256,13 +261,15 @@ export default function ComponentPreview() {
           {/* Footer */}
           <footer className="py-8 px-8 border-t border-border bg-muted/20">
             <div className="max-w-6xl mx-auto text-center">
-              <p
-                className="text-sm text-muted-foreground"
-                style={getRoleStyle('caption', '400')}
-              >
-                This showcase demonstrates all components with real-time theme switching and live styling updates.
-                Components automatically adapt to your brand colors, fonts, and animation preferences.
-              </p>
+              <TokenElement typographyRoles={["caption"]} colorRoles={["muted-foreground"]}>
+                <p
+                  className="text-sm text-muted-foreground"
+                  style={getRoleStyle('caption', '400')}
+                >
+                  This showcase demonstrates all components with real-time theme switching and live styling updates.
+                  Components automatically adapt to your brand colors, fonts, and animation preferences.
+                </p>
+              </TokenElement>
             </div>
           </footer>
         </div>

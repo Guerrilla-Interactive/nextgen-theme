@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/features/unorganized-components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/unorganized-components/ui/card";
 import { Badge } from "@/features/unorganized-components/ui/badge";
@@ -15,7 +15,8 @@ import {
   Package
 } from "lucide-react";
 import {
-  generateGlobalCssV2, // ⬅️ use the new generator
+  generateGlobalCss,
+  generateAnimationCss,
   type Brand,
   type ColorToken,
   type FontToken
@@ -30,6 +31,22 @@ interface ExportTabProps {
 export function ExportTab({ activeThemeKey }: ExportTabProps) {
   const { brand } = useBrand();
   const [copiedItems, setCopiedItems] = useState<Record<string, boolean>>({});
+  const [, setVersion] = useState(0);
+  const [scopedTypography, setScopedTypography] = useState(false);
+  const [includeAnimations, setIncludeAnimations] = useState(true);
+
+  // Recompute exports when typography variables change live
+  useEffect(() => {
+    const onTypo = () => setVersion(v => v + 1);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('brand-typography-updated', onTypo as any);
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('brand-typography-updated', onTypo as any);
+      }
+    };
+  }, []);
 
   // Get theme display name
   const getThemeDisplayName = (key: string) => {
@@ -82,11 +99,21 @@ export function ExportTab({ activeThemeKey }: ExportTabProps) {
   const generateExports = () => {
     if (!brand) return null;
 
-    // NEW: use v2 generator (dark default; emits optional light overrides if you pass them)
-    const css = generateGlobalCssV2(brand, {
-      emitLightTheme: true
-      // lightOverrides: { /* you can override specific roles here later */ }
-    });
+    // Export the exact CSS that BrandProvider applies at runtime
+    const css = generateGlobalCss(brand);
+    let animationCss = '';
+    if (brand.animationConfig) {
+      const raw = generateAnimationCss(brand.animationConfig);
+      // For export: make animations apply without requiring the theme root class
+      try {
+        const root = brand.animationConfig.rootClassName;
+        const escaped = root.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const re = new RegExp(`\\.${escaped}\\s+`, 'g');
+        animationCss = raw.replace(re, '');
+      } catch {
+        animationCss = raw;
+      }
+    }
 
     // Build a complete typography variable section from current brand and CSS vars
     const roles = [
@@ -200,7 +227,131 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
 [data-slot="button"],button{font-family:var(--font-button,var(--font-body));font-weight:var(--font-weight-button,600);font-size:var(--font-size-button,0.875rem);line-height:var(--line-height-button,1.2);letter-spacing:var(--letter-spacing-button,0em)}
 `;
 
-    const fullCss = `${css}\n\n${extraTypographyCss}`;
+    // Compute missing typography variables from brand roles so H1–H6 mirror P behavior
+    const roleDefaults: Record<string, { lh: string; ls: string; sz?: string; fw?: number }> = {
+      h1: { lh: '1.1', ls: '0em', sz: '2.25rem', fw: resolveWeightForRole('h1') ?? 700 },
+      h2: { lh: '1.15', ls: '0em', sz: '1.875rem', fw: resolveWeightForRole('h2') ?? 700 },
+      h3: { lh: '1.2', ls: '0em', sz: '1.5rem', fw: resolveWeightForRole('h3') ?? 600 },
+      h4: { lh: '1.25', ls: '0em', sz: '1.25rem', fw: resolveWeightForRole('h4') ?? 600 },
+      h5: { lh: '1.3', ls: '0em', sz: '1.125rem', fw: resolveWeightForRole('h5') ?? 600 },
+      h6: { lh: '1.35', ls: '0em', sz: '1rem', fw: resolveWeightForRole('h6') ?? 600 },
+      p: { lh: '1.5', ls: '0em', sz: '1rem', fw: resolveWeightForRole('p') ?? 400 },
+      body: { lh: '1.5', ls: '0em', sz: '1rem', fw: resolveWeightForRole('body') ?? 400 },
+      blockquote: { lh: '1.5', ls: '0em', sz: '1rem', fw: resolveWeightForRole('blockquote') ?? 400 },
+      button: { lh: '1.2', ls: '0em', sz: '0.875rem', fw: resolveWeightForRole('button') ?? 600 }
+    } as const;
+
+    const computedVarLines: string[] = [];
+    // Heading/body family fallbacks
+    if (!getCssVar('font-heading')) computedVarLines.push(`  --font-heading: ${headingFont};`);
+    if (!getCssVar('font-body')) computedVarLines.push(`  --font-body: ${bodyFont};`);
+
+    roles.forEach(role => {
+      const owner = resolveFontForRole(role);
+      if (owner && !getCssVar(`font-${role}`)) computedVarLines.push(`  --font-${role}: ${owner.family};`);
+      const w = getCssVar(`font-weight-${role}`);
+      const s = getCssVar(`font-size-${role}`);
+      const lh = getCssVar(`line-height-${role}`);
+      const ls = getCssVar(`letter-spacing-${role}`);
+      const computedW = resolveWeightForRole(role);
+      const computedS = resolveSizeForRole(role) || (roleDefaults as any)[role]?.sz;
+      if (!w && typeof computedW === 'number') computedVarLines.push(`  --font-weight-${role}: ${computedW};`);
+      if (!s && computedS) computedVarLines.push(`  --font-size-${role}: ${computedS};`);
+      const def = (roleDefaults as any)[role];
+      if (!lh && def?.lh) computedVarLines.push(`  --line-height-${role}: ${def.lh};`);
+      if (!ls && def?.ls) computedVarLines.push(`  --letter-spacing-${role}: ${def.ls};`);
+    });
+
+    const typographyComputedCss = computedVarLines.length
+      ? `/* ───────── Typography variables computed from brand roles (ensure effect on h1..h6 etc) ───────── */\n:root{\n${computedVarLines.join('\n')}\n}\n`
+      : '';
+
+    // Final consumption overrides to ensure variables win over utilities in consumers
+    const roleSelectors: Record<string, string> = {
+      h1: 'h1, [data-typography-role="h1"]',
+      h2: 'h2, [data-typography-role="h2"]',
+      h3: 'h3, [data-typography-role="h3"]',
+      h4: 'h4, [data-typography-role="h4"]',
+      h5: 'h5, [data-typography-role="h5"]',
+      h6: 'h6, [data-typography-role="h6"]',
+      p: 'p, li, [data-typography-role="p"], [data-typography-role="default"]',
+      blockquote: 'blockquote, [data-typography-role="blockquote"]',
+      button: '[data-slot="button"], button, [data-typography-role="button"]'
+    };
+    const finalOverridesLines: string[] = [];
+    const emitRoleRule = (roleKey: string, fallbackSize: string, fallbackWeight: number) => {
+      let sel = (roleSelectors as any)[roleKey];
+      if (scopedTypography) sel = `[data-typography-scope] :is(${sel})`;
+      if (!sel) return;
+      const def = (roleDefaults as any)[roleKey];
+      const fallbackLh = (def && def.lh) ? def.lh : '1.2';
+      finalOverridesLines.push(`${sel} {`);
+      // font family
+      const familyVar = roleKey === 'p' ? 'body' : (roleKey.match(/^h[1-6]$/) ? 'heading' : roleKey);
+      const imp = scopedTypography ? '' : ' !important';
+      finalOverridesLines.push(`  font-family: var(--font-${roleKey}, var(--font-${familyVar}, var(--font-body)))${imp};`);
+      finalOverridesLines.push(`  font-weight: var(--font-weight-${roleKey}, ${fallbackWeight})${imp};`);
+      finalOverridesLines.push(`  font-size: var(--font-size-${roleKey}, ${fallbackSize})${imp};`);
+      finalOverridesLines.push(`  line-height: var(--line-height-${roleKey}, var(--line-height-heading, var(--line-height-body, ${fallbackLh})))${imp};`);
+      finalOverridesLines.push(`  letter-spacing: var(--letter-spacing-${roleKey}, var(--letter-spacing-heading, 0em))${imp};`);
+      finalOverridesLines.push(`}`);
+    };
+    emitRoleRule('h1', '2.25rem', resolveWeightForRole('h1') ?? 700);
+    emitRoleRule('h2', '1.875rem', resolveWeightForRole('h2') ?? 700);
+    emitRoleRule('h3', '1.5rem', resolveWeightForRole('h3') ?? 600);
+    emitRoleRule('h4', '1.25rem', resolveWeightForRole('h4') ?? 600);
+    emitRoleRule('h5', '1.125rem', resolveWeightForRole('h5') ?? 600);
+    emitRoleRule('h6', '1rem', resolveWeightForRole('h6') ?? 600);
+    emitRoleRule('p', '1rem', resolveWeightForRole('p') ?? 400);
+    emitRoleRule('blockquote', '1rem', resolveWeightForRole('blockquote') ?? 400);
+    emitRoleRule('button', '0.875rem', resolveWeightForRole('button') ?? 600);
+    const finalOverrides = finalOverridesLines.length
+      ? `/* ───────── Typography consumption overrides (ensure effect in consumers) ───────── */\n${finalOverridesLines.join('\n')}\n`
+      : '';
+
+    // Filter :root snapshot down to only typography-relevant variables to avoid noise
+    const typographySnapshot = (() => {
+      if (!snapshotRoot) return '';
+      const lines = snapshotRoot.split('\n');
+      const keep = [
+        '--font-',
+        '--font-weight-',
+        '--font-size-',
+        '--line-height-',
+        '--letter-spacing-'
+      ];
+      const filtered = lines.filter(l => keep.some(k => l.trim().startsWith(k)));
+      if (filtered.length === 0) return '';
+      return `/* ───────── Typography variables snapshot (weights/sizes/line-heights/letter-spacing) ───────── */\n:root{\n${filtered.join('\n')}\n}\n`;
+    })();
+
+    const fullCssRaw = [
+      css,
+      typographyComputedCss,
+      typographySnapshot,
+      finalOverrides,
+      (includeAnimations && animationCss)
+        ? `/* ───────────────── Animations (unscoped export: ${brand.animationConfig!.preset.name}) ───────────────── */\n${animationCss}`
+        : ''
+    ].filter(Boolean).join('\n');
+
+    // Sanitize invalid alpha syntax like var(--primary/25) → color-mix(in oklch, var(--primary) 25%, transparent)
+    const sanitizeVarAlpha = (source: string) => {
+      try {
+        let out = source.replace(/var\(--([a-z0-9_-]+)\s*\/\s*([0-9]+(?:\.[0-9]+)?)%?\)/gi, (_m, name, alpha) => {
+          const pct = Number(alpha);
+          const pctStr = Number.isFinite(pct) ? `${pct}%` : '100%';
+          return `color-mix(in oklch, var(--${name}) ${pctStr}, transparent)`;
+        });
+        // Collapse excessive blank lines
+        out = out.replace(/\n{3,}/g, '\n\n');
+        return out;
+      } catch {
+        return source;
+      }
+    };
+
+    const fullCss = sanitizeVarAlpha(fullCssRaw);
 
     // Generate JSON config
     const jsonConfig = {
@@ -221,6 +372,9 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
         fontWeights: font.fontWeights,
         fontSizes: font.fontSizes
       })),
+      animation: brand.animationConfig
+        ? { preset: brand.animationConfig.preset.name, rootClassName: brand.animationConfig.rootClassName }
+        : undefined,
       typography: Object.fromEntries(
         roles.map(role => {
           const owner = resolveFontForRole(role);

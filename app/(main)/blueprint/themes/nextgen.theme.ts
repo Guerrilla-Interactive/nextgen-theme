@@ -1,4 +1,5 @@
-import { type Brand, generateBrandColors, type RawColorDefinition, type StyleGuide, createThemeCssVars, OklchString } from '../brand-utils';
+import { generateBrandColors, createThemeCssVars } from '../brand-utils';
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from './theme-types';
 import { glowingBorderAnimationPreset } from '../animation-presets';
 
 const nextgenThemeDefinition = {
@@ -22,13 +23,12 @@ const nextgenThemeDefinition = {
         "secondary-foreground",
         "accent-foreground",
         "destructive-foreground",
-        "info-foreground",
-        "warning-foreground",
         "card-foreground",
         "popover-foreground",
         "input-foreground",
-        "success-foreground",
-        "default"
+        "sidebar-foreground",
+        "sidebar-primary-foreground",
+        "sidebar-accent-foreground"
       ],
       category: 'shade',
     },
@@ -36,7 +36,7 @@ const nextgenThemeDefinition = {
       tokenSpecificName: "Carbon Fiber",
       description: "Dark surface for cards, popovers; slightly lighter than background.",
       oklch: "oklch(0.20 0.015 255)" as OklchString,
-      roles: ["card", "popover", "secondary", "tooltip-background"],
+      roles: ["card", "popover", "secondary", "tooltip-background", "sidebar"],
       category: 'shade',
       onColor: "oklch(0.97 0.005 90)" as OklchString,  // Photon White
     },
@@ -61,7 +61,7 @@ const nextgenThemeDefinition = {
       tokenSpecificName: "Inferno Orange",
       description: "Primary action color, #FF3600 retained for high-energy actions, also used for accents, success, and info states.",
       oklch: "oklch(0.6484 0.239166 33.0098)" as OklchString,
-      roles: ["primary", "ring",  "accent", "success", "info", "chart-1", "text-brand"],
+      roles: ["primary", "ring",  "accent", "success", "info", "chart-1", "text-brand", "sidebar-primary", "sidebar-accent"],
       category: 'color',
       onColor: "oklch(0.97 0.005 90)" as OklchString,  // Photon White
     },
@@ -90,22 +90,24 @@ const nextgenThemeDefinition = {
       onColor: "oklch(0.15 0.01 260)" as OklchString,
     },
     {
+      tokenSpecificName: "Chart Ultraviolet",
+      oklch: "oklch(0.60 0.22 300)" as OklchString,
+      roles: ["chart-4"],
+      category: 'color',
+      onColor: "oklch(0.15 0.01 260)" as OklchString,
+    },
+    {
       tokenSpecificName: "Chart Plasma Teal",
       oklch: "oklch(0.68 0.21 190)" as OklchString,
       roles: ["chart-5"],
       category: 'color',
       onColor: "oklch(0.15 0.01 260)" as OklchString,
     },
-    {
-      tokenSpecificName: "Chart Outline Gray",
-      oklch: "oklch(0.40 0.01 250)" as OklchString,
-      roles: ["chart-outline"],
-      category: 'shade',
-    },
 
   ] as RawColorDefinition[],
 
   styleGuide: {
+    rootColors: { background: "Midnight Ash", foreground: "Photon White" },
     primaryColors: { primary: "Inferno Orange", primaryForeground: "Photon White" },
     secondaryColors: { secondary: "Inferno Orange", secondaryForeground: "Photon White" },
     accentColors: { accent: "Inferno Orange", accentForeground: "Photon White" },
@@ -114,9 +116,28 @@ const nextgenThemeDefinition = {
     mutedColors: { muted: "Tungsten Gray", mutedForeground: "Titanium Mist" },
     destructiveColors: { destructive: "Crimson Alert", destructiveForeground: "Photon White" },
     successColors: { success: "Inferno Orange", successForeground: "Photon White" },
+    infoColors: { info: "Inferno Orange", infoForeground: "Photon White" },
+    warningColors: { warning: "Crimson Alert", warningForeground: "Photon White" },
     inputColors: { input: "Tungsten Gray", inputForeground: "Photon White" },
     borderColors: { border: "Tungsten Gray" },
     ringColors: { ring: "Inferno Orange" },
+    sidebarColors: {
+      sidebar: "Carbon Fiber",
+      sidebarForeground: "Photon White",
+      sidebarPrimary: "Inferno Orange",
+      sidebarPrimaryForeground: "Photon White",
+      sidebarAccent: "Inferno Orange",
+      sidebarAccentForeground: "Photon White",
+      sidebarBorder: "Tungsten Gray",
+      sidebarRing: "Inferno Orange",
+    },
+    chartColors: {
+      chart1: "Inferno Orange",
+      chart2: "Chart Electric Blue",
+      chart3: "Chart Neon Pink",
+      chart4: "Chart Ultraviolet",
+      chart5: "Chart Plasma Teal",
+    },
     radius: {
       radiusSm: "2px",
       radiusMd: "3px",
@@ -132,20 +153,8 @@ const nextgenThemeDefinition = {
   } as StyleGuide,
 
   otherVars: {
-    background: "Midnight Ash",
-    foreground: "Photon White",
     generalTextLightOnDark: "Photon White",
     generalTextDarkOnLight: "Midnight Ash",
-
-    // Sidebar mappings - using existing colors
-    sidebar: "Carbon Fiber",
-    sidebarForeground: "Photon White",
-    sidebarPrimary: "Inferno Orange",
-    sidebarPrimaryForeground: "Photon White",
-    sidebarAccent: "Inferno Orange",
-    sidebarAccentForeground: "Photon White",
-    sidebarBorder: "Tungsten Gray",
-    sidebarRing: "Inferno Orange",
 
     // Edgy, cool-toned sharp shadows
     shadowXs: "0px 1px 2px 0px hsla(260, 10%, 8%, 0.2)",
@@ -153,15 +162,11 @@ const nextgenThemeDefinition = {
     shadowMd: "0px 3px 6px -1px hsla(260, 10%, 8%, 0.3), 0px 2px 4px -2px hsla(260, 10%, 8%, 0.25)",
     shadowLg: "0px 5px 10px -2px hsla(260, 10%, 8%, 0.35), 0px 3px 6px -3px hsla(260, 10%, 8%, 0.3)",
     shadowXl: "0px 8px 16px -4px hsla(260, 10%, 8%, 0.4), 0px 4px 8px -4px hsla(260, 10%, 8%, 0.35)",
+    "shadow-2xs": "0px 1px 1px 0px hsla(260, 10%, 8%, 0.15)",
+    "shadow-2xl": "0px 12px 24px -6px hsla(260, 10%, 8%, 0.5), 0px 6px 12px -6px hsla(260, 10%, 8%, 0.45)",
 
     borderWidthDefault: "1px",
     borderStyleDefault: "solid",
-
-    chart1: "Inferno Orange",
-    chart2: "Chart Electric Blue",
-    chart3: "Chart Neon Pink",
-    chart5: "Chart Plasma Teal",
-    chartOutline: "Chart Outline Gray",
     radiusBase: "3px",
   }
 };
@@ -170,6 +175,7 @@ const nextgenBrandColors = generateBrandColors("nextgen", nextgenThemeDefinition
 
 export const nextgenBrand: Brand = {
   name: "Nextgen",
+  rating: 100,
   businessDetails: {
     name: "Nextgen Systems",
     industry: "gaming_tech_innovation",
@@ -190,7 +196,15 @@ export const nextgenBrand: Brand = {
       distributor: "Google Fonts",
       description: "Clean, technical sans-serif perfect for gaming tech interfaces.",
       family: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-      roles: ["body", "default", "sans", "p", "a", "li", "button-label", "form-input", "serif-body", "serif", "h4", "h5", "h6"],
+      roles: [
+        "body", "default", "sans", "p", "a", "li",
+        // Canonical interactive roles + legacy aliases
+        "button", "button-label",
+        "input", "form-input",
+        "label",
+        // Additional stacks and headings
+        "serif-body", "serif", "h4", "h5", "h6"
+      ],
       weights: { thin: 100, light: 300, regular: 400, medium: 500, semibold: 600, bold: 700, extrabold: 800, black: 900 },
     },
     {

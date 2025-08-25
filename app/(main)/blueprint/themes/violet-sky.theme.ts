@@ -1,11 +1,5 @@
-import {
-    type Brand,
-    generateBrandColors,
-    type RawColorDefinition,
-    type StyleGuide,
-    createThemeCssVars,
-    OklchString,
-  } from '../brand-utils';
+import { generateBrandColors, createThemeCssVars } from '../brand-utils';
+import type { Brand, RawColorDefinition, StyleGuide, OklchString } from './theme-types';
 import { modernAnimationPreset } from '../animation-presets';
 
   const violetSkyThemeDefinition = {
@@ -174,6 +168,7 @@ import { modernAnimationPreset } from '../animation-presets';
     ] as RawColorDefinition[],
 
     styleGuide: {
+      rootColors: { background: "Lavender", foreground: "Periwinkle" },
       primaryColors: { primary: "Violet", primaryForeground: "White" },
       secondaryColors: { secondary: "Indigo", secondaryForeground: "Dark Periwinkle" },
       accentColors: { accent: "Cerise", accentForeground: "Periwinkle" },
@@ -187,6 +182,24 @@ import { modernAnimationPreset } from '../animation-presets';
       inputColors: { input: "Indigo", inputForeground: "Periwinkle" },
       borderColors: { border: "Indigo" },
       ringColors: { ring: "Violet" },
+      sidebarColors: {
+        sidebar: "White",
+        sidebarForeground: "Periwinkle",
+        sidebarPrimary: "Violet",
+        sidebarPrimaryForeground: "White",
+        sidebarAccent: "Cerise",
+        sidebarAccentForeground: "Periwinkle",
+        sidebarBorder: "Indigo",
+        sidebarRing: "Violet",
+      },
+      chartColors: {
+        chart1: "Violet",
+        chart2: "Chart Indigo 2",
+        chart3: "Chart Blue",
+        chart4: "Chart Deep Blue",
+        chart5: "Chart Navy",
+        chartOutline: "Indigo",
+      },
       radius: {
         radiusSm: "calc(var(--radius) - 4px)",
         radiusMd: "calc(var(--radius) - 2px)",
@@ -202,19 +215,7 @@ import { modernAnimationPreset } from '../animation-presets';
     } as StyleGuide,
 
     otherVars: {
-      background: "Lavender",
-      foreground: "Periwinkle",
       radiusBase: "1.5rem",
-
-      // Sidebar mappings - using existing colors from rawColors
-      sidebar: "White",
-      sidebarForeground: "Periwinkle",
-      sidebarPrimary: "Violet",
-      sidebarPrimaryForeground: "White",
-      sidebarAccent: "Cerise",
-      sidebarAccentForeground: "Periwinkle",
-      sidebarBorder: "Indigo",
-      sidebarRing: "Violet",
 
       // Shadows
       shadowXs: "0px 8px 16px -4px oklch(0 0 0 / 0.04)",
@@ -227,13 +228,6 @@ import { modernAnimationPreset } from '../animation-presets';
 
       borderWidthDefault: "1px",
       borderStyleDefault: "solid",
-
-      // Chart tokens
-      chart1: "Violet",
-      chart2: "Chart Indigo 2",
-      chart3: "Chart Blue",
-      chart4: "Chart Deep Blue",
-      chart5: "Chart Navy",
     },
   };
 
@@ -241,6 +235,7 @@ import { modernAnimationPreset } from '../animation-presets';
 
   export const violetSkyBrand: Brand = {
     name: "Violet Sky",
+    rating: 98,
     businessDetails: {
       name: "Violet Sky Co",
       industry: "digital_design",
