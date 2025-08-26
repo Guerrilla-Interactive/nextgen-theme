@@ -1,14 +1,14 @@
 "use client";
 
 import { Container, FlexCol, FlexRow, Section } from "@/features/unorganized-components/nextgen-core-ui";
-import { Hero5BlockComponent } from "@/features/page-builder-blocks/blocks/hero-5-block";
+import { Hero5BlockComponent } from "@/features/page-builder-blocks/old-blocks/hero-5-block";
 import PortableTextRenderer from "@/features/unorganized-components/portable-text-renderer";
 import { GET_SERVICE_PAGE_BY_ROUTE_QUERYResult, Hero5Block, FaqsBlock } from "@/sanity.types";
 import { useGlobalContext } from "@/features/context/global-context";
 import { useEffect } from "react";
-import { CustomContactFormBlockComponent } from "@/features/page-builder-blocks/blocks/custom-contact-form-block";
+import { CustomContactFormBlockComponent } from "@/features/page-builder-blocks/old-blocks/custom-contact-form-block";
 
-import FaqsBlockComponent from "@/features/page-builder-blocks/blocks/faqs-block/faqs.block-component";
+import FaqsBlockComponent from "@/features/page-builder-blocks/old-blocks/faqs-block/faqs.block-component";
 
 export default function ServiceSlugPageComponent(page: Partial<GET_SERVICE_PAGE_BY_ROUTE_QUERYResult>) {
   const { sessionStatus } = useGlobalContext();

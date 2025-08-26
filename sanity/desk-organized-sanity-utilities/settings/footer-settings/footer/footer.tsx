@@ -8,7 +8,7 @@ import { Facebook, LinkedIn, Instagram } from "@mui/icons-material";
 import { Container, FlexCol, FlexRow, InnerSection, Section } from "@/features/unorganized-components/nextgen-core-ui";
 import { MultipleArrowSVGAnimated } from "@/features/unorganized-components/arrow-svg/multiple-arrow-svg-animated.component";
 import { MultipleArrowSVG } from "@/features/unorganized-components/arrow-svg/multiple-arrow-svg.component";
-import { CoverMapBlockComponent } from "@/features/page-builder-blocks/blocks/cover-map-block";
+import { CoverMapBlockComponent } from "@/features/page-builder-blocks/old-blocks/cover-map-block";
 import { FooterSettingsQueryResult } from "@/sanity.types";
 import { Blocks } from "@/features/page-builder-blocks/block-component-exporter";
 import Image from "next/image";

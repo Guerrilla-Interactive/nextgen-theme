@@ -1,10 +1,14 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/features/unorganized-components/ui/accordion";
 import PortableTextRenderer from "@/features/unorganized-components/portable-text-renderer";
-import { FaqsBlock } from "@/sanity.types";
 import { Container, Section } from "@/features/unorganized-components/nextgen-core-ui";
 import { faqsBlockComponentTranslations as t } from "./faq.block-translation";
 
-export default function FAQsBlockComponent(props: Partial<FaqsBlock>) {
+type DerefFaq = { _id: string; title?: string; body?: any };
+type DerefFaqCategory = { _id: string; title?: string; faqs: DerefFaq[] };
+
+export default function FAQsBlockComponent(
+  props: Partial<{ faqs: DerefFaq[]; faqsByCategory: DerefFaqCategory[]; noPadding?: boolean }>
+) {
   const { faqs, faqsByCategory, noPadding } = props;
 
 

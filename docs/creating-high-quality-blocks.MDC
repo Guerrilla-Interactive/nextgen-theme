@@ -1,0 +1,155 @@
+## Creating High-Quality Page Builder Blocks
+
+This guide explains how to design, build, and register robust blocks for the Page Builder. It distills patterns we implemented across Features, Stats, Newsletter, Testimonials, Pricing, Posts, CTA, and Hero blocks.
+
+### Block anatomy
+- Schema: Sanity `defineType` with clear titles, descriptions, icons, validations, and strong `initialValue`.
+- Query (GROQ): Fetch only needed fields; always resolve `block-content` images to include asset metadata.
+- Component: Client-safe rendering, clean props, and composable UI using shared design system.
+- Registration: Add to `features/page-builder-blocks/block-indexer.tsx` imports, `BlockDataMap`, and queries.
+
+### Naming & structure
+- Use kebab-case for Sanity type names: `features-block`, `pricing-block`.
+- Co-locate files:
+  - `blocks/<block-name>/<block>.block-schema.tsx`
+  - `blocks/<block-name>/<block>.block-query.ts`
+  - `blocks/<block-name>/<block>.block-component.tsx`
+  - `blocks/<block-name>/index.ts`
+- Index should export `{ <block>Schema, <block>Query, <Block>Component }`.
+
+### Schema best practices
+- Provide `title`, `description`, and an icon (e.g., lucide icon) to improve Studio UX.
+- Use `initialValue` generously:
+  - Seed realistic demo content so previews look good immediately.
+  - Include `_key` on array items and nested spans/blocks in initial values to avoid Studio “Missing keys” errors.
+- Validate early:
+  - Required fields: `title`/`heading`.
+  - Bounded arrays (e.g., exactly 2 CTAs; exactly 3 cards; exactly 4 stats), using `rule.length(n)` or `rule.min/max`.
+  - Constrain select/radio options for variants (e.g., `layoutVariant`, `button-variant`).
+- Prefer reusable field types:
+  - Rich text: `block-content` for bodies/notes.
+  - Links/CTAs: use objects with `{ title, href, target, buttonVariant, size }`.
+  - Icons: use the `icon` type; render with `@iconify/react`.
+- Example field patterns:
+  - “Bullets” as `array<string>` (cap with `max(3)` when appropriate).
+  - “Cards/Items” as `array<object>` with preview selects.
+
+### Query (GROQ) best practices
+- Narrow the shape to exactly what the component needs.
+- Resolve `block-content` images:
+  - For any `[]{ ... }` rich content, include an override for `_type == "image"` resolving `asset-> { _id, url, mimeType, metadata { lqip, dimensions { width, height } } }`.
+- Flatten simple nested fields for ergonomics (e.g., map `overlayColor` to computed RGB when needed).
+- Keep order and naming consistent with schema and component props.
+
+### Component best practices
+- Start client components with `"use client"` when they use interactivity, effects, or client-only UI primitives.
+- Keep prop types narrow and optional: `Partial<{ ... }>` works well for fetched shapes.
+- Rendering patterns:
+  - Guard rendering on presence of content to avoid empty wrappers.
+  - Use shared UI primitives (Button, Card, Badge, Avatar, Input) and css utilities consistently.
+  - For icon lists, render icons with `@iconify/react` and fade-in on `onLoad` for a smoother UX.
+  - For CTA variants from Sanity, consider `stegaClean(value)` when passing through to `variant` props if content may include inline annotations.
+- Accessibility & semantics:
+  - Use appropriate headings hierarchy (`h2` for section titles).
+  - Prefer button/link semantics via `Button asChild` when needed.
+- Styling:
+  - Encapsulate palette mappings in small objects (e.g., `{ iconBg, iconText, dot }`).
+  - Avoid hardcoding colors; prefer theme tokens or well-named utility classes.
+
+### Registration
+1. Import into `features/page-builder-blocks/block-indexer.tsx`:
+   - `import { <Block>Component, <block>Query, <block>Schema } from "./blocks/<block-name>";`
+2. Add to `BlockDataMap` with the Sanity type key, e.g.:
+   - `"features-block": { component: FeaturesBlockComponent, schema: featuresBlockSchema, query: featuresBlockQuery }`
+3. Ensure it’s included in:
+   - `allBlockSchemasAutomatic` (auto-built from `BlockDataMap`).
+   - `pageBuilderQueryAutomatic` (auto-built from `allBlockQueries`).
+   - If using manual `pageBuilderQuery`, append `${ <block>Query }` in the right section category.
+
+### Quality checklist
+- Schema
+  - [ ] Has icon, title, description
+  - [ ] Strong `initialValue` with realistic content and `_key`s on arrays/spans
+  - [ ] Validations on required fields and list lengths
+  - [ ] Reuses shared field types (block-content, icon, button-variant)
+- Query
+  - [ ] Fetches only used fields
+  - [ ] Resolves block-content images with asset metadata
+  - [ ] Matches component prop shape
+- Component
+  - [ ] Client-safe when needed (`"use client"`)
+  - [ ] Uses shared UI components and consistent CSS utilities
+  - [ ] Guards optional content; no empty wrappers
+  - [ ] Accessible headings and link/button semantics
+- Registration
+  - [ ] Added to `BlockDataMap`
+  - [ ] Included in automatic and/or manual queries
+  - [ ] Lints pass with zero errors
+
+### Common pitfalls
+- Missing `_key` on initial array items or spans → add `_key` to each item and nested spans.
+- Passing Sanity values directly to design-system variant props → clean with `stegaClean` if annotated.
+- Over-fetching in GROQ → keep shapes minimal and consistent with UI.
+- Inconsistent type names or exports → keep `features-block` type and `FeaturesBlockComponent` export aligned.
+
+### Minimal templates
+Schema (skeleton):
+```ts
+import { defineField, defineType } from "sanity";
+import { IconName } from "lucide-react";
+
+export default defineType({
+  name: "example-block",
+  type: "object",
+  title: "Example",
+  description: "Short description",
+  icon: IconName,
+  initialValue: { /* include realistic defaults with _key */ },
+  fields: [
+    defineField({ name: "title", type: "string", validation: r => r.required() }),
+    defineField({ name: "body", type: "block-content" }),
+  ],
+});
+```
+
+Query (skeleton):
+```ts
+import { groq } from "next-sanity";
+
+const exampleBlockQuery = groq`
+  _type == "example-block" => {
+    _type,
+    title,
+    body[]{
+      ...,
+      _type == "image" => {
+        ...,
+        asset->{ _id, url, mimeType, metadata { lqip, dimensions { width, height } } }
+      }
+    }
+  }
+`;
+
+export default exampleBlockQuery;
+```
+
+Component (skeleton):
+```tsx
+"use client";
+import React from "react";
+import PortableTextRenderer from "@/features/unorganized-components/portable-text-renderer";
+
+export default function ExampleBlockComponent(props: Partial<{ title: string; body: any }>) {
+  const { title, body } = props;
+  return (
+    <section>
+      {title && <h2>{title}</h2>}
+      {body && <PortableTextRenderer value={body} />}
+    </section>
+  );
+}
+```
+
+Follow this guide to keep blocks consistent, high-quality, and easy to maintain.
+
+

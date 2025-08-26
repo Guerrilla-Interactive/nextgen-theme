@@ -1,40 +1,49 @@
 import { groq } from "next-sanity";
-import { Carousel1BlockComponent, carousel1BlockQuery, carousel1BlockSchema } from "./blocks/carousel-block/carousel-1-block";
-import { Carousel2BlockComponent, carousel2BlockQuery, carousel2BlockSchema } from "./blocks/carousel-block/carousel-2-block";
-import { Cta1BlockComponent, cta1BlockQuery, cta1BlockSchema } from "./blocks/cta-blocks/cta-1-block";
-import { FAQsBlockComponent, faqsBlockQuery, faqsBlockSchema } from "./blocks/faqs-block";
-import { FormNewsletterBlockComponent, formNewsletterBlockQuery, formNewsletterBlockSchema } from "./blocks/form-blocks/newsletter-block";
-import { GridCardBlockComponent, gridCardBlockQuery, gridCardBlockSchema } from "./blocks/grid-block/grid-card-block";
-import { GridPostBlockComponent, gridPostBlockQuery, gridPostBlockSchema } from "./blocks/grid-block/grid-post-block";
-import { GridRowBlockComponent, gridRowBlockQuery, gridRowBlockSchema } from "./blocks/grid-block/grid-row-block";
-import { PricingCardBlockComponent, pricingCardBlockQuery, pricingCardBlockSchema } from "./blocks/grid-block/pricing-card-block";
-import { Hero1BlockComponent, hero1BlockQuery, hero1BlockSchema } from "./blocks/hero-1-block";
-import { Hero2BlockComponent, hero2BlockQuery, hero2BlockSchema } from "./blocks/hero-2-block";
-import { LogoCloud1BlockComponent, logoCloud1BlockQuery, logoCloud1BlockSchema } from "./blocks/logo-cloud-blocks/logo-cloud-1-block";
-import { SectionHeaderBlockComponent, sectionHeaderBlockQuery, sectionHeaderBlockSchema } from "./blocks/section-header-block";
-import { SplitCardsItemBlockComponent, splitCardsItemBlockSchema } from "./blocks/split-blocks/split-cards-item-block";
-import { SplitCardsListBlockComponent, splitCardsListBlockQuery, splitCardsListBlockSchema } from "./blocks/split-blocks/split-cards-list-block";
-import { SplitContentBlockComponent, splitContentBlockQuery, splitContentBlockSchema } from "./blocks/split-blocks/split-content-block";
-import { SplitImageBlockComponent, splitImageBlockQuery, splitImageBlockSchema } from "./blocks/split-blocks/split-image-block";
-import { SplitInfoItemBlockComponent, splitInfoItemBlockSchema } from "./blocks/split-blocks/split-info-item-block";
-import { SplitInfoListBlockComponent, splitInfoListBlockQuery, splitInfoListBlockSchema } from "./blocks/split-blocks/split-info-list-block";
-import { SplitRowBlockComponent, splitRowBlockQuery, splitRowBlockSchema } from "./blocks/split-blocks/split-row-block";
-import { Timeline1BlockComponent, timeline1BlockSchema } from "./blocks/timeline-blocks/timeline-1-block";
-import { TimelineRowBlockComponent, timelineRowBlockQuery, timelineRowBlockSchema } from "./blocks/timeline-blocks/timeline-row-block";
-import { Hero3BlockComponent, hero3BlockQuery, hero3BlockSchema } from "./blocks/hero-3-block";
+import { Carousel1BlockComponent, carousel1BlockQuery, carousel1BlockSchema } from "./old-blocks/carousel-block/carousel-1-block";
+import { Carousel2BlockComponent, carousel2BlockQuery, carousel2BlockSchema } from "./old-blocks/carousel-block/carousel-2-block";
+import { Cta1BlockComponent, cta1BlockQuery, cta1BlockSchema } from "./old-blocks/cta-blocks/cta-1-block";
+import { FAQsBlockComponent, faqsBlockQuery, faqsBlockSchema } from "./old-blocks/faqs-block";
+import { FormNewsletterBlockComponent, formNewsletterBlockQuery, formNewsletterBlockSchema } from "./old-blocks/form-blocks/newsletter-block";
+import { GridCardBlockComponent, gridCardBlockQuery, gridCardBlockSchema } from "./old-blocks/grid-block/grid-card-block";
+import { GridPostBlockComponent, gridPostBlockQuery, gridPostBlockSchema } from "./old-blocks/grid-block/grid-post-block";
+import { GridRowBlockComponent, gridRowBlockQuery, gridRowBlockSchema } from "./old-blocks/grid-block/grid-row-block";
+import { PricingCardBlockComponent, pricingCardBlockQuery, pricingCardBlockSchema } from "./old-blocks/grid-block/pricing-card-block";
+import { Hero1BlockComponent, hero1BlockQuery, hero1BlockSchema } from "./old-blocks/hero-1-block";
+import { Hero2BlockComponent, hero2BlockQuery, hero2BlockSchema } from "./old-blocks/hero-2-block";
+import { LogoCloud1BlockComponent, logoCloud1BlockQuery, logoCloud1BlockSchema } from "./old-blocks/logo-cloud-blocks/logo-cloud-1-block";
+import { SectionHeaderBlockComponent, sectionHeaderBlockQuery, sectionHeaderBlockSchema } from "./old-blocks/section-header-block";
+import { SplitCardsItemBlockComponent, splitCardsItemBlockSchema } from "./old-blocks/split-blocks/split-cards-item-block";
+import { SplitCardsListBlockComponent, splitCardsListBlockQuery, splitCardsListBlockSchema } from "./old-blocks/split-blocks/split-cards-list-block";
+import { SplitContentBlockComponent, splitContentBlockQuery, splitContentBlockSchema } from "./old-blocks/split-blocks/split-content-block";
+import { SplitImageBlockComponent, splitImageBlockQuery, splitImageBlockSchema } from "./old-blocks/split-blocks/split-image-block";
+import { SplitInfoItemBlockComponent, splitInfoItemBlockSchema } from "./old-blocks/split-blocks/split-info-item-block";
+import { SplitInfoListBlockComponent, splitInfoListBlockQuery, splitInfoListBlockSchema } from "./old-blocks/split-blocks/split-info-list-block";
+import { SplitRowBlockComponent, splitRowBlockQuery, splitRowBlockSchema } from "./old-blocks/split-blocks/split-row-block";
+import { Timeline1BlockComponent, timeline1BlockSchema } from "./old-blocks/timeline-blocks/timeline-1-block";
+import { TimelineRowBlockComponent, timelineRowBlockQuery, timelineRowBlockSchema } from "./old-blocks/timeline-blocks/timeline-row-block";
+import { Hero3BlockComponent, hero3BlockQuery, hero3BlockSchema } from "./old-blocks/hero-3-block";
 
-import { HeadingAndParagraphCenteredBlockComponent, headingAndParagraphCenteredBlockQuery, headingAndParagraphCenteredBlockSchema } from "./blocks/heading-and-paragraph-centered-block";
-import { ServiceGridBlockComponent, serviceGridBlockQuery, serviceGridBlockSchema } from "./blocks/service-grid-block";
-import { CoverMapBlockComponent, coverMapBlockQuery, coverMapBlockSchema } from "./blocks/cover-map-block";
-import { ContactInfoAndFormBlockComponent, contactInfoAndFormBlockQuery, contactInfoAndFormBlockSchema } from "./blocks/contact-info-and-form-block";
-import { OurValuesBlockComponent, ourValuesBlockQuery, ourValuesBlockSchema } from "./blocks/our-values-block";
-import { CourseSliderBlockComponent, courseSliderBlockQuery, courseSliderBlockSchema } from "./blocks/course-slider-block";
-import { Hero4BlockComponent, hero4BlockQuery, hero4BlockSchema } from "./blocks/hero-4-block";
+import { HeadingAndParagraphCenteredBlockComponent, headingAndParagraphCenteredBlockQuery, headingAndParagraphCenteredBlockSchema } from "./old-blocks/heading-and-paragraph-centered-block";
+import { ServiceGridBlockComponent, serviceGridBlockQuery, serviceGridBlockSchema } from "./old-blocks/service-grid-block";
+import { CoverMapBlockComponent, coverMapBlockQuery, coverMapBlockSchema } from "./old-blocks/cover-map-block";
+import { ContactInfoAndFormBlockComponent, contactInfoAndFormBlockQuery, contactInfoAndFormBlockSchema } from "./old-blocks/contact-info-and-form-block";
+import { OurValuesBlockComponent, ourValuesBlockQuery, ourValuesBlockSchema } from "./old-blocks/our-values-block";
+import { CourseSliderBlockComponent, courseSliderBlockQuery, courseSliderBlockSchema } from "./old-blocks/course-slider-block";
+import { Hero4BlockComponent, hero4BlockQuery, hero4BlockSchema } from "./old-blocks/hero-4-block";
 
-import { Hero5BlockComponent, hero5BlockQuery, hero5BlockSchema } from "./blocks/hero-5-block";
-import { CustomContactFormBlockComponent, customContactFormBlockQuery, customContactFormBlockSchema } from "./blocks/custom-contact-form-block";
-import { TwoColumnBlockComponent, twoColumnBlockQuery, twoColumnBlockSchema } from "./blocks/two-column-block";
-import { SeperatorBlockComponent, seperatorBlockQuery, seperatorBlockSchema } from "./blocks/seperator-block";
+import { Hero5BlockComponent, hero5BlockQuery, hero5BlockSchema } from "./old-blocks/hero-5-block";
+import { CustomContactFormBlockComponent, customContactFormBlockQuery, customContactFormBlockSchema } from "./old-blocks/custom-contact-form-block";
+import { TwoColumnBlockComponent, twoColumnBlockQuery, twoColumnBlockSchema } from "./old-blocks/two-column-block";
+import { SeperatorBlockComponent, seperatorBlockQuery, seperatorBlockSchema } from "./old-blocks/seperator-block";
+import { HeroBlockComponent, heroBlockQuery, heroBlockSchema } from "./blocks/hero-block";
+import { FeaturesBlockComponent, featuresBlockQuery, featuresBlockSchema } from "./blocks/features-block";
+import { StatsSectionBlockComponent, statsSectionBlockQuery, statsSectionBlockSchema } from "./blocks/stats-section-block";
+import { NewsletterSectionBlockComponent, newsletterSectionBlockQuery, newsletterSectionBlockSchema } from "./blocks/newsletter-section-block";
+import { TestimonialsBlockComponent, testimonialsBlockQuery, testimonialsBlockSchema } from "./blocks/testimonials-block";
+import { PricingBlockComponent, pricingBlockQuery, pricingBlockSchema } from "./blocks/pricing-block";
+import { PostsBlockComponent, postsBlockQuery, postsBlockSchema } from "./blocks/posts-block";
+import { CallToActionBlockComponent, callToActionBlockQuery, callToActionBlockSchema } from "./blocks/call-to-action-block";
+import { FaqBlockComponent, faqBlockQuery, faqBlockSchema } from "./blocks/faq-block";
 // ADD VALUE 1 ABOVE
 
 export const BlockDataMap: {
@@ -77,7 +86,16 @@ export const BlockDataMap: {
   "hero-5-block": { component: Hero5BlockComponent, schema: hero5BlockSchema, query: hero5BlockQuery },
   "custom-contact-form-block": { component: CustomContactFormBlockComponent, schema: customContactFormBlockSchema, query: customContactFormBlockQuery },
   "two-column-block": { component: TwoColumnBlockComponent, schema: twoColumnBlockSchema, query: twoColumnBlockQuery },
-"seperator-block": { component: SeperatorBlockComponent, schema: seperatorBlockSchema, query: seperatorBlockQuery },
+  "seperator-block": { component: SeperatorBlockComponent, schema: seperatorBlockSchema, query: seperatorBlockQuery },
+  "hero-block": { component: HeroBlockComponent, schema: heroBlockSchema, query: heroBlockQuery },
+"features-block": { component: FeaturesBlockComponent, schema: featuresBlockSchema, query: featuresBlockQuery },
+"stats-section-block": { component: StatsSectionBlockComponent, schema: statsSectionBlockSchema, query: statsSectionBlockQuery },
+"newsletter-section-block": { component: NewsletterSectionBlockComponent, schema: newsletterSectionBlockSchema, query: newsletterSectionBlockQuery },
+"testimonials-block": { component: TestimonialsBlockComponent, schema: testimonialsBlockSchema, query: testimonialsBlockQuery },
+"pricing-block": { component: PricingBlockComponent, schema: pricingBlockSchema, query: pricingBlockQuery },
+"posts-block": { component: PostsBlockComponent, schema: postsBlockSchema, query: postsBlockQuery },
+"call-to-action-block": { component: CallToActionBlockComponent, schema: callToActionBlockSchema, query: callToActionBlockQuery },
+"faq-block": { component: FaqBlockComponent, schema: faqBlockSchema, query: faqBlockQuery },
   // ADD VALUE 2 ABOVE
 };
 
@@ -176,7 +194,16 @@ blocks[]{
   ${twoColumnBlockQuery},
 
   // Seperator
-  ${seperatorBlockQuery}
+  ${seperatorBlockQuery},
+  ${ heroBlockQuery  },
+${ featuresBlockQuery  },
+${ statsSectionBlockQuery  },
+${ newsletterSectionBlockQuery  },
+${ testimonialsBlockQuery  },
+${ pricingBlockQuery  },
+${ postsBlockQuery  },
+${ callToActionBlockQuery  },
+${ faqBlockQuery  },
   // ADD VALUE 3 ABOVE
 }
 `;

@@ -1,4 +1,4 @@
-import { customContactFormBlockQueryDetails } from "@/features/page-builder-blocks/blocks/custom-contact-form-block/custom-contact-form.block-query";
+import { customContactFormBlockQueryDetails } from "@/features/page-builder-blocks/old-blocks/custom-contact-form-block/custom-contact-form.block-query";
 import blockContentQuery from "@/features/page-builder-blocks/shared/shared-schemas/block-content/block-content.query";
 import { imageQuery } from "@/features/unorganized-components/image-component/image.query";
 import { getAllReferencedFaqsQuery } from "@/sanity/desk-organized-sanity-utilities/faq/faq.document-queries";
