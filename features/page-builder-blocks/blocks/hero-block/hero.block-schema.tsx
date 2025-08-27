@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 import { LayoutTemplate } from "lucide-react";
 
 export default defineType({
@@ -9,8 +9,27 @@ export default defineType({
   icon: LayoutTemplate,
   initialValue: {
     badge: "✨ New: AI-powered workflows",
-    title: "Ship products faster with",
-    highlight: "intelligent automation",
+    title: [
+      {
+        _key: "title-1",
+        _type: "block",
+        style: "h1",
+        children: [
+          {
+            _key: "title-1-span-1",
+            _type: "span",
+            text: "Ship products faster with ",
+            marks: [],
+          },
+          {
+            _key: "title-1-span-2",
+            _type: "span",
+            text: "intelligent automation",
+            marks: ["em"],
+          },
+        ],
+      },
+    ],
     body: [
       {
         _key: "body-1",
@@ -47,14 +66,28 @@ export default defineType({
     defineField({
       name: "title",
       title: "Title",
-      type: "string",
+      type: "array",
+      of: [
+        defineArrayMember({
+          type: "block",
+          styles: [
+            { title: "H1", value: "h1" },
+            { title: "H2", value: "h2" },
+            { title: "H3", value: "h3" },
+            { title: "H4", value: "h4" },
+            { title: "H5", value: "h5" },
+          ],
+          lists: [],
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+            ],
+            annotations: [],
+          },
+        }),
+      ],
       validation: (rule) => rule.required().error("Title is required"),
-    }),
-    defineField({
-      name: "highlight",
-      title: "Title Highlight",
-      type: "string",
-      description: "Optional part of the title to render with primary color",
     }),
     defineField({
       name: "body",

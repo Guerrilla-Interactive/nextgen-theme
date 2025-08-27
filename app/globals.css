@@ -55,9 +55,9 @@
     --card-foreground: var(--photon-white);
     --popover: var(--carbon-fiber);
     --popover-foreground: var(--photon-white);
-    --primary: var(--inferno-orange);
+    --primary: var(--chart-ultraviolet);
     --primary-foreground: var(--photon-white);
-    --secondary: var(--inferno-orange);
+    --secondary: var(--carbon-fiber);
     --secondary-foreground: var(--photon-white);
     --muted: var(--tungsten-gray);
     --muted-foreground: var(--titanium-mist);
@@ -85,14 +85,10 @@
     --sidebar-accent-foreground: var(--photon-white);
     --sidebar-border: var(--tungsten-gray);
     --sidebar-ring: var(--inferno-orange);
-    --primary-bright: var(--inferno-orange-bright);
-    --primary-brighter: var(--inferno-orange-brighter);
-    --primary-dark: var(--inferno-orange-dark);
-    --primary-darker: var(--inferno-orange-darker);
-    --secondary-bright: var(--inferno-orange-bright);
-    --secondary-brighter: var(--inferno-orange-brighter);
-    --secondary-dark: var(--inferno-orange-dark);
-    --secondary-darker: var(--inferno-orange-darker);
+    --primary-bright: var(--chart-ultraviolet-bright);
+    --primary-brighter: var(--chart-ultraviolet-brighter);
+    --primary-dark: var(--chart-ultraviolet-dark);
+    --primary-darker: var(--chart-ultraviolet-darker);
     --accent-bright: var(--inferno-orange-bright);
     --accent-brighter: var(--inferno-orange-brighter);
     --accent-dark: var(--inferno-orange-dark);
@@ -292,157 +288,97 @@
   .interactive:hover { @apply bg-accent text-accent-foreground; }
 }
 
-/* ───────── Typography variables snapshot (weights/sizes/line-heights/letter-spacing) ───────── */
+/* ───────── Typography variables computed from brand roles (ensure effect on h1..h6 etc) ───────── */
 :root{
-  --font-badge: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-blockquote: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Orbitron', 'Exo 2', sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-button: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-caption: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-code: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-p: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-default: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-blockquote: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Orbitron', 'Exo 2', sans-serif;
   --font-display: 'Orbitron', 'Exo 2', sans-serif;
   --font-h1: 'Orbitron', 'Exo 2', sans-serif;
+  --line-height-h1: 1.1;
+  --letter-spacing-h1: 0em;
   --font-h2: 'Orbitron', 'Exo 2', sans-serif;
   --font-h3: 'Orbitron', 'Exo 2', sans-serif;
   --font-h4: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-h5: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-h6: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-input: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-button: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-label: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-input: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-caption: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-badge: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-code: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
   --font-mono: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
-  --font-p: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-serif: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-size-blockquote: 1rem;
-  --font-size-body: 1rem;
-  --font-size-button: .875rem;
-  --font-size-h1: 2.25rem;
-  --font-size-h2: 1.875rem;
-  --font-size-h3: 1.5rem;
-  --font-size-h4: 1.25rem;
-  --font-size-h5: 1.125rem;
-  --font-size-h6: 1rem;
-  --font-size-p: 1rem;
-  --font-weight-a: 400;
-  --font-weight-badge: 400;
-  --font-weight-blockquote: 400;
-  --font-weight-body: 400;
-  --font-weight-bold: 700;
-  --font-weight-button-label: 400;
-  --font-weight-button: 400;
-  --font-weight-caption: 400;
-  --font-weight-code: 400;
-  --font-weight-default: 400;
-  --font-weight-display: 600;
-  --font-weight-extrabold: 800;
-  --font-weight-form-input: 400;
-  --font-weight-h1: 600;
-  --font-weight-h2: 600;
-  --font-weight-h3: 600;
-  --font-weight-h4: 600;
-  --font-weight-h5: 600;
-  --font-weight-h6: 600;
-  --font-weight-heading: 400;
-  --font-weight-hero-title: 600;
-  --font-weight-input: 400;
-  --font-weight-label: 400;
-  --font-weight-li: 400;
-  --font-weight-light: 300;
-  --font-weight-medium: 500;
-  --font-weight-mono: 400;
-  --font-weight-nav-title: 400;
-  --font-weight-normal: 400;
-  --font-weight-p: 400;
-  --font-weight-sans: 400;
-  --font-weight-semibold: 600;
-  --font-weight-serif-body: 400;
-  --font-weight-serif: 400;
-  --letter-spacing-blockquote: 0em;
-  --letter-spacing-body: 0em;
-  --letter-spacing-button: 0em;
-  --letter-spacing-h1: -.025em;
-  --letter-spacing-h2: 0em;
-  --letter-spacing-h3: 0em;
-  --letter-spacing-h4: 0em;
-  --letter-spacing-h5: 0em;
-  --letter-spacing-h6: 0em;
-  --letter-spacing-p: -.025em;
-  --line-height-blockquote: 1.5;
-  --line-height-body: 1.5;
-  --line-height-button: 1.2;
-  --line-height-h1: 1;
-  --line-height-h2: 1.15;
-  --line-height-h3: 1.2;
-  --line-height-h4: 1.25;
-  --line-height-h5: 1.3;
-  --line-height-h6: 1.35;
-  --line-height-p: 1.625;
 }
 
 /* ───────── Typography consumption overrides (ensure effect in consumers) ───────── */
 h1, [data-typography-role="h1"] {
   font-family: var(--font-h1, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h1, 400) !important;
-  font-size: var(--font-size-h1, 2.25rem) !important;
-  line-height: var(--line-height-h1, var(--line-height-heading, var(--line-height-body, 1.1))) !important;
+  font-weight: var(--font-weight-h1, 600) !important;
+  font-size: var(--font-size-h1, 3rem) !important;
+  line-height: var(--line-height-h1, 1.5) !important;
   letter-spacing: var(--letter-spacing-h1, var(--letter-spacing-heading, 0em)) !important;
 }
 h2, [data-typography-role="h2"] {
   font-family: var(--font-h2, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h2, 400) !important;
+  font-weight: var(--font-weight-h2, 600) !important;
   font-size: var(--font-size-h2, 1.875rem) !important;
-  line-height: var(--line-height-h2, var(--line-height-heading, var(--line-height-body, 1.15))) !important;
+  line-height: var(--line-height-h2, 1.15) !important;
   letter-spacing: var(--letter-spacing-h2, var(--letter-spacing-heading, 0em)) !important;
 }
 h3, [data-typography-role="h3"] {
   font-family: var(--font-h3, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h3, 400) !important;
+  font-weight: var(--font-weight-h3, 600) !important;
   font-size: var(--font-size-h3, 1.5rem) !important;
-  line-height: var(--line-height-h3, var(--line-height-heading, var(--line-height-body, 1.2))) !important;
+  line-height: var(--line-height-h3, 1.2) !important;
   letter-spacing: var(--letter-spacing-h3, var(--letter-spacing-heading, 0em)) !important;
 }
 h4, [data-typography-role="h4"] {
   font-family: var(--font-h4, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h4, 400) !important;
+  font-weight: var(--font-weight-h4, 600) !important;
   font-size: var(--font-size-h4, 1.25rem) !important;
-  line-height: var(--line-height-h4, var(--line-height-heading, var(--line-height-body, 1.25))) !important;
+  line-height: var(--line-height-h4, 1.25) !important;
   letter-spacing: var(--letter-spacing-h4, var(--letter-spacing-heading, 0em)) !important;
 }
 h5, [data-typography-role="h5"] {
   font-family: var(--font-h5, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h5, 400) !important;
+  font-weight: var(--font-weight-h5, 600) !important;
   font-size: var(--font-size-h5, 1.125rem) !important;
-  line-height: var(--line-height-h5, var(--line-height-heading, var(--line-height-body, 1.3))) !important;
+  line-height: var(--line-height-h5, 1.3) !important;
   letter-spacing: var(--letter-spacing-h5, var(--letter-spacing-heading, 0em)) !important;
 }
 h6, [data-typography-role="h6"] {
   font-family: var(--font-h6, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h6, 400) !important;
+  font-weight: var(--font-weight-h6, 600) !important;
   font-size: var(--font-size-h6, 1rem) !important;
-  line-height: var(--line-height-h6, var(--line-height-heading, var(--line-height-body, 1.35))) !important;
+  line-height: var(--line-height-h6, 1.35) !important;
   letter-spacing: var(--letter-spacing-h6, var(--letter-spacing-heading, 0em)) !important;
 }
 p, li, [data-typography-role="p"], [data-typography-role="default"] {
   font-family: var(--font-p, var(--font-body, var(--font-body))) !important;
   font-weight: var(--font-weight-p, 400) !important;
   font-size: var(--font-size-p, 1rem) !important;
-  line-height: var(--line-height-p, var(--line-height-heading, var(--line-height-body, 1.5))) !important;
+  line-height: var(--line-height-p, 1.5) !important;
   letter-spacing: var(--letter-spacing-p, var(--letter-spacing-heading, 0em)) !important;
 }
 blockquote, [data-typography-role="blockquote"] {
   font-family: var(--font-blockquote, var(--font-blockquote, var(--font-body))) !important;
   font-weight: var(--font-weight-blockquote, 400) !important;
   font-size: var(--font-size-blockquote, 1rem) !important;
-  line-height: var(--line-height-blockquote, var(--line-height-heading, var(--line-height-body, 1.5))) !important;
+  line-height: var(--line-height-blockquote, 1.5) !important;
   letter-spacing: var(--letter-spacing-blockquote, var(--letter-spacing-heading, 0em)) !important;
 }
 [data-slot="button"], button, [data-typography-role="button"] {
   font-family: var(--font-button, var(--font-button, var(--font-body))) !important;
   font-weight: var(--font-weight-button, 400) !important;
-  font-size: var(--font-size-button, 0.875rem) !important;
-  line-height: var(--line-height-button, var(--line-height-heading, var(--line-height-body, 1.2))) !important;
+  font-size: var(--font-size-button, .875rem) !important;
+  line-height: var(--line-height-button, 1.2) !important;
   letter-spacing: var(--letter-spacing-button, var(--letter-spacing-heading, 0em)) !important;
 }
 

@@ -1,7 +1,5 @@
 import { AnimationType, NavStyleProps, NavThemeConfig } from "../nextgen-desktop-nav.types"
 import { nextgenDesktopNavColorProperties } from "./themes/nextgen-desktop-nav.color-properties";
-import { nextgenDesktopNavDarkConfig } from "./themes/nextgen-desktop-nav.dark-theme"
-import { nextgenDesktopNavLightConfig } from "./themes/nextgen-desktop-nav.light-theme"
 
 /**
  * Default theme configuration

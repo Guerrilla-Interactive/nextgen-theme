@@ -44,9 +44,9 @@ export const nextgenDesktopNavColorProperties = {
           items: {
             background: {
               default: nextgenDesktopNavLightConfig.dropdown.items?.background.default || 'transparent',
-              hover: nextgenDesktopNavLightConfig.dropdown.items?.background.hover || 'rgba(255, 255, 255, 0.1)',
-              focus: nextgenDesktopNavLightConfig.dropdown.items?.background.focus || 'rgba(255, 255, 255, 0.15)',
-              active: nextgenDesktopNavLightConfig.dropdown.items?.background.active || 'rgba(255, 255, 255, 0.15)',
+              hover: nextgenDesktopNavLightConfig.dropdown.items?.background.hover || 'var(--accent-bright)',
+              focus: nextgenDesktopNavLightConfig.dropdown.items?.background.focus || 'var(--accent-brighter)',
+              active: nextgenDesktopNavLightConfig.dropdown.items?.background.active || 'var(--accent)',
             },
             border: {
               default: nextgenDesktopNavLightConfig.dropdown.items?.border?.color?.default || 'transparent',
@@ -103,9 +103,9 @@ export const nextgenDesktopNavColorProperties = {
           items: {
             background: {
               default: nextgenDesktopNavDarkConfig.dropdown.items?.background.default || 'transparent',
-              hover: nextgenDesktopNavDarkConfig.dropdown.items?.background.hover || 'rgba(0, 0, 0, 0.05)',
-              focus: nextgenDesktopNavDarkConfig.dropdown.items?.background.focus || 'rgba(0, 0, 0, 0.10)',
-              active: nextgenDesktopNavDarkConfig.dropdown.items?.background.active || 'rgba(0, 0, 0, 0.10)',
+              hover: nextgenDesktopNavDarkConfig.dropdown.items?.background.hover || 'var(--accent-bright)',
+              focus: nextgenDesktopNavDarkConfig.dropdown.items?.background.focus || 'var(--accent-brighter)',
+              active: nextgenDesktopNavDarkConfig.dropdown.items?.background.active || 'var(--accent)',
             },
             border: {
               default: nextgenDesktopNavDarkConfig.dropdown.items?.border?.color?.default || 'transparent',

@@ -187,17 +187,55 @@ export function ExportTab({ activeThemeKey }: ExportTabProps) {
     const resolveWeightForRole = (role: string): number | undefined => {
       const owner = resolveFontForRole(role);
       if (!owner) return undefined;
-      const weightName = owner.fontWeights?.[role];
+      // Prefer live CSS var if present
+      const cssVarWeight = getCssVar(`font-weight-${role}`);
+      if (cssVarWeight) {
+        const parsed = parseInt(cssVarWeight, 10);
+        if (!Number.isNaN(parsed)) return parsed;
+      }
+      // Role-specific mapping
+      let weightName = owner.fontWeights?.[role];
+      // Fallback: use generic heading mapping for H1–H6 when specific is absent
+      if (!weightName && isHeadingRole(role)) {
+        weightName = owner.fontWeights?.['heading'];
+      }
       if (weightName && owner.weights?.[weightName] !== undefined) return owner.weights[weightName];
       if (owner.weights?.regular !== undefined) return owner.weights.regular;
       const first = owner.weights ? Object.values(owner.weights)[0] : undefined;
-      return typeof first === "number" ? first : undefined;
+      return typeof first === 'number' ? first : undefined;
     };
 
     const resolveSizeForRole = (role: string): string | undefined => {
+      // Prefer live CSS var snapshot so export mirrors runtime precisely
+      const cssVarSize = getCssVar(`font-size-${role}`);
+      if (cssVarSize) return cssVarSize; // e.g. "1.25rem"
       const owner = resolveFontForRole(role);
-      const rem = owner?.fontSizes?.[role];
-      return typeof rem === "number" ? `${rem}rem` : undefined;
+      let remVal = owner?.fontSizes?.[role];
+      // Fallback for headings: use generic heading size if role-specific missing
+      if (remVal === undefined && isHeadingRole(role)) {
+        remVal = owner?.fontSizes?.['heading'];
+      }
+      // Fallback for paragraph-like roles: use body/default mapping
+      if (remVal === undefined && (role === 'p' || role === 'default' || role === 'body')) {
+        remVal = owner?.fontSizes?.['body'] ?? owner?.fontSizes?.['p'] ?? owner?.fontSizes?.['default'];
+      }
+      return typeof remVal === 'number' ? `${remVal}rem` : undefined;
+    };
+
+    const resolveLineHeightForRole = (role: string): string | undefined => {
+      // Prefer role-specific live var
+      const lh = getCssVar(`line-height-${role}`);
+      if (lh) return lh;
+      // Fallback to heading/body vars if present
+      if (isHeadingRole(role)) {
+        const h = getCssVar('line-height-heading');
+        if (h) return h;
+      }
+      const b = getCssVar('line-height-body');
+      if (b) return b;
+      // Finally, role defaults
+      const def = (roleDefaults as any)[role];
+      return def?.lh;
     };
 
     const headingFont =
@@ -242,13 +280,13 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
     } as const;
 
     const computedVarLines: string[] = [];
-    // Heading/body family fallbacks
-    if (!getCssVar('font-heading')) computedVarLines.push(`  --font-heading: ${headingFont};`);
-    if (!getCssVar('font-body')) computedVarLines.push(`  --font-body: ${bodyFont};`);
+    // Always emit concrete heading/body families so export contains literal names (e.g., Orbitron)
+    computedVarLines.push(`  --font-heading: ${headingFont};`);
+    computedVarLines.push(`  --font-body: ${bodyFont};`);
 
     roles.forEach(role => {
       const owner = resolveFontForRole(role);
-      if (owner && !getCssVar(`font-${role}`)) computedVarLines.push(`  --font-${role}: ${owner.family};`);
+      if (owner) computedVarLines.push(`  --font-${role}: ${owner.family};`);
       const w = getCssVar(`font-weight-${role}`);
       const s = getCssVar(`font-size-${role}`);
       const lh = getCssVar(`line-height-${role}`);
@@ -279,32 +317,36 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
       button: '[data-slot="button"], button, [data-typography-role="button"]'
     };
     const finalOverridesLines: string[] = [];
-    const emitRoleRule = (roleKey: string, fallbackSize: string, fallbackWeight: number) => {
+    const emitRoleRule = (roleKey: string) => {
       let sel = (roleSelectors as any)[roleKey];
       if (scopedTypography) sel = `[data-typography-scope] :is(${sel})`;
       if (!sel) return;
       const def = (roleDefaults as any)[roleKey];
       const fallbackLh = (def && def.lh) ? def.lh : '1.2';
+      // Resolve fallback size/weight from live vars or brand so export mirrors runtime
+      const effectiveSize = resolveSizeForRole(roleKey) || (def && def.sz) || '1rem';
+      const effectiveWeight = resolveWeightForRole(roleKey) ?? (def && def.fw) ?? 400;
       finalOverridesLines.push(`${sel} {`);
       // font family
       const familyVar = roleKey === 'p' ? 'body' : (roleKey.match(/^h[1-6]$/) ? 'heading' : roleKey);
       const imp = scopedTypography ? '' : ' !important';
       finalOverridesLines.push(`  font-family: var(--font-${roleKey}, var(--font-${familyVar}, var(--font-body)))${imp};`);
-      finalOverridesLines.push(`  font-weight: var(--font-weight-${roleKey}, ${fallbackWeight})${imp};`);
-      finalOverridesLines.push(`  font-size: var(--font-size-${roleKey}, ${fallbackSize})${imp};`);
-      finalOverridesLines.push(`  line-height: var(--line-height-${roleKey}, var(--line-height-heading, var(--line-height-body, ${fallbackLh})))${imp};`);
+      finalOverridesLines.push(`  font-weight: var(--font-weight-${roleKey}, ${effectiveWeight})${imp};`);
+      finalOverridesLines.push(`  font-size: var(--font-size-${roleKey}, ${effectiveSize})${imp};`);
+      const effectiveLh = resolveLineHeightForRole(roleKey) || fallbackLh;
+      finalOverridesLines.push(`  line-height: var(--line-height-${roleKey}, ${effectiveLh})${imp};`);
       finalOverridesLines.push(`  letter-spacing: var(--letter-spacing-${roleKey}, var(--letter-spacing-heading, 0em))${imp};`);
       finalOverridesLines.push(`}`);
     };
-    emitRoleRule('h1', '2.25rem', resolveWeightForRole('h1') ?? 700);
-    emitRoleRule('h2', '1.875rem', resolveWeightForRole('h2') ?? 700);
-    emitRoleRule('h3', '1.5rem', resolveWeightForRole('h3') ?? 600);
-    emitRoleRule('h4', '1.25rem', resolveWeightForRole('h4') ?? 600);
-    emitRoleRule('h5', '1.125rem', resolveWeightForRole('h5') ?? 600);
-    emitRoleRule('h6', '1rem', resolveWeightForRole('h6') ?? 600);
-    emitRoleRule('p', '1rem', resolveWeightForRole('p') ?? 400);
-    emitRoleRule('blockquote', '1rem', resolveWeightForRole('blockquote') ?? 400);
-    emitRoleRule('button', '0.875rem', resolveWeightForRole('button') ?? 600);
+    emitRoleRule('h1');
+    emitRoleRule('h2');
+    emitRoleRule('h3');
+    emitRoleRule('h4');
+    emitRoleRule('h5');
+    emitRoleRule('h6');
+    emitRoleRule('p');
+    emitRoleRule('blockquote');
+    emitRoleRule('button');
     const finalOverrides = finalOverridesLines.length
       ? `/* ───────── Typography consumption overrides (ensure effect in consumers) ───────── */\n${finalOverridesLines.join('\n')}\n`
       : '';
@@ -327,8 +369,9 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
 
     const fullCssRaw = [
       css,
-      typographyComputedCss,
+      // Place snapshot first, then our computed concrete values so family names appear explicitly
       typographySnapshot,
+      typographyComputedCss,
       finalOverrides,
       (includeAnimations && animationCss)
         ? `/* ───────────────── Animations (unscoped export: ${brand.animationConfig!.preset.name}) ───────────────── */\n${animationCss}`
@@ -399,7 +442,122 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
     // Tailwind v4 CSS preview = same as full globals
     const tailwindConfig = fullCss;
 
-    return { css: fullCss, jsonConfig: JSON.stringify(jsonConfig, null, 2), tailwindConfig };
+    // Generate load-fonts.tsx content based on active theme fonts
+    const primaryName = (family?: string) => {
+      if (!family) return '';
+      const first = family.split(',')[0].trim();
+      return first.replace(/^['\"]/g, '').replace(/['\"]/g, '');
+    };
+    const googleImportMap: Record<string, string> = {
+      'Inter': 'Inter',
+      'Orbitron': 'Orbitron',
+      'Fira Code': 'Fira_Code',
+      'Roboto Mono': 'Roboto_Mono',
+      'Tomorrow': 'Tomorrow',
+      'Exo 2': 'Exo_2',
+      'Manrope': 'Manrope',
+      'Space Grotesk': 'Space_Grotesk',
+      'Noto Sans': 'Noto_Sans',
+      'Noto Serif': 'Noto_Serif',
+      'Nunito Sans': 'Nunito_Sans',
+      'Open Sans': 'Open_Sans',
+      'PT Serif': 'PT_Serif',
+      'PT Sans': 'PT_Sans',
+      'Source Code Pro': 'Source_Code_Pro',
+      'Source Sans 3': 'Source_Sans_3',
+      'DM Sans': 'DM_Sans',
+      'DM Serif Display': 'DM_Serif_Display',
+      'Poppins': 'Poppins',
+      'Lato': 'Lato',
+      'Montserrat': 'Montserrat',
+      'Work Sans': 'Work_Sans',
+      'IBM Plex Mono': 'IBM_Plex_Mono',
+      'IBM Plex Sans': 'IBM_Plex_Sans',
+      'JetBrains Mono': 'JetBrains_Mono'
+    };
+    const guessGoogleImportName = (fam: string): string => {
+      if (googleImportMap[fam]) return googleImportMap[fam];
+      const candidate = fam.replace(/\s+/g, '_').replace(/[^A-Za-z0-9_]/g, '');
+      return candidate || 'Inter';
+    };
+    const findFontByAnyRole = (roleNames: string[]): FontToken | undefined => {
+      for (const r of roleNames) {
+        const f = brand.fonts.find(ff => (ff.roles || []).includes(r));
+        if (f) return f;
+      }
+      return undefined;
+    };
+    const headingOwner = findFontByAnyRole(['heading','display','h1','h2','h3','h4','h5','h6']) || resolveFontForRole('heading') || resolveFontForRole('display') || resolveFontForRole('body');
+    const bodyOwner = findFontByAnyRole(['body','sans','default','p']) || resolveFontForRole('body') || resolveFontForRole('sans') || brand.fonts[0];
+    const monoOwner = findFontByAnyRole(['mono','code']) || resolveFontForRole('mono') || resolveFontForRole('code') || bodyOwner;
+    const owners = [
+      { key: 'heading', owner: headingOwner, cssVar: '--font-heading' },
+      { key: 'body', owner: bodyOwner, cssVar: '--font-body' },
+      { key: 'mono', owner: monoOwner, cssVar: '--font-mono' }
+    ];
+    const imports: Array<{ importName: string; varName: string; weights: string[]; roleKey: string; cssVar: string }> = [];
+    const allowedWeightsOverrides: Record<string, string[]> = {
+      Orbitron: ['400','500','700','900'],
+      Inter: ['100','200','300','400','500','600','700','800','900'],
+      Fira_Code: ['300','400','500','600','700'],
+      Roboto_Mono: ['100','200','300','400','500','600','700'],
+      Exo_2: ['100','200','300','400','500','600','700','800','900'],
+      Tomorrow: ['100','200','300','400','500','600','700','800','900'],
+      Manrope: ['200','300','400','500','600','700','800'],
+      Space_Grotesk: ['300','400','500','600','700'],
+      JetBrains_Mono: ['100','200','300','400','500','600','700','800']
+    };
+    owners.forEach(({ key, owner, cssVar }) => {
+      const famName = primaryName(owner?.family || '');
+      const importName = guessGoogleImportName(famName);
+      const varName = `${key}Font`;
+      let weights = owner && owner.weights ? Array.from(new Set(Object.values(owner.weights)
+        .filter(v => typeof v === 'number') as number[])).sort((a,b)=>a-b).map(n => String(n)) : ['400'];
+      const allowed = allowedWeightsOverrides[importName];
+      if (allowed) weights = weights.filter(w => allowed.includes(w));
+      if (weights.length === 0) weights = allowed ?? ['400'];
+      imports.push({ importName, varName, weights, roleKey: key, cssVar });
+    });
+    const uniqueImports = Array.from(new Map(imports.map(i => [i.importName, i])).keys());
+    const importLine = `import { ${uniqueImports.join(', ')} } from "next/font/google";`;
+    const instanceLines = imports.map(i => `const ${i.varName} = ${i.importName}({\n  subsets: ["latin"],\n  weight: [${i.weights.map(w=>`"${w}"`).join(', ')}],\n  variable: "${i.cssVar}",\n});`).join('\n\n');
+    const exportMap = `export const fonts = {\n  heading: ${imports.find(i=>i.roleKey==='heading')!.varName}.variable,\n  body: ${imports.find(i=>i.roleKey==='body')!.varName}.variable,\n  mono: ${imports.find(i=>i.roleKey==='mono')!.varName}.variable\n};`;
+    const htmlClass = `export const htmlClassName = \`${imports.map(i => `\${${i.varName}.variable}`).join(' ')}\`;`;
+    const loadFontsTsx = `${importLine}\n\n${instanceLines}\n\n${exportMap}\n\n${htmlClass}\n`;
+
+    // Build Nextgen Command JSON to create globals.css and load-fonts.tsx
+    const unique = `${activeThemeKey}-${Date.now()}`;
+    const fileNode = (name: string, code: string) => ({
+      _key: `${unique}-${name}`,
+      _type: 'treeNode',
+      id: `file-${unique}-${name}`,
+      name,
+      type: 'file',
+      code,
+      isIndexer: false,
+      children: [] as any[]
+    });
+    const nextgenCommandObj = {
+      _id: `cmd-${unique}`,
+      _type: 'command',
+      title: `Add ${getThemeDisplayName(activeThemeKey)} theme assets`,
+      slug: 'add-nextgen-theme-assets',
+      filePaths: [
+        {
+          _key: `group-${unique}`,
+          _type: 'filePathGroup',
+          id: `path-${unique}`,
+          path: '/app',
+          nodes: [
+            fileNode('globals.css', fullCss),
+            fileNode('load-fonts.tsx', loadFontsTsx)
+          ]
+        }
+      ]
+    } as const;
+    const nextgenCommand = JSON.stringify(nextgenCommandObj, null, 2);
+
+    return { css: fullCss, jsonConfig: JSON.stringify(jsonConfig, null, 2), tailwindConfig, nextgenCommand };
   };
 
   const exports = generateExports();
@@ -581,6 +739,37 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
                   variant="ghost"
                   size="sm"
                   onClick={() => handleDownload(exports.jsonConfig, `${activeThemeKey}-config.json`, "application/json")}
+                  className="h-7 px-2.5 text-xs"
+                >
+                  <Download className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Nextgen Command Export */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <Package className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium">Nextgen Command</p>
+                  <p className="text-xs text-muted-foreground">Creates app/globals.css and app/load-fonts.tsx</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 ml-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleCopy(exports.nextgenCommand, 'nextgen')}
+                  className="h-7 px-2.5 text-xs"
+                >
+                  {copiedItems.nextgen ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDownload(exports.nextgenCommand, `${activeThemeKey}-nextgen-command.json`, 'application/json')}
                   className="h-7 px-2.5 text-xs"
                 >
                   <Download className="w-3 h-3" />

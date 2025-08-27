@@ -27,7 +27,7 @@ export default function Header(props: any) {
           iconLoaded ? "opacity-100" : "opacity-0"
         )}
       >
-        <div className={cn(`container`, sessionLoaded ? "duration-600" : "duration-0")}>
+        <div className={cn(`container mx-auto`, sessionLoaded ? "duration-600" : "duration-0")}>
           {props.enableTopBar && (
             <TopBar 
               topBar={props.topBar || {}} 

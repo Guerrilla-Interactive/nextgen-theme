@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/features/unorganized-components/ui/card";
 import PortableTextRenderer from "@/features/unorganized-components/portable-text-renderer";
 import { cn } from "@/features/unorganized-utils/utils";
 import { Icon } from "@iconify/react";
+import { stegaClean } from "next-sanity";
 
 
 type FeatureCard = {
@@ -24,6 +25,7 @@ type FeatureCardsProps = Partial<{
 
 export default function FeaturesBlockComponent(props: FeatureCardsProps) {
   const { layoutVariant = "cards", title, description, cards } = props;
+  const cleanedLayoutVariant = (stegaClean(layoutVariant) as string) || "cards";
 
   const colorToClasses: Record<string, { iconBg: string; iconText: string; dot: string }> = {
     primary: { iconBg: "bg-primary/10", iconText: "text-primary", dot: "bg-primary" },
@@ -51,12 +53,12 @@ export default function FeaturesBlockComponent(props: FeatureCardsProps) {
       )}
 
       {cards && cards.length > 0 && (
-        layoutVariant === "simple" ? (
+        cleanedLayoutVariant === "simple" ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {cards.map((card, idx) => (
               <div key={idx} className="text-center">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 bg-primary/10">
-                  <Icon icon={card.icon?.name || "mdi:flash"} width="32" height="32" className="text-primary" />
+                  <Icon icon={(stegaClean(card.icon?.name) as string) || "mdi:flash"} width="32" height="32" className="text-primary" />
                 </div>
                 {card.title && <h3 className="mb-3">{card.title}</h3>}
                 {card.body && (
@@ -68,10 +70,11 @@ export default function FeaturesBlockComponent(props: FeatureCardsProps) {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {cards.map((card, idx) => {
-              const palette = colorToClasses[card.color || "primary"];
+              const colorKey = (stegaClean(card.color) as string) || "primary";
+              const palette = colorToClasses[colorKey] ?? colorToClasses["primary"];
               return (
                 <Card key={idx} className="p-8 border-0 shadow-lg hover:shadow-xl transition-shadow" data-slot="card">
-                  <IconCell iconName={card.icon?.name} palette={palette} />
+                  <IconCell iconName={(stegaClean(card.icon?.name) as string) || undefined} palette={palette} />
                   {card.title && <h3 className="font-semibold mb-4">{card.title}</h3>}
                   {card.body && (
                     <p className="text-muted-foreground leading-relaxed mb-6">{card.body}</p>

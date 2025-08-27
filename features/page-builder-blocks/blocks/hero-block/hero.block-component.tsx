@@ -17,18 +17,32 @@ type HeroLink = {
 
 type HeroProps = Partial<{
   badge: string;
-  title: string;
-  highlight?: string;
+  title: any;
   body: any;
   links: HeroLink[];
   bullets: string[];
 }>;
 
 export default function HeroBlockComponent(props: HeroProps) {
-  const { badge, title, highlight, body, links, bullets } = props;
+  const { badge, title, body, links, bullets } = props;
+
+  const normalizedTitle = Array.isArray(title)
+    ? title
+    : typeof title === "string"
+    ? [
+        {
+          _key: "title-fallback-1",
+          _type: "block",
+          style: "normal",
+          children: [
+            { _key: "title-fallback-span-1", _type: "span", text: title, marks: [] },
+          ],
+        },
+      ]
+    : undefined;
 
   return (
-    <section className="flex flex-col items-center space-y-8 py-20 text-center">
+    <section className="flex flex-col items-center space-y-8 py-20 text-center pt-36">
       {badge && (
         <div className="flex items-center justify-center space-x-2 mb-2">
           <Badge variant="outline" className="border-primary/20 bg-primary/10 text-primary">
@@ -37,12 +51,9 @@ export default function HeroBlockComponent(props: HeroProps) {
         </div>
       )}
 
-      {(title || highlight) && (
-        <h1 className="font-bold text-center leading-tight tracking-tight max-w-4xl text-4xl md:text-5xl lg:text-6xl">
-          {title}
-          {highlight && (
-            <span className="text-primary">{" "}{highlight}</span>
-          )}
+      {normalizedTitle && (
+        <h1 className="font-bold text-center leading-tight tracking-tight max-w-4xl">
+          {normalizedTitle && <PortableTextRenderer value={normalizedTitle} />}
         </h1>
       )}
 

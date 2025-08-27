@@ -9,48 +9,48 @@ export const nextgenDesktopNavLightConfig = {
     // Main navigation colors
     background: {
         default: 'transparent',
-        hover: 'rgba(255, 255, 255, 0.05)',
-        focus: 'rgba(255, 255, 255, 0.10)',
-        active: 'rgba(255, 255, 255, 0.10)',
+        hover: 'var(--accent-bright)',
+        focus: 'var(--accent-brighter)',
+        active: 'var(--accent)',
     },
     text: {
         color: {
-            default: 'rgba(255, 255, 255, 1)',
-            hover: 'rgba(255, 255, 255, 1)',
-            focus: 'rgba(255, 255, 255, 1',
-            active: 'rgba(255, 255, 255, 0.9)',
+            default: 'var(--foreground)',
+            hover: 'var(--accent-foreground)',
+            focus: 'var(--accent-foreground)',
+            active: 'var(--accent-foreground)',
         }
     },
     border: {
         color: {
-            default: 'transparent',
-            hover: 'rgba(255, 255, 255, 0.1)',
-            focus: 'rgba(255, 255, 255, 0.2)',
-            active: 'rgba(255, 255, 255, 0.3)',
+            default: 'var(--border)',
+            hover: 'var(--ring)',
+            focus: 'var(--ring-bright)',
+            active: 'var(--ring-darker)',
         }
     },
     // Dropdown colors
     dropdown: {
         background: {
-            default: '#000000',
-            hover: 'rgba(255, 255, 255, 0.05)',
-            focus: 'rgba(255, 255, 255, 0.10)',
-            active: 'rgba(255, 255, 255, 0.10)',
+            default: 'var(--card)',
+            hover: 'var(--card)',
+            focus: 'var(--card)',
+            active: 'var(--card)',
         },
         text: {
             color: {
-                default: '#ffffff',
-                hover: 'rgba(255, 255, 255, 1)',
-                focus: 'rgba(255, 255, 255, 1',
-                active: 'rgba(255, 255, 255, 0.9)',
+                default: 'var(--card-foreground)',
+                hover: 'var(--accent-foreground)',
+                focus: 'var(--accent-foreground)',
+                active: 'var(--accent-foreground)',
             }
         },
         border: {
             color: {
-                default: 'rgba(255, 255, 255, 0.1)',
-                hover: 'rgba(255, 255, 255, 0.2)',
-                focus: 'rgba(255, 255, 255, 0.3)',
-                active: 'rgba(255, 255, 255, 0.4)',
+                default: 'var(--border)',
+                hover: 'var(--ring)',
+                focus: 'var(--ring-bright)',
+                active: 'var(--ring-darker)',
             }
         },
         descriptionColor: 'text-muted-foreground',
@@ -61,16 +61,16 @@ export const nextgenDesktopNavLightConfig = {
         items: {
             background: {
                 default: 'transparent',
-                hover: 'rgba(255, 255, 255, 0.1)',
-                focus: 'rgba(255, 255, 255, 0.15)',
-                active: 'rgba(255, 255, 255, 0.15)',
+                hover: 'var(--accent-bright)',
+                focus: 'var(--accent-brighter)',
+                active: 'var(--accent)',
             },
             border: {
                 color: {
                     default: 'transparent',
-                    hover: 'rgba(255, 255, 255, 0.1)',
-                    focus: 'rgba(255, 255, 255, 0.2)',
-                    active: 'rgba(255, 255, 255, 0.2)',
+                    hover: 'var(--border)',
+                    focus: 'var(--ring)',
+                    active: 'var(--ring-dark)',
                 }
             }
         }

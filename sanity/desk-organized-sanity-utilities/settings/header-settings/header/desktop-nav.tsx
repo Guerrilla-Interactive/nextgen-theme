@@ -9,8 +9,8 @@ import {
   NextgenDesktopNavBridge,
   NextgenDesktopNavContent,
   NextgenDesktopNavDropdownItem,
-  type NavStyleProps,
 } from "./nextgen-desktop-nav/nextgen-desktop-nav.component";
+import { type NavStyleProps } from "./nextgen-desktop-nav/nextgen-desktop-nav.types";
 import { cn } from "@/features/unorganized-utils/utils";
 import { useRouter } from "next/navigation";
 

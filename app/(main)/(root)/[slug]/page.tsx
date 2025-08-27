@@ -4,6 +4,7 @@ import { fetchSanityPageBySlug, fetchSanityPagesStaticParams } from "./_page-slu
 
 import { Blocks } from "@/features/page-builder-blocks/block-component-exporter";
 import { UseClientConfigs } from "./_page-slug-core-utilities/use-client-configs";
+import HomepageExample from "../../blueprint/previews/HomepageExample";
 
 // Add ISR with revalidation every 30 seconds
 export const revalidate = 30;
@@ -51,6 +52,9 @@ export default async function Page(props: {
 
 
   <UseClientConfigs navigationTextColor={page?.navigationSettings?.navigationTextColor} />
+  <div className="container mx-auto">
   <Blocks blocks={page?.blocks ?? []} />
+  </div>
+  
   </>;
 }

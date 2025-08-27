@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { stegaClean } from "next-sanity";
 import { Button } from "@/features/unorganized-components/ui/button";
 import PortableTextRenderer from "@/features/unorganized-components/portable-text-renderer";
 
@@ -28,13 +30,37 @@ export default function CallToActionBlockComponent(props: CallToActionProps) {
         )}
         <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
           {primaryCta?.title && (
-            <Button size={(primaryCta.size as any) || "lg"} className="px-8 py-6" variant={primaryCta.buttonVariant as any} data-slot="button">
-              {primaryCta.title}
+            <Button
+              size={(stegaClean(primaryCta.size) as any) || "lg"}
+              className="px-8 py-6"
+              variant={stegaClean(primaryCta.buttonVariant) as any}
+              data-slot="button"
+              asChild
+           >
+              <Link
+                href={(primaryCta.href || "#") as string}
+                target={primaryCta.target ? "_blank" : undefined}
+                rel={primaryCta.target ? "noopener" : undefined}
+              >
+                {primaryCta.title}
+              </Link>
             </Button>
           )}
           {secondaryCta?.title && (
-            <Button size={(secondaryCta.size as any) || "lg"} className="px-8 py-6" variant={(secondaryCta.buttonVariant as any) || "outline"} data-slot="button">
-              {secondaryCta.title}
+            <Button
+              size={(stegaClean(secondaryCta.size) as any) || "lg"}
+              className="px-8 py-6"
+              variant={(stegaClean(secondaryCta.buttonVariant) as any) || "outline"}
+              data-slot="button"
+              asChild
+            >
+              <Link
+                href={(secondaryCta.href || "#") as string}
+                target={secondaryCta.target ? "_blank" : undefined}
+                rel={secondaryCta.target ? "noopener" : undefined}
+              >
+                {secondaryCta.title}
+              </Link>
             </Button>
           )}
         </div>

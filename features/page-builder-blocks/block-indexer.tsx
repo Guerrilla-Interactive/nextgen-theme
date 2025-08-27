@@ -44,6 +44,7 @@ import { PricingBlockComponent, pricingBlockQuery, pricingBlockSchema } from "./
 import { PostsBlockComponent, postsBlockQuery, postsBlockSchema } from "./blocks/posts-block";
 import { CallToActionBlockComponent, callToActionBlockQuery, callToActionBlockSchema } from "./blocks/call-to-action-block";
 import { FaqBlockComponent, faqBlockQuery, faqBlockSchema } from "./blocks/faq-block";
+import { VideoSectionBlockComponent, videoSectionBlockQuery, videoSectionBlockSchema } from "./blocks/video-section-block";
 // ADD VALUE 1 ABOVE
 
 export const BlockDataMap: {
@@ -96,6 +97,7 @@ export const BlockDataMap: {
 "posts-block": { component: PostsBlockComponent, schema: postsBlockSchema, query: postsBlockQuery },
 "call-to-action-block": { component: CallToActionBlockComponent, schema: callToActionBlockSchema, query: callToActionBlockQuery },
 "faq-block": { component: FaqBlockComponent, schema: faqBlockSchema, query: faqBlockQuery },
+"video-section-block": { component: VideoSectionBlockComponent, schema: videoSectionBlockSchema, query: videoSectionBlockQuery },
   // ADD VALUE 2 ABOVE
 };
 
@@ -204,6 +206,7 @@ ${ pricingBlockQuery  },
 ${ postsBlockQuery  },
 ${ callToActionBlockQuery  },
 ${ faqBlockQuery  },
+${ videoSectionBlockQuery  },
   // ADD VALUE 3 ABOVE
 }
 `;
