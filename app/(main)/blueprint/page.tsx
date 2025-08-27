@@ -3,10 +3,6 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { Button } from "@/features/unorganized-components/ui/button";
 import { Toggle } from "@/features/unorganized-components/ui/toggle";
-import HomepagePreview from "./previews/HomepagePreview";
-import GalleryPreview from "./previews/GalleryPreview";
-import ArtistPreview from "./previews/ArtistPreview";
-import ComponentPreview from "./previews/ComponentPreview";
 import { BrandProvider, useBrand, UIProvider, useUIContext } from "./BrandContext";
 import { themes } from "./brandguide";
 import {
@@ -29,7 +25,6 @@ import { ExportTab } from "./tabs/export-tab.component";
 import { ColorsTab } from "./tabs/colors-tab.component";
 import { TypographyTab } from "./tabs/typography-tab.component";
 import { InteractionTab } from "./tabs/interaction-tab.component";
-import HomepageExample from "./previews/HomepageExample";
 import HomepageExampleTokenized from "./previews/HomepageExampleTokenized";
 
 // Cache of Google font families already requested
