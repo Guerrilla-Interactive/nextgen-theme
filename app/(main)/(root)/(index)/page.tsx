@@ -4,12 +4,9 @@ import { Blocks } from '@/features/page-builder-blocks/block-component-exporter'
 import { generatePageMetadata } from '@/features/unorganized-utils/metadata';
 import { notFound } from 'next/navigation';
 import { UseClientConfigs } from '../[slug]/_page-slug-core-utilities/use-client-configs';
+import FullPageBackground from '@/features/unorganized-components/magic-background/full-page-background';
 
-import { Card, CardDescription, CardContent, CardFooter, CardHeader, CardTitle } from '@/features/unorganized-components/ui/card';
-import { Button } from '@/features/unorganized-components/ui/button';
-import PostCard from '@/features/unorganized-components/ui/post-card';
-import { AllComponentsShowcaseLite } from '../../blueprint/components/component-map/all-components-showcase-lite.component';
-import HomepageExample from '../../blueprint/previews/HomepageExample';
+
 // Add ISR with revalidation every 30 seconds
 export const revalidate = 30;
 
@@ -33,16 +30,9 @@ export default async function Page() {
   return (
     <>
     {/* @ts-ignore */}
+    <FullPageBackground />
     <UseClientConfigs navigationTextColor={frontPageData?.navigationSettings?.navigationTextColor} />
-    {/* <Blocks blocks={frontPageData?.blocks} /> */}
-    <div className="container mx-auto">
-    <HomepageExample />
-    </div>
-
-
-
-                <AllComponentsShowcaseLite key={Date.now()}/>
-                
+    <Blocks blocks={frontPageData?.blocks} />  
        
     </>
   )

@@ -670,12 +670,16 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
 
   // Generate swatches for color picker - use original brand colors order to preserve insertion order
   // Show all colors always - no filtering based on chart roles
-  const swatches = useMemo(() =>
-    brand?.colors?.map(c => ({
-      name: c.variableName,
-      displayName: c.name,
-      color: formatHex(c.oklch as string) || '#000000'
-    })).filter(s => s.color !== '#000000') || [], [brand?.colors]);
+  const swatches = useMemo(() => {
+    if (!brand?.colors) return [] as { name: string; displayName?: string; color: string }[];
+    const items = brand.colors
+      .map(c => {
+        const hex = formatHex(c.oklch as string);
+        return hex ? { name: c.variableName, displayName: c.name, color: hex } : null;
+      })
+      .filter(Boolean) as { name: string; displayName?: string; color: string }[];
+    return items;
+  }, [brand?.colors]);
 
   // Chart swatches are now the same as regular swatches since we show all colors
   const chartSwatches = swatches;
@@ -694,6 +698,12 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
     if (livePreviewColor) return livePreviewColor;
     return getCurrentColorForRole(selectedRole);
   }, [livePreviewColor, selectedRole, getCurrentColorForRole]);
+
+  // Get current OKLCH value for the selected role (for easy copy)
+  const currentOklchValue = useMemo(() => {
+    const assignedColor = brand?.colors?.find(c => c.roles?.includes(selectedRole));
+    return (assignedColor?.oklch as string) || 'oklch(0 0 0)';
+  }, [brand, selectedRole]);
 
   // Initialize selectedSwatch when selectedRole changes
   useEffect(() => {
@@ -1150,20 +1160,11 @@ export function ColorsTab({ activeThemeKey }: ColorsTabProps) {
               </div>
             )}
             <div className="flex-1">
-              <p className="mb-2 text-xs font-medium text-muted-foreground">Hex Value</p>
+              <p className="mb-2 text-xs font-medium text-muted-foreground">OKLCH Value</p>
               <Input
                 className="h-8 px-3 py-1 text-sm font-mono"
-                maxLength={7}
-                onChange={(e) => handleHexInputChange(e.target.value)}
-                onBlur={() => handleHexSubmit(currentColorValue)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleHexSubmit(currentColorValue);
-                    e.currentTarget.blur();
-                  }
-                }}
-                value={currentColorValue}
-                placeholder="#RRGGBB"
+                value={currentOklchValue}
+                readOnly
               />
             </div>
           </div>

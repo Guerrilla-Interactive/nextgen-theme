@@ -20,7 +20,7 @@ export default function CallToActionBlockComponent(props: CallToActionProps) {
   const { heading, body, primaryCta, secondaryCta, footerNote } = props;
 
   return (
-    <section className="py-20">
+    <section className="relative z-10 py-20">
       <div className="text-center max-w-4xl mx-auto">
         {heading && <h2 className="font-bold mb-6">{heading}</h2>}
         {body && (

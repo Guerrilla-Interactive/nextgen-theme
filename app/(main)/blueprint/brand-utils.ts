@@ -151,6 +151,8 @@ export interface ThemeCssVars {
   "shadow-md"?: string;
   "shadow-lg"?: string;
   "shadow-xl"?: string;
+  "shadow-2xs"?: string;
+  "shadow-2xl"?: string;
   "border-width-default"?: string;
   "border-style-default"?: string;
   "default-card-border"?: string;
@@ -347,11 +349,13 @@ export const createThemeCssVars = (
     "spacing-md": style.spacing.spacingMd,
     "spacing-lg": style.spacing.spacingLg,
     "spacing-xl": style.spacing.spacingXl,
+    "shadow-2xs": (otherVars as any)["shadow-2xs"],
     "shadow-xs": otherVars.shadowXs,
     "shadow-sm": otherVars.shadowSm,
     "shadow-md": otherVars.shadowMd,
     "shadow-lg": otherVars.shadowLg,
     "shadow-xl": otherVars.shadowXl,
+    "shadow-2xl": (otherVars as any)["shadow-2xl"],
     "border-width-default": otherVars.borderWidthDefault,
     "border-style-default": otherVars.borderStyleDefault,
     "default-card-border": otherVars.defaultCardBorder,
@@ -368,6 +372,20 @@ export const createThemeCssVars = (
 
   // Already set success and input-foreground above with fallbacks
   return cssVars;
+};
+
+/* ────────────────────────────────────────────────────────────
+   Radius mapping from SevenAxis cornerStyle
+   ──────────────────────────────────────────────────────────── */
+export const mapCornerStyleToRadius = (cornerStyle?: SevenAxisCode['cornerStyle']): string | undefined => {
+  switch (cornerStyle) {
+    case 'sharp': return '0px';
+    case 'slightly-rounded': return '0.375rem'; // 6px
+    case 'rounded': return '0.75rem'; // 12px
+    case 'very-rounded': return '1.5rem'; // 24px
+    case 'pill': return '9999px';
+    default: return undefined;
+  }
 };
 
 /* ────────────────────────────────────────────────────────────
@@ -499,8 +517,9 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
   add(`--font-sans: ${brand.fonts.find(f=>f.roles.includes('sans'))?.family ?? "ui-sans-serif, system-ui, -apple-system, 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial"};`, 2);
   add(`--font-serif: ${brand.fonts.find(f=>f.roles.includes('serif'))?.family ?? "ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif"};`, 2);
   add(`--font-mono: ${brand.fonts.find(f=>f.roles.includes('mono'))?.family ?? "ui-monospace, 'Fira Code', 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas"};`, 2);
-  add(`--radius: ${brand.themeCssVariables.radius ?? '0.75rem'};`, 2);
-  ['shadow-xs','shadow-sm','shadow-md','shadow-lg','shadow-xl'].forEach(sh => {
+  const radiusFromCorner = mapCornerStyleToRadius(brand.sevenAxisCode?.cornerStyle);
+  add(`--radius: ${brand.themeCssVariables.radius ?? radiusFromCorner ?? '0.75rem'};`, 2);
+  ['shadow-2xs','shadow-xs','shadow-sm','shadow-md','shadow-lg','shadow-xl','shadow-2xl'].forEach(sh => {
     const v = (brand.themeCssVariables as any)[sh];
     if (v) add(`--${sh}: ${v};`, 2);
   });
@@ -530,7 +549,7 @@ export const generateGlobalCssV2 = (brand: Brand, options?: {
   add('h1,h2,h3,h4 { @apply text-balance; }', 1);
   add('p { @apply leading-7; }', 1);
   add('p + p { @apply mt-4; }', 1);
-  add(':where(button,[role="button"],input,select,textarea,a,summary):focus-visible {', 1);
+  add(':is(button,[role="button"],input,select,textarea,a,summary):focus-visible {', 1);
   add('outline: none;', 2);
   add('box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);', 2);
   add('border-radius: var(--radius);', 2);
@@ -1020,6 +1039,10 @@ export const generateAnimationCss = (animationConfig: ThemeAnimationConfig): str
   if (preset.input) generateComponentCss('input', preset.input);
   if (preset.card) generateComponentCss('card', preset.card);
 
+  // Remove !important in general
+  try {
+    css = css.replace(/\s*!important\b/g, '');
+  } catch {}
   return css;
 };
 

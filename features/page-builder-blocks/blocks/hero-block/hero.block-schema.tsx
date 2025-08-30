@@ -5,7 +5,7 @@ export default defineType({
   name: "hero-block",
   type: "object",
   title: "Hero",
-  description: "Centered hero with badge, title highlight, body and two CTAs",
+  description: "Centered hero with badge, title highlight, body and optional CTAs",
   icon: LayoutTemplate,
   initialValue: {
     badge: "✨ New: AI-powered workflows",
@@ -108,8 +108,8 @@ export default defineType({
           defineField({ name: "size", type: "string", options: { list: ["default", "sm", "lg"] }, initialValue: "lg" }),
         ]
       }],
-      validation: (rule) => rule.min(2).max(2).error("Provide exactly two CTAs"),
-      description: "Exactly two CTAs",
+      validation: (rule) => rule.min(0),
+      description: "Zero or more CTAs",
     }),
     defineField({
       name: "bullets",

@@ -5,6 +5,7 @@ import Link from "next/link"
 import { cn } from "@/features/unorganized-utils/utils"
 import { KeyboardEvent } from "react"
 import { NextgenDesktopNavContentProps, NextgenDesktopNavDropdownItemProps, NextgenDesktopNavItemProps, NextgenDesktopNavLinkProps, NextgenDesktopNavProps, NextgenDesktopNavTriggerProps } from "./nextgen-desktop-nav.types"
+import { stegaClean } from "next-sanity"
 
 
 const NavContext = React.createContext<{
@@ -33,6 +34,7 @@ function NextgenDesktopNav({
   ...props 
 }: NextgenDesktopNavProps) {
   const [activeId, setActiveId] = React.useState<string | null>(null)
+  const cleanedJustify = (stegaClean(justifyContent) as typeof justifyContent) || undefined
 
   return (
     <NavContext.Provider value={{ activeId, setActiveId }}>
@@ -40,7 +42,7 @@ function NextgenDesktopNav({
         className={cn(
           "hidden md:flex items-center w-full gap-4 h-12 max-w-7xl",
           "text-sm font-medium",
-          justifyContent,
+          cleanedJustify,
           className
         )} 
         style={{
@@ -114,8 +116,10 @@ function NextgenDesktopNavItem({ id, className, children, ...props }: NextgenDes
 
 
 function NextgenDesktopNavLink({ external, className, children, href, ...props }: NextgenDesktopNavLinkProps) {
+  const cleanedExternal = !!stegaClean(external)
+  const cleanedHref = (stegaClean(href) as typeof href) || href
   const sharedClassNames = cn(
-    "flex items-center rounded px-3 py-2",
+    "flex items-center rounded px-3 py-2 text-sm font-medium",
     "transition-colors duration-200 ease-in-out",
     "text-[var(--foreground)]",
     "hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]",
@@ -124,14 +128,14 @@ function NextgenDesktopNavLink({ external, className, children, href, ...props }
     className
   )
 
-  if (external) {
+  if (cleanedExternal) {
     return (
       <a
         className={sharedClassNames}
         role="menuitem"
         rel="noopener noreferrer"
         target="_blank"
-        href={href}
+        href={cleanedHref}
         {...props}
       >
         {children}
@@ -144,7 +148,7 @@ function NextgenDesktopNavLink({ external, className, children, href, ...props }
     <Link
       className={sharedClassNames}
       role="menuitem"
-      href={href || '#'}
+      href={cleanedHref || '#'}
       {...props}
     >
       {children}
@@ -166,7 +170,7 @@ function NextgenDesktopNavTrigger({ id, className, children, ...props }: Nextgen
       id={`nav-trigger-${id}`}
       type="button"
       className={cn(
-        "flex items-center cursor-pointer px-3 py-2 rounded",
+        "flex items-center cursor-pointer px-3 py-2 rounded text-sm -mt-0.5 !font-semibold ",
         "transition-colors duration-200",
         isActive
           ? "bg-[var(--accent)] text-[var(--accent-foreground)]"
@@ -287,6 +291,7 @@ function NextgenDesktopNavContent({ id, className, children, ...props }: Nextgen
         shouldBeVisible ? "opacity-100 visible pointer-events-auto translate-y-0" : "opacity-0 invisible pointer-events-none translate-y-1",
         className
       )}
+      style={{ fontFamily: "var(--font-display)" }}
       role="menu"
       aria-orientation="vertical"
       aria-labelledby={`nav-trigger-${id}`}
@@ -344,7 +349,7 @@ function NextgenDesktopNavDropdownItem({
   
 
   const sharedClassNames = cn(
-    "block rounded px-3.5 py-3 overflow-hidden relative normal-case",
+    "block rounded px-3.5 py-3 overflow-hidden relative normal-case text-sm font-medium",
     "transition-colors duration-200 ease-out",
     "text-[var(--popover-foreground)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-1",

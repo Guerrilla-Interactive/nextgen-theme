@@ -1,0 +1,156 @@
+/* colors.css – foundations, color-mix steps, semantic tokens, Tailwind color map */
+@layer base {
+  :root {
+    /* ——— Foundations (OKLCH) ——— */
+    --midnight-ash: oklch(0.15 0.01 260);
+    --photon-white: oklch(0.97 0.005 90);
+    --carbon-fiber: oklch(0.20 0.015 255);
+    --tungsten-gray: oklch(0.35 0.01 250);
+    --titanium-mist: oklch(0.8297 0.0000 0.00);
+    --inferno-orange: oklch(0.6484 0.239166 33.0098);
+    --crimson-alert: oklch(0.50 0.26 15);
+    --chart-electric-blue: oklch(0.62 0.20 230);
+    --chart-neon-pink: oklch(0.62 0.23 330);
+    --chart-ultraviolet: oklch(0.60 0.22 300);
+    --chart-plasma-teal: oklch(0.68 0.21 190);
+    --midnight-ash-bright: color-mix(in oklch, var(--midnight-ash) 92%, white 8%);
+    --midnight-ash-brighter: color-mix(in oklch, var(--midnight-ash) 85%, white 15%);
+    --midnight-ash-dark: color-mix(in oklch, var(--midnight-ash) 92%, black 8%);
+    --midnight-ash-darker: color-mix(in oklch, var(--midnight-ash) 85%, black 15%);
+    --photon-white-bright: color-mix(in oklch, var(--photon-white) 92%, white 8%);
+    --photon-white-brighter: color-mix(in oklch, var(--photon-white) 85%, white 15%);
+    --photon-white-dark: color-mix(in oklch, var(--photon-white) 92%, black 8%);
+    --photon-white-darker: color-mix(in oklch, var(--photon-white) 85%, black 15%);
+    --carbon-fiber-bright: color-mix(in oklch, var(--carbon-fiber) 92%, white 8%);
+    --carbon-fiber-brighter: color-mix(in oklch, var(--carbon-fiber) 85%, white 15%);
+    --carbon-fiber-dark: color-mix(in oklch, var(--carbon-fiber) 92%, black 8%);
+    --carbon-fiber-darker: color-mix(in oklch, var(--carbon-fiber) 85%, black 15%);
+    --tungsten-gray-bright: color-mix(in oklch, var(--tungsten-gray) 92%, white 8%);
+    --tungsten-gray-brighter: color-mix(in oklch, var(--tungsten-gray) 85%, white 15%);
+    --tungsten-gray-dark: color-mix(in oklch, var(--tungsten-gray) 92%, black 8%);
+    --tungsten-gray-darker: color-mix(in oklch, var(--tungsten-gray) 85%, black 15%);
+    --titanium-mist-bright: color-mix(in oklch, var(--titanium-mist) 92%, white 8%);
+    --titanium-mist-brighter: color-mix(in oklch, var(--titanium-mist) 85%, white 15%);
+    --titanium-mist-dark: color-mix(in oklch, var(--titanium-mist) 92%, black 8%);
+    --titanium-mist-darker: color-mix(in oklch, var(--titanium-mist) 85%, black 15%);
+    --inferno-orange-bright: color-mix(in oklch, var(--inferno-orange) 92%, white 8%);
+    --inferno-orange-brighter: color-mix(in oklch, var(--inferno-orange) 85%, white 15%);
+    --inferno-orange-dark: color-mix(in oklch, var(--inferno-orange) 92%, black 8%);
+    --inferno-orange-darker: color-mix(in oklch, var(--inferno-orange) 85%, black 15%);
+    --crimson-alert-bright: color-mix(in oklch, var(--crimson-alert) 92%, white 8%);
+    --crimson-alert-brighter: color-mix(in oklch, var(--crimson-alert) 85%, white 15%);
+    --crimson-alert-dark: color-mix(in oklch, var(--crimson-alert) 92%, black 8%);
+    --crimson-alert-darker: color-mix(in oklch, var(--crimson-alert) 85%, black 15%);
+    --chart-electric-blue-bright: color-mix(in oklch, var(--chart-electric-blue) 92%, white 8%);
+    --chart-electric-blue-brighter: color-mix(in oklch, var(--chart-electric-blue) 85%, white 15%);
+    --chart-electric-blue-dark: color-mix(in oklch, var(--chart-electric-blue) 92%, black 8%);
+    --chart-electric-blue-darker: color-mix(in oklch, var(--chart-electric-blue) 85%, black 15%);
+    --chart-neon-pink-bright: color-mix(in oklch, var(--chart-neon-pink) 92%, white 8%);
+    --chart-neon-pink-brighter: color-mix(in oklch, var(--chart-neon-pink) 85%, white 15%);
+    --chart-neon-pink-dark: color-mix(in oklch, var(--chart-neon-pink) 92%, black 8%);
+    --chart-neon-pink-darker: color-mix(in oklch, var(--chart-neon-pink) 85%, black 15%);
+    --chart-ultraviolet-bright: color-mix(in oklch, var(--chart-ultraviolet) 92%, white 8%);
+    --chart-ultraviolet-brighter: color-mix(in oklch, var(--chart-ultraviolet) 85%, white 15%);
+    --chart-ultraviolet-dark: color-mix(in oklch, var(--chart-ultraviolet) 92%, black 8%);
+    --chart-ultraviolet-darker: color-mix(in oklch, var(--chart-ultraviolet) 85%, black 15%);
+    --chart-plasma-teal-bright: color-mix(in oklch, var(--chart-plasma-teal) 92%, white 8%);
+    --chart-plasma-teal-brighter: color-mix(in oklch, var(--chart-plasma-teal) 85%, white 15%);
+    --chart-plasma-teal-dark: color-mix(in oklch, var(--chart-plasma-teal) 92%, black 8%);
+    --chart-plasma-teal-darker: color-mix(in oklch, var(--chart-plasma-teal) 85%, black 15%);
+
+    /* ——— Semantic tokens ——— */
+    --background: var(--midnight-ash);
+    --foreground: var(--photon-white);
+    --card: var(--carbon-fiber);
+    --card-foreground: var(--photon-white);
+    --popover: var(--carbon-fiber);
+    --popover-foreground: var(--photon-white);
+    --primary: var(--inferno-orange);
+    --primary-foreground: var(--photon-white);
+    --secondary: var(--inferno-orange);
+    --secondary-foreground: var(--photon-white);
+    --muted: var(--tungsten-gray);
+    --muted-foreground: var(--titanium-mist);
+    --accent: var(--inferno-orange);
+    --accent-foreground: var(--photon-white);
+    --destructive: var(--crimson-alert);
+    --destructive-foreground: var(--photon-white);
+    --success: var(--inferno-orange);
+    --success-foreground: var(--photon-white);
+    --sidebar: var(--carbon-fiber);
+    --sidebar-foreground: var(--photon-white);
+    --sidebar-primary: var(--inferno-orange);
+    --sidebar-primary-foreground: var(--photon-white);
+    --sidebar-accent: var(--inferno-orange);
+    --sidebar-accent-foreground: var(--photon-white);
+    --sidebar-border: var(--tungsten-gray);
+    --sidebar-ring: var(--inferno-orange);
+    --border: var(--tungsten-gray);
+    --input: var(--tungsten-gray);
+    --input-foreground: var(--photon-white);
+    --ring: var(--inferno-orange);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --shadow-2xs: 0px 8px 16px -4px oklch(0 0 0 / 0.04);
+    --shadow-xs: 0px 8px 16px -4px oklch(0 0 0 / 0.04);
+    --shadow-sm: 0px 8px 16px -4px oklch(0 0 0 / 0.08), 0px 1px 2px -5px oklch(0 0 0 / 0.08);
+    --shadow-md: 0px 8px 16px -4px oklch(0 0 0 / 0.08), 0px 2px 4px -5px oklch(0 0 0 / 0.08);
+    --shadow-lg: 0px 8px 16px -4px oklch(0 0 0 / 0.08), 0px 4px 6px -5px oklch(0 0 0 / 0.08);
+    --shadow-xl: 0px 8px 16px -4px oklch(0 0 0 / 0.08), 0px 8px 10px -5px oklch(0 0 0 / 0.08);
+    --shadow-2xl: 0px 8px 16px -4px oklch(0 0 0 / 0.20);
+    --border-width-default: 1px;
+    --border-style-default: solid;
+    --chart1: var(--inferno-orange);
+    --chart2: var(--chart-electric-blue);
+    --chart3: var(--chart-neon-pink);
+    --chart4: var(--chart-ultraviolet);
+    --chart5: var(--chart-plasma-teal);
+    --chartOutline: var(--tungsten-gray);
+    --radius: 1.5rem;
+  }
+
+  .dark, [data-theme="dark"] {
+    /* Only scheme switch here; create a colors.dark.css if you want remaps */
+    color-scheme: dark;
+  }
+}
+
+/* Tailwind color tokens map */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-midnight-ash: var(--midnight-ash);
+  --color-photon-white: var(--photon-white);
+  --color-carbon-fiber: var(--carbon-fiber);
+  --color-tungsten-gray: var(--tungsten-gray);
+  --color-titanium-mist: var(--titanium-mist);
+  --color-inferno-orange: var(--inferno-orange);
+  --color-crimson-alert: var(--crimson-alert);
+  --color-chart-electric-blue: var(--chart-electric-blue);
+  --color-chart-neon-pink: var(--chart-neon-pink);
+  --color-chart-ultraviolet: var(--chart-ultraviolet);
+  --color-chart-plasma-teal: var(--chart-plasma-teal);
+}

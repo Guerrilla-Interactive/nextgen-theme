@@ -8,10 +8,6 @@ import {
   Copy,
   Download,
   Check,
-  Palette,
-  Type,
-  Info,
-  Zap,
   Package
 } from "lucide-react";
 import {
@@ -21,8 +17,8 @@ import {
   type ColorToken,
   type FontToken
 } from "../brand-utils";
-import { formatHex } from "culori";
 import { useBrand } from "../BrandContext";
+import { formatHex } from "culori";
 
 interface ExportTabProps {
   activeThemeKey: string;
@@ -329,7 +325,7 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
       finalOverridesLines.push(`${sel} {`);
       // font family
       const familyVar = roleKey === 'p' ? 'body' : (roleKey.match(/^h[1-6]$/) ? 'heading' : roleKey);
-      const imp = scopedTypography ? '' : ' !important';
+      const imp = '';
       finalOverridesLines.push(`  font-family: var(--font-${roleKey}, var(--font-${familyVar}, var(--font-body)))${imp};`);
       finalOverridesLines.push(`  font-weight: var(--font-weight-${roleKey}, ${effectiveWeight})${imp};`);
       finalOverridesLines.push(`  font-size: var(--font-size-${roleKey}, ${effectiveSize})${imp};`);
@@ -378,14 +374,20 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
         : ''
     ].filter(Boolean).join('\n');
 
-    // Sanitize invalid alpha syntax like var(--primary/25) → color-mix(in oklch, var(--primary) 25%, transparent)
-    const sanitizeVarAlpha = (source: string) => {
+    // Sanitize output for export: fix alpha vars, strip :where(), and remove !important
+    const sanitizeForExport = (source: string) => {
       try {
         let out = source.replace(/var\(--([a-z0-9_-]+)\s*\/\s*([0-9]+(?:\.[0-9]+)?)%?\)/gi, (_m, name, alpha) => {
           const pct = Number(alpha);
           const pctStr = Number.isFinite(pct) ? `${pct}%` : '100%';
           return `color-mix(in oklch, var(--${name}) ${pctStr}, transparent)`;
         });
+        // Preserve focus scoping when :where(...) wraps a selector list followed by :focus-visible
+        out = out.replace(/:where\(([^)]+)\):focus-visible/g, ':is($1):focus-visible');
+        // Strip :where(...) wrappers (export plain selectors)
+        out = out.replace(/:where\(([^)]+)\)/g, '$1');
+        // Remove !important flags
+        out = out.replace(/\s*!important\b/g, '');
         // Collapse excessive blank lines
         out = out.replace(/\n{3,}/g, '\n\n');
         return out;
@@ -394,7 +396,383 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
       }
     };
 
-    const fullCss = sanitizeVarAlpha(fullCssRaw);
+    const fullCss = sanitizeForExport(fullCssRaw);
+
+    // ────────────────────────────────────────────────────────────────────────────────
+    // Build category CSS files similar to example structure
+    // ────────────────────────────────────────────────────────────────────────────────
+
+    const escapeCssVarName = (name: string) => name.replace(/[^a-z0-9_-]/gi, '-');
+
+    // colors.css: Foundations, color-mix steps, semantic tokens, Tailwind color map
+    const colorsCss = (() => {
+      const linesBase: string[] = [];
+      linesBase.push('/* colors.css – foundations, color-mix steps, semantic tokens, Tailwind color map */');
+      linesBase.push('@layer base {');
+      linesBase.push('  :root {');
+
+      // Foundations (OKLCH)
+      linesBase.push('    /* ——— Foundations (OKLCH) ——— */');
+      brand.colors.forEach(tok => {
+        try {
+          const varName = escapeCssVarName(tok.variableName);
+          const value = typeof tok.oklch === 'string' ? tok.oklch : String(tok.oklch);
+          if (value) linesBase.push(`    --${varName}: ${value};`);
+        } catch {}
+      });
+
+      // Optional: add any special-purpose variables explicitly referenced by roles
+      // (no-op here; roles resolve to foundations below)
+
+      // Color-mix steps for each foundation
+      const mixSuffixes: Array<{ suf: string; mix: string }> = [
+        { suf: 'bright', mix: '92%, white 8%' },
+        { suf: 'brighter', mix: '85%, white 15%' },
+        { suf: 'dark', mix: '92%, black 8%' },
+        { suf: 'darker', mix: '85%, black 15%' }
+      ];
+      brand.colors.forEach(tok => {
+        const varName = escapeCssVarName(tok.variableName);
+        mixSuffixes.forEach(({ suf, mix }) => {
+          linesBase.push(`    --${varName}-${suf}: color-mix(in oklch, var(--${varName}) ${mix});`);
+        });
+      });
+
+      // Semantic tokens from themeCssVariables
+      linesBase.push('');
+      linesBase.push('    /* ——— Semantic tokens ——— */');
+      const themeVars = brand.themeCssVariables || {} as Record<string, string>;
+      Object.entries(themeVars).forEach(([k, v]) => {
+        const key = escapeCssVarName(k);
+        const val = v?.trim();
+        if (val) linesBase.push(`    --${key}: ${val};`);
+      });
+
+      // Common ring/border/input fallbacks if not present
+      const ensureVar = (k: string, v: string) => {
+        if (!Object.prototype.hasOwnProperty.call(themeVars, k)) {
+          linesBase.push(`    --${k}: ${v};`);
+        }
+      };
+      ensureVar('ring', 'var(--primary)');
+      ensureVar('border', 'var(--secondary)');
+      ensureVar('input', 'var(--secondary)');
+
+      linesBase.push('  }');
+      linesBase.push('');
+      linesBase.push('  .dark, [data-theme="dark"] {');
+      linesBase.push('    /* Only scheme switch here; create a colors.dark.css if you want remaps */');
+      linesBase.push('    color-scheme: dark;');
+      linesBase.push('  }');
+      linesBase.push('}');
+      linesBase.push('');
+      linesBase.push('/* Tailwind color tokens map */');
+      linesBase.push('@theme inline {');
+
+      // Map known semantic tokens
+      const map = (
+        keys: string[],
+        prefix = '--color-'
+      ) => keys.forEach(k => {
+        const key = escapeCssVarName(k);
+        linesBase.push(`  ${prefix}${key}: var(--${key});`);
+      });
+      map([
+        'background','foreground','card','card-foreground','popover','popover-foreground',
+        'muted','muted-foreground','border','input','ring','primary','primary-foreground',
+        'secondary','secondary-foreground','accent','accent-foreground','destructive','destructive-foreground'
+      ]);
+
+      // Also expose all foundations as Tailwind tokens
+      brand.colors.forEach(tok => {
+        const varName = escapeCssVarName(tok.variableName);
+        linesBase.push(`  --color-${varName}: var(--${varName});`);
+      });
+
+      linesBase.push('}');
+      return linesBase.join('\n');
+    })();
+
+    // typography.css: font tokens + role mappings (using computed brand roles)
+    const typographyCss = (() => {
+      const out: string[] = [];
+      out.push('/* typography.css – font tokens + role mappings */');
+      out.push('@layer base {');
+      out.push('  :root{');
+
+      // Families
+      out.push(`    --font-heading: ${headingFont};`);
+      out.push(`    --font-body: ${bodyFont};`);
+
+      // Weights / Sizes / Line-heights / Letter-spacing per role
+      const emitVar = (k: string, v?: string | number | null) => {
+        if (v === undefined || v === null || v === '') return;
+        out.push(`    --${k}: ${v};`);
+      };
+      roles.forEach(role => {
+        emitVar(`font-${role}`, resolveFontForRole(role)?.family);
+        emitVar(`font-weight-${role}`, resolveWeightForRole(role));
+        emitVar(`font-size-${role}`, resolveSizeForRole(role));
+        const def = (roleDefaults as any)[role];
+        const lh = getCssVar(`line-height-${role}`) || def?.lh;
+        const ls = getCssVar(`letter-spacing-${role}`) || def?.ls;
+        emitVar(`line-height-${role}`, lh);
+        emitVar(`letter-spacing-${role}`, ls);
+      });
+
+      out.push('  }');
+      out.push('');
+
+      // Role mappings
+      const ruleFor = (roleKey: string) => {
+        let sel = (roleSelectors as any)[roleKey];
+        if (!sel) return '';
+        const familyVar = roleKey === 'p' ? 'body' : (roleKey.match(/^h[1-6]$/) ? 'heading' : roleKey);
+        const effectiveSize = resolveSizeForRole(roleKey) || (roleDefaults as any)[roleKey]?.sz || '1rem';
+        const effectiveWeight = resolveWeightForRole(roleKey) ?? (roleDefaults as any)[roleKey]?.fw ?? 400;
+        const effectiveLh = resolveLineHeightForRole(roleKey) || (roleDefaults as any)[roleKey]?.lh || '1.2';
+        return [
+          `${sel} {`,
+          `  font-family: var(--font-${roleKey}, var(--font-${familyVar}, var(--font-body)));`,
+          `  font-weight: var(--font-weight-${roleKey}, ${effectiveWeight});`,
+          `  font-size: var(--font-size-${roleKey}, ${effectiveSize});`,
+          `  line-height: var(--line-height-${roleKey}, ${effectiveLh});`,
+          `  letter-spacing: var(--letter-spacing-${roleKey}, var(--letter-spacing-heading, 0em));`,
+          `}`
+        ].join('\n');
+      };
+      out.push(ruleFor('h1'));
+      out.push(ruleFor('h2'));
+      out.push(ruleFor('h3'));
+      out.push(ruleFor('h4'));
+      out.push(ruleFor('h5'));
+      out.push(ruleFor('h6'));
+      out.push(ruleFor('p'));
+      out.push(ruleFor('blockquote'));
+      out.push(ruleFor('button'));
+
+      out.push('}');
+      return out.join('\n');
+    })();
+
+    // shadow.css with radius from sevenAxis cornerStyle if not set in themeCssVariables
+    const mapCornerStyleToRadius = (cornerStyle?: string): string | undefined => {
+      switch (cornerStyle) {
+        case 'sharp': return '0px';
+        case 'slightly-rounded': return '0.375rem';
+        case 'rounded': return '0.75rem';
+        case 'very-rounded': return '1.5rem';
+        case 'pill': return '9999px';
+        default: return undefined;
+      }
+    };
+    const exportRadius = (brand.themeCssVariables as any)?.radius || mapCornerStyleToRadius((brand as any).sevenAxisCode?.cornerStyle) || '1.5rem';
+    const shadowCss = [
+      '/* shadow.css – radii + shadow tokens (kept separate for clarity) */',
+      '@layer base {',
+      '  :root {',
+      `    --radius: ${exportRadius};`,
+      '    --shadow-2xs: 0px 1px 3px 0px oklch(0 0% 0 / 0.05);',
+      '    --shadow-xs: 0px 8px 16px -4px oklch(0 0 0 / 0.04);',
+      '    --shadow-sm: 0px 8px 16px -4px oklch(0 0 0 / 0.08), 0px 1px 2px -5px oklch(0 0 0 / 0.08);',
+      '    --shadow-md: 0px 8px 16px -4px oklch(0 0 0 / 0.08), 0px 2px 4px -5px oklch(0 0 0 / 0.08);',
+      '    --shadow-lg: 0px 8px 16px -4px oklch(0 0 0 / 0.08), 0px 4px 6px -5px oklch(0 0 0 / 0.08);',
+      '    --shadow-xl: 0px 8px 16px -4px oklch(0 0 0 / 0.08), 0px 8px 10px -5px oklch(0 0 0 / 0.08);',
+      '    --shadow: 0px 8px 16px -4px oklch(0 0 0 / 0.08), 0px 1px 2px -5px oklch(0 0 0 / 0.08);',
+      '    --shadow-2xl: 0px 1px 3px 0px oklch(0 0% 0 / 0.25);',
+      '  }',
+      '}',
+      '',
+      '/* Expose to Tailwind tokens */',
+      '@theme inline {',
+      '  --radius-sm: calc(var(--radius) - 4px);',
+      '  --radius-md: calc(var(--radius) - 2px);',
+      '  --radius-lg: var(--radius);',
+      '  --radius-xl: calc(var(--radius) + 4px);',
+      '',
+      '  --shadow-2xs: var(--shadow-2xs);',
+      '  --shadow-xs: var(--shadow-xs);',
+      '  --shadow-sm: var(--shadow-sm);',
+      '  --shadow: var(--shadow);',
+      '  --shadow-md: var(--shadow-md);',
+      '  --shadow-lg: var(--shadow-lg);',
+      '  --shadow-xl: var(--shadow-xl);',
+      '  --shadow-2xl: var(--shadow-2xl);',
+      '}'
+    ].join('\n');
+
+    // layout.css defaults
+    const layoutCss = [
+      '/* layout.css – container sizes + utility */',
+      '@theme {',
+      '  --container-sm: 630px;',
+      '  --container-md: 748px;',
+      '  --container-lg: 1004px;',
+      '  --container-xl: 1260px;',
+      '}',
+      '',
+      '@utility container {',
+      '  margin-inline: auto;',
+      '  padding-inline: 1rem;',
+      '  width: 100%;',
+      '',
+      '  @media (min-width: 640px) { max-width: var(--container-sm); }',
+      '  @media (min-width: 768px) { max-width: var(--container-md); }',
+      '  @media (min-width: 1024px) { max-width: var(--container-lg); }',
+      '  @media (min-width: 1280px) { max-width: var(--container-xl); }',
+      '}'
+    ].join('\n');
+
+    // components.css defaults
+    const componentsCss = [
+      '/* components.css – generic UI helpers */',
+      '@layer components {',
+      '  .surface { @apply bg-card text-card-foreground border rounded-xl; }',
+      '  .muted-surface { @apply bg-muted text-muted-foreground rounded-xl; }',
+      '  .interactive { @apply transition-colors duration-150; }',
+      '  .interactive:hover { @apply bg-accent text-accent-foreground; }',
+      '}'
+    ].join('\n');
+
+    // buttons.css built from baseline + theme animation rules (button-only)
+    const extractButtonAnimationRules = (src: string): string => {
+      try {
+        const blocks = src.split('}');
+        const picked: string[] = [];
+        blocks.forEach(b => {
+          if (b.includes('[data-slot="button"]') && b.includes('{')) {
+            picked.push(b.trim() + '}');
+          }
+        });
+        return picked.join('\n\n');
+      } catch {
+        return '';
+      }
+    };
+    const buttonAnimationOnly = includeAnimations ? extractButtonAnimationRules(animationCss) : '';
+    const buttonsCss = (() => {
+      const base = [
+        '/* buttons.css – slot styles + variants (theme-aware) */',
+        '@layer components {',
+        '  /* Global button slot */',
+        '  [data-slot="button"] {',
+        '    transition: all 180ms ease-out;',
+        '    transform-origin: center center;',
+        '    will-change: opacity, background-color;',
+        '    border-radius: var(--radius);',
+        '  }',
+        '',
+        '  /* Variant: outline */',
+        '  [data-slot="button"][data-variant="outline"] {',
+        '    transform: scale(1);',
+        '    opacity: 1;',
+        '  }',
+        '  [data-slot="button"][data-variant="outline"]:hover:not(:disabled) {',
+        '    opacity: 0.9;',
+        '  }',
+        '  [data-slot="button"][data-variant="outline"]:focus-visible:not(:disabled) {',
+        '    transform: scale(1);',
+        '    box-shadow: 0 0 0 2px var(--ring);',
+        '    opacity: 0.95;',
+        '  }',
+        '  [data-slot="button"][data-variant="outline"]:active:not(:disabled) {',
+        '    box-shadow: inset 0 1px 2px rgba(0,0,0,.05);',
+        '    opacity: .7;',
+        '  }',
+        '  [data-slot="button"][data-variant="outline"]:disabled {',
+        '    transform: scale(1);',
+        '    opacity: .5;',
+        '  }',
+        '}'
+      ].join('\n');
+      if (!buttonAnimationOnly) return base;
+      return [
+        base,
+        '',
+        '/* Theme button animations (from preset) */',
+        '@layer components {',
+        buttonAnimationOnly,
+        '}'
+      ].join('\n');
+    })();
+
+    // globals.css entry that imports categories
+    const globalsCss = [
+      '/* globals.css – entry + base resets */',
+      '@import "tailwindcss";',
+      '@layer base, components, utilities;',
+      '',
+      '/* Ordered imports (tokens before consumers) */',
+      '@import "./style-categories/colors.css";',
+      '@import "./style-categories/typography.css";',
+      '@import "./style-categories/shadow.css";',
+      '@import "./style-categories/layout.css";',
+      '@import "./style-categories/components.css";',
+      '@import "./style-categories/buttons.css";',
+      '',
+      '/* Base resets */',
+      '@layer base {',
+      '  * { @apply border-border; }',
+      '  html { @apply antialiased; text-rendering: optimizeLegibility; }',
+      '  body { @apply bg-background text-foreground; font-family: var(--font-sans); }',
+      '  ::selection {',
+      '    background-color: color-mix(in oklch, var(--primary) 18%, transparent);',
+      '    color: var(--foreground);',
+      '  }',
+      '',
+      '  h1,h2,h3,h4 { @apply text-balance; }',
+      '  p { @apply leading-7; }',
+      '  p + p { @apply mt-4; }',
+      '',
+      '  :is(button,[role="button"],input,select,textarea,a,summary):focus-visible {',
+      '    outline: none;',
+      '    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);',
+      '    border-radius: var(--radius);',
+      '  }',
+      '',
+      '  :root { color-scheme: light; }',
+      '  .dark, [data-theme="dark"] { color-scheme: dark; }',
+      '}',
+      '',
+      '/* Motion safety */',
+      '@media (prefers-reduced-motion: reduce) {',
+      '  :root { scroll-behavior: auto; }',
+      '  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }',
+      '}'
+    ].join('\n');
+
+    // Build a comprehensive theme-colors.ts for shader usage (hex constants)
+    const foundationsPairs: Array<[string,string]> = [];
+    brand.colors.forEach(tok => {
+      try { foundationsPairs.push([tok.variableName, formatHex(tok.oklch as string)]); } catch {}
+    });
+    const foundationsObj = Object.fromEntries(foundationsPairs);
+
+    // Resolve semantic roles from themeCssVariables -> base token hex
+    const roleKeys = Object.keys(brand.themeCssVariables || {});
+    const roleToHex: Record<string,string> = {};
+    const stepSuffixes = ['-bright','-brighter','-dark','-darker'];
+    const extractVarName = (v?: string) => {
+      if (!v) return undefined;
+      const m = v.match(/var\(--([a-z0-9_-]+)\)/i);
+      if (!m) return undefined;
+      let name = m[1];
+      for (const suf of stepSuffixes) if (name.endsWith(suf)) { name = name.slice(0, -suf.length); break; }
+      return name;
+    };
+    roleKeys.forEach(k => {
+      const ref = (brand.themeCssVariables as any)[k] as string | undefined;
+      const varName = extractVarName(ref);
+      if (!varName) return;
+      const tok = brand.colors.find(c => c.variableName === varName);
+      if (!tok) return;
+      try { roleToHex[k] = formatHex(tok.oklch as string); } catch {}
+    });
+
+    const roleLines = Object.entries(roleToHex).map(([k,v]) => `  "${k}": "${v}"`).join(',\n');
+    const foundationLines = Object.entries(foundationsObj).map(([k,v]) => `  "${k}": "${v}"`).join(',\n');
+
+    const themeColorsTs = `// Auto-generated by Nextgen Export\n// Foundations: every brand token in HEX\n// Roles: semantic theme variables resolved to HEX from foundations\nexport const FOUNDATIONS = {\n${foundationLines}\n} as const;\n\nexport const ROLES = {\n${roleLines}\n} as const;\n\nexport const THEME_COLORS = {\n  background: ROLES.background ?? "#0b0b0b",\n  primary: ROLES.primary ?? "#7c3aed",\n  secondary: ROLES.secondary ?? "#1f2937",\n  accent: ROLES.accent ?? "#14b8a6",\n  foreground: ROLES.foreground ?? "#fafafa"\n} as const;\n\nexport const SHADER_COLORS = [\n  THEME_COLORS.background,\n  THEME_COLORS.primary,\n  THEME_COLORS.secondary,\n  THEME_COLORS.accent,\n  THEME_COLORS.foreground\n] as const;\n\nexport default THEME_COLORS;\n`;
 
     // Generate JSON config
     const jsonConfig = {
@@ -528,28 +906,49 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
     // Build Nextgen Command JSON to create globals.css and load-fonts.tsx
     const unique = `${activeThemeKey}-${Date.now()}`;
     const fileNode = (name: string, code: string) => ({
-      _key: `${unique}-${name}`,
+      _key: `node-${unique}-${name}`,
       _type: 'treeNode',
-      id: `file-${unique}-${name}`,
+      id: `node-${unique}-${Math.random().toString(36).slice(2)}`,
       name,
-      type: 'file',
       code,
-      isIndexer: false,
       children: [] as any[]
     });
     const nextgenCommandObj = {
-      _id: `cmd-${unique}`,
+      _id: 'file-content-command',
       _type: 'command',
-      title: `Add ${getThemeDisplayName(activeThemeKey)} theme assets`,
-      slug: 'add-nextgen-theme-assets',
+      title: 'File Content Command',
+      slug: { _type: 'slug', current: 'file-content-command' },
       filePaths: [
         {
-          _key: `group-${unique}`,
+          _key: `group-${unique}-style-categories`,
           _type: 'filePathGroup',
-          id: `path-${unique}`,
-          path: '/app',
+          id: `group-${unique}-cats`,
+          path: 'app\\styles\\style-categories',
           nodes: [
-            fileNode('globals.css', fullCss),
+            fileNode('buttons.css', buttonsCss),
+            fileNode('layout.css', layoutCss),
+            fileNode('components.css', componentsCss),
+            fileNode('colors.css', colorsCss),
+            fileNode('shadow.css', shadowCss),
+            fileNode('typography.css', typographyCss)
+          ]
+        },
+        {
+          _key: `group-${unique}-styles`,
+          _type: 'filePathGroup',
+          id: `group-${unique}-styles-root`,
+          path: 'app\\styles',
+          nodes: [
+            fileNode('globals.css', globalsCss),
+            fileNode('theme-colors.ts', themeColorsTs)
+          ]
+        },
+        {
+          _key: `group-${unique}-app-root`,
+          _type: 'filePathGroup',
+          id: `group-${unique}-app-root`,
+          path: 'app',
+          nodes: [
             fileNode('load-fonts.tsx', loadFontsTsx)
           ]
         }
@@ -583,212 +982,59 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-primary/10">
-            <Download className="w-4 h-4 text-primary" />
+            <Package className="w-4 h-4 text-primary" />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="text-base font-semibold text-foreground">Export Theme</h3>
+            <h3 className="text-base font-semibold text-foreground">Nextgen Command</h3>
             <p className="text-xs text-muted-foreground">
-              Generate files for{" "}
-              <span className="font-medium text-foreground">{getThemeDisplayName(activeThemeKey)}</span>
+              Generate files for <span className="font-medium text-foreground">{getThemeDisplayName(activeThemeKey)}</span>
             </p>
           </div>
         </div>
       </div>
 
-      {/* Theme Overview */}
+      {/* Options */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Info className="w-3 h-3" />
-            Theme Overview
-          </CardTitle>
+          <CardTitle className="text-sm">Options</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="space-y-1">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Theme:</span>
-                <span className="font-medium truncate ml-1 text-right">
-                  {getThemeDisplayName(activeThemeKey)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Mode:</span>
-                <Badge variant="secondary" className="text-xs h-4 px-1.5">
-                  Dark (default)
-                </Badge>
-              </div>
-            </div>
-            <div className="space-y-1">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Colors:</span>
-                <span className="font-medium">{themeStats.colors}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Fonts:</span>
-                <span className="font-medium">{themeStats.fonts}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Color Preview */}
-          <div className="space-y-1.5">
-            <span className="text-xs font-medium">Primary Colors:</span>
-            <div className="flex gap-1 flex-wrap">
-              {brand.colors
-                .filter(
-                  color =>
-                    color.roles.includes("primary") ||
-                    color.roles.includes("secondary") ||
-                    color.roles.includes("accent")
-                )
-                .slice(0, 8)
-                .map(color => (
-                  <div
-                    key={color.variableName}
-                    className="w-5 h-5 rounded border border-border shadow-sm flex-shrink-0"
-                    style={{
-                      backgroundColor: formatHex(color.oklch as string)
-                    }}
-                    title={`${color.name} (${color.roles.join(", ")})`}
-                  />
-                ))}
-            </div>
-          </div>
-
-          {/* Font Preview */}
-          {brand.fonts.length > 0 && (
-            <div className="space-y-1.5">
-              <span className="text-xs font-medium">Typography:</span>
-              <div className="space-y-0.5">
-                {brand.fonts.slice(0, 2).map((font, index) => (
-                  <div key={index} className="text-xs text-muted-foreground">
-                    <span style={{ fontFamily: font.family }} className="font-medium text-foreground">
-                      {font.family.split(",")[0].replace(/['"]/g, "").trim()}
-                    </span>
-                    {" · "}
-                    <span className="text-xs">{font.roles?.join(", ") || "general"}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Export Card */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Zap className="w-3 h-3" />
-            Ready to Export
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* CSS Export */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <Type className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">Complete CSS File</p>
-                  <p className="text-xs text-muted-foreground">Full styles with variables and classes</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 ml-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleCopy(exports.css, "css")}
-                  className="h-7 px-2.5 text-xs"
-                >
-                  {copiedItems.css ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDownload(exports.css, `${activeThemeKey}-theme.css`)}
-                  className="h-7 px-2.5 text-xs"
-                >
-                  <Download className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* JSON Export */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <Package className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">Theme Config (JSON)</p>
-                  <p className="text-xs text-muted-foreground">Structured data for integrations</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 ml-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleCopy(exports.jsonConfig, "json")}
-                  className="h-7 px-2.5 text-xs"
-                >
-                  {copiedItems.json ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDownload(exports.jsonConfig, `${activeThemeKey}-config.json`, "application/json")}
-                  className="h-7 px-2.5 text-xs"
-                >
-                  <Download className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Nextgen Command Export */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <Package className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">Nextgen Command</p>
-                  <p className="text-xs text-muted-foreground">Creates app/globals.css and app/load-fonts.tsx</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 ml-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleCopy(exports.nextgenCommand, 'nextgen')}
-                  className="h-7 px-2.5 text-xs"
-                >
-                  {copiedItems.nextgen ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDownload(exports.nextgenCommand, `${activeThemeKey}-nextgen-command.json`, 'application/json')}
-                  className="h-7 px-2.5 text-xs"
-                >
-                  <Download className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
+        <CardContent className="flex flex-wrap gap-2">
+          <Button
+            variant={includeAnimations ? "secondary" : "outline"}
+            size="sm"
+            onClick={() => setIncludeAnimations(v => !v)}
+            className="h-7 px-2.5 text-xs"
+          >
+            {includeAnimations ? "Animations: On" : "Animations: Off"}
+          </Button>
+          <Button
+            variant={scopedTypography ? "secondary" : "outline"}
+            size="sm"
+            onClick={() => setScopedTypography(v => !v)}
+            className="h-7 px-2.5 text-xs"
+          >
+            {scopedTypography ? "Scoped Typography" : "Global Typography"}
+          </Button>
+          <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
+            <Badge variant="outline" className="text-[10px] h-4 px-1">Creates</Badge>
+            <code className="bg-muted px-1 rounded">app/styles/globals.css</code>
+            <span>+</span>
+            <code className="bg-muted px-1 rounded">app/styles/style-categories/*.css</code>
+            <span>+</span>
+            <code className="bg-muted px-1 rounded">app/styles/theme-colors.ts</code>
+            <span>+</span>
+            <code className="bg-muted px-1 rounded">app/load-fonts.tsx</code>
           </div>
         </CardContent>
       </Card>
 
-      {/* Tailwind v4 Preview */}
+      {/* Nextgen Command Preview */}
       <Card className="overflow-hidden">
         <CardHeader className="pb-3">
           <CardTitle className="text-sm flex items-center gap-2">
-            <Palette className="w-3 h-3" />
-            Tailwind v4 CSS
-            <Badge variant="outline" className="text-xs">
-              Preview
-            </Badge>
+            <Package className="w-3 h-3" />
+            Nextgen Command JSON
+            <Badge variant="outline" className="text-xs">Preview</Badge>
           </CardTitle>
         </CardHeader>
 
@@ -800,13 +1046,11 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
                 <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
                 <div className="w-2 h-2 rounded-full bg-green-500"></div>
                 <span className="ml-2 text-xs font-medium text-muted-foreground truncate">
-                  {activeThemeKey}-tailwind-v4.css
+                  {activeThemeKey}-nextgen-command.json
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground ml-2">
-                <Badge variant="outline" className="text-xs h-4 px-1">
-                  v4
-                </Badge>
+                <Badge variant="outline" className="text-xs h-4 px-1">Command</Badge>
               </div>
             </div>
           </div>
@@ -815,7 +1059,7 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
             <div className="h-64 overflow-auto bg-slate-950">
               <pre className="p-3 text-xs leading-relaxed">
                 <code className="text-slate-300 whitespace-pre-wrap font-mono">
-                  {exports.tailwindConfig}
+                  {exports.nextgenCommand}
                 </code>
               </pre>
             </div>
@@ -825,7 +1069,7 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
           </div>
         </div>
 
-        {/* Footer with Quick Setup */}
+        {/* Footer */}
         <CardContent className="pt-4">
           <div className="space-y-2.5">
             <div className="flex items-start gap-2">
@@ -833,8 +1077,8 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
                 <span className="text-xs font-semibold text-primary">1</span>
               </div>
               <div className="min-w-0 flex-1">
-                <h4 className="font-medium text-xs">Replace globals.css</h4>
-                <p className="text-xs text-muted-foreground">Download and replace your existing CSS file</p>
+                <h4 className="font-medium text-xs">Copy the command JSON</h4>
+                <p className="text-xs text-muted-foreground">Use the button below to copy it to your clipboard</p>
               </div>
             </div>
 
@@ -843,11 +1087,8 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
                 <span className="text-xs font-semibold text-primary">2</span>
               </div>
               <div className="min-w-0 flex-1">
-                <h4 className="font-medium text-xs">Use Tailwind classes</h4>
-                <p className="text-xs text-muted-foreground">
-                  <code className="bg-muted px-1 rounded text-xs">bg-primary</code>,{" "}
-                  <code className="bg-muted px-1 rounded text-xs">text-foreground</code>
-                </p>
+                <h4 className="font-medium text-xs">Import into Nextgen</h4>
+                <p className="text-xs text-muted-foreground">Run this command JSON in the Nextgen app to generate files</p>
               </div>
             </div>
           </div>
@@ -856,16 +1097,16 @@ blockquote{font-family:var(--font-blockquote,var(--font-body));font-weight:var(-
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => handleCopy(exports.tailwindConfig, "tailwind")}
+              onClick={() => handleCopy(exports.nextgenCommand, 'nextgen')}
               className="h-8 px-3 text-xs flex-1"
             >
-              {copiedItems.tailwind ? <Check className="w-3 h-3 mr-1.5" /> : <Copy className="w-3 h-3 mr-1.5" />}
-              Copy CSS
+              {copiedItems.nextgen ? <Check className="w-3 h-3 mr-1.5" /> : <Copy className="w-3 h-3 mr-1.5" />}
+              Copy JSON
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => handleDownload(exports.tailwindConfig, `${activeThemeKey}-tailwind-v4.css`)}
+              onClick={() => handleDownload(exports.nextgenCommand, `${activeThemeKey}-nextgen-command.json`, 'application/json')}
               className="h-8 px-3 text-xs flex-1"
             >
               <Download className="w-3 h-3 mr-1.5" />

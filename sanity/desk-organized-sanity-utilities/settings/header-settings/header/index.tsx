@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 import DesktopNav from "./desktop-nav";
+import { stegaClean } from "next-sanity";
 import MobileNav from "./mobile-nav";
 import { useGlobalContext } from "@/features/context/global-context";
 import { cn } from "@/features/unorganized-utils/utils";
@@ -40,8 +41,7 @@ export default function Header(props: any) {
           <div className="flex items-center   p-2  backdrop-blur-sm border  border-solid border-white/5  rounded-lg justify-between h-16">
             <Link href="/" aria-label="Home page">
               <NextgenLogo 
-                logoOptions={props.logoOptions}
-                logo={props.logo}
+                logoOptions={(stegaClean(props.logoOptions) as any) || props.logoOptions}
                 isTopDark={isTopDark}
                 onLoaded={() => setIconLoaded(true)}
               />
@@ -49,7 +49,7 @@ export default function Header(props: any) {
             <div className={cn("hidden xl:flex items-center", props.navigationConfig?.justifyContent || "justify-between", "w-full")}>
               <DesktopNav 
                 navItems={props?.navigationItems || []} 
-                navigationConfig={props.navigationConfig}
+                navigationConfig={{ justifyContent: (stegaClean(props.navigationConfig?.justifyContent) as string) || props.navigationConfig?.justifyContent }}
                 isTopDark={isTopDark} 
               />
             </div>

@@ -42,6 +42,7 @@ const heroBlockQuery = groq`
       }
     },
     links[]{
+      _key,
       title,
       href,
       target,

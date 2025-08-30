@@ -18,14 +18,16 @@ type FeatureCard = {
 
 type FeatureCardsProps = Partial<{
   layoutVariant: "cards" | "simple" | string;
+  cardStyle: "default" | "glass" | string;
   title: string;
   description: any;
   cards: FeatureCard[];
 }>;
 
 export default function FeaturesBlockComponent(props: FeatureCardsProps) {
-  const { layoutVariant = "cards", title, description, cards } = props;
+  const { layoutVariant = "cards", cardStyle = "default", title, description, cards } = props;
   const cleanedLayoutVariant = (stegaClean(layoutVariant) as string) || "cards";
+  const cleanedCardStyle = (stegaClean(cardStyle) as string) || "default";
 
   const colorToClasses: Record<string, { iconBg: string; iconText: string; dot: string }> = {
     primary: { iconBg: "bg-primary/10", iconText: "text-primary", dot: "bg-primary" },
@@ -33,19 +35,16 @@ export default function FeaturesBlockComponent(props: FeatureCardsProps) {
     purple: { iconBg: "bg-purple-500/10", iconText: "text-purple-600", dot: "bg-purple-600" },
   };
 
-  const iconFor: Record<string, React.ReactNode> = {
-    zap: <div className="w-6 h-6" />,
-    shield: <div className="w-6 h-6" />,
-    settings: <div className="w-6 h-6" />,
-  };
+
 
   return (
-    <section className="py-16">
+    <section className="py-16 relative">
+      <div className="container">
       {(title || description) && (
         <div className="text-center mb-16">
-          {title && <h2 className="font-bold mb-6">{title}</h2>}
+          {title && <h2 className="mb-6">{title}</h2>}
           {description && (
-            <div className="text-muted-foreground max-w-3xl mx-auto">
+            <div className="text-muted-foreground">
               <PortableTextRenderer value={description} />
             </div>
           )}
@@ -73,11 +72,20 @@ export default function FeaturesBlockComponent(props: FeatureCardsProps) {
               const colorKey = (stegaClean(card.color) as string) || "primary";
               const palette = colorToClasses[colorKey] ?? colorToClasses["primary"];
               return (
-                <Card key={idx} className="p-8 border-0 shadow-lg hover:shadow-xl transition-shadow" data-slot="card">
+                <Card
+                  key={idx}
+                  className={cn(
+                    "p-8 shadow-lg hover:shadow-xl transition-shadow",
+                    cleanedCardStyle === "glass"
+                      ? "border-border/50  bg-background/10 backdrop-blur-md"
+                      : "border-0"
+                  )}
+                  data-slot="card"
+                >
                   <IconCell iconName={(stegaClean(card.icon?.name) as string) || undefined} palette={palette} />
-                  {card.title && <h3 className="font-semibold mb-4">{card.title}</h3>}
+                  {card.title && <h3 className=" mb-4">{card.title}</h3>}
                   {card.body && (
-                    <p className="text-muted-foreground leading-relaxed mb-6">{card.body}</p>
+                    <p className="text-muted-foreground mb-6">{card.body}</p>
                   )}
                   {card.stat && (
                     <div className="flex items-center space-x-2">
@@ -89,8 +97,9 @@ export default function FeaturesBlockComponent(props: FeatureCardsProps) {
               );
             })}
           </div>
-        )
-      )}
+          )
+        )}
+      </div>
     </section>
   );
 }

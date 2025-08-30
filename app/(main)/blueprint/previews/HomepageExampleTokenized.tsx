@@ -6,20 +6,20 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from "@/features/unorganized-components/ui/card";
-import { Button } from "@/features/unorganized-components/ui/button";
+} from "@/features/unorganized-components/inspect-ui/card";
+import { Button } from "@/features/unorganized-components/inspect-ui/button";
 import { Zap, Shield, Settings } from "lucide-react";
-import { Separator } from "@/features/unorganized-components/ui/separator";
+import { Separator } from "@/features/unorganized-components/inspect-ui/separator";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@/features/unorganized-components/ui/accordion";
-import { Input } from "@/features/unorganized-components/ui/input";
-import { Badge } from "@/features/unorganized-components/ui/badge";
-import { StarRating } from "@/features/unorganized-components/ui/star-rating";
-import { Avatar, AvatarFallback } from "@/features/unorganized-components/ui/avatar";
+} from "@/features/unorganized-components/inspect-ui/accordion";
+import { Input } from "@/features/unorganized-components/inspect-ui/input";
+import { Badge } from "@/features/unorganized-components/inspect-ui/badge";
+import { StarRating } from "@/features/unorganized-components/inspect-ui/star-rating";
+import { Avatar, AvatarFallback } from "@/features/unorganized-components/inspect-ui/avatar";
 import { TokenElement } from "../components/token-targeting";
 
 
@@ -33,10 +33,10 @@ export default function HomepageExampleTokenized() {
           <div className="flex items-center space-x-8">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">V</span>
+                <span className="text-white ">V</span>
               </div>
               <TokenElement typographyRoles={["SPAN"]} colorRoles={["foreground"]}>
-                <span className="font-semibold">Velocity</span>
+                <span>Velocity</span>
               </TokenElement>
             </div>
             <div className="hidden md:flex items-center space-x-6">
@@ -89,13 +89,13 @@ export default function HomepageExampleTokenized() {
           </div>
 
           <TokenElement typographyRoles={["H1"]} colorRoles={["foreground","primary"]}>
-            <h1 className="font-bold text-center leading-tight tracking-tight max-w-4xl">
+            <h1 className="text-center  max-w-4xl">
               Ship products faster with <span className="text-primary">intelligent automation</span>
             </h1>
           </TokenElement>
 
           <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-            <p className="text-muted-foreground text-center max-w-2xl leading-relaxed">
+            <p className="text-muted-foreground text-center max-w-2xl">
               Velocity streamlines your entire product development lifecycle with AI-powered insights, automated
               workflows, and real-time collaboration tools trusted by 10,000+ teams.
             </p>
@@ -110,7 +110,7 @@ export default function HomepageExampleTokenized() {
             </Button>
           </div>
 
-          <div className="flex items-center space-x-6 pt-8 text-muted-foreground text-sm">
+          <div className="flex items-center space-x-6 pt-8 text-muted-foreground">
             <div className="flex items-center space-x-2">
               <TokenElement colorRoles={["success"]}>
                 <div className="w-2 h-2 rounded-full bg-success" />
@@ -142,12 +142,12 @@ export default function HomepageExampleTokenized() {
         <section className="py-12">
           <div className="text-center mb-8">
             <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-              <p className="text-muted-foreground mb-6 text-sm">Trusted by innovative teams at</p>
+              <p className="text-muted-foreground mb-6">Trusted by innovative teams at</p>
             </TokenElement>
             <div className="flex items-center justify-center space-x-12 opacity-60">
               {["Stripe", "Notion", "Linear", "Vercel", "Figma", "GitHub"].map((company) => (
                 <TokenElement key={company} typographyRoles={["Base"]} colorRoles={["muted-foreground"]}>
-                  <div className="font-semibold text-muted-foreground">
+                  <div className="text-muted-foreground">
                     {company}
                   </div>
                 </TokenElement>
@@ -160,7 +160,7 @@ export default function HomepageExampleTokenized() {
         <section className="py-16">
           <div className="text-center mb-16">
             <TokenElement typographyRoles={["H2"]} colorRoles={["foreground"]}>
-              <h2 className="font-bold mb-6">Everything you need to build better products</h2>
+              <h2 className="mb-6">Everything you need to build better products</h2>
             </TokenElement>
             <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
               <p className="text-muted-foreground max-w-3xl mx-auto">
@@ -178,10 +178,10 @@ export default function HomepageExampleTokenized() {
                 </div>
               </TokenElement>
               <TokenElement typographyRoles={["H3"]} colorRoles={["foreground"]}>
-                <h3 className="font-semibold mb-4">AI-Powered Insights</h3>
+                <h3 className="mb-4">AI-Powered Insights</h3>
               </TokenElement>
               <TokenElement typographyRoles={["P"]}>
-                <p className="text-muted-foreground leading-relaxed mb-6">
+                <p className="text-muted-foreground mb-6">
                   Get intelligent recommendations on code quality, performance bottlenecks, and technical debt before
                   they become problems.
                 </p>
@@ -191,7 +191,7 @@ export default function HomepageExampleTokenized() {
                   <div className="w-2 h-2 rounded-full bg-primary" />
                 </TokenElement>
                 <TokenElement typographyRoles={["SPAN"]}>
-                  <span className="text-muted-foreground text-sm">92% faster issue detection</span>
+                  <span className="text-muted-foreground">92% faster issue detection</span>
                 </TokenElement>
               </div>    
             </Card>
@@ -203,10 +203,10 @@ export default function HomepageExampleTokenized() {
                 </div>
               </TokenElement>
               <TokenElement typographyRoles={["H3"]} colorRoles={["foreground"]}>
-                <h3 className="font-semibold mb-4">Enterprise Security</h3>
+                <h3 className="mb-4">Enterprise Security</h3>
               </TokenElement>
               <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-                <p className="text-muted-foreground leading-relaxed mb-6">
+                <p className="text-muted-foreground mb-6">
                   SOC 2 Type II compliant with end-to-end encryption, SSO integration, and granular permission controls
                   for enterprise peace of mind.
                 </p>
@@ -216,7 +216,7 @@ export default function HomepageExampleTokenized() {
                   <div className="w-2 h-2 rounded-full bg-success" />
                 </TokenElement>
                 <TokenElement typographyRoles={["SPAN"]}>
-                  <span className="text-muted-foreground text-sm">99.9% uptime SLA</span>
+                  <span className="text-muted-foreground">99.9% uptime SLA</span>
                 </TokenElement>
               </div>
             </Card>
@@ -228,10 +228,10 @@ export default function HomepageExampleTokenized() {
                 </div>
               </TokenElement>
               <TokenElement typographyRoles={["H3"]} colorRoles={["foreground"]}>
-                <h3 className="font-semibold mb-4">Workflow Automation</h3>
+                <h3 className="mb-4">Workflow Automation</h3>
               </TokenElement>
               <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-                <p className="text-muted-foreground leading-relaxed mb-6">
+                <p className="text-muted-foreground mb-6">
                   Automate repetitive tasks with smart workflows that learn from your team's patterns and adapt to your
                   development process.
                 </p>
@@ -241,7 +241,7 @@ export default function HomepageExampleTokenized() {
                     <div className="w-2 h-2 rounded-full bg-accent" />
                 </TokenElement>
                 <TokenElement typographyRoles={["SPAN"]}>
-                  <span className="text-muted-foreground text-sm">60% reduction in manual work</span>
+                  <span className="text-muted-foreground">60% reduction in manual work</span>
                 </TokenElement>
               </div>
             </Card>
@@ -252,7 +252,7 @@ export default function HomepageExampleTokenized() {
         <section className="py-16 bg-muted/30 rounded-2xl">
           <div className="text-center mb-12">
             <TokenElement typographyRoles={["H2"]}>
-              <h2 className="font-bold mb-4">Trusted by teams who ship fast</h2>
+              <h2 className="mb-4">Trusted by teams who ship fast</h2>
             </TokenElement>
             <TokenElement typographyRoles={["P"]}>
               <p className="text-muted-foreground">Join thousands of developers and product teams already using Velocity</p>
@@ -262,34 +262,34 @@ export default function HomepageExampleTokenized() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
               <TokenElement typographyRoles={["Base"]} colorRoles={["primary"]}>
-                <div className="text-5xl font-bold text-primary mb-2">10,000+</div>
+                <div className="text-primary mb-2">10,000+</div>
               </TokenElement>
               <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-                <p className="text-muted-foreground text-sm">Active teams</p>
+                <p className="text-muted-foreground">Active teams</p>
               </TokenElement>
             </div>
             <div className="text-center">
               <TokenElement typographyRoles={["Base"]} colorRoles={["primary"]}>
-                <div className="text-5xl font-bold text-primary mb-2">50M+</div>
+                <div className="text-primary mb-2">50M+</div>
               </TokenElement>
               <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-                <p className="text-muted-foreground text-sm">Lines of code analyzed</p>
+                <p className="text-muted-foreground">Lines of code analyzed</p>
               </TokenElement>
             </div>
             <div className="text-center">
               <TokenElement typographyRoles={["Base"]} colorRoles={["primary"]}>
-                <div className="text-5xl font-bold text-primary mb-2">99.9%</div>
+                <div className="text-primary mb-2">99.9%</div>
               </TokenElement>
               <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-                <p className="text-muted-foreground text-sm">Uptime reliability</p>
+                <p className="text-muted-foreground">Uptime reliability</p>
               </TokenElement>
             </div>
             <div className="text-center">
               <TokenElement typographyRoles={["Base"]} colorRoles={["primary"]}>
-                <div className="text-5xl font-bold text-primary mb-2">4.9/5</div>
+                <div className="text-primary mb-2">4.9/5</div>
               </TokenElement>
               <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-                <p className="text-muted-foreground text-sm">Customer satisfaction</p>
+                <p className="text-muted-foreground">Customer satisfaction</p>
               </TokenElement>
             </div>
           </div>
@@ -301,7 +301,7 @@ export default function HomepageExampleTokenized() {
             <div className="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
               <div className="text-center md:text-left">
                 <TokenElement typographyRoles={["H3"]}>
-                  <h3 className="font-semibold mb-2">Get product updates and engineering insights</h3>
+                  <h3 className="mb-2">Get product updates and engineering insights</h3>
                 </TokenElement>
                 <TokenElement typographyRoles={["P"]}>
                   <p className="text-muted-foreground">
@@ -321,7 +321,7 @@ export default function HomepageExampleTokenized() {
             </div>
             <div className="mt-4 text-center md:text-left">
               <TokenElement typographyRoles={["P"]}>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground">
                   No spam, ever. Unsubscribe with one click. Read our <a href="#" className="underline hover:text-primary">privacy policy</a>.
                 </p>
               </TokenElement>
@@ -333,7 +333,7 @@ export default function HomepageExampleTokenized() {
         <section className="py-16">
           <div className="text-center mb-16">
             <TokenElement typographyRoles={["H2"]}>
-              <h2 className="font-bold mb-6">Loved by developers and product teams</h2>
+              <h2 className="mb-6">Loved by developers and product teams</h2>
             </TokenElement>
             <TokenElement typographyRoles={["P"]}>
               <p className="text-muted-foreground">See what teams are saying about their experience with Velocity</p>
@@ -362,10 +362,10 @@ export default function HomepageExampleTokenized() {
                 </TokenElement>
                 <div>
                   <TokenElement typographyRoles={["DIV"]}>
-                    <div className="font-semibold">Sarah Chen</div>
+                    <div>Sarah Chen</div>
                   </TokenElement>
                   <TokenElement typographyRoles={["DIV"]}>
-                    <div className="text-muted-foreground text-sm">Lead Engineer at Stripe</div>
+                    <div className="text-muted-foreground">Lead Engineer at Stripe</div>
                   </TokenElement>
                 </div>
               </div>
@@ -392,10 +392,10 @@ export default function HomepageExampleTokenized() {
                 </TokenElement>
                 <div>
                   <TokenElement typographyRoles={["DIV"]}>
-                    <div className="font-semibold">Marcus Rodriguez</div>
+                    <div>Marcus Rodriguez</div>
                   </TokenElement>
                   <TokenElement typographyRoles={["DIV"]}>
-                    <div className="text-muted-foreground text-sm">CTO at Linear</div>
+                    <div className="text-muted-foreground">CTO at Linear</div>
                   </TokenElement>
                 </div>
               </div>
@@ -422,10 +422,10 @@ export default function HomepageExampleTokenized() {
                 </TokenElement>
                 <div>
                   <TokenElement typographyRoles={["DIV"]}>
-                    <div className="font-semibold">Alex Thompson</div>
+                    <div>Alex Thompson</div>
                   </TokenElement>
                   <TokenElement typographyRoles={["DIV"]}>
-                    <div className="text-muted-foreground text-sm">VP Engineering at Notion</div>
+                    <div className="text-muted-foreground">VP Engineering at Notion</div>
                   </TokenElement>
                 </div>
               </div>
@@ -462,7 +462,7 @@ export default function HomepageExampleTokenized() {
                 <h3 className="mb-3">Lightning Fast</h3>
               </TokenElement>
               <TokenElement typographyRoles={["P"]}>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground">
                   Optimized performance ensures your applications load instantly and run smoothly across all devices and
                   platforms.
                 </p>
@@ -481,7 +481,7 @@ export default function HomepageExampleTokenized() {
                 <h3 className="mb-3">Enterprise Security</h3>
               </TokenElement>
               <TokenElement typographyRoles={["P"]}>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground">
                   Bank-level encryption and security protocols protect your data and ensure compliance with industry
                   standards.
                 </p>
@@ -500,7 +500,7 @@ export default function HomepageExampleTokenized() {
                 <h3 className="mb-3">Fully Customizable</h3>
               </TokenElement>
               <TokenElement typographyRoles={["P"]}>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground">
                   Tailor every aspect of your experience with our flexible theming system and extensive configuration
                   options.
                 </p>
@@ -534,10 +534,10 @@ export default function HomepageExampleTokenized() {
                 </TokenElement>
                 <div className="mb-6">
                   <TokenElement typographyRoles={["DIV"]}>
-                    <span className="text-4xl font-bold">$0</span>
+                    <span>$0</span>
                   </TokenElement>
                   <TokenElement typographyRoles={["SPAN"]} colorRoles={["muted-foreground"]}>
-                    <span className="text-muted-foreground text-sm">/month</span>
+                    <span className="text-muted-foreground">/month</span>
                   </TokenElement>
                 </div>
                 <Button className="w-full mb-6" variant="outline" data-slot="button">
@@ -549,8 +549,8 @@ export default function HomepageExampleTokenized() {
                 <li className="flex items-center">✓ Up to 3 team members</li>
                 <li className="flex items-center">✓ 5 projects</li>
                 <li className="flex items-center">✓ Basic integrations</li>
-                <li className="flex items-center text-muted-foreground text-sm">✗ AI-powered insights</li>
-                <li className="flex items-center text-muted-foreground text-sm">✗ Priority support</li>
+                <li className="flex items-center text-muted-foreground">✗ AI-powered insights</li>
+                <li className="flex items-center text-muted-foreground">✗ Priority support</li>
               </ul>
             </Card>
 
@@ -565,10 +565,10 @@ export default function HomepageExampleTokenized() {
                 </TokenElement>
                 <div className="mb-6">
                   <TokenElement typographyRoles={["DIV"]}>
-                    <span className="text-4xl font-bold">$49</span>
+                    <span>$49</span>
                   </TokenElement>
                   <TokenElement typographyRoles={["SPAN"]} colorRoles={["muted-foreground"]}>
-                    <span className="text-muted-foreground text-sm">/month</span>
+                    <span className="text-muted-foreground">/month</span>
                   </TokenElement>
                 </div>
                 <Button className="w-full mb-6" data-slot="button">
@@ -593,7 +593,7 @@ export default function HomepageExampleTokenized() {
                 </TokenElement>
                 <div className="mb-6">
                   <TokenElement typographyRoles={["DIV"]}>
-                    <span className="text-3xl font-bold">Custom</span>
+                    <span>Custom</span>
                   </TokenElement>
                 </div>
                 <Button className="w-full mb-6" variant="outline" data-slot="button">
@@ -613,11 +613,11 @@ export default function HomepageExampleTokenized() {
 
           <div className="text-center mt-12 pt-8 border-t">
             <TokenElement typographyRoles={["P"]}>
-              <p className="text-muted-foreground mb-4 text-sm">
+              <p className="text-muted-foreground mb-4">
                 All plans include a 14-day free trial. No credit card required.
               </p>
             </TokenElement>
-            <div className="flex items-center justify-center space-x-6 text-muted-foreground text-sm">
+            <div className="flex items-center justify-center space-x-6 text-muted-foreground">
               <TokenElement typographyRoles={["SPAN"]} colorRoles={["muted-foreground"]}>
                 <span>💳 Cancel anytime</span>
               </TokenElement>
@@ -655,27 +655,27 @@ export default function HomepageExampleTokenized() {
                 <div className="flex items-center gap-2 mb-3">
                   <Badge variant="outline">Engineering</Badge>
                   <TokenElement typographyRoles={["SPAN"]} colorRoles={["muted-foreground"]}>
-                    <span className="text-muted-foreground text-sm">March 15, 2024 • 8 min read</span>
+                    <span className="text-muted-foreground">March 15, 2024 • 8 min read</span>
                   </TokenElement>
                 </div>
                 <TokenElement typographyRoles={["H3"]}>
-                  <h3 className="mb-3 leading-tight group-hover:text-primary transition-colors">
+                  <h3 className="mb-3 group-hover:text-primary transition-colors">
                     Building scalable AI pipelines with Kubernetes
                   </h3>
                 </TokenElement>
                 <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
+                  <p className="text-muted-foreground mb-4">
                     How we process millions of AI requests daily using a distributed architecture that scales horizontally
                     and maintains sub-100ms response times.
                   </p>
                 </TokenElement>
                 <div className="flex items-center space-x-2">
                   <Avatar className="w-6 h-6">
-                    <AvatarFallback className="text-white text-xs bg-primary">
+                    <AvatarFallback className="text-white bg-primary">
                       DR
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-muted-foreground text-sm">David Rodriguez, Senior Engineer</span>
+                  <span className="text-muted-foreground">David Rodriguez, Senior Engineer</span>
                 </div>
               </CardContent>
             </Card>
@@ -687,27 +687,27 @@ export default function HomepageExampleTokenized() {
                 <div className="flex items-center gap-2 mb-3">
                   <Badge variant="outline">Security</Badge>
                   <TokenElement typographyRoles={["SPAN"]} colorRoles={["muted-foreground"]}>
-                    <span className="text-muted-foreground text-sm">March 12, 2024 • 6 min read</span>
+                    <span className="text-muted-foreground">March 12, 2024 • 6 min read</span>
                   </TokenElement>
                 </div>
                 <TokenElement typographyRoles={["H3"]}>
-                  <h3 className="mb-3 leading-tight group-hover:text-primary transition-colors">
+                  <h3 className="mb-3 group-hover:text-primary transition-colors">
                     Zero-trust architecture in modern development
                   </h3>
                 </TokenElement>
                 <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
+                  <p className="text-muted-foreground mb-4">
                     Our journey to implementing zero-trust security principles across our entire development lifecycle,
                     from code commits to production deployments.
                   </p>
                 </TokenElement>
                 <div className="flex items-center space-x-2">
                   <Avatar className="w-6 h-6">
-                    <AvatarFallback className="text-white text-xs bg-success">
+                    <AvatarFallback className="text-white bg-success">
                       LK
                     </AvatarFallback>
                   </Avatar> 
-                  <span className="text-muted-foreground text-sm">Lisa Kim, Security Lead</span>
+                  <span className="text-muted-foreground">Lisa Kim, Security Lead</span>
                 </div>
               </CardContent>
             </Card>
@@ -719,27 +719,27 @@ export default function HomepageExampleTokenized() {
                 <div className="flex items-center gap-2 mb-3">
                   <Badge variant="outline">Tutorial</Badge>
                   <TokenElement typographyRoles={["SPAN"]} colorRoles={["muted-foreground"]}>
-                    <span className="text-muted-foreground text-sm">March 10, 2024 • 12 min read</span>
+                    <span className="text-muted-foreground">March 10, 2024 • 12 min read</span>
                   </TokenElement>
                 </div>
                 <TokenElement typographyRoles={["H3"]}>
-                  <h3 className="mb-3 leading-tight group-hover:text-primary transition-colors">
+                  <h3 className="mb-3 group-hover:text-primary transition-colors">
                     Advanced workflow automation patterns
                   </h3>
                 </TokenElement>
                 <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
+                  <p className="text-muted-foreground mb-4">
                     Step-by-step guide to creating intelligent workflows that adapt to your team's patterns and
                     automatically optimize for efficiency and reliability.
                   </p>
                 </TokenElement>
                 <div className="flex items-center space-x-2">
                   <Avatar className="w-6 h-6">
-                        <AvatarFallback className="text-white text-xs bg-accent">
+                        <AvatarFallback className="text-white bg-accent">
                       JM
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-muted-foreground text-sm">Jordan Mills, Product Engineer</span>
+                  <span className="text-muted-foreground">Jordan Mills, Product Engineer</span>
                 </div>
               </CardContent>
             </Card>
@@ -752,10 +752,10 @@ export default function HomepageExampleTokenized() {
         <section className="py-20">
           <div className="text-center max-w-4xl mx-auto">
             <TokenElement typographyRoles={["H2"]}>
-              <h2 className="font-bold mb-6">Ready to ship faster?</h2>
+              <h2 className="mb-6">Ready to ship faster?</h2>
             </TokenElement>
             <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-              <p className="text-muted-foreground mb-8 leading-relaxed">
+              <p className="text-muted-foreground mb-8">
                 Join 10,000+ teams already using Velocity to build better products. Start your free trial today and see
                 the difference intelligent automation makes.
               </p>
@@ -769,7 +769,7 @@ export default function HomepageExampleTokenized() {
               </Button>
             </div>
             <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-              <p className="text-muted-foreground mt-6 text-sm">
+              <p className="text-muted-foreground mt-6">
                 No credit card required • Setup in 5 minutes • Cancel anytime
               </p>
             </TokenElement>
@@ -794,13 +794,13 @@ export default function HomepageExampleTokenized() {
             {["Slack", "GitHub", "Figma", "Notion"].map((tool) => (
               <div key={tool} className="text-center">
                 <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <span className="font-medium">{tool}</span>
+                  <span>{tool}</span>
                 </div>
                 <TokenElement typographyRoles={["H4"]}>
-                  <h4 className="font-medium">{tool}</h4>
+                  <h4>{tool}</h4>
                 </TokenElement>
                 <TokenElement typographyRoles={["P"]} colorRoles={["muted-foreground"]}>
-                  <p className="text-muted-foreground mt-1 text-sm">Connected</p>
+                  <p className="text-muted-foreground mt-1">Connected</p>
                 </TokenElement>
               </div>
             ))}
@@ -814,7 +814,7 @@ export default function HomepageExampleTokenized() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="mb-6">Built for developers, by developers</h2>
-              <p className="text-muted-foreground mb-6 leading-relaxed">
+              <p className="text-muted-foreground mb-6">
                 We understand the challenges developers face. That's why we've built our platform with developer
                 experience as a top priority.
               </p>
@@ -823,7 +823,7 @@ export default function HomepageExampleTokenized() {
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 bg-primary" />
                   <div>
-                    <h4 className="font-medium mb-1">Type-safe APIs</h4>
+                    <h4 className="mb-1">Type-safe APIs</h4>
                     <p className="text-muted-foreground">Full TypeScript support with auto-generated types</p>
                   </div>
                 </div>
@@ -831,7 +831,7 @@ export default function HomepageExampleTokenized() {
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 bg-primary" />
                   <div>
-                    <h4 className="font-medium mb-1">Comprehensive documentation</h4>
+                    <h4 className="mb-1">Comprehensive documentation</h4>
                     <p className="text-muted-foreground">Clear guides, examples, and interactive API explorer</p>
                   </div>
                 </div>
@@ -839,7 +839,7 @@ export default function HomepageExampleTokenized() {
                 <div className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0 bg-primary" />
                   <div>
-                    <h4 className="font-medium mb-1">Active community</h4>
+                    <h4 className="mb-1">Active community</h4>
                     <p className="text-muted-foreground">Join thousands of developers sharing knowledge and best practices</p>
                   </div>
                 </div>
@@ -849,7 +849,7 @@ export default function HomepageExampleTokenized() {
             <Card className="p-6" data-slot="card">
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-muted-foreground text-sm">Terminal</span>
+                  <span className="text-muted-foreground">Terminal</span>
                   <div className="flex gap-1">
                     <div className="w-2 h-2 rounded-full bg-destructive" />
                     <div className="w-2 h-2 rounded-full bg-accent" />
@@ -857,7 +857,7 @@ export default function HomepageExampleTokenized() {
                   </div>
                 </div>
                 <TokenElement typographyRoles={["DIV"]} colorRoles={["success"]}>
-                    <div className="bg-black/90 rounded p-4 font-mono text-sm text-success">
+                    <div className="bg-black/90 rounded p-4 font-mono text-success">
                     <div>$ npm install @yourplatform/sdk</div>
                     <div className="mt-1 opacity-60">✓ Installation complete</div>
                   </div>
@@ -865,7 +865,7 @@ export default function HomepageExampleTokenized() {
               </div>
 
               <TokenElement typographyRoles={["code"]} colorRoles={["muted","muted-foreground"]}>
-                <pre className="bg-muted p-4 rounded overflow-x-auto text-xs">
+                <pre className="bg-muted p-4 rounded overflow-x-auto">
                   <code>{`import { createClient } from '@yourplatform/sdk';
 
 const client = createClient({

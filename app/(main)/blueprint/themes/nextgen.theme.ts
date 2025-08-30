@@ -8,7 +8,8 @@ const nextgenThemeDefinition = {
     {
       tokenSpecificName: "Midnight Ash",
       description: "Deep, dark background, almost black.",
-      oklch: "oklch(0.15 0.01 260)" as OklchString,  // Stays dark
+      
+      oklch: "oklch(0.13 0 0)" as OklchString,  // Stays dark
       roles: ["background"],
       category: 'shade',
       onColor: "oklch(0.97 0.005 90)" as OklchString,  // Photon White
@@ -35,7 +36,7 @@ const nextgenThemeDefinition = {
     {
       tokenSpecificName: "Carbon Fiber",
       description: "Dark surface for cards, popovers; slightly lighter than background.",
-      oklch: "oklch(0.20 0.015 255)" as OklchString,
+      oklch: "oklch(0.0847 0.0000 0.00)" as OklchString,
       roles: ["card", "popover", "secondary", "tooltip-background", "sidebar"],
       category: 'shade',
       onColor: "oklch(0.97 0.005 90)" as OklchString,  // Photon White
@@ -51,7 +52,7 @@ const nextgenThemeDefinition = {
     {
       tokenSpecificName: "Titanium Mist",
       description: "Light gray for muted text, providing better accessibility.",
-      oklch: "oklch(0.70 0.008 255)" as OklchString,
+      oklch: "oklch(0.8297 0.0000 0.00)" as OklchString,
       roles: ["muted-foreground"],
       category: 'shade',
     },

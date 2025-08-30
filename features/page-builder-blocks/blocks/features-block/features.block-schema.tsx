@@ -9,6 +9,7 @@ export default defineType({
   icon: LayoutGrid,
   initialValue: {
     layoutVariant: "cards",
+    cardStyle: "default",
     title: "Everything you need to build better products",
     description: [
       {
@@ -64,6 +65,17 @@ export default defineType({
       ], layout: "radio" },
       initialValue: "cards",
       description: "Choose the layout style for the features section",
+    }),
+    defineField({
+      name: "cardStyle",
+      title: "Card Style",
+      type: "string",
+      options: { list: [
+        { title: "Default", value: "default" },
+        { title: "Glass", value: "glass" },
+      ], layout: "radio" },
+      initialValue: "default",
+      description: "Visual style for feature cards when using the Cards layout",
     }),
     defineField({
       name: "title",

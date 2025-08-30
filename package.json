@@ -19,6 +19,7 @@
     "@mui/icons-material": "latest",
     "@mui/material": "^7.1.1",
     "@next/third-parties": "^15.3.3",
+    "@paper-design/shaders-react": "^0.0.46",
     "@portabletext/react": "^3.2.1",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-avatar": "^1.1.10",

@@ -1,4 +1,4 @@
-import { HeaderSettingsFetchQueryResult } from "@/sanity.types";
+
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 import {
@@ -13,6 +13,7 @@ import {
 import { type NavStyleProps } from "./nextgen-desktop-nav/nextgen-desktop-nav.types";
 import { cn } from "@/features/unorganized-utils/utils";
 import { useRouter } from "next/navigation";
+import { stegaClean } from "next-sanity";
 
 // Define types for link styles
 type LinkStyle = "default" | "button";
@@ -77,8 +78,8 @@ const renderIcon = (item: any) => {
 // Function to get button style classes
 const getButtonStyleClasses = (isTopDark: boolean) => {
   return isTopDark
-    ? "bg-white text-black hover:bg-gray-200 py-1.5 px-4 rounded-md shadow-sm font-medium cursor-pointer"
-    : "bg-black text-white hover:bg-gray-800 py-1.5 px-4 rounded-md shadow-sm font-medium cursor-pointer";
+    ? "bg-primary text-foreground hover:bg-primary/90 py-1.5 px-4 rounded-md shadow-sm font-medium text-sm cursor-pointer"
+    : "bg-primary text-white hover:bg-primary/90 py-1.5 px-4 rounded-md shadow-sm font-medium text-sm cursor-pointer";
 };
 
 // Button component for CTAs
@@ -96,10 +97,12 @@ function NavButton({
   const router = useRouter();
   
   const handleClick = () => {
-    if (isExternal) {
-      window.open(href, '_blank', 'noopener,noreferrer');
+    const cleanedHref = (stegaClean(href) as string) || href;
+    const cleanedExternal = !!stegaClean(isExternal);
+    if (cleanedExternal) {
+      window.open(cleanedHref, '_blank', 'noopener,noreferrer');
     } else {
-      router.push(href);
+      router.push(cleanedHref);
     }
   };
   
@@ -131,7 +134,7 @@ export default function HeaderDesktopNav({
   return (
     <NextgenDesktopNav
       isTopDark={isTopDark}
-      justifyContent={navigationConfig?.justifyContent}
+      justifyContent={(stegaClean(navigationConfig?.justifyContent) as string) || navigationConfig?.justifyContent}
       styleProps={styleProps}
     >
       {navItems.map((navItem) => {
@@ -152,7 +155,7 @@ export default function HeaderDesktopNav({
         
         // Handle internal links
         if (hasType(navItem, "internal")) {
-          const slug = getProperty(navItem, 'slug', '');
+          const slug = stegaClean(getProperty(navItem, 'slug', '')) as string;
           if (!slug) return null;
           
           return (
@@ -179,7 +182,7 @@ export default function HeaderDesktopNav({
         
         // Handle external links
         if (hasType(navItem, "external")) {
-          const url = getProperty(navItem, 'url', '');
+          const url = stegaClean(getProperty(navItem, 'url', '')) as string;
           if (!url) return null;
           
           return (
@@ -207,7 +210,7 @@ export default function HeaderDesktopNav({
         
         // Handle download links
         if (hasType(navItem, "download")) {
-          const url = getProperty(navItem, 'url', '');
+          const url = stegaClean(getProperty(navItem, 'url', '')) as string;
           if (!url) return null;
           
           return (
@@ -254,11 +257,11 @@ export default function HeaderDesktopNav({
                   
                   // Check if this dropdown item should use button style
                   const itemLinkStyle = getProperty<LinkStyle>(link, 'linkStyle', 'default');
-                  const itemButtonClasses = itemLinkStyle === 'button' ? "bg-accent text-accent-foreground hover:bg-accent/90 py-1 px-3 rounded-md mt-1 mb-1 inline-block" : '';
+                  const itemButtonClasses = itemLinkStyle === 'button' ? "bg-accent text-accent-foreground hover:bg-accent/90 py-1 px-3 rounded-md mt-1 mb-1 inline-block text-sm font-medium" : '';
                   
                   // Internal link in dropdown
                   if (hasType(link, "internal")) {
-                    const slug = getProperty(link, 'slug', '');
+                    const slug = stegaClean(getProperty(link, 'slug', '')) as string;
                     if (!slug) return null;
                     
                     if (itemLinkStyle === 'button') {
@@ -295,7 +298,7 @@ export default function HeaderDesktopNav({
                   
                   // External link in dropdown
                   if (hasType(link, "external")) {
-                    const url = getProperty(link, 'url', '');
+                    const url = stegaClean(getProperty(link, 'url', '')) as string;
                     if (!url) return null;
                     
                     if (itemLinkStyle === 'button') {
@@ -334,7 +337,7 @@ export default function HeaderDesktopNav({
                   
                   // Download link in dropdown
                   if (hasType(link, "download")) {
-                    const url = getProperty(link, 'url', '');
+                    const url = stegaClean(getProperty(link, 'url', '')) as string;
                     if (!url) return null;
                     
                     if (itemLinkStyle === 'button') {
@@ -505,7 +508,7 @@ export default function HeaderDesktopNav({
                           
                           // Check if this dropdown item should use button style
                           const dropdownItemLinkStyle = getProperty<LinkStyle>(link, 'linkStyle', 'default');
-                          const dropdownItemButtonClasses = dropdownItemLinkStyle === 'button' ? "bg-accent text-accent-foreground hover:bg-accent/90 py-1 px-3 rounded-md mt-1 mb-1 inline-block" : '';
+                          const dropdownItemButtonClasses = dropdownItemLinkStyle === 'button' ? "bg-accent text-accent-foreground hover:bg-accent/90 py-1 px-3 rounded-md mt-1 mb-1 inline-block text-sm font-medium" : '';
                           
                           // Internal link in dropdown
                           if (hasType(link, "internal")) {

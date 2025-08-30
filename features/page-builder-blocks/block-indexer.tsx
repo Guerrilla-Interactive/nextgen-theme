@@ -45,6 +45,8 @@ import { PostsBlockComponent, postsBlockQuery, postsBlockSchema } from "./blocks
 import { CallToActionBlockComponent, callToActionBlockQuery, callToActionBlockSchema } from "./blocks/call-to-action-block";
 import { FaqBlockComponent, faqBlockQuery, faqBlockSchema } from "./blocks/faq-block";
 import { VideoSectionBlockComponent, videoSectionBlockQuery, videoSectionBlockSchema } from "./blocks/video-section-block";
+import { MasterBlockComponent, masterBlockQuery, masterBlockSchema } from "./blocks/master-block";
+import { AboutUsBlockComponent, aboutUsBlockQuery, aboutUsBlockSchema } from "./blocks/about-us-block";
 // ADD VALUE 1 ABOVE
 
 export const BlockDataMap: {
@@ -98,6 +100,8 @@ export const BlockDataMap: {
 "call-to-action-block": { component: CallToActionBlockComponent, schema: callToActionBlockSchema, query: callToActionBlockQuery },
 "faq-block": { component: FaqBlockComponent, schema: faqBlockSchema, query: faqBlockQuery },
 "video-section-block": { component: VideoSectionBlockComponent, schema: videoSectionBlockSchema, query: videoSectionBlockQuery },
+"master-block": { component: MasterBlockComponent, schema: masterBlockSchema, query: masterBlockQuery },
+"about-us-block": { component: AboutUsBlockComponent, schema: aboutUsBlockSchema, query: aboutUsBlockQuery },
   // ADD VALUE 2 ABOVE
 };
 
@@ -198,15 +202,17 @@ blocks[]{
   // Seperator
   ${seperatorBlockQuery},
   ${ heroBlockQuery  },
-${ featuresBlockQuery  },
-${ statsSectionBlockQuery  },
-${ newsletterSectionBlockQuery  },
-${ testimonialsBlockQuery  },
-${ pricingBlockQuery  },
-${ postsBlockQuery  },
-${ callToActionBlockQuery  },
-${ faqBlockQuery  },
-${ videoSectionBlockQuery  },
+  ${ featuresBlockQuery  },
+  ${ statsSectionBlockQuery  },
+  ${ newsletterSectionBlockQuery  },
+  ${ testimonialsBlockQuery  },
+  ${ pricingBlockQuery  },
+  ${ postsBlockQuery  },
+  ${ callToActionBlockQuery  },
+  ${ faqBlockQuery  },
+  ${ videoSectionBlockQuery  },
+${ masterBlockQuery  },
+${ aboutUsBlockQuery  },
   // ADD VALUE 3 ABOVE
 }
 `;

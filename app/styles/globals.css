@@ -1,0 +1,41 @@
+/* globals.css – entry + base resets */
+@import "tailwindcss";
+@layer base, components, utilities;
+
+/* Ordered imports (tokens before consumers) */
+@import "./style-categories/colors.css";
+@import "./style-categories/typography.css";
+@import "./style-categories/shadow.css";
+@import "./style-categories/layout.css";
+@import "./style-categories/components.css";
+@import "./style-categories/buttons.css";
+
+/* Base resets */
+@layer base {
+  * { @apply border-border; }
+  html { @apply antialiased; text-rendering: optimizeLegibility; }
+  body { @apply bg-background text-foreground; font-family: var(--font-sans); }
+  ::selection {
+    background-color: color-mix(in oklch, var(--primary) 18%, transparent);
+    color: var(--foreground);
+  }
+
+  h1,h2,h3,h4 { @apply text-balance; }
+  p { @apply leading-7; }
+  p + p { @apply mt-4; }
+
+  :is(button,[role="button"],input,select,textarea,a,summary):focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+    border-radius: var(--radius);
+  }
+
+  :root { color-scheme: light; }
+  .dark, [data-theme="dark"] { color-scheme: dark; }
+}
+
+/* Motion safety */
+@media (prefers-reduced-motion: reduce) {
+  :root { scroll-behavior: auto; }
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

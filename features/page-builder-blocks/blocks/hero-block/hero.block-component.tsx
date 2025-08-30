@@ -8,6 +8,7 @@ import { Button } from "@/features/unorganized-components/ui/button";
 import { Badge } from "@/features/unorganized-components/ui/badge";
 
 type HeroLink = {
+  _key?: string;
   title?: string;
   href?: string;
   target?: boolean;
@@ -42,7 +43,8 @@ export default function HeroBlockComponent(props: HeroProps) {
     : undefined;
 
   return (
-    <section className="flex flex-col items-center space-y-8 py-20 text-center pt-36">
+    <section className="relative z-10 py-20 text-center pt-36">
+      <div className="container flex flex-col items-center space-y-8">
       {badge && (
         <div className="flex items-center justify-center space-x-2 mb-2">
           <Badge variant="outline" className="border-primary/20 bg-primary/10 text-primary">
@@ -52,9 +54,9 @@ export default function HeroBlockComponent(props: HeroProps) {
       )}
 
       {normalizedTitle && (
-        <h1 className="font-bold text-center leading-tight tracking-tight max-w-4xl">
+        <div className="max-w-4xl mx-auto ">
           {normalizedTitle && <PortableTextRenderer value={normalizedTitle} />}
-        </h1>
+        </div>
       )}
 
       {body && (
@@ -65,9 +67,9 @@ export default function HeroBlockComponent(props: HeroProps) {
 
       {links && links.length > 0 && (
         <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
-          {links.slice(0, 2).map((link) => (
+          {links.map((link) => (
             <Button
-              key={link.title}
+              key={link._key ?? link.title}
               size={stegaClean(link.size) as any}
               variant={stegaClean(link.buttonVariant) as any}
               className="px-8 py-6"
@@ -95,6 +97,7 @@ export default function HeroBlockComponent(props: HeroProps) {
           ))}
         </div>
       )}
+      </div>
     </section>
   );
 }

@@ -6,6 +6,7 @@ import Header from "@/sanity/desk-organized-sanity-utilities/settings/header-set
 import { DisableDraftMode } from "@/features/unorganized-components/disable-draft-mode";
 import Footer from "@/sanity/desk-organized-sanity-utilities/settings/footer-settings/footer/footer";
 import { fetchSettings } from "@/sanity/desk-organized-sanity-utilities/settings/settings.query";
+import FullPageBackground from "@/features/unorganized-components/magic-background/full-page-background";
 
 
 
@@ -22,6 +23,7 @@ export default async function MainLayout({
   return (
     <>
       <Header {...settings.data.headerSettings} />
+      
       <main>{children}</main>
       <SanityLive />
       {(await draftMode()).isEnabled && (

@@ -10,133 +10,144 @@
 @layer base {
   :root {
     /* ——— Foundation swatches (OKLCH) ——— */
-    --midnight-ash: oklch(0.15 0.01 260);
-    --photon-white: oklch(0.97 0.005 90);
-    --carbon-fiber: oklch(0.20 0.015 255);
-    --tungsten-gray: oklch(0.35 0.01 250);
-    --titanium-mist: oklch(0.70 0.008 255);
-    --inferno-orange: oklch(0.6484 0.239166 33.0098);
-    --crimson-alert: oklch(0.50 0.26 15);
-    --chart-electric-blue: oklch(0.62 0.20 230);
-    --chart-neon-pink: oklch(0.62 0.23 330);
-    --chart-ultraviolet: oklch(0.60 0.22 300);
-    --chart-plasma-teal: oklch(0.68 0.21 190);
+    --ivory: oklch(0.98 0.01 81.76);
+    --olive: oklch(0.38 0.02 64.16);
+    --cream: oklch(0.97 0.02 72.57);
+    --pale-yellow: oklch(0.96 0.04 83.12);
+    --orange: oklch(0.70 0.17 28.12);
+    --white: oklch(1.00 0 0);
+    --lime: oklch(0.81 0.15 71.81);
+    --mint: oklch(0.94 0.03 61.12);
+    --coral: oklch(0.64 0.22 28.93);
+    --gold: oklch(0.71 0.18 37.63);
+    --lime-light: oklch(0.89 0.15 91.66);
+    --burnt-orange: oklch(0.59 0.19 36.05);
+    --rust: oklch(0.57 0.20 26.34);
+    --light-mint: oklch(0.96 0.03 78.77);
     
     /* ——— Color-mix steps (OKLCH) ——— */
-    --inferno-orange-bright: color-mix(in oklch, var(--inferno-orange) 92%, white 8%);
-    --inferno-orange-brighter: color-mix(in oklch, var(--inferno-orange) 85%, white 15%);
-    --inferno-orange-dark: color-mix(in oklch, var(--inferno-orange) 92%, black 8%);
-    --inferno-orange-darker: color-mix(in oklch, var(--inferno-orange) 85%, black 15%);
-    --crimson-alert-bright: color-mix(in oklch, var(--crimson-alert) 92%, white 8%);
-    --crimson-alert-brighter: color-mix(in oklch, var(--crimson-alert) 85%, white 15%);
-    --crimson-alert-dark: color-mix(in oklch, var(--crimson-alert) 92%, black 8%);
-    --crimson-alert-darker: color-mix(in oklch, var(--crimson-alert) 85%, black 15%);
-    --chart-electric-blue-bright: color-mix(in oklch, var(--chart-electric-blue) 92%, white 8%);
-    --chart-electric-blue-brighter: color-mix(in oklch, var(--chart-electric-blue) 85%, white 15%);
-    --chart-electric-blue-dark: color-mix(in oklch, var(--chart-electric-blue) 92%, black 8%);
-    --chart-electric-blue-darker: color-mix(in oklch, var(--chart-electric-blue) 85%, black 15%);
-    --chart-neon-pink-bright: color-mix(in oklch, var(--chart-neon-pink) 92%, white 8%);
-    --chart-neon-pink-brighter: color-mix(in oklch, var(--chart-neon-pink) 85%, white 15%);
-    --chart-neon-pink-dark: color-mix(in oklch, var(--chart-neon-pink) 92%, black 8%);
-    --chart-neon-pink-darker: color-mix(in oklch, var(--chart-neon-pink) 85%, black 15%);
-    --chart-ultraviolet-bright: color-mix(in oklch, var(--chart-ultraviolet) 92%, white 8%);
-    --chart-ultraviolet-brighter: color-mix(in oklch, var(--chart-ultraviolet) 85%, white 15%);
-    --chart-ultraviolet-dark: color-mix(in oklch, var(--chart-ultraviolet) 92%, black 8%);
-    --chart-ultraviolet-darker: color-mix(in oklch, var(--chart-ultraviolet) 85%, black 15%);
-    --chart-plasma-teal-bright: color-mix(in oklch, var(--chart-plasma-teal) 92%, white 8%);
-    --chart-plasma-teal-brighter: color-mix(in oklch, var(--chart-plasma-teal) 85%, white 15%);
-    --chart-plasma-teal-dark: color-mix(in oklch, var(--chart-plasma-teal) 92%, black 8%);
-    --chart-plasma-teal-darker: color-mix(in oklch, var(--chart-plasma-teal) 85%, black 15%);
+    --orange-bright: color-mix(in oklch, var(--orange) 92%, white 8%);
+    --orange-brighter: color-mix(in oklch, var(--orange) 85%, white 15%);
+    --orange-dark: color-mix(in oklch, var(--orange) 92%, black 8%);
+    --orange-darker: color-mix(in oklch, var(--orange) 85%, black 15%);
+    --lime-bright: color-mix(in oklch, var(--lime) 92%, white 8%);
+    --lime-brighter: color-mix(in oklch, var(--lime) 85%, white 15%);
+    --lime-dark: color-mix(in oklch, var(--lime) 92%, black 8%);
+    --lime-darker: color-mix(in oklch, var(--lime) 85%, black 15%);
+    --coral-bright: color-mix(in oklch, var(--coral) 92%, white 8%);
+    --coral-brighter: color-mix(in oklch, var(--coral) 85%, white 15%);
+    --coral-dark: color-mix(in oklch, var(--coral) 92%, black 8%);
+    --coral-darker: color-mix(in oklch, var(--coral) 85%, black 15%);
+    --gold-bright: color-mix(in oklch, var(--gold) 92%, white 8%);
+    --gold-brighter: color-mix(in oklch, var(--gold) 85%, white 15%);
+    --gold-dark: color-mix(in oklch, var(--gold) 92%, black 8%);
+    --gold-darker: color-mix(in oklch, var(--gold) 85%, black 15%);
+    --lime-light-bright: color-mix(in oklch, var(--lime-light) 92%, white 8%);
+    --lime-light-brighter: color-mix(in oklch, var(--lime-light) 85%, white 15%);
+    --lime-light-dark: color-mix(in oklch, var(--lime-light) 92%, black 8%);
+    --lime-light-darker: color-mix(in oklch, var(--lime-light) 85%, black 15%);
+    --burnt-orange-bright: color-mix(in oklch, var(--burnt-orange) 92%, white 8%);
+    --burnt-orange-brighter: color-mix(in oklch, var(--burnt-orange) 85%, white 15%);
+    --burnt-orange-dark: color-mix(in oklch, var(--burnt-orange) 92%, black 8%);
+    --burnt-orange-darker: color-mix(in oklch, var(--burnt-orange) 85%, black 15%);
+    --rust-bright: color-mix(in oklch, var(--rust) 92%, white 8%);
+    --rust-brighter: color-mix(in oklch, var(--rust) 85%, white 15%);
+    --rust-dark: color-mix(in oklch, var(--rust) 92%, black 8%);
+    --rust-darker: color-mix(in oklch, var(--rust) 85%, black 15%);
     
     /* ——— Semantic tokens (aliases to attached foundation variables) ——— */
-    --background: var(--midnight-ash);
-    --foreground: var(--photon-white);
-    --card: var(--carbon-fiber);
-    --card-foreground: var(--photon-white);
-    --popover: var(--carbon-fiber);
-    --popover-foreground: var(--photon-white);
-    --primary: var(--chart-ultraviolet);
-    --primary-foreground: var(--photon-white);
-    --secondary: var(--carbon-fiber);
-    --secondary-foreground: var(--photon-white);
-    --muted: var(--tungsten-gray);
-    --muted-foreground: var(--titanium-mist);
-    --accent: var(--inferno-orange);
-    --accent-foreground: var(--photon-white);
-    --destructive: var(--crimson-alert);
-    --destructive-foreground: var(--photon-white);
-    --success: var(--inferno-orange);
-    --success-foreground: var(--photon-white);
-    --border: var(--tungsten-gray);
-    --input: var(--tungsten-gray);
-    --input-foreground: var(--photon-white);
-    --ring: var(--inferno-orange);
-    --chart1: var(--inferno-orange);
-    --chart2: var(--chart-electric-blue);
-    --chart3: var(--chart-neon-pink);
-    --chart4: var(--chart-ultraviolet);
-    --chart5: var(--chart-plasma-teal);
-    --chartOutline: var(--tungsten-gray);
-    --sidebar: var(--carbon-fiber);
-    --sidebar-foreground: var(--photon-white);
-    --sidebar-primary: var(--inferno-orange);
-    --sidebar-primary-foreground: var(--photon-white);
-    --sidebar-accent: var(--inferno-orange);
-    --sidebar-accent-foreground: var(--photon-white);
-    --sidebar-border: var(--tungsten-gray);
-    --sidebar-ring: var(--inferno-orange);
-    --primary-bright: var(--chart-ultraviolet-bright);
-    --primary-brighter: var(--chart-ultraviolet-brighter);
-    --primary-dark: var(--chart-ultraviolet-dark);
-    --primary-darker: var(--chart-ultraviolet-darker);
-    --accent-bright: var(--inferno-orange-bright);
-    --accent-brighter: var(--inferno-orange-brighter);
-    --accent-dark: var(--inferno-orange-dark);
-    --accent-darker: var(--inferno-orange-darker);
-    --destructive-bright: var(--crimson-alert-bright);
-    --destructive-brighter: var(--crimson-alert-brighter);
-    --destructive-dark: var(--crimson-alert-dark);
-    --destructive-darker: var(--crimson-alert-darker);
-    --success-bright: var(--inferno-orange-bright);
-    --success-brighter: var(--inferno-orange-brighter);
-    --success-dark: var(--inferno-orange-dark);
-    --success-darker: var(--inferno-orange-darker);
-    --ring-bright: var(--inferno-orange-bright);
-    --ring-brighter: var(--inferno-orange-brighter);
-    --ring-dark: var(--inferno-orange-dark);
-    --ring-darker: var(--inferno-orange-darker);
-    --chart1-bright: var(--inferno-orange-bright);
-    --chart1-brighter: var(--inferno-orange-brighter);
-    --chart1-dark: var(--inferno-orange-dark);
-    --chart1-darker: var(--inferno-orange-darker);
-    --chart2-bright: var(--chart-electric-blue-bright);
-    --chart2-brighter: var(--chart-electric-blue-brighter);
-    --chart2-dark: var(--chart-electric-blue-dark);
-    --chart2-darker: var(--chart-electric-blue-darker);
-    --chart3-bright: var(--chart-neon-pink-bright);
-    --chart3-brighter: var(--chart-neon-pink-brighter);
-    --chart3-dark: var(--chart-neon-pink-dark);
-    --chart3-darker: var(--chart-neon-pink-darker);
-    --chart4-bright: var(--chart-ultraviolet-bright);
-    --chart4-brighter: var(--chart-ultraviolet-brighter);
-    --chart4-dark: var(--chart-ultraviolet-dark);
-    --chart4-darker: var(--chart-ultraviolet-darker);
-    --chart5-bright: var(--chart-plasma-teal-bright);
-    --chart5-brighter: var(--chart-plasma-teal-brighter);
-    --chart5-dark: var(--chart-plasma-teal-dark);
-    --chart5-darker: var(--chart-plasma-teal-darker);
+    --background: var(--ivory);
+    --foreground: var(--olive);
+    --card: var(--cream);
+    --card-foreground: var(--olive);
+    --popover: var(--pale-yellow);
+    --popover-foreground: var(--olive);
+    --primary: var(--orange);
+    --primary-foreground: var(--white);
+    --secondary: var(--lime);
+    --secondary-foreground: var(--olive);
+    --muted: var(--mint);
+    --muted-foreground: var(--olive);
+    --accent: var(--coral);
+    --accent-foreground: var(--white);
+    --destructive: var(--rust);
+    --destructive-foreground: var(--white);
+    --success: var(--orange);
+    --success-foreground: var(--white);
+    --border: var(--lime);
+    --input: var(--light-mint);
+    --input-foreground: var(--olive);
+    --ring: var(--orange);
+    --chart1: var(--orange);
+    --chart2: var(--lime);
+    --chart3: var(--gold);
+    --chart4: var(--lime-light);
+    --chart5: var(--burnt-orange);
+    --chartOutline: var(--lime);
+    --sidebar: var(--cream);
+    --sidebar-foreground: var(--olive);
+    --sidebar-primary: var(--orange);
+    --sidebar-primary-foreground: var(--white);
+    --sidebar-accent: var(--lime);
+    --sidebar-accent-foreground: var(--olive);
+    --sidebar-border: var(--lime);
+    --sidebar-ring: var(--orange);
+    --primary-bright: var(--orange-bright);
+    --primary-brighter: var(--orange-brighter);
+    --primary-dark: var(--orange-dark);
+    --primary-darker: var(--orange-darker);
+    --secondary-bright: var(--lime-bright);
+    --secondary-brighter: var(--lime-brighter);
+    --secondary-dark: var(--lime-dark);
+    --secondary-darker: var(--lime-darker);
+    --accent-bright: var(--coral-bright);
+    --accent-brighter: var(--coral-brighter);
+    --accent-dark: var(--coral-dark);
+    --accent-darker: var(--coral-darker);
+    --destructive-bright: var(--rust-bright);
+    --destructive-brighter: var(--rust-brighter);
+    --destructive-dark: var(--rust-dark);
+    --destructive-darker: var(--rust-darker);
+    --success-bright: var(--orange-bright);
+    --success-brighter: var(--orange-brighter);
+    --success-dark: var(--orange-dark);
+    --success-darker: var(--orange-darker);
+    --ring-bright: var(--orange-bright);
+    --ring-brighter: var(--orange-brighter);
+    --ring-dark: var(--orange-dark);
+    --ring-darker: var(--orange-darker);
+    --chart1-bright: var(--orange-bright);
+    --chart1-brighter: var(--orange-brighter);
+    --chart1-dark: var(--orange-dark);
+    --chart1-darker: var(--orange-darker);
+    --chart2-bright: var(--lime-bright);
+    --chart2-brighter: var(--lime-brighter);
+    --chart2-dark: var(--lime-dark);
+    --chart2-darker: var(--lime-darker);
+    --chart3-bright: var(--gold-bright);
+    --chart3-brighter: var(--gold-brighter);
+    --chart3-dark: var(--gold-dark);
+    --chart3-darker: var(--gold-darker);
+    --chart4-bright: var(--lime-light-bright);
+    --chart4-brighter: var(--lime-light-brighter);
+    --chart4-dark: var(--lime-light-dark);
+    --chart4-darker: var(--lime-light-darker);
+    --chart5-bright: var(--burnt-orange-bright);
+    --chart5-brighter: var(--burnt-orange-brighter);
+    --chart5-dark: var(--burnt-orange-dark);
+    --chart5-darker: var(--burnt-orange-darker);
     
     /* Typography + radii + shadows */
-    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-serif: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
-    --radius: 3px;
-    --shadow-xs: 0px 1px 2px 0px hsla(260, 10%, 8%, 0.2);
-    --shadow-sm: 0px 2px 4px -1px hsla(260, 10%, 8%, 0.25), 0px 1px 2px -1px hsla(260, 10%, 8%, 0.2);
-    --shadow-md: 0px 3px 6px -1px hsla(260, 10%, 8%, 0.3), 0px 2px 4px -2px hsla(260, 10%, 8%, 0.25);
-    --shadow-lg: 0px 5px 10px -2px hsla(260, 10%, 8%, 0.35), 0px 3px 6px -3px hsla(260, 10%, 8%, 0.3);
-    --shadow-xl: 0px 8px 16px -4px hsla(260, 10%, 8%, 0.4), 0px 4px 8px -4px hsla(260, 10%, 8%, 0.35);
-    --shadow: 0px 2px 4px -1px hsla(260, 10%, 8%, 0.25), 0px 1px 2px -1px hsla(260, 10%, 8%, 0.2);
+    --font-sans: 'Quicksand', 'Nunito', system-ui, sans-serif;
+    --font-serif: 'Quicksand', 'Nunito', system-ui, sans-serif;
+    --font-mono: 'Source Code Pro', 'Fira Code', Consolas, monospace;
+    --radius: 0.6rem;
+    --shadow-xs: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.03);
+    --shadow-sm: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.05), 0px 1px 2px -1px oklch(0.70 0.17 28.12 / 30% / 0.05);
+    --shadow-md: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.05), 0px 2px 4px -1px oklch(0.70 0.17 28.12 / 30% / 0.05);
+    --shadow-lg: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.05), 0px 4px 6px -1px oklch(0.70 0.17 28.12 / 30% / 0.05);
+    --shadow-xl: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.05), 0px 8px 10px -1px oklch(0.70 0.17 28.12 / 30% / 0.05);
+    --shadow: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.05), 0px 1px 2px -1px oklch(0.70 0.17 28.12 / 30% / 0.05);
     color-scheme: light;
   }
   
@@ -256,17 +267,20 @@
   --color-chart-4: var(--chart4);
   --color-chart-5: var(--chart5);
   --color-chart-outline: var(--chartOutline);
-  --color-midnight-ash: var(--midnight-ash);
-  --color-photon-white: var(--photon-white);
-  --color-carbon-fiber: var(--carbon-fiber);
-  --color-tungsten-gray: var(--tungsten-gray);
-  --color-titanium-mist: var(--titanium-mist);
-  --color-inferno-orange: var(--inferno-orange);
-  --color-crimson-alert: var(--crimson-alert);
-  --color-chart-electric-blue: var(--chart-electric-blue);
-  --color-chart-neon-pink: var(--chart-neon-pink);
-  --color-chart-ultraviolet: var(--chart-ultraviolet);
-  --color-chart-plasma-teal: var(--chart-plasma-teal);
+  --color-ivory: var(--ivory);
+  --color-olive: var(--olive);
+  --color-cream: var(--cream);
+  --color-pale-yellow: var(--pale-yellow);
+  --color-orange: var(--orange);
+  --color-white: var(--white);
+  --color-lime: var(--lime);
+  --color-mint: var(--mint);
+  --color-coral: var(--coral);
+  --color-gold: var(--gold);
+  --color-lime-light: var(--lime-light);
+  --color-burnt-orange: var(--burnt-orange);
+  --color-rust: var(--rust);
+  --color-light-mint: var(--light-mint);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -290,72 +304,73 @@
 
 /* ───────── Typography variables computed from brand roles (ensure effect on h1..h6 etc) ───────── */
 :root{
-  --font-heading: 'Orbitron', 'Exo 2', sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-p: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-default: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-blockquote: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Orbitron', 'Exo 2', sans-serif;
-  --font-display: 'Orbitron', 'Exo 2', sans-serif;
-  --font-h1: 'Orbitron', 'Exo 2', sans-serif;
+  --font-heading: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  --font-body: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-body: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-p: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-default: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-blockquote: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-heading: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  --font-display: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  --font-h1: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  --font-size-h1: 2.25rem;
   --line-height-h1: 1.1;
   --letter-spacing-h1: 0em;
-  --font-h2: 'Orbitron', 'Exo 2', sans-serif;
-  --font-h3: 'Orbitron', 'Exo 2', sans-serif;
-  --font-h4: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-h5: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-h6: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-button: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-label: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-input: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-caption: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-badge: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-code: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
-  --font-mono: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
-  --font-serif: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-h2: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  --font-h3: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  --font-h4: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  --font-h5: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  --font-h6: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  --font-button: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-label: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-input: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-caption: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-badge: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-code: 'Source Code Pro', 'Fira Code', Consolas, monospace;
+  --font-mono: 'Source Code Pro', 'Fira Code', Consolas, monospace;
+  --font-serif: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-sans: 'Quicksand', 'Nunito', system-ui, sans-serif;
 }
 
 /* ───────── Typography consumption overrides (ensure effect in consumers) ───────── */
 h1, [data-typography-role="h1"] {
   font-family: var(--font-h1, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h1, 600) !important;
-  font-size: var(--font-size-h1, 3rem) !important;
+  font-weight: var(--font-weight-h1, 400) !important;
+  font-size: var(--font-size-h1, 2.25rem) !important;
   line-height: var(--line-height-h1, 1.5) !important;
   letter-spacing: var(--letter-spacing-h1, var(--letter-spacing-heading, 0em)) !important;
 }
 h2, [data-typography-role="h2"] {
   font-family: var(--font-h2, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h2, 600) !important;
+  font-weight: var(--font-weight-h2, 400) !important;
   font-size: var(--font-size-h2, 1.875rem) !important;
   line-height: var(--line-height-h2, 1.15) !important;
   letter-spacing: var(--letter-spacing-h2, var(--letter-spacing-heading, 0em)) !important;
 }
 h3, [data-typography-role="h3"] {
   font-family: var(--font-h3, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h3, 600) !important;
+  font-weight: var(--font-weight-h3, 400) !important;
   font-size: var(--font-size-h3, 1.5rem) !important;
   line-height: var(--line-height-h3, 1.2) !important;
   letter-spacing: var(--letter-spacing-h3, var(--letter-spacing-heading, 0em)) !important;
 }
 h4, [data-typography-role="h4"] {
   font-family: var(--font-h4, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h4, 600) !important;
+  font-weight: var(--font-weight-h4, 400) !important;
   font-size: var(--font-size-h4, 1.25rem) !important;
   line-height: var(--line-height-h4, 1.25) !important;
   letter-spacing: var(--letter-spacing-h4, var(--letter-spacing-heading, 0em)) !important;
 }
 h5, [data-typography-role="h5"] {
   font-family: var(--font-h5, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h5, 600) !important;
+  font-weight: var(--font-weight-h5, 400) !important;
   font-size: var(--font-size-h5, 1.125rem) !important;
   line-height: var(--line-height-h5, 1.3) !important;
   letter-spacing: var(--letter-spacing-h5, var(--letter-spacing-heading, 0em)) !important;
 }
 h6, [data-typography-role="h6"] {
   font-family: var(--font-h6, var(--font-heading, var(--font-body))) !important;
-  font-weight: var(--font-weight-h6, 600) !important;
+  font-weight: var(--font-weight-h6, 400) !important;
   font-size: var(--font-size-h6, 1rem) !important;
   line-height: var(--line-height-h6, 1.35) !important;
   letter-spacing: var(--letter-spacing-h6, var(--letter-spacing-heading, 0em)) !important;
@@ -381,522 +396,3 @@ blockquote, [data-typography-role="blockquote"] {
   line-height: var(--line-height-button, 1.2) !important;
   letter-spacing: var(--letter-spacing-button, var(--letter-spacing-heading, 0em)) !important;
 }
-
-/* ───────────────── Animations (unscoped export: glowing-border) ───────────────── */
-/* Universal animation reset - prevents style bleeding between themes */
-[data-slot="button"]:not([class*="link"]) {
-  box-shadow: none !important;
-  transform: translate(0px, 0px) !important;
-  transition: all 200ms ease !important;
-}
-[data-slot="button"]:not([class*="link"]) {
-  box-shadow: none !important;
-  transform: translate(0px, 0px) !important;
-}
-[data-slot="button"]:not([class*="link"]):hover:not(:disabled) {
-  box-shadow: none !important;
-  transform: translate(0px, 0px) !important;
-}
-[data-slot="button"]:not([class*="link"]):focus-visible:not(:disabled) {
-  box-shadow: 0 0 0 2px var(--ring) !important;
-  transform: translate(0px, 0px) !important;
-}
-[data-slot="button"]:not([class*="link"]):active:not(:disabled) {
-  box-shadow: none !important;
-  transform: translate(0px, 0px) !important;
-}
-[data-slot="button"]:not([class*="link"]):disabled {
-  box-shadow: none !important;
-  transform: translate(0px, 0px) !important;
-}
-
-/* Theme-specific styles for glowing-border */
-[data-slot="button"]:not([class*="link"]) {
-  transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 200ms ease-out !important;
-  transform-origin: center center !important;
-  will-change: border-color, box-shadow, opacity !important;
-}
-
-      @keyframes glow-pulse-hover {
-        0% { 
-          box-shadow: 
-            0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent),
-            0 0 8px color-mix(in srgb, var(--primary) 20%, transparent),
-            0 0 16px color-mix(in srgb, var(--primary) 10%, transparent);
-        }
-        50% { 
-          box-shadow: 
-            0 0 0 2px color-mix(in srgb, var(--primary) 50%, transparent),
-            0 0 20px color-mix(in srgb, var(--primary) 35%, transparent),
-            0 0 32px color-mix(in srgb, var(--primary) 20%, transparent),
-            0 0 48px color-mix(in srgb, var(--primary) 10%, transparent);
-        }
-        100% { 
-          box-shadow: 
-            0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent),
-            0 0 8px color-mix(in srgb, var(--primary) 20%, transparent),
-            0 0 16px color-mix(in srgb, var(--primary) 10%, transparent);
-        }
-      }
-    
-
-      @keyframes glow-pulse-focus {
-        0% { 
-          box-shadow: 
-            0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent),
-            0 0 12px color-mix(in srgb, var(--primary) 30%, transparent),
-            0 0 24px color-mix(in srgb, var(--primary) 15%, transparent),
-            inset 0 0 8px color-mix(in srgb, var(--primary) 10%, transparent);
-        }
-        50% { 
-          box-shadow: 
-            0 0 0 3px color-mix(in srgb, var(--primary) 60%, transparent),
-            0 0 24px color-mix(in srgb, var(--primary) 45%, transparent),
-            0 0 40px color-mix(in srgb, var(--primary) 25%, transparent),
-            0 0 64px color-mix(in srgb, var(--primary) 15%, transparent),
-            inset 0 0 16px color-mix(in srgb, var(--primary) 20%, transparent);
-        }
-        100% { 
-          box-shadow: 
-            0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent),
-            0 0 12px color-mix(in srgb, var(--primary) 30%, transparent),
-            0 0 24px color-mix(in srgb, var(--primary) 15%, transparent),
-            inset 0 0 8px color-mix(in srgb, var(--primary) 10%, transparent);
-        }
-      }
-    
-
-      @keyframes glow-shimmer-sweep {
-        0% {
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            transparent 30%,
-            color-mix(in oklch, var(--primary) 15%, transparent) 50%,
-            transparent 70%,
-            transparent 100%
-          );
-          background-position: -100% center;
-          background-size: 200% 100%;
-        }
-        50% {
-          background-position: 100% center;
-        }
-        100% {
-          background-position: 200% center;
-        }
-      }
-    
-
-      @keyframes glow-ripple-continuous {
-        0% {
-          box-shadow: 
-            0 0 0 0px color-mix(in oklch, var(--primary) 40%, transparent),
-            0 0 0 0px color-mix(in oklch, var(--primary) 20%, transparent),
-            0 0 0 0px color-mix(in oklch, var(--primary) 10%, transparent);
-        }
-        30% {
-          box-shadow: 
-            0 0 0 8px color-mix(in oklch, var(--primary) 20%, transparent),
-            0 0 0 16px color-mix(in oklch, var(--primary) 10%, transparent),
-            0 0 0 24px color-mix(in oklch, var(--primary) 5%, transparent);
-        }
-        60% {
-          box-shadow: 
-            0 0 0 16px color-mix(in oklch, var(--primary) 10%, transparent),
-            0 0 0 32px color-mix(in oklch, var(--primary) 5%, transparent),
-            0 0 0 48px transparent;
-        }
-        100% {
-          box-shadow: 
-            0 0 0 24px transparent,
-            0 0 0 48px transparent,
-            0 0 0 72px transparent;
-        }
-      }
-    
-
-      @keyframes glow-flash {
-        0% {
-          box-shadow: 
-            0 0 0 1px color-mix(in srgb, var(--primary) 60%, transparent),
-            0 0 6px color-mix(in srgb, var(--primary) 40%, transparent),
-            0 0 12px color-mix(in srgb, var(--primary) 30%, transparent);
-        }
-        50% {
-          box-shadow: 
-            0 0 0 4px color-mix(in srgb, var(--primary) 80%, transparent),
-            0 0 16px color-mix(in srgb, var(--primary) 60%, transparent),
-            0 0 32px color-mix(in srgb, var(--primary) 40%, transparent),
-            0 0 48px color-mix(in srgb, var(--primary) 20%, transparent);
-        }
-        100% {
-          box-shadow: 
-            0 0 0 2px color-mix(in srgb, var(--primary) 50%, transparent),
-            0 0 8px color-mix(in srgb, var(--primary) 30%, transparent),
-            0 0 16px color-mix(in srgb, var(--primary) 20%, transparent);
-        }
-      }
-    
-
-      @keyframes glow-text-pulse {
-        0% {
-          text-shadow: 
-            0 0 4px color-mix(in srgb, var(--primary) 40%, transparent),
-            0 0 8px color-mix(in srgb, var(--primary) 20%, transparent);
-        }
-        50% {
-          text-shadow: 
-            0 0 8px color-mix(in srgb, var(--primary) 60%, transparent),
-            0 0 16px color-mix(in srgb, var(--primary) 35%, transparent),
-            0 0 24px color-mix(in srgb, var(--primary) 15%, transparent);
-        }
-        100% {
-          text-shadow: 
-            0 0 4px color-mix(in srgb, var(--primary) 40%, transparent),
-            0 0 8px color-mix(in srgb, var(--primary) 20%, transparent);
-        }
-      }
-    
-
-      @keyframes glow-text-wave {
-        0% {
-          text-shadow: 
-            0 0 6px color-mix(in oklch, var(--primary) 50%, transparent),
-            0 0 12px color-mix(in oklch, var(--primary) 25%, transparent);
-        }
-        25% {
-          text-shadow: 
-            0 0 8px color-mix(in oklch, var(--primary) 60%, transparent),
-            0 0 16px color-mix(in oklch, var(--primary) 30%, transparent),
-            2px 0 12px color-mix(in oklch, var(--primary) 20%, transparent);
-        }
-        50% {
-          text-shadow: 
-            0 0 10px color-mix(in oklch, var(--primary) 70%, transparent),
-            0 0 20px color-mix(in oklch, var(--primary) 35%, transparent),
-            0 2px 16px color-mix(in oklch, var(--primary) 25%, transparent);
-        }
-        75% {
-          text-shadow: 
-            0 0 8px color-mix(in oklch, var(--primary) 60%, transparent),
-            0 0 16px color-mix(in oklch, var(--primary) 30%, transparent),
-            -2px 0 12px color-mix(in oklch, var(--primary) 20%, transparent);
-        }
-        100% {
-          text-shadow: 
-            0 0 6px color-mix(in oklch, var(--primary) 50%, transparent),
-            0 0 12px color-mix(in oklch, var(--primary) 25%, transparent);
-        }
-      }
-    
-
-      @keyframes glow-text-focus {
-        0% {
-          text-shadow: 
-            0 0 6px color-mix(in srgb, var(--primary) 60%, transparent),
-            0 0 12px color-mix(in srgb, var(--primary) 30%, transparent),
-            0 0 18px color-mix(in srgb, var(--primary) 15%, transparent);
-        }
-        50% {
-          text-shadow: 
-            0 0 12px color-mix(in srgb, var(--primary) 80%, transparent),
-            0 0 24px color-mix(in srgb, var(--primary) 50%, transparent),
-            0 0 36px color-mix(in srgb, var(--primary) 25%, transparent),
-            0 0 48px color-mix(in srgb, var(--primary) 10%, transparent);
-        }
-        100% {
-          text-shadow: 
-            0 0 6px color-mix(in srgb, var(--primary) 60%, transparent),
-            0 0 12px color-mix(in srgb, var(--primary) 30%, transparent),
-            0 0 18px color-mix(in srgb, var(--primary) 15%, transparent);
-        }
-      }
-    
-
-      @keyframes glow-text-flash {
-        0% {
-          text-shadow: 
-            0 0 4px color-mix(in srgb, var(--primary) 70%, transparent),
-            0 0 8px color-mix(in srgb, var(--primary) 40%, transparent);
-        }
-        100% {
-          text-shadow: 
-            0 0 12px color-mix(in srgb, var(--primary) 90%, transparent),
-            0 0 24px color-mix(in srgb, var(--primary) 60%, transparent),
-            0 0 36px color-mix(in srgb, var(--primary) 30%, transparent);
-        }
-      }
-    
-
-      @keyframes glow-input-hover {
-        0% {
-          box-shadow: 
-            0 0 0 1px color-mix(in srgb, var(--primary) 20%, transparent),
-            0 0 4px color-mix(in srgb, var(--primary) 15%, transparent);
-        }
-        50% {
-          box-shadow: 
-            0 0 0 2px color-mix(in srgb, var(--primary) 35%, transparent),
-            0 0 12px color-mix(in srgb, var(--primary) 25%, transparent),
-            0 0 20px color-mix(in srgb, var(--primary) 10%, transparent);
-        }
-        100% {
-          box-shadow: 
-            0 0 0 1px color-mix(in srgb, var(--primary) 20%, transparent),
-            0 0 4px color-mix(in srgb, var(--primary) 15%, transparent);
-        }
-      }
-    
-
-      @keyframes glow-input-focus {
-        0% {
-          box-shadow: 
-            0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent),
-            0 0 8px color-mix(in srgb, var(--primary) 25%, transparent),
-            inset 0 0 4px color-mix(in srgb, var(--primary) 10%, transparent);
-        }
-        50% {
-          box-shadow: 
-            0 0 0 3px color-mix(in srgb, var(--primary) 60%, transparent),
-            0 0 16px color-mix(in srgb, var(--primary) 40%, transparent),
-            0 0 24px color-mix(in srgb, var(--primary) 20%, transparent),
-            inset 0 0 8px color-mix(in srgb, var(--primary) 15%, transparent);
-        }
-        100% {
-          box-shadow: 
-            0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent),
-            0 0 8px color-mix(in srgb, var(--primary) 25%, transparent),
-            inset 0 0 4px color-mix(in srgb, var(--primary) 10%, transparent);
-        }
-      }
-    
-
-      @keyframes glow-input-typing {
-        0% {
-          box-shadow: 
-            0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent),
-            0 0 4px color-mix(in srgb, var(--primary) 30%, transparent);
-        }
-        50% {
-          box-shadow: 
-            0 0 0 2px color-mix(in srgb, var(--primary) 70%, transparent),
-            0 0 8px color-mix(in srgb, var(--primary) 45%, transparent),
-            0 0 12px color-mix(in srgb, var(--primary) 20%, transparent);
-        }
-        100% {
-          box-shadow: 
-            0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent),
-            0 0 4px color-mix(in srgb, var(--primary) 30%, transparent);
-        }
-      }
-    
-
-      @keyframes glow-breathe-ambient {
-        0%, 100% {
-          box-shadow: 
-            0 0 0 1px color-mix(in oklch, var(--primary) 15%, transparent),
-            0 0 8px color-mix(in oklch, var(--primary) 10%, transparent),
-            0 0 16px color-mix(in oklch, var(--primary) 5%, transparent);
-          filter: brightness(1) saturate(1);
-        }
-        50% {
-          box-shadow: 
-            0 0 0 2px color-mix(in oklch, var(--primary) 25%, transparent),
-            0 0 16px color-mix(in oklch, var(--primary) 20%, transparent),
-            0 0 32px color-mix(in oklch, var(--primary) 10%, transparent),
-            0 0 48px color-mix(in oklch, var(--primary) 5%, transparent);
-          filter: brightness(1.05) saturate(1.1);
-        }
-      }
-    
-
-      @keyframes glow-orbit {
-        0% {
-          background: radial-gradient(
-            circle at 0% 50%,
-            color-mix(in oklch, var(--primary) 20%, transparent) 0%,
-            transparent 50%
-          );
-        }
-        25% {
-          background: radial-gradient(
-            circle at 50% 0%,
-            color-mix(in oklch, var(--primary) 20%, transparent) 0%,
-            transparent 50%
-          );
-        }
-        50% {
-          background: radial-gradient(
-            circle at 100% 50%,
-            color-mix(in oklch, var(--primary) 20%, transparent) 0%,
-            transparent 50%
-          );
-        }
-        75% {
-          background: radial-gradient(
-            circle at 50% 100%,
-            color-mix(in oklch, var(--primary) 20%, transparent) 0%,
-            transparent 50%
-          );
-        }
-        100% {
-          background: radial-gradient(
-            circle at 0% 50%,
-            color-mix(in oklch, var(--primary) 20%, transparent) 0%,
-            transparent 50%
-          );
-        }
-      }
-    
-
-.glow-interactive {
-  
-      cursor: pointer;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    
-}
-
-.glow-ambient {
-  
-      animation: glow-breathe-ambient 4s ease-in-out infinite;
-    
-}
-
-.glow-orbit-effect {
-  
-      position: relative;
-      overflow: hidden;
-      animation: glow-orbit 6s linear infinite;
-    
-}
-
-.glow-enhanced {
-  
-      filter: drop-shadow(0 0 8px color-mix(in oklch, var(--primary) 25%, transparent));
-    
-}
-
-.glow-alive {
-  
-      position: relative;
-      background: linear-gradient(
-        45deg,
-        transparent 30%,
-        color-mix(in oklch, var(--primary) 5%, transparent) 50%,
-        transparent 70%
-      );
-      background-size: 200% 200%;
-      animation: glow-shimmer-sweep 4s ease-in-out infinite;
-    
-}
-
-.glow-particle-effect {
-  
-      position: relative;
-      overflow: hidden;
-      background: radial-gradient(
-        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-        color-mix(in oklch, var(--primary) 15%, transparent) 0%,
-        transparent 40%
-      );
-    
-}
-
-.glow-reactive {
-  
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      background: linear-gradient(
-        135deg,
-        transparent 0%,
-        color-mix(in oklch, var(--primary) 8%, transparent) 25%,
-        color-mix(in oklch, var(--primary) 12%, transparent) 50%,
-        color-mix(in oklch, var(--primary) 8%, transparent) 75%,
-        transparent 100%
-      );
-      background-size: 300% 300%;
-      animation: glow-shimmer-sweep 5s ease-in-out infinite alternate;
-    
-}
-
-/* Button variant-specific animations for glowing-border theme */
-/* Global button styles for glowing-border theme */
-[data-slot="button"] {
-  transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 200ms ease-out !important;
-  transform-origin: center center !important;
-  will-change: border-color, box-shadow, opacity !important;
-}
-
-/* Link animations for glowing-border theme */
-[data-slot="link"] {
-}
-
-[data-slot="link"]:hover:not(:disabled) {
-  color: color-mix(in srgb, var(--primary) 90%, var(--foreground)) !important;
-  text-shadow: 
-          0 0 4px color-mix(in srgb, var(--primary) 40%, transparent),
-          0 0 8px color-mix(in srgb, var(--primary) 20%, transparent)
-         !important;
-  animation: glow-text-pulse 2s ease-in-out infinite !important;
-}
-
-[data-slot="link"]:focus-visible:not(:disabled) {
-  color: var(--primary) !important;
-  text-shadow: 
-          0 0 6px color-mix(in srgb, var(--primary) 60%, transparent),
-          0 0 12px color-mix(in srgb, var(--primary) 30%, transparent),
-          0 0 18px color-mix(in srgb, var(--primary) 15%, transparent)
-         !important;
-  outline: 2px solid color-mix(in srgb, var(--primary) 50%, transparent) !important;
-  outline-offset: 2px !important;
-  animation: glow-text-focus 1.8s ease-in-out infinite !important;
-}
-
-[data-slot="link"]:active:not(:disabled) {
-  color: color-mix(in srgb, var(--primary) 80%, var(--foreground)) !important;
-  text-shadow: 
-          0 0 12px color-mix(in srgb, var(--primary) 90%, transparent),
-          0 0 24px color-mix(in srgb, var(--primary) 60%, transparent),
-          0 0 36px color-mix(in srgb, var(--primary) 30%, transparent)
-         !important;
-  animation: glow-text-flash 0.2s ease-out !important;
-}
-
-[data-slot="link"]:disabled {
-  opacity: 0.5 !important;
-  text-shadow: none !important;
-  color: var(--muted-foreground) !important;
-}
-
-/* Input animations for glowing-border theme */
-[data-slot="input"] {
-  box-shadow: none !important;
-  border: 1px solid var(--border) !important;
-}
-
-[data-slot="input"]:hover:not(:disabled) {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 20%, transparent), 0 0 4px color-mix(in srgb, var(--primary) 15%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--primary) 40%, var(--border)) !important;
-  animation: glow-input-hover 2.5s ease-in-out infinite !important;
-}
-
-[data-slot="input"]:focus-visible:not(:disabled) {
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent), 0 0 8px color-mix(in srgb, var(--primary) 25%, transparent), inset 0 0 4px color-mix(in srgb, var(--primary) 10%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--primary) 60%, transparent) !important;
-  animation: glow-input-focus 2s ease-in-out infinite !important;
-}
-
-[data-slot="input"]:active:not(:disabled) {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent), 0 0 4px color-mix(in srgb, var(--primary) 30%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--primary) 70%, transparent) !important;
-  animation: glow-input-typing 1.5s ease-in-out infinite !important;
-}
-
-[data-slot="input"]:disabled {
-  box-shadow: none !important;
-  opacity: 0.5 !important;
-  border: 1px solid var(--border) !important;
-  filter: grayscale(0.8) !important;
-}
-

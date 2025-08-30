@@ -5,6 +5,7 @@ const featuresBlockQuery = groq`
   _type == "features-block" => {
     _type,
     layoutVariant,
+    cardStyle,
     title,
     description[]{
       ...,

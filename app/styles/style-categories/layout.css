@@ -1,0 +1,18 @@
+/* layout.css – container sizes + utility */
+@theme {
+  --container-sm: 630px;
+  --container-md: 748px;
+  --container-lg: 1004px;
+  --container-xl: 1260px;
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+  width: 100%;
+
+  @media (min-width: 640px) { max-width: var(--container-sm); }
+  @media (min-width: 768px) { max-width: var(--container-md); }
+  @media (min-width: 1024px) { max-width: var(--container-lg); }
+  @media (min-width: 1280px) { max-width: var(--container-xl); }
+}

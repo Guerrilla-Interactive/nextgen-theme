@@ -652,11 +652,10 @@ export const AllComponentsShowcase = () => {
             }
             
             return true;
-        }).map(c => ({
-            name: c.variableName,
-            displayName: c.name,
-            color: formatHex(c.oklch as string) || '#000000'
-        })).filter(s => s.color !== '#000000') || [], 
+        }).map(c => {
+            const hex = formatHex(c.oklch as string);
+            return hex ? { name: c.variableName, displayName: c.name, color: hex } : null;
+        }).filter(Boolean) as { name: string; displayName?: string; color: string }[] || [], 
         [brand]
     );
 

@@ -1,0 +1,7 @@
+/* components.css – generic UI helpers */
+@layer components {
+  .surface { @apply bg-card text-card-foreground border rounded-xl; }
+  .muted-surface { @apply bg-muted text-muted-foreground rounded-xl; }
+  .interactive { @apply transition-colors duration-150; }
+  .interactive:hover { @apply bg-accent text-accent-foreground; }
+}
