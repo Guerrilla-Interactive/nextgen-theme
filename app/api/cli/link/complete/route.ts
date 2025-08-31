@@ -17,7 +17,9 @@ export async function POST(req: Request) {
   if (!rec || rec.status === "expired") return NextResponse.json({ error: "Invalid or expired code" }, { status: 400 });
 
   const ent = await getCliEntitlement(userId);
-  if (ent.status !== "active") return NextResponse.json({ error: `Not entitled: ${ent.status}` }, { status: 403 });
+  if (ent.status !== "active" || ent.product !== "nextgen-cli") {
+    return NextResponse.json({ error: `Not entitled: ${ent.status}` }, { status: 403 });
+  }
 
   // Issue API key (use existing version)
   const ver = await getCliKeyVersion(userId);
