@@ -10,17 +10,21 @@ import { CompleteLink } from "./CompleteLink";
 export const dynamic = "force-dynamic"; // optional: avoid caching
 
 export default async function Dashboard({ searchParams }: { searchParams: Promise<{ [k: string]: string | string[] | undefined }> }) {
+  const params = await searchParams;
+  const linkCode = typeof params?.link_code === "string" ? params.link_code : undefined;
+
   const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  if (!userId) {
+    const redirectTarget = linkCode ? `/dashboard?link_code=${encodeURIComponent(linkCode)}` : "/dashboard";
+    redirect(`/sign-in?redirect_url=${encodeURIComponent(redirectTarget)}`);
+  }
 
   const user = await currentUser(); // works in Edge or Node
   const ent =
     ((user?.privateMetadata as any)?.entitlements?.nextgen_cli) ?? { status: "none" };
   const cli = ((user?.privateMetadata as any)?.cli) ?? {};
 
-  const params = await searchParams;
   const sessionId = typeof params?.session_id === "string" ? params.session_id : undefined;
-  const linkCode = typeof params?.link_code === "string" ? params.link_code : undefined;
 
   return (
     <>
