@@ -7,6 +7,7 @@ import { Toaster } from "@/features/unorganized-components/ui/sonner";
 import { GlobalContextProvider } from "@/features/context/global-context";
 import { NextgenContextStatusPanel } from "@/features/context/nextgen-context-panel";
 import { fonts } from "./load-fonts";
+import { ClerkProvider } from "@clerk/nextjs";
 
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
@@ -43,12 +44,15 @@ export default function RootLayout({
 
       <link rel="icon" href="/favicon.ico" />
       <GlobalContextProvider>
+      <ClerkProvider>
+
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased overscroll-none",
           fonts
         )}
       >
+     
 
 
         
@@ -61,6 +65,7 @@ export default function RootLayout({
         
 
       </body>
+      </ClerkProvider>
       </GlobalContextProvider>
       
     </html>

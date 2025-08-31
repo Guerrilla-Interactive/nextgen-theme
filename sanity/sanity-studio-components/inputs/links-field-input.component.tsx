@@ -1,3 +1,5 @@
+"use client";
+
 import { type ArrayOfObjectsInputProps, ArrayOfPrimitivesFunctions } from "sanity";
 
 export const LinksFieldInput = (props: ArrayOfObjectsInputProps & { max?: number }) => {

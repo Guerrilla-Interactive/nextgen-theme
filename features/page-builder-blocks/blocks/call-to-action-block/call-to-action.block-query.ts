@@ -1,4 +1,5 @@
 import { groq } from "next-sanity";
+import { linksQuery } from "@/features/unorganized-queries/links.query";
 
 // @sanity-typegen-ignore
 const callToActionBlockQuery = groq`
@@ -23,19 +24,8 @@ const callToActionBlockQuery = groq`
         }
       }
     },
-    primaryCta{
-      title,
-      href,
-      target,
-      buttonVariant,
-      size
-    },
-    secondaryCta{
-      title,
-      href,
-      target,
-      buttonVariant,
-      size
+    ctaLinks[]{
+      ${linksQuery}
     },
     footerNote[]{
       ...,

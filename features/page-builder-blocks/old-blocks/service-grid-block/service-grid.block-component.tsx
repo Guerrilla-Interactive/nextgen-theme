@@ -42,7 +42,7 @@ const ServiceCard = ({ service }: { service: Service }) => {
       : "";
 
   const cardContent = (
-    <div className="relative h-[20rem] group overflow-hidden rounded-lg  bg-gray-200">
+    <div className="relative h-[20rem] group overflow-hidden rounded-lg  bg-muted">
       {service.featuredImage ? (
         <>
         <Img
@@ -57,7 +57,7 @@ const ServiceCard = ({ service }: { service: Service }) => {
         <div className="absolute group-hover:opacity-35 transition-opacity duration-700   inset-0 w-full h-1/2 mt-auto bg-gradient-to-b from-transparent to-black opacity-50" />
         </>
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-gray-300">
+        <div className="w-full h-full flex items-center justify-center bg-muted">
           No Image
         </div>
       )}

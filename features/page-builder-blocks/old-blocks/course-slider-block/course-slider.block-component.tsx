@@ -130,7 +130,7 @@ const CourseSliderBlockComponent: React.FC<Partial<CourseSliderBlock>> = (props)
                   onClick={() => handlePaginationClick(index)}
                   aria-label={`Go to page ${index + 1}`}
                   className={`w-2.5 h-2.5 rounded-full transition-all ${
-                    currentPage === index ? 'bg-primary scale-110' : 'bg-gray-300'
+                    currentPage === index ? 'bg-primary scale-110' : 'bg-muted'
                   }`}
                 />
               ))}

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Loader2, Calendar, Upload, X } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/features/unorganized-components/ui/form";
 import { Input } from "@/features/unorganized-components/ui/input";
+import { Textarea } from "@/features/unorganized-components/ui/textarea";
 import { Button } from "@/features/unorganized-components/ui/button";
 import { Checkbox } from "@/features/unorganized-components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/features/unorganized-components/ui/select";
@@ -316,7 +317,7 @@ export default function CustomContactFormBlockComponent({
       return (
         <div key={field.fieldLabel} className="mt-8 mb-4 w-full">
           <h3 className="text-xl font-semibold">{field.fieldLabel}</h3>
-          {field.helpText && <p className="text-sm text-gray-600 mt-1">{field.helpText}</p>}
+          {field.helpText && <p className="text-sm text-muted-foreground mt-1">{field.helpText}</p>}
         </div>
       );
     }
@@ -327,7 +328,7 @@ export default function CustomContactFormBlockComponent({
         <div key={field.fieldName} className={cn("mb-6", field.width === "half" ? "w-1/2 pr-2" : "w-full")}>
           <FormLabel>{field.fieldLabel}{field.isRequired && " *"}</FormLabel>
           <div className="mt-1">
-            <div className="border border-gray-300 rounded-md p-3">
+            <div className="border border-border rounded-md p-3">
               {files[field.fieldName] ? (
                 <div className="flex items-center justify-between">
                   <span className="text-sm truncate">{files[field.fieldName]?.name}</span>
@@ -365,7 +366,7 @@ export default function CustomContactFormBlockComponent({
                 </div>
               )}
             </div>
-            {field.helpText && <p className="text-sm text-gray-500 mt-1">{field.helpText}</p>}
+            {field.helpText && <p className="text-sm text-muted-foreground mt-1">{field.helpText}</p>}
           </div>
         </div>
       );
@@ -406,10 +407,9 @@ export default function CustomContactFormBlockComponent({
               )}
               <FormControl>
                 {field.fieldType === "textarea" ? (
-                  <textarea
+                  <Textarea
                     {...formField}
                     placeholder={computedPlaceholder}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     rows={4}
                   />
                 ) : field.fieldType === "checkbox" ? (
@@ -517,7 +517,7 @@ export default function CustomContactFormBlockComponent({
         <h2 className="text-2xl font-bold mb-4">{formTitle}</h2>
       )}
       {formDescription && (
-        <p className="text-base mb-8 text-gray-600">{formDescription}</p>
+        <p className="text-base mb-8 text-muted-foreground">{formDescription}</p>
       )}
 
       <Form {...form}>

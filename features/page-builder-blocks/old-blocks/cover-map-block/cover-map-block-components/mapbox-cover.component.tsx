@@ -132,7 +132,7 @@ const MapboxMapCover: React.FC<MapboxMapCoverProps> = ({
           theme === "dark"
             ? `
             <div
-              class="p-4 bg-gray-900 rounded-lg shadow-md text-sm font-sans space-y-2 text-gray-100"
+              class="p-4 bg-popover rounded-lg shadow-md text-sm font-sans space-y-2 text-popover-foreground"
               style="min-width: 200px;"
             >
               <p>
@@ -153,7 +153,7 @@ const MapboxMapCover: React.FC<MapboxMapCoverProps> = ({
             `
             : `
             <div
-              class="p-4 rounded-lg text-sm space-y-2 text-gray-800"
+              class="p-4 rounded-lg text-sm space-y-2 text-foreground"
               style="min-width: 200px;"
             >
               <p>

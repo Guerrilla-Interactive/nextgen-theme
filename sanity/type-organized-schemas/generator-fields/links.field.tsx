@@ -73,7 +73,7 @@ const internalLink = (props: LinksFieldProps) => {
 
   if (!includeInternal) return null;
 
-  const fields = [...internalLinkObjectField.fields];
+  const fields = [...internalLinkObjectField.fields].filter((f: any) => includeIcon ? true : f?.name !== "icon");
 
   if (includeIcon) {
     fields.push(iconField);
@@ -122,7 +122,7 @@ const externalLink = (props: LinksFieldProps) => {
 
   if (!includeExternal) return null;
 
-  const fields = [...externalLinkObjectField.fields];
+  const fields = [...externalLinkObjectField.fields].filter((f: any) => includeIcon ? true : f?.name !== "icon");
 
   if (includeIcon) {
     fields.push(iconField);
@@ -170,7 +170,7 @@ const downloadLink = (props: LinksFieldProps) => {
 
   if (!includeDownload) return null;
 
-  const fields = [...downloadLinkObjectField.fields];
+  const fields = [...downloadLinkObjectField.fields].filter((f: any) => includeIcon ? true : f?.name !== "icon");
 
   if (includeIcon) {
     fields.push(iconField);
@@ -334,10 +334,10 @@ export const linksField = (props: LinksFieldProps) => {
   const { 
     includeCustomTitle = true, 
     includeInternal = true,
-    includeDropdownGroup = true,
+    includeDropdownGroup = false,
     includeLinkGroup = false,
     includeExternal = true,
-    includeDownload = true,
+    includeDownload = false,
     includeIcon = false,
     includeHideOnMobile = false,
     includeLinkStyle = false,

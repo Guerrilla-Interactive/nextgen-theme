@@ -47,6 +47,7 @@ import { FaqBlockComponent, faqBlockQuery, faqBlockSchema } from "./blocks/faq-b
 import { VideoSectionBlockComponent, videoSectionBlockQuery, videoSectionBlockSchema } from "./blocks/video-section-block";
 import { MasterBlockComponent, masterBlockQuery, masterBlockSchema } from "./blocks/master-block";
 import { AboutUsBlockComponent, aboutUsBlockQuery, aboutUsBlockSchema } from "./blocks/about-us-block";
+import { ContactFormBlockComponent, contactFormBlockQuery, contactFormBlockSchema } from "./blocks/contact-form-block";
 // ADD VALUE 1 ABOVE
 
 export const BlockDataMap: {
@@ -102,6 +103,7 @@ export const BlockDataMap: {
 "video-section-block": { component: VideoSectionBlockComponent, schema: videoSectionBlockSchema, query: videoSectionBlockQuery },
 "master-block": { component: MasterBlockComponent, schema: masterBlockSchema, query: masterBlockQuery },
 "about-us-block": { component: AboutUsBlockComponent, schema: aboutUsBlockSchema, query: aboutUsBlockQuery },
+"contact-form-block": { component: ContactFormBlockComponent, schema: contactFormBlockSchema, query: contactFormBlockQuery },
   // ADD VALUE 2 ABOVE
 };
 
@@ -213,6 +215,7 @@ blocks[]{
   ${ videoSectionBlockQuery  },
 ${ masterBlockQuery  },
 ${ aboutUsBlockQuery  },
+${ contactFormBlockQuery  },
   // ADD VALUE 3 ABOVE
 }
 `;

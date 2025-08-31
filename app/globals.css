@@ -10,144 +10,146 @@
 @layer base {
   :root {
     /* ——— Foundation swatches (OKLCH) ——— */
-    --ivory: oklch(0.98 0.01 81.76);
-    --olive: oklch(0.38 0.02 64.16);
-    --cream: oklch(0.97 0.02 72.57);
-    --pale-yellow: oklch(0.96 0.04 83.12);
-    --orange: oklch(0.70 0.17 28.12);
-    --white: oklch(1.00 0 0);
-    --lime: oklch(0.81 0.15 71.81);
-    --mint: oklch(0.94 0.03 61.12);
-    --coral: oklch(0.64 0.22 28.93);
-    --gold: oklch(0.71 0.18 37.63);
-    --lime-light: oklch(0.89 0.15 91.66);
-    --burnt-orange: oklch(0.59 0.19 36.05);
-    --rust: oklch(0.57 0.20 26.34);
-    --light-mint: oklch(0.96 0.03 78.77);
+    --porcelain-cream: oklch(0.97 0.01 95);
+    --deep-ink: oklch(0.18 0.03 275);
+    --parchment: oklch(0.93 0.01 100);
+    --antique-nickel: oklch(0.70 0.015 95);
+    --gucci-green: oklch(0.53 0.12 150);
+    --gucci-red: oklch(0.55 0.17 27);
+    --gilded-gold: oklch(0.75 0.12 85);
+    --chart-forest: oklch(0.62 0.10 150);
+    --chart-merlot: oklch(0.52 0.14 20);
+    --chart-olive: oklch(0.70 0.10 110);
+    --chart-brass: oklch(0.78 0.10 85);
+    --chart-porcelain: oklch(0.95 0.02 95);
     
     /* ——— Color-mix steps (OKLCH) ——— */
-    --orange-bright: color-mix(in oklch, var(--orange) 92%, white 8%);
-    --orange-brighter: color-mix(in oklch, var(--orange) 85%, white 15%);
-    --orange-dark: color-mix(in oklch, var(--orange) 92%, black 8%);
-    --orange-darker: color-mix(in oklch, var(--orange) 85%, black 15%);
-    --lime-bright: color-mix(in oklch, var(--lime) 92%, white 8%);
-    --lime-brighter: color-mix(in oklch, var(--lime) 85%, white 15%);
-    --lime-dark: color-mix(in oklch, var(--lime) 92%, black 8%);
-    --lime-darker: color-mix(in oklch, var(--lime) 85%, black 15%);
-    --coral-bright: color-mix(in oklch, var(--coral) 92%, white 8%);
-    --coral-brighter: color-mix(in oklch, var(--coral) 85%, white 15%);
-    --coral-dark: color-mix(in oklch, var(--coral) 92%, black 8%);
-    --coral-darker: color-mix(in oklch, var(--coral) 85%, black 15%);
-    --gold-bright: color-mix(in oklch, var(--gold) 92%, white 8%);
-    --gold-brighter: color-mix(in oklch, var(--gold) 85%, white 15%);
-    --gold-dark: color-mix(in oklch, var(--gold) 92%, black 8%);
-    --gold-darker: color-mix(in oklch, var(--gold) 85%, black 15%);
-    --lime-light-bright: color-mix(in oklch, var(--lime-light) 92%, white 8%);
-    --lime-light-brighter: color-mix(in oklch, var(--lime-light) 85%, white 15%);
-    --lime-light-dark: color-mix(in oklch, var(--lime-light) 92%, black 8%);
-    --lime-light-darker: color-mix(in oklch, var(--lime-light) 85%, black 15%);
-    --burnt-orange-bright: color-mix(in oklch, var(--burnt-orange) 92%, white 8%);
-    --burnt-orange-brighter: color-mix(in oklch, var(--burnt-orange) 85%, white 15%);
-    --burnt-orange-dark: color-mix(in oklch, var(--burnt-orange) 92%, black 8%);
-    --burnt-orange-darker: color-mix(in oklch, var(--burnt-orange) 85%, black 15%);
-    --rust-bright: color-mix(in oklch, var(--rust) 92%, white 8%);
-    --rust-brighter: color-mix(in oklch, var(--rust) 85%, white 15%);
-    --rust-dark: color-mix(in oklch, var(--rust) 92%, black 8%);
-    --rust-darker: color-mix(in oklch, var(--rust) 85%, black 15%);
+    --gucci-green-bright: color-mix(in oklch, var(--gucci-green) 92%, white 8%);
+    --gucci-green-brighter: color-mix(in oklch, var(--gucci-green) 85%, white 15%);
+    --gucci-green-dark: color-mix(in oklch, var(--gucci-green) 92%, black 8%);
+    --gucci-green-darker: color-mix(in oklch, var(--gucci-green) 85%, black 15%);
+    --gucci-red-bright: color-mix(in oklch, var(--gucci-red) 92%, white 8%);
+    --gucci-red-brighter: color-mix(in oklch, var(--gucci-red) 85%, white 15%);
+    --gucci-red-dark: color-mix(in oklch, var(--gucci-red) 92%, black 8%);
+    --gucci-red-darker: color-mix(in oklch, var(--gucci-red) 85%, black 15%);
+    --gilded-gold-bright: color-mix(in oklch, var(--gilded-gold) 92%, white 8%);
+    --gilded-gold-brighter: color-mix(in oklch, var(--gilded-gold) 85%, white 15%);
+    --gilded-gold-dark: color-mix(in oklch, var(--gilded-gold) 92%, black 8%);
+    --gilded-gold-darker: color-mix(in oklch, var(--gilded-gold) 85%, black 15%);
+    --chart-forest-bright: color-mix(in oklch, var(--chart-forest) 92%, white 8%);
+    --chart-forest-brighter: color-mix(in oklch, var(--chart-forest) 85%, white 15%);
+    --chart-forest-dark: color-mix(in oklch, var(--chart-forest) 92%, black 8%);
+    --chart-forest-darker: color-mix(in oklch, var(--chart-forest) 85%, black 15%);
+    --chart-merlot-bright: color-mix(in oklch, var(--chart-merlot) 92%, white 8%);
+    --chart-merlot-brighter: color-mix(in oklch, var(--chart-merlot) 85%, white 15%);
+    --chart-merlot-dark: color-mix(in oklch, var(--chart-merlot) 92%, black 8%);
+    --chart-merlot-darker: color-mix(in oklch, var(--chart-merlot) 85%, black 15%);
+    --chart-olive-bright: color-mix(in oklch, var(--chart-olive) 92%, white 8%);
+    --chart-olive-brighter: color-mix(in oklch, var(--chart-olive) 85%, white 15%);
+    --chart-olive-dark: color-mix(in oklch, var(--chart-olive) 92%, black 8%);
+    --chart-olive-darker: color-mix(in oklch, var(--chart-olive) 85%, black 15%);
+    --chart-brass-bright: color-mix(in oklch, var(--chart-brass) 92%, white 8%);
+    --chart-brass-brighter: color-mix(in oklch, var(--chart-brass) 85%, white 15%);
+    --chart-brass-dark: color-mix(in oklch, var(--chart-brass) 92%, black 8%);
+    --chart-brass-darker: color-mix(in oklch, var(--chart-brass) 85%, black 15%);
+    --chart-porcelain-bright: color-mix(in oklch, var(--chart-porcelain) 92%, white 8%);
+    --chart-porcelain-brighter: color-mix(in oklch, var(--chart-porcelain) 85%, white 15%);
+    --chart-porcelain-dark: color-mix(in oklch, var(--chart-porcelain) 92%, black 8%);
+    --chart-porcelain-darker: color-mix(in oklch, var(--chart-porcelain) 85%, black 15%);
     
     /* ——— Semantic tokens (aliases to attached foundation variables) ——— */
-    --background: var(--ivory);
-    --foreground: var(--olive);
-    --card: var(--cream);
-    --card-foreground: var(--olive);
-    --popover: var(--pale-yellow);
-    --popover-foreground: var(--olive);
-    --primary: var(--orange);
-    --primary-foreground: var(--white);
-    --secondary: var(--lime);
-    --secondary-foreground: var(--olive);
-    --muted: var(--mint);
-    --muted-foreground: var(--olive);
-    --accent: var(--coral);
-    --accent-foreground: var(--white);
-    --destructive: var(--rust);
-    --destructive-foreground: var(--white);
-    --success: var(--orange);
-    --success-foreground: var(--white);
-    --border: var(--lime);
-    --input: var(--light-mint);
-    --input-foreground: var(--olive);
-    --ring: var(--orange);
-    --chart1: var(--orange);
-    --chart2: var(--lime);
-    --chart3: var(--gold);
-    --chart4: var(--lime-light);
-    --chart5: var(--burnt-orange);
-    --chartOutline: var(--lime);
-    --sidebar: var(--cream);
-    --sidebar-foreground: var(--olive);
-    --sidebar-primary: var(--orange);
-    --sidebar-primary-foreground: var(--white);
-    --sidebar-accent: var(--lime);
-    --sidebar-accent-foreground: var(--olive);
-    --sidebar-border: var(--lime);
-    --sidebar-ring: var(--orange);
-    --primary-bright: var(--orange-bright);
-    --primary-brighter: var(--orange-brighter);
-    --primary-dark: var(--orange-dark);
-    --primary-darker: var(--orange-darker);
-    --secondary-bright: var(--lime-bright);
-    --secondary-brighter: var(--lime-brighter);
-    --secondary-dark: var(--lime-dark);
-    --secondary-darker: var(--lime-darker);
-    --accent-bright: var(--coral-bright);
-    --accent-brighter: var(--coral-brighter);
-    --accent-dark: var(--coral-dark);
-    --accent-darker: var(--coral-darker);
-    --destructive-bright: var(--rust-bright);
-    --destructive-brighter: var(--rust-brighter);
-    --destructive-dark: var(--rust-dark);
-    --destructive-darker: var(--rust-darker);
-    --success-bright: var(--orange-bright);
-    --success-brighter: var(--orange-brighter);
-    --success-dark: var(--orange-dark);
-    --success-darker: var(--orange-darker);
-    --ring-bright: var(--orange-bright);
-    --ring-brighter: var(--orange-brighter);
-    --ring-dark: var(--orange-dark);
-    --ring-darker: var(--orange-darker);
-    --chart1-bright: var(--orange-bright);
-    --chart1-brighter: var(--orange-brighter);
-    --chart1-dark: var(--orange-dark);
-    --chart1-darker: var(--orange-darker);
-    --chart2-bright: var(--lime-bright);
-    --chart2-brighter: var(--lime-brighter);
-    --chart2-dark: var(--lime-dark);
-    --chart2-darker: var(--lime-darker);
-    --chart3-bright: var(--gold-bright);
-    --chart3-brighter: var(--gold-brighter);
-    --chart3-dark: var(--gold-dark);
-    --chart3-darker: var(--gold-darker);
-    --chart4-bright: var(--lime-light-bright);
-    --chart4-brighter: var(--lime-light-brighter);
-    --chart4-dark: var(--lime-light-dark);
-    --chart4-darker: var(--lime-light-darker);
-    --chart5-bright: var(--burnt-orange-bright);
-    --chart5-brighter: var(--burnt-orange-brighter);
-    --chart5-dark: var(--burnt-orange-dark);
-    --chart5-darker: var(--burnt-orange-darker);
+    --background: var(--porcelain-cream);
+    --foreground: var(--deep-ink);
+    --card: var(--porcelain-cream);
+    --card-foreground: var(--deep-ink);
+    --popover: var(--porcelain-cream);
+    --popover-foreground: var(--deep-ink);
+    --primary: var(--gucci-green);
+    --primary-foreground: var(--porcelain-cream);
+    --secondary: var(--gilded-gold);
+    --secondary-foreground: var(--deep-ink);
+    --muted: var(--parchment);
+    --muted-foreground: var(--deep-ink);
+    --accent: var(--gucci-red);
+    --accent-foreground: var(--porcelain-cream);
+    --destructive: var(--gucci-red);
+    --destructive-foreground: var(--porcelain-cream);
+    --success: var(--gucci-green);
+    --success-foreground: var(--porcelain-cream);
+    --border: var(--antique-nickel);
+    --input: var(--parchment);
+    --input-foreground: var(--deep-ink);
+    --ring: var(--gucci-green);
+    --chart1: var(--chart-forest);
+    --chart2: var(--chart-merlot);
+    --chart3: var(--chart-olive);
+    --chart4: var(--chart-brass);
+    --chart5: var(--chart-porcelain);
+    --chartOutline: var(--antique-nickel);
+    --sidebar: var(--gucci-green);
+    --sidebar-foreground: var(--porcelain-cream);
+    --sidebar-primary: var(--gucci-green);
+    --sidebar-primary-foreground: var(--porcelain-cream);
+    --sidebar-accent: var(--gucci-red);
+    --sidebar-accent-foreground: var(--porcelain-cream);
+    --sidebar-border: var(--antique-nickel);
+    --sidebar-ring: var(--gucci-green);
+    --primary-bright: var(--gucci-green-bright);
+    --primary-brighter: var(--gucci-green-brighter);
+    --primary-dark: var(--gucci-green-dark);
+    --primary-darker: var(--gucci-green-darker);
+    --secondary-bright: var(--gilded-gold-bright);
+    --secondary-brighter: var(--gilded-gold-brighter);
+    --secondary-dark: var(--gilded-gold-dark);
+    --secondary-darker: var(--gilded-gold-darker);
+    --accent-bright: var(--gucci-red-bright);
+    --accent-brighter: var(--gucci-red-brighter);
+    --accent-dark: var(--gucci-red-dark);
+    --accent-darker: var(--gucci-red-darker);
+    --destructive-bright: var(--gucci-red-bright);
+    --destructive-brighter: var(--gucci-red-brighter);
+    --destructive-dark: var(--gucci-red-dark);
+    --destructive-darker: var(--gucci-red-darker);
+    --success-bright: var(--gucci-green-bright);
+    --success-brighter: var(--gucci-green-brighter);
+    --success-dark: var(--gucci-green-dark);
+    --success-darker: var(--gucci-green-darker);
+    --ring-bright: var(--gucci-green-bright);
+    --ring-brighter: var(--gucci-green-brighter);
+    --ring-dark: var(--gucci-green-dark);
+    --ring-darker: var(--gucci-green-darker);
+    --chart1-bright: var(--chart-forest-bright);
+    --chart1-brighter: var(--chart-forest-brighter);
+    --chart1-dark: var(--chart-forest-dark);
+    --chart1-darker: var(--chart-forest-darker);
+    --chart2-bright: var(--chart-merlot-bright);
+    --chart2-brighter: var(--chart-merlot-brighter);
+    --chart2-dark: var(--chart-merlot-dark);
+    --chart2-darker: var(--chart-merlot-darker);
+    --chart3-bright: var(--chart-olive-bright);
+    --chart3-brighter: var(--chart-olive-brighter);
+    --chart3-dark: var(--chart-olive-dark);
+    --chart3-darker: var(--chart-olive-darker);
+    --chart4-bright: var(--chart-brass-bright);
+    --chart4-brighter: var(--chart-brass-brighter);
+    --chart4-dark: var(--chart-brass-dark);
+    --chart4-darker: var(--chart-brass-darker);
+    --chart5-bright: var(--chart-porcelain-bright);
+    --chart5-brighter: var(--chart-porcelain-brighter);
+    --chart5-dark: var(--chart-porcelain-dark);
+    --chart5-darker: var(--chart-porcelain-darker);
     
     /* Typography + radii + shadows */
-    --font-sans: 'Quicksand', 'Nunito', system-ui, sans-serif;
-    --font-serif: 'Quicksand', 'Nunito', system-ui, sans-serif;
-    --font-mono: 'Source Code Pro', 'Fira Code', Consolas, monospace;
-    --radius: 0.6rem;
-    --shadow-xs: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.03);
-    --shadow-sm: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.05), 0px 1px 2px -1px oklch(0.70 0.17 28.12 / 30% / 0.05);
-    --shadow-md: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.05), 0px 2px 4px -1px oklch(0.70 0.17 28.12 / 30% / 0.05);
-    --shadow-lg: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.05), 0px 4px 6px -1px oklch(0.70 0.17 28.12 / 30% / 0.05);
-    --shadow-xl: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.05), 0px 8px 10px -1px oklch(0.70 0.17 28.12 / 30% / 0.05);
-    --shadow: 0px 1px 3px 0px oklch(0.70 0.17 28.12 / 30% / 0.05), 0px 1px 2px -1px oklch(0.70 0.17 28.12 / 30% / 0.05);
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+    --radius: 8px;
+    --shadow-xs: 0px 1px 2px 0px hsla(50, 15%, 20%, 0.05);
+    --shadow-sm: 0px 2px 4px -1px hsla(50, 15%, 20%, 0.08), 0px 1px 2px -1px hsla(50, 15%, 20%, 0.06);
+    --shadow-md: 0px 4px 8px -2px hsla(50, 15%, 20%, 0.10), 0px 2px 4px -2px hsla(50, 15%, 20%, 0.08);
+    --shadow-lg: 0px 8px 16px -4px hsla(50, 15%, 20%, 0.12), 0px 4px 8px -4px hsla(50, 15%, 20%, 0.10);
+    --shadow-xl: 0px 14px 28px -6px hsla(50, 15%, 20%, 0.14), 0px 6px 12px -6px hsla(50, 15%, 20%, 0.12);
+    --shadow: 0px 2px 4px -1px hsla(50, 15%, 20%, 0.08), 0px 1px 2px -1px hsla(50, 15%, 20%, 0.06);
     color-scheme: light;
   }
   
@@ -267,20 +269,18 @@
   --color-chart-4: var(--chart4);
   --color-chart-5: var(--chart5);
   --color-chart-outline: var(--chartOutline);
-  --color-ivory: var(--ivory);
-  --color-olive: var(--olive);
-  --color-cream: var(--cream);
-  --color-pale-yellow: var(--pale-yellow);
-  --color-orange: var(--orange);
-  --color-white: var(--white);
-  --color-lime: var(--lime);
-  --color-mint: var(--mint);
-  --color-coral: var(--coral);
-  --color-gold: var(--gold);
-  --color-lime-light: var(--lime-light);
-  --color-burnt-orange: var(--burnt-orange);
-  --color-rust: var(--rust);
-  --color-light-mint: var(--light-mint);
+  --color-porcelain-cream: var(--porcelain-cream);
+  --color-deep-ink: var(--deep-ink);
+  --color-parchment: var(--parchment);
+  --color-antique-nickel: var(--antique-nickel);
+  --color-gucci-green: var(--gucci-green);
+  --color-gucci-red: var(--gucci-red);
+  --color-gilded-gold: var(--gilded-gold);
+  --color-chart-forest: var(--chart-forest);
+  --color-chart-merlot: var(--chart-merlot);
+  --color-chart-olive: var(--chart-olive);
+  --color-chart-brass: var(--chart-brass);
+  --color-chart-porcelain: var(--chart-porcelain);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -304,32 +304,32 @@
 
 /* ───────── Typography variables computed from brand roles (ensure effect on h1..h6 etc) ───────── */
 :root{
-  --font-heading: 'Comfortaa', 'Quicksand', cursive, sans-serif;
-  --font-body: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-body: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-p: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-default: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-blockquote: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-heading: 'Comfortaa', 'Quicksand', cursive, sans-serif;
-  --font-display: 'Comfortaa', 'Quicksand', cursive, sans-serif;
-  --font-h1: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  --font-heading: 'Cormorant Garamond', 'Garamond', 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-p: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-default: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-blockquote: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Cormorant Garamond', 'Garamond', 'Times New Roman', serif;
+  --font-display: 'Cormorant Garamond', 'Garamond', 'Times New Roman', serif;
+  --font-h1: 'Cormorant Garamond', 'Garamond', 'Times New Roman', serif;
   --font-size-h1: 2.25rem;
   --line-height-h1: 1.1;
   --letter-spacing-h1: 0em;
-  --font-h2: 'Comfortaa', 'Quicksand', cursive, sans-serif;
-  --font-h3: 'Comfortaa', 'Quicksand', cursive, sans-serif;
-  --font-h4: 'Comfortaa', 'Quicksand', cursive, sans-serif;
-  --font-h5: 'Comfortaa', 'Quicksand', cursive, sans-serif;
-  --font-h6: 'Comfortaa', 'Quicksand', cursive, sans-serif;
-  --font-button: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-label: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-input: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-caption: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-badge: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-code: 'Source Code Pro', 'Fira Code', Consolas, monospace;
-  --font-mono: 'Source Code Pro', 'Fira Code', Consolas, monospace;
-  --font-serif: 'Quicksand', 'Nunito', system-ui, sans-serif;
-  --font-sans: 'Quicksand', 'Nunito', system-ui, sans-serif;
+  --font-h2: 'Cormorant Garamond', 'Garamond', 'Times New Roman', serif;
+  --font-h3: 'Cormorant Garamond', 'Garamond', 'Times New Roman', serif;
+  --font-h4: 'Cormorant Garamond', 'Garamond', 'Times New Roman', serif;
+  --font-h5: 'Cormorant Garamond', 'Garamond', 'Times New Roman', serif;
+  --font-h6: 'Cormorant Garamond', 'Garamond', 'Times New Roman', serif;
+  --font-button: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-label: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-input: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-caption: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-badge: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-code: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+  --font-mono: 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+  --font-serif: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* ───────── Typography consumption overrides (ensure effect in consumers) ───────── */
@@ -396,3 +396,522 @@ blockquote, [data-typography-role="blockquote"] {
   line-height: var(--line-height-button, 1.2) !important;
   letter-spacing: var(--letter-spacing-button, var(--letter-spacing-heading, 0em)) !important;
 }
+
+/* ───────────────── Animations (unscoped export: glowing-border) ───────────────── */
+/* Universal animation reset - prevents style bleeding between themes */
+[data-slot="button"]:not([class*="link"]) {
+  box-shadow: none !important;
+  transform: translate(0px, 0px) !important;
+  transition: all 200ms ease !important;
+}
+[data-slot="button"]:not([class*="link"]) {
+  box-shadow: none !important;
+  transform: translate(0px, 0px) !important;
+}
+[data-slot="button"]:not([class*="link"]):hover:not(:disabled) {
+  box-shadow: none !important;
+  transform: translate(0px, 0px) !important;
+}
+[data-slot="button"]:not([class*="link"]):focus-visible:not(:disabled) {
+  box-shadow: 0 0 0 2px var(--ring) !important;
+  transform: translate(0px, 0px) !important;
+}
+[data-slot="button"]:not([class*="link"]):active:not(:disabled) {
+  box-shadow: none !important;
+  transform: translate(0px, 0px) !important;
+}
+[data-slot="button"]:not([class*="link"]):disabled {
+  box-shadow: none !important;
+  transform: translate(0px, 0px) !important;
+}
+
+/* Theme-specific styles for glowing-border */
+[data-slot="button"]:not([class*="link"]) {
+  transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 200ms ease-out !important;
+  transform-origin: center center !important;
+  will-change: border-color, box-shadow, opacity !important;
+}
+
+      @keyframes glow-pulse-hover {
+        0% { 
+          box-shadow: 
+            0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent),
+            0 0 8px color-mix(in srgb, var(--primary) 20%, transparent),
+            0 0 16px color-mix(in srgb, var(--primary) 10%, transparent);
+        }
+        50% { 
+          box-shadow: 
+            0 0 0 2px color-mix(in srgb, var(--primary) 50%, transparent),
+            0 0 20px color-mix(in srgb, var(--primary) 35%, transparent),
+            0 0 32px color-mix(in srgb, var(--primary) 20%, transparent),
+            0 0 48px color-mix(in srgb, var(--primary) 10%, transparent);
+        }
+        100% { 
+          box-shadow: 
+            0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent),
+            0 0 8px color-mix(in srgb, var(--primary) 20%, transparent),
+            0 0 16px color-mix(in srgb, var(--primary) 10%, transparent);
+        }
+      }
+    
+
+      @keyframes glow-pulse-focus {
+        0% { 
+          box-shadow: 
+            0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent),
+            0 0 12px color-mix(in srgb, var(--primary) 30%, transparent),
+            0 0 24px color-mix(in srgb, var(--primary) 15%, transparent),
+            inset 0 0 8px color-mix(in srgb, var(--primary) 10%, transparent);
+        }
+        50% { 
+          box-shadow: 
+            0 0 0 3px color-mix(in srgb, var(--primary) 60%, transparent),
+            0 0 24px color-mix(in srgb, var(--primary) 45%, transparent),
+            0 0 40px color-mix(in srgb, var(--primary) 25%, transparent),
+            0 0 64px color-mix(in srgb, var(--primary) 15%, transparent),
+            inset 0 0 16px color-mix(in srgb, var(--primary) 20%, transparent);
+        }
+        100% { 
+          box-shadow: 
+            0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent),
+            0 0 12px color-mix(in srgb, var(--primary) 30%, transparent),
+            0 0 24px color-mix(in srgb, var(--primary) 15%, transparent),
+            inset 0 0 8px color-mix(in srgb, var(--primary) 10%, transparent);
+        }
+      }
+    
+
+      @keyframes glow-shimmer-sweep {
+        0% {
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            transparent 30%,
+            color-mix(in oklch, var(--primary) 15%, transparent) 50%,
+            transparent 70%,
+            transparent 100%
+          );
+          background-position: -100% center;
+          background-size: 200% 100%;
+        }
+        50% {
+          background-position: 100% center;
+        }
+        100% {
+          background-position: 200% center;
+        }
+      }
+    
+
+      @keyframes glow-ripple-continuous {
+        0% {
+          box-shadow: 
+            0 0 0 0px color-mix(in oklch, var(--primary) 40%, transparent),
+            0 0 0 0px color-mix(in oklch, var(--primary) 20%, transparent),
+            0 0 0 0px color-mix(in oklch, var(--primary) 10%, transparent);
+        }
+        30% {
+          box-shadow: 
+            0 0 0 8px color-mix(in oklch, var(--primary) 20%, transparent),
+            0 0 0 16px color-mix(in oklch, var(--primary) 10%, transparent),
+            0 0 0 24px color-mix(in oklch, var(--primary) 5%, transparent);
+        }
+        60% {
+          box-shadow: 
+            0 0 0 16px color-mix(in oklch, var(--primary) 10%, transparent),
+            0 0 0 32px color-mix(in oklch, var(--primary) 5%, transparent),
+            0 0 0 48px transparent;
+        }
+        100% {
+          box-shadow: 
+            0 0 0 24px transparent,
+            0 0 0 48px transparent,
+            0 0 0 72px transparent;
+        }
+      }
+    
+
+      @keyframes glow-flash {
+        0% {
+          box-shadow: 
+            0 0 0 1px color-mix(in srgb, var(--primary) 60%, transparent),
+            0 0 6px color-mix(in srgb, var(--primary) 40%, transparent),
+            0 0 12px color-mix(in srgb, var(--primary) 30%, transparent);
+        }
+        50% {
+          box-shadow: 
+            0 0 0 4px color-mix(in srgb, var(--primary) 80%, transparent),
+            0 0 16px color-mix(in srgb, var(--primary) 60%, transparent),
+            0 0 32px color-mix(in srgb, var(--primary) 40%, transparent),
+            0 0 48px color-mix(in srgb, var(--primary) 20%, transparent);
+        }
+        100% {
+          box-shadow: 
+            0 0 0 2px color-mix(in srgb, var(--primary) 50%, transparent),
+            0 0 8px color-mix(in srgb, var(--primary) 30%, transparent),
+            0 0 16px color-mix(in srgb, var(--primary) 20%, transparent);
+        }
+      }
+    
+
+      @keyframes glow-text-pulse {
+        0% {
+          text-shadow: 
+            0 0 4px color-mix(in srgb, var(--primary) 40%, transparent),
+            0 0 8px color-mix(in srgb, var(--primary) 20%, transparent);
+        }
+        50% {
+          text-shadow: 
+            0 0 8px color-mix(in srgb, var(--primary) 60%, transparent),
+            0 0 16px color-mix(in srgb, var(--primary) 35%, transparent),
+            0 0 24px color-mix(in srgb, var(--primary) 15%, transparent);
+        }
+        100% {
+          text-shadow: 
+            0 0 4px color-mix(in srgb, var(--primary) 40%, transparent),
+            0 0 8px color-mix(in srgb, var(--primary) 20%, transparent);
+        }
+      }
+    
+
+      @keyframes glow-text-wave {
+        0% {
+          text-shadow: 
+            0 0 6px color-mix(in oklch, var(--primary) 50%, transparent),
+            0 0 12px color-mix(in oklch, var(--primary) 25%, transparent);
+        }
+        25% {
+          text-shadow: 
+            0 0 8px color-mix(in oklch, var(--primary) 60%, transparent),
+            0 0 16px color-mix(in oklch, var(--primary) 30%, transparent),
+            2px 0 12px color-mix(in oklch, var(--primary) 20%, transparent);
+        }
+        50% {
+          text-shadow: 
+            0 0 10px color-mix(in oklch, var(--primary) 70%, transparent),
+            0 0 20px color-mix(in oklch, var(--primary) 35%, transparent),
+            0 2px 16px color-mix(in oklch, var(--primary) 25%, transparent);
+        }
+        75% {
+          text-shadow: 
+            0 0 8px color-mix(in oklch, var(--primary) 60%, transparent),
+            0 0 16px color-mix(in oklch, var(--primary) 30%, transparent),
+            -2px 0 12px color-mix(in oklch, var(--primary) 20%, transparent);
+        }
+        100% {
+          text-shadow: 
+            0 0 6px color-mix(in oklch, var(--primary) 50%, transparent),
+            0 0 12px color-mix(in oklch, var(--primary) 25%, transparent);
+        }
+      }
+    
+
+      @keyframes glow-text-focus {
+        0% {
+          text-shadow: 
+            0 0 6px color-mix(in srgb, var(--primary) 60%, transparent),
+            0 0 12px color-mix(in srgb, var(--primary) 30%, transparent),
+            0 0 18px color-mix(in srgb, var(--primary) 15%, transparent);
+        }
+        50% {
+          text-shadow: 
+            0 0 12px color-mix(in srgb, var(--primary) 80%, transparent),
+            0 0 24px color-mix(in srgb, var(--primary) 50%, transparent),
+            0 0 36px color-mix(in srgb, var(--primary) 25%, transparent),
+            0 0 48px color-mix(in srgb, var(--primary) 10%, transparent);
+        }
+        100% {
+          text-shadow: 
+            0 0 6px color-mix(in srgb, var(--primary) 60%, transparent),
+            0 0 12px color-mix(in srgb, var(--primary) 30%, transparent),
+            0 0 18px color-mix(in srgb, var(--primary) 15%, transparent);
+        }
+      }
+    
+
+      @keyframes glow-text-flash {
+        0% {
+          text-shadow: 
+            0 0 4px color-mix(in srgb, var(--primary) 70%, transparent),
+            0 0 8px color-mix(in srgb, var(--primary) 40%, transparent);
+        }
+        100% {
+          text-shadow: 
+            0 0 12px color-mix(in srgb, var(--primary) 90%, transparent),
+            0 0 24px color-mix(in srgb, var(--primary) 60%, transparent),
+            0 0 36px color-mix(in srgb, var(--primary) 30%, transparent);
+        }
+      }
+    
+
+      @keyframes glow-input-hover {
+        0% {
+          box-shadow: 
+            0 0 0 1px color-mix(in srgb, var(--primary) 20%, transparent),
+            0 0 4px color-mix(in srgb, var(--primary) 15%, transparent);
+        }
+        50% {
+          box-shadow: 
+            0 0 0 2px color-mix(in srgb, var(--primary) 35%, transparent),
+            0 0 12px color-mix(in srgb, var(--primary) 25%, transparent),
+            0 0 20px color-mix(in srgb, var(--primary) 10%, transparent);
+        }
+        100% {
+          box-shadow: 
+            0 0 0 1px color-mix(in srgb, var(--primary) 20%, transparent),
+            0 0 4px color-mix(in srgb, var(--primary) 15%, transparent);
+        }
+      }
+    
+
+      @keyframes glow-input-focus {
+        0% {
+          box-shadow: 
+            0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent),
+            0 0 8px color-mix(in srgb, var(--primary) 25%, transparent),
+            inset 0 0 4px color-mix(in srgb, var(--primary) 10%, transparent);
+        }
+        50% {
+          box-shadow: 
+            0 0 0 3px color-mix(in srgb, var(--primary) 60%, transparent),
+            0 0 16px color-mix(in srgb, var(--primary) 40%, transparent),
+            0 0 24px color-mix(in srgb, var(--primary) 20%, transparent),
+            inset 0 0 8px color-mix(in srgb, var(--primary) 15%, transparent);
+        }
+        100% {
+          box-shadow: 
+            0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent),
+            0 0 8px color-mix(in srgb, var(--primary) 25%, transparent),
+            inset 0 0 4px color-mix(in srgb, var(--primary) 10%, transparent);
+        }
+      }
+    
+
+      @keyframes glow-input-typing {
+        0% {
+          box-shadow: 
+            0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent),
+            0 0 4px color-mix(in srgb, var(--primary) 30%, transparent);
+        }
+        50% {
+          box-shadow: 
+            0 0 0 2px color-mix(in srgb, var(--primary) 70%, transparent),
+            0 0 8px color-mix(in srgb, var(--primary) 45%, transparent),
+            0 0 12px color-mix(in srgb, var(--primary) 20%, transparent);
+        }
+        100% {
+          box-shadow: 
+            0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent),
+            0 0 4px color-mix(in srgb, var(--primary) 30%, transparent);
+        }
+      }
+    
+
+      @keyframes glow-breathe-ambient {
+        0%, 100% {
+          box-shadow: 
+            0 0 0 1px color-mix(in oklch, var(--primary) 15%, transparent),
+            0 0 8px color-mix(in oklch, var(--primary) 10%, transparent),
+            0 0 16px color-mix(in oklch, var(--primary) 5%, transparent);
+          filter: brightness(1) saturate(1);
+        }
+        50% {
+          box-shadow: 
+            0 0 0 2px color-mix(in oklch, var(--primary) 25%, transparent),
+            0 0 16px color-mix(in oklch, var(--primary) 20%, transparent),
+            0 0 32px color-mix(in oklch, var(--primary) 10%, transparent),
+            0 0 48px color-mix(in oklch, var(--primary) 5%, transparent);
+          filter: brightness(1.05) saturate(1.1);
+        }
+      }
+    
+
+      @keyframes glow-orbit {
+        0% {
+          background: radial-gradient(
+            circle at 0% 50%,
+            color-mix(in oklch, var(--primary) 20%, transparent) 0%,
+            transparent 50%
+          );
+        }
+        25% {
+          background: radial-gradient(
+            circle at 50% 0%,
+            color-mix(in oklch, var(--primary) 20%, transparent) 0%,
+            transparent 50%
+          );
+        }
+        50% {
+          background: radial-gradient(
+            circle at 100% 50%,
+            color-mix(in oklch, var(--primary) 20%, transparent) 0%,
+            transparent 50%
+          );
+        }
+        75% {
+          background: radial-gradient(
+            circle at 50% 100%,
+            color-mix(in oklch, var(--primary) 20%, transparent) 0%,
+            transparent 50%
+          );
+        }
+        100% {
+          background: radial-gradient(
+            circle at 0% 50%,
+            color-mix(in oklch, var(--primary) 20%, transparent) 0%,
+            transparent 50%
+          );
+        }
+      }
+    
+
+.glow-interactive {
+  
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    
+}
+
+.glow-ambient {
+  
+      animation: glow-breathe-ambient 4s ease-in-out infinite;
+    
+}
+
+.glow-orbit-effect {
+  
+      position: relative;
+      overflow: hidden;
+      animation: glow-orbit 6s linear infinite;
+    
+}
+
+.glow-enhanced {
+  
+      filter: drop-shadow(0 0 8px color-mix(in oklch, var(--primary) 25%, transparent));
+    
+}
+
+.glow-alive {
+  
+      position: relative;
+      background: linear-gradient(
+        45deg,
+        transparent 30%,
+        color-mix(in oklch, var(--primary) 5%, transparent) 50%,
+        transparent 70%
+      );
+      background-size: 200% 200%;
+      animation: glow-shimmer-sweep 4s ease-in-out infinite;
+    
+}
+
+.glow-particle-effect {
+  
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(
+        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        color-mix(in oklch, var(--primary) 15%, transparent) 0%,
+        transparent 40%
+      );
+    
+}
+
+.glow-reactive {
+  
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      background: linear-gradient(
+        135deg,
+        transparent 0%,
+        color-mix(in oklch, var(--primary) 8%, transparent) 25%,
+        color-mix(in oklch, var(--primary) 12%, transparent) 50%,
+        color-mix(in oklch, var(--primary) 8%, transparent) 75%,
+        transparent 100%
+      );
+      background-size: 300% 300%;
+      animation: glow-shimmer-sweep 5s ease-in-out infinite alternate;
+    
+}
+
+/* Button variant-specific animations for glowing-border theme */
+/* Global button styles for glowing-border theme */
+[data-slot="button"] {
+  transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 200ms ease-out !important;
+  transform-origin: center center !important;
+  will-change: border-color, box-shadow, opacity !important;
+}
+
+/* Link animations for glowing-border theme */
+[data-slot="link"] {
+}
+
+[data-slot="link"]:hover:not(:disabled) {
+  color: color-mix(in srgb, var(--primary) 90%, var(--foreground)) !important;
+  text-shadow: 
+          0 0 4px color-mix(in srgb, var(--primary) 40%, transparent),
+          0 0 8px color-mix(in srgb, var(--primary) 20%, transparent)
+         !important;
+  animation: glow-text-pulse 2s ease-in-out infinite !important;
+}
+
+[data-slot="link"]:focus-visible:not(:disabled) {
+  color: var(--primary) !important;
+  text-shadow: 
+          0 0 6px color-mix(in srgb, var(--primary) 60%, transparent),
+          0 0 12px color-mix(in srgb, var(--primary) 30%, transparent),
+          0 0 18px color-mix(in srgb, var(--primary) 15%, transparent)
+         !important;
+  outline: 2px solid color-mix(in srgb, var(--primary) 50%, transparent) !important;
+  outline-offset: 2px !important;
+  animation: glow-text-focus 1.8s ease-in-out infinite !important;
+}
+
+[data-slot="link"]:active:not(:disabled) {
+  color: color-mix(in srgb, var(--primary) 80%, var(--foreground)) !important;
+  text-shadow: 
+          0 0 12px color-mix(in srgb, var(--primary) 90%, transparent),
+          0 0 24px color-mix(in srgb, var(--primary) 60%, transparent),
+          0 0 36px color-mix(in srgb, var(--primary) 30%, transparent)
+         !important;
+  animation: glow-text-flash 0.2s ease-out !important;
+}
+
+[data-slot="link"]:disabled {
+  opacity: 0.5 !important;
+  text-shadow: none !important;
+  color: var(--muted-foreground) !important;
+}
+
+/* Input animations for glowing-border theme */
+[data-slot="input"] {
+  box-shadow: none !important;
+  border: 1px solid var(--border) !important;
+}
+
+[data-slot="input"]:hover:not(:disabled) {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 20%, transparent), 0 0 4px color-mix(in srgb, var(--primary) 15%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 40%, var(--border)) !important;
+  animation: glow-input-hover 2.5s ease-in-out infinite !important;
+}
+
+[data-slot="input"]:focus-visible:not(:disabled) {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 40%, transparent), 0 0 8px color-mix(in srgb, var(--primary) 25%, transparent), inset 0 0 4px color-mix(in srgb, var(--primary) 10%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 60%, transparent) !important;
+  animation: glow-input-focus 2s ease-in-out infinite !important;
+}
+
+[data-slot="input"]:active:not(:disabled) {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent), 0 0 4px color-mix(in srgb, var(--primary) 30%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 70%, transparent) !important;
+  animation: glow-input-typing 1.5s ease-in-out infinite !important;
+}
+
+[data-slot="input"]:disabled {
+  box-shadow: none !important;
+  opacity: 0.5 !important;
+  border: 1px solid var(--border) !important;
+  filter: grayscale(0.8) !important;
+}
+
