@@ -1,0 +1,138 @@
+### PRD: Nextgen CLI License Validation
+
+- **Product**: Nextgen CLI license validation against backend
+- **Owner**: CLI + Platform
+- **Base URL**: https://nextgen-theme.vercel.app/
+- **Primary goal**: Prevent unlicensed usage while keeping developer UX fast, simple, and resilient (online + limited offline)
+
+### Problem Statement
+Developers need a lightweight way for the Go-based Nextgen CLI to verify that a user’s account is licensed before running commands. Validation must be secure, low-latency, and work with limited offline grace.
+
+### Goals
+- Enforce licenses for the `nextgen-cli` product.
+- Low-friction UX: one-time API key issuance; automatic assertions on each run.
+- Secure: server-signed RS256 assertions; revocable per-user API keys.
+- Offline grace: allow short offline usage windows without server access.
+
+### Non‑Goals
+- Implement purchase/checkout flows (handled in dashboard/Stripe).
+- Replace Clerk authentication or Stripe billing.
+- Manage machine activation limits.
+
+### Personas
+- Developer User: runs the CLI locally; must be licensed.
+- Platform Admin: rotates keys, inspects usage via dashboard.
+
+### Assumptions
+- Backend has Clerk + Stripe configured; entitlements are updated via webhook and verify endpoints.
+- API routes exist:
+  - POST /api/cli/key/issue (issue API key; browser session required)
+  - POST /api/cli/key/assertion (exchange API key for short‑lived assertion)
+- Server env: `API_KEY_SECRET`, `JWT_PRIVATE_KEY` present.
+- CLI can be configured with base URL and RSA public key.
+
+### Functional Requirements
+FR1: Issue API Key
+- Endpoint: POST /api/cli/key/issue
+- Auth: Clerk session cookie (browser)
+- Response: `{ apiKey: string, version: number }`
+- Precondition: user entitlement status is `active`
+- Purpose: user copies `apiKey` into CLI config.
+
+FR2: Request Assertion (runtime)
+- Endpoint: POST /api/cli/key/assertion
+- Headers: `X-CLI-Key: <apiKey>`, `Content-Type: application/json`
+- Body: `{ "product": "nextgen-cli", "version"?: string }`
+- Response: `{ "assertion": string (RS256 JWT), "expires_in": number }`
+- Errors: `401` invalid/revoked key; `403` not entitled/expired/wrong product.
+
+FR3: Verify Assertion (client)
+- CLI verifies RS256 JWT using configured RSA public key.
+- Validate: `iss == "nextgen"`, `typ == "license_assertion"`, `product == "nextgen-cli"`, `status == "active"`, `exp` not elapsed (or within offline grace).
+- Deny execution on failure with actionable guidance.
+
+FR4: Offline Grace
+- Server includes `exp` and `offline_grace_hours` in assertion claims.
+- CLI caches the assertion locally and permits usage within grace after `exp`.
+
+FR5: Key Revocation
+- Server enforces per-user `key_version`. Issued API key encodes `ver`; mismatch returns `401 Key revoked`.
+- Admin can rotate user keys from dashboard (UI OOS; backend supported).
+
+### Non‑Functional Requirements
+- Security: Private RSA key never leaves server; CLI ships/loads only public key. API keys are HS256 tokens signed with `API_KEY_SECRET` and scoped to user ID + version.
+- Performance: Assertion latency target ≤ 200 ms P95; CLI calls once per command invocation.
+- Reliability: Assertion endpoint 99.9% monthly uptime; CLI retries once with small backoff on transient network failures.
+- Privacy: JWT contains minimal data: `sub`, `product`, `plan`, `status`, `offline_grace_hours`, standard JWT claims.
+
+### API Details
+Issue Key
+- POST /api/cli/key/issue → `{ apiKey, version }`
+- Requires logged‑in browser session; returns `403` if entitlement not `active`.
+
+Runtime Assertion
+- POST /api/cli/key/assertion
+- Request:
+  - Headers: `X-CLI-Key: <apiKey>`
+  - Body: `{"product":"nextgen-cli","version":"vX.Y.Z"}`
+- Response: `{"assertion":"<RS256-JWT>","expires_in":86400}`
+- Errors:
+  - 401: Missing/invalid/revoked key
+  - 403: Not entitled / expired / wrong product
+
+Assertion Claims (JWT, RS256; `iss=nextgen`)
+- Required: `typ="license_assertion"`, `sub`, `product`, `plan`, `status`, `offline_grace_hours`, `exp`, `iat`
+
+### CLI Configuration
+- NEXTGEN_BASE_URL=https://nextgen-theme.vercel.app
+- NEXTGEN_CLI_API_KEY=<issued key>
+- NEXTGEN_JWT_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----"
+- Optional: NEXTGEN_CACHE_PATH for assertion caching (default platform-appropriate path)
+
+### UX Flows
+New user
+1) Purchase on dashboard → entitlement becomes `active`.
+2) On dashboard (logged in), click “Issue CLI Key” or run console call to POST /api/cli/key/issue.
+3) Add NEXTGEN_CLI_API_KEY to CLI config.
+
+CLI run
+1) CLI → POST /api/cli/key/assertion with X-CLI-Key.
+2) Verify JWT, cache it, proceed.
+3) If offline: verify cached JWT; if within grace, proceed; else deny with message.
+
+Failure messages (CLI)
+- 401: “Your CLI key is invalid or revoked. Re-issue a key from your dashboard.”
+- 403: “Your account is not entitled (status: X). Purchase or manage billing in your dashboard.”
+
+### Telemetry and Observability
+- Server increments: `assertion_count`, `last_assertion_at`, `last_version` (user private metadata).
+- Logs: 4xx reasons (no secrets), request latency, rate limiting counters (future).
+- No PII in logs or JWT payload beyond `sub`.
+
+### Edge Cases
+- Clock skew: standard JWT leeway applies; server `exp` authoritative.
+- Multiple machines: allowed; revocation via `key_version` invalidates all issued keys.
+- Product mismatch: server returns 403; CLI shows corrective message.
+- Expired entitlement: server 403; CLI denies until purchase/reactivation.
+
+### Dependencies
+- Clerk user accounts and private metadata.
+- Stripe checkout + webhooks keeping entitlements in sync.
+- Server env: `API_KEY_SECRET`, `JWT_PRIVATE_KEY` present and rotated per policy.
+
+### Risks & Mitigations
+- Key leakage: quick per-user rotation via `key_version`; recommend secure OS vault storage.
+- Downtime: offline grace reduces disruption; status page recommended (future).
+- Public key rotation: publish new public key; support overlapping keys during rotation window.
+
+### Acceptance Criteria
+- With an active entitlement, POST /api/cli/key/assertion returns 200 and a verifiable RS256 assertion; CLI proceeds.
+- With revoked key, server returns 401; CLI denies and message instructs re-issuance.
+- With expired assertion but within `offline_grace_hours`, CLI allows offline usage; beyond grace, denies.
+- Product mismatch returns 403 and CLI blocks.
+
+### Rollout Plan
+- Phase 1: Document envs, publish RSA public key, ship CLI validation module.
+- Phase 2: Add “Issue CLI Key” button to dashboard to copy key to clipboard.
+- Phase 3: Optional rate limiting and a public endpoint to fetch current RSA public key.
+

@@ -6,7 +6,7 @@ import { signCliApiKey } from "@/lib/jwt";
 export const runtime = "nodejs";
 
 export async function POST() {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
   const ent = await getCliEntitlement(userId);

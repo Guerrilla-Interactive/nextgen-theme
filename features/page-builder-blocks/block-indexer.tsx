@@ -48,6 +48,7 @@ import { VideoSectionBlockComponent, videoSectionBlockQuery, videoSectionBlockSc
 import { MasterBlockComponent, masterBlockQuery, masterBlockSchema } from "./blocks/master-block";
 import { AboutUsBlockComponent, aboutUsBlockQuery, aboutUsBlockSchema } from "./blocks/about-us-block";
 import { ContactFormBlockComponent, contactFormBlockQuery, contactFormBlockSchema } from "./blocks/contact-form-block";
+
 // ADD VALUE 1 ABOVE
 
 export const BlockDataMap: {

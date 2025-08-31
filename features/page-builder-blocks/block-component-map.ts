@@ -46,6 +46,8 @@ import { MasterBlockComponent } from "./blocks/master-block";
 import { AboutUsBlockComponent } from "./blocks/about-us-block";
 import { ContactFormBlockComponent } from "./blocks/contact-form-block";
 
+// ADD VALUE 1 ABOVE
+
 export const BlockComponentMap: {
   [key: string]: React.ComponentType<any> | undefined;
 } = {
@@ -96,6 +98,8 @@ export const BlockComponentMap: {
   "master-block": MasterBlockComponent,
   "about-us-block": AboutUsBlockComponent,
   "contact-form-block": ContactFormBlockComponent,
+
+  // ADD VALUE 2 ABOVE
 };
 
 export type BlockComponentKey = keyof typeof BlockComponentMap;

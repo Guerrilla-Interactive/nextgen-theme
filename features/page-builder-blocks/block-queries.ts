@@ -14,6 +14,8 @@ import masterBlockQuery from "./blocks/master-block/master.block-query";
 import aboutUsBlockQuery from "./blocks/about-us-block/about-us.block-query";
 import contactFormBlockQuery from "./blocks/contact-form-block/contact-form.block-query";
 
+// ADD VALUE 1 ABOVE
+
 import carousel1BlockQuery from "./old-blocks/carousel-block/carousel-1-block/carousel-1.block-query";
 import carousel2BlockQuery from "./old-blocks/carousel-block/carousel-2-block/carousel-2.block-query";
 import cta1BlockQuery from "./old-blocks/cta-blocks/cta-1-block/cta-1.block-query";
@@ -124,7 +126,9 @@ blocks[]{
   ${ videoSectionBlockQuery  },
   ${ masterBlockQuery  },
   ${ aboutUsBlockQuery  },
-  ${ contactFormBlockQuery  }
+  ${ contactFormBlockQuery  },
+
+  // ADD VALUE 2 ABOVE
 }
 `;
 

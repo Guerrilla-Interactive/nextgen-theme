@@ -5,7 +5,7 @@ alwaysApply: false
 ---
 
 ### All Commands
-Updated: 2025-08-30T22:18:26Z UTC
+Updated: 2025-08-31T13:01:18Z UTC
 
 - Add Gucci theme assets
 - Add Nextgen Pagebuilder Block
@@ -175,7 +175,8 @@ Updated: 2025-08-30T22:18:26Z UTC
 ┗ 📂 features
    ┗ 📂 page-builder-blocks
       ┣ 📜 block-component-exporter.tsx
-      ┣ 📜 block-indexer.tsx
+      ┣ 📜 block-component-map.ts
+      ┣ 📜 block-queries.ts
       ┗ 📂 blocks
          ┗ 📂 <componentname>-block
             ┣ 📜 <componentname>.block-component.tsx
