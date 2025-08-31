@@ -1,3 +1,5 @@
+"use client";
+
 import { BlockDataMap } from "./block-indexer";
 
 export function Blocks({ blocks }: { blocks?: Sanity.Block[] }) {
