@@ -215,7 +215,7 @@ blocks[]{
   ${ videoSectionBlockQuery  },
 ${ masterBlockQuery  },
 ${ aboutUsBlockQuery  },
-${ contactFormBlockQuery  },
+${ contactFormBlockQuery  }
   // ADD VALUE 3 ABOVE
 }
 `;
