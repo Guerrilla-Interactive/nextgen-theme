@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { UpgradeButtons } from "./UpgradeButtons";
 import { VerifyUpgrade } from "./VerifyUpgrade";
 import { Receipts } from "./Receipts";
+import { CompleteLink } from "./CompleteLink";
 
 
 export const dynamic = "force-dynamic"; // optional: avoid caching
@@ -19,6 +20,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
 
   const params = await searchParams;
   const sessionId = typeof params?.session_id === "string" ? params.session_id : undefined;
+  const linkCode = typeof params?.link_code === "string" ? params.link_code : undefined;
 
   return (
     <>
@@ -56,6 +58,12 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         {sessionId && (
           <div className="rounded border p-3">
             <VerifyUpgrade sessionId={sessionId} />
+          </div>
+        )}
+
+        {linkCode && (
+          <div className="rounded border p-3">
+            <CompleteLink code={linkCode} />
           </div>
         )}
 

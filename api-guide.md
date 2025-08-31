@@ -18,7 +18,7 @@ Notes:
 ### Browser linking flow (auto login detection)
 Recommended for CLIs: open the website, detect login automatically, and return an API key to the CLI without manual copy/paste.
 
-Proposed endpoints (simple device‑link pattern):
+Available endpoints (device‑link pattern):
 - `POST /api/cli/link/start`
   - Body: `{ version?: string }`
   - Response: `{ code: string, link_url: string, expires_in: number }`
@@ -44,13 +44,13 @@ Security notes:
 CLI cURL examples for the link flow:
 ```bash
 # 1) Start link
-curl -X POST https://your.site/api/cli/link/start -H "Content-Type: application/json" -d '{"version":"1.2.3"}'
+curl -X POST https://nextgen-theme.vercel.app/api/cli/link/start -H "Content-Type: application/json" -d '{"version":"1.2.3"}'
 
 # 2) Poll until ready
-curl "https://your.site/api/cli/link/poll?code=abc123"
+curl "https://nextgen-theme.vercel.app/api/cli/link/poll?code=abc123"
 
 # 3) (Browser) completes the link
-curl -X POST https://your.site/api/cli/link/complete \
+curl -X POST https://nextgen-theme.vercel.app/api/cli/link/complete \
   -H "Content-Type: application/json" \
   --cookie "<clerk_session_cookies>" \
   -d '{"code":"abc123"}'
@@ -142,7 +142,7 @@ func LinkAndFetchAPIKey(apiBase string) (string, error) {
 
 ### cURL example
 ```bash
-curl -X POST https://your.site/api/cli/key/assertion \
+curl -X POST https://nextgen-theme.vercel.app/api/cli/key/assertion \
   -H "X-CLI-Key: <api_key>" \
   -H "Content-Type: application/json" \
   -d '{"product":"nextgen-cli","version":"1.2.3"}'
@@ -211,6 +211,9 @@ func (c *Client) offlineFallback() string {
 Usage pattern:
 - On startup or before a protected action, call `FetchAssertion`.
 - If it returns a non‑empty token, proceed; if empty, prompt the user to re‑link (open Dashboard, issue a new key, paste it back).
+
+### Configuration
+- Optional: `CLI_LINK_TTL_SEC` controls how long link codes remain valid (default 300 seconds). Set in your environment as needed.
 
 ### Linking UX in external apps
 - Provide a command like `yourapp auth login` that:
