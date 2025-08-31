@@ -1,6 +1,6 @@
 "use client";
 
-import { BlockDataMap } from "./block-indexer";
+import { BlockComponentMap } from "./block-component-map";
 
 export function Blocks({ blocks }: { blocks?: Sanity.Block[] }) {
     if (!blocks) return null;
@@ -8,7 +8,7 @@ export function Blocks({ blocks }: { blocks?: Sanity.Block[] }) {
       <>
         {blocks.map((block, index) => {
           const key = block._key || index;
-          const Component = BlockDataMap[block._type]?.component;
+          const Component = BlockComponentMap[block._type];
           if (!Component) return <div data-type={block._type} key={key} />;
           return <Component {...block} key={key} />;
         })}

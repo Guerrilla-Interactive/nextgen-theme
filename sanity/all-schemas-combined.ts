@@ -7,7 +7,6 @@ import { allUnorganizedDocumentSchemas } from "./type-organized-schemas/all-unor
 import { allFieldSchemas } from "./type-organized-schemas/fields/all-field-schemas";
 import { allBlockSchemas } from "@/features/page-builder-blocks/block-indexer";
 import { allDeskOrganizedDocumentSchemas } from "./desk-organized-sanity-utilities/desk-organized-schemas";
-import { screenshotImageType } from "./plugins/server-screenshot";
 
 
 

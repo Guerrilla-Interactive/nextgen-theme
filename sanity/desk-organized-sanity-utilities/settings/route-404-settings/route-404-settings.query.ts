@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { pageBuilderQuery } from "@/features/page-builder-blocks/block-indexer";
+import { pageBuilderQuery } from "@/features/page-builder-blocks/block-queries";
 
 // @sanity-typegen-ignore
 export const route404SettingsQuery = groq`

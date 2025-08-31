@@ -1,4 +1,4 @@
-import { pageBuilderQuery } from "@/features/page-builder-blocks/block-indexer";
+import { pageBuilderQuery } from "@/features/page-builder-blocks/block-queries";
 import { groq } from "next-sanity";
 
 // @sanity-typegen-ignore

@@ -1,4 +1,4 @@
-import { pageBuilderQuery  } from "@/features/page-builder-blocks/block-indexer";
+import { pageBuilderQuery  } from "@/features/page-builder-blocks/block-queries";
 import { STANDARD_PAGE_QUERY } from "@/features/unorganized-queries/standard-page.query";
 import { groq } from "next-sanity";
 
