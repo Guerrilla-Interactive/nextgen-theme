@@ -1,34 +1,30 @@
 import { NextResponse } from "next/server";
-import { verifyToken, clerkClient } from "@clerk/nextjs/server";
+import { verifyToken } from "@clerk/nextjs/server";
 
 export async function GET(req: Request) {
   const authz = req.headers.get("authorization");
-  if (!authz || !authz.toLowerCase().startsWith("bearer ")) {
+
+  if (!authz?.toLowerCase().startsWith("bearer ")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const token = authz.slice(7);
 
   try {
+    // Verifies against Clerk JWKS automatically, no env needed
     const payload = await verifyToken(token, {});
-    const userId = payload.sub as string;
-    const clerk = await clerkClient();
-    const user = await clerk.users.getUser(userId);
 
+    // Pull fields directly from the JWT (since no sub is present)
     const userData = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      imageUrl: user.imageUrl,
-      emailAddresses: user.emailAddresses?.map((e) => e.emailAddress) ?? [],
-      publicMetadata: user.publicMetadata ?? {},
-      privateMetadata: user.privateMetadata ?? {},
+      email: payload.email as string,
+      firstName: payload.first_name as string,
+      lastName: payload.last_name as string,
+      publicMetadata: payload.public_metadata ?? {},
     };
 
     return NextResponse.json({ user: userData }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+  } catch (err) {
+    console.error("Token verification failed:", err);
+    return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
   }
 }
-
-
