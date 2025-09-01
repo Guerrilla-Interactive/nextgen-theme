@@ -1,25 +1,36 @@
 // app/dashboard/page.tsx
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { auth, currentUser, verifyToken, clerkClient } from "@clerk/nextjs/server";
+import { headers } from "next/headers";
 import { UpgradeButtons } from "./UpgradeButtons";
 import { VerifyUpgrade } from "./VerifyUpgrade";
 import { Receipts } from "./Receipts";
-import { CompleteLink } from "./CompleteLink";
+
 
 
 export const dynamic = "force-dynamic"; // optional: avoid caching
 
 export default async function Dashboard({ searchParams }: { searchParams: Promise<{ [k: string]: string | string[] | undefined }> }) {
   const params = await searchParams;
-  const linkCode = typeof params?.link_code === "string" ? params.link_code : undefined;
 
-  const { userId } = await auth();
-  if (!userId) {
-    const redirectTarget = linkCode ? `/dashboard?link_code=${encodeURIComponent(linkCode)}` : "/dashboard";
-    redirect(`/sign-in?redirect_url=${encodeURIComponent(redirectTarget)}`);
+  const h = await headers();
+  const authz = h.get("authorization");
+  const headerToken = authz?.toLowerCase().startsWith("bearer ") ? authz.slice(7) : undefined;
+  const queryToken = typeof params?.token === "string" ? params.token : undefined;
+  const incomingToken = headerToken ?? queryToken;
+
+  let user = null as Awaited<ReturnType<typeof currentUser>> | null;
+  if (incomingToken) {
+    try {
+      const payload = await verifyToken(incomingToken, {});
+      const uid = payload.sub as string;
+      const cc = await clerkClient();
+      user = await cc.users.getUser(uid) as any;
+    } catch {
+      user = await currentUser();
+    }
+  } else {
+    user = await currentUser(); // works in Edge or Node
   }
-
-  const user = await currentUser(); // works in Edge or Node
   const ent =
     ((user?.privateMetadata as any)?.entitlements?.nextgen_cli) ?? { status: "none" };
   const cli = ((user?.privateMetadata as any)?.cli) ?? {};
@@ -31,6 +42,8 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
       
       <main className="max-w-5xl mt-24 mx-auto p-6 space-y-6">
         {/* Header */}
+
+        {process.env.NODE_ENV === "development" ? <pre className="text-xs opacity-50 overflow-auto max-h-48">{JSON.stringify(user, null, 2)}</pre> : null}
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold">Welcome{user?.firstName ? `, ${user.firstName}` : ""}</h1>
@@ -65,11 +78,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           </div>
         )}
 
-        {linkCode && (
-          <div className="rounded border p-3">
-            <CompleteLink code={linkCode} />
-          </div>
-        )}
+
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
