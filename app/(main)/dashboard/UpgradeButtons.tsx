@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export function UpgradeButtons({ status }: { status: string }) {
+export function UpgradeButtons({ status, id }: { status: string; id?: string }) {
   const [loading, setLoading] = useState<string | null>(null);
 
   const go = async (path: string, body?: Record<string, unknown>) => {
@@ -26,7 +26,7 @@ export function UpgradeButtons({ status }: { status: string }) {
 
   if (status === "active") {
     return (
-      <div className="flex gap-3">
+      <div id={id} className="flex gap-3">
         <button
           onClick={() => go("/api/stripe/portal")}
           className="inline-flex items-center justify-center py-1.5 px-4 rounded-md shadow-sm font-medium text-sm cursor-pointer bg-secondary text-secondary-foreground hover:opacity-90"
@@ -39,7 +39,7 @@ export function UpgradeButtons({ status }: { status: string }) {
   }
 
   return (
-    <div className="flex gap-3">
+    <div id={id} className="flex gap-3">
       <button
         onClick={() => go("/api/stripe/checkout", { productId: process.env.NEXT_PUBLIC_STRIPE_PRODUCT_ID || "", mode: "payment" })}
         className="inline-flex items-center justify-center py-1.5 px-4 rounded-md shadow-sm font-medium text-sm cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90"

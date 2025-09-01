@@ -6,6 +6,7 @@ import { stegaClean } from "next-sanity";
 import { CustomContactFormBlockComponent } from "@/features/page-builder-blocks/old-blocks/custom-contact-form-block";
 
 type ContactFormProps = Partial<{
+  sectionId?: string;
   title: string;
   highlight?: string;
   description: any;
@@ -34,6 +35,7 @@ function ContactFormPanel({
 
 export default function ContactFormBlockComponent(props: ContactFormProps) {
   const {
+    sectionId,
     title,
     highlight,
     description,
@@ -46,6 +48,7 @@ export default function ContactFormBlockComponent(props: ContactFormProps) {
 
   const normalizedListType = (stegaClean(listType) as typeof listType) || "bullets";
   const normalizedFormPosition = (stegaClean(formPosition) as typeof formPosition) || "right";
+  const anchorId = (stegaClean(sectionId) as string | undefined) || undefined;
 
   const isBottom = normalizedFormPosition === "bottom";
   const isCentered = isBottom || normalizedFormPosition === "top";
@@ -87,7 +90,7 @@ export default function ContactFormBlockComponent(props: ContactFormProps) {
 
   if (isBottom || normalizedFormPosition === "top") {
     return (
-      <section className="relative z-10 py-16 ">
+      <section id={anchorId} className="relative z-10 py-16 ">
         <div className="container">
           {normalizedFormPosition === "top" && (
             <div className="mb-10 mx-auto max-w-3xl">
@@ -108,7 +111,7 @@ export default function ContactFormBlockComponent(props: ContactFormProps) {
   const isLeft = normalizedFormPosition === "left";
 
   return (
-    <section className="relative z-10 py-16">
+    <section id={anchorId} className="relative z-10 py-16">
       <div className="container mx-auto">
         <div className={`grid lg:grid-cols-2 gap-16 items-center ${isLeft ? "lg:grid-flow-col-dense" : ""}`}>
           <div className={`${isLeft ? "lg:col-start-2" : ""} order-2 lg:order-none`}>{Content}</div>

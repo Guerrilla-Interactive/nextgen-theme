@@ -40,6 +40,16 @@ export default defineType({
     defineField({ name: "highlight", title: "Title Highlight", type: "string", description: "Optional part of the title to render with primary color" }),
     defineField({ name: "description", title: "Description", type: "block-content" }),
     defineField({
+      name: "sectionId",
+      title: "Section ID (anchor)",
+      type: "string",
+      description: "Optional anchor id for in-page links (e.g., contact). No spaces.",
+      validation: (r) => r.custom((v) => {
+        if (!v) return true;
+        return /^[a-zA-Z][\w\-:.]*$/.test(v) || "Must be a valid HTML id (letters, numbers, - _ : .)";
+      }),
+    }),
+    defineField({
       name: "listType",
       title: "List Type",
       type: "string",

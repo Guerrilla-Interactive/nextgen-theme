@@ -44,10 +44,14 @@ const heroBlockQuery = groq`
     links[]{
       _key,
       title,
+      useClerkSignIn,
       href,
       target,
       buttonVariant,
-      size
+      size,
+      clerkMode,
+      afterSignInUrl,
+      afterSignUpUrl
     },
     bullets,
   }

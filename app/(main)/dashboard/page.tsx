@@ -43,11 +43,13 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
       <main className="max-w-5xl mt-24 mx-auto p-6 space-y-6">
         {/* Header */}
 
-        {process.env.NODE_ENV === "development" ? <pre className="text-xs opacity-50 overflow-auto max-h-48">{JSON.stringify(user, null, 2)}</pre> : null}
+        {/* removed debug JSON */}
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold">Welcome{user?.firstName ? `, ${user.firstName}` : ""}</h1>
-            <p className="text-sm text-muted-foreground mt-1">Manage your license, billing and usage.</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {ent.status === "active" ? "Manage your license and receipts." : "Unlock the Nextgen CLI with a one‑time license."}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <span
@@ -81,53 +83,83 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
 
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Account Status (only when active) */}
-          {ent.status === "active" && (
-            <section className="rounded border p-4">
-              <p className="font-medium">Account status</p>
-              <div className="mt-2 text-sm">
-                <p>Name: {user?.fullName}</p>
-                <div className="mt-2 text-muted-foreground space-y-1">
-                  <p>Product: {ent.product ?? "—"}</p>
-                  <p>Stripe Price: {ent.stripePriceId ?? "—"}</p>
-                </div>
-              </div>
-            </section>
-          )}
-
-          {/* Usage (only when active) */}
-          {ent.status === "active" && (
-            <section className="rounded border p-4">
-              <p className="font-medium">Usage</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Last use: {cli?.last_assertion_at ? new Date(cli.last_assertion_at).toLocaleString() : "—"}
-              </p>
-              <div className="mt-3">
-                <div className="h-2 w-full rounded bg-muted">
-                  <div className="h-2 rounded bg-primary" style={{ width: `${Math.min(100, (cli?.assertion_count ?? 0) * 5)}%` }} />
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">Uses: {cli?.assertion_count ?? 0}</p>
-              </div>
-            </section>
-          )}
-
-          {/* Billing actions (hidden when account is active) */}
+        <div className="grid auto-rows-fr grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+          {/* Sales CTA when inactive */}
           {ent.status !== "active" && (
-            <section className="rounded border p-4 flex items-center justify-between">
-              <div>
-                <p className="font-medium">Purchase Nextgen</p>
-                <p className="text-sm text-muted-foreground">One‑time license. No subscription.</p>
+            <section id="purchase" className="rounded-xl border border-border/60 bg-card/50 shadow-sm hover:shadow-md transition-colors p-6 md:col-span-2 xl:col-span-3">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <p className="font-medium text-lg">Get Nextgen CLI</p>
+                  <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+                    Ship beautiful, on-brand sites faster. One‑time purchase via Stripe. No subscription.
+                  </p>
+                  <ul className="mt-3 text-sm list-disc list-inside space-y-1 text-muted-foreground">
+                    <li>Instant license delivery</li>
+                    <li>Use on unlimited projects</li>
+                    <li>Free updates</li>
+                  </ul>
+                </div>
+                <div className="shrink-0">
+                  <UpgradeButtons status={ent.status} id="purchase" />
+                </div>
               </div>
-              <UpgradeButtons status={ent.status} />
+              <p className="text-xs text-muted-foreground mt-3">Secure checkout powered by Stripe.</p>
             </section>
           )}
+
+          {/* Install */}
+          <section id="install" className="rounded-xl border border-border/60 bg-card/50 shadow-sm hover:shadow-md transition-colors p-6 md:col-span-2 xl:col-span-3">
+            <p className="font-medium text-lg">Install Nextgen CLI</p>
+            <p className="text-sm text-muted-foreground mt-1">Use npm to install globally:</p>
+            <pre className="mt-3 rounded bg-muted p-3 overflow-auto text-sm">
+              <code>npm i -g nextgen-go-cli</code>
+            </pre>
+          </section>
+
+          {/* Account */}
+          {ent.status === "active" && (
+            <section id="account" className="h-full rounded-xl border border-border/60 bg-card/50 shadow-sm hover:shadow-md transition-colors p-4 md:col-span-1 xl:col-span-1">
+              <p className="font-medium">Account</p>
+              <div className="mt-2 text-sm">
+                <p>Hello{user?.firstName ? `, ${user.firstName}` : ""} 👋</p>
+                <div className="mt-2 flex items-center gap-2">
+                  <span
+                    className={
+                      `inline-flex items-center rounded-full px-2 py-1 text-xs font-medium border ` +
+                      (ent.status === "active"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-900"
+                        : ent.status === "past_due"
+                        ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-900"
+                        : ent.status === "canceled" || ent.status === "refunded"
+                        ? "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-300 dark:border-rose-900"
+                        : "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-800")
+                    }
+                  >
+                    {ent.status === "active" ? "Active" : ent.status?.replace("_", " ") ?? "Inactive"}
+                  </span>
+                  {ent.plan && (
+                    <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium border bg-secondary text-secondary-foreground">
+                      Plan: {ent.plan}
+                    </span>
+                  )}
+                </div>
+                <p className="text-muted-foreground mt-2">
+                  Your license is active. You can manage billing or view receipts below.
+                </p>
+                <div className="mt-3 flex items-center gap-3">
+                  <a href="#receipts" className="underline">View receipts</a>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Billing section removed */}
 
           {/* Receipts (only visible for upgraded/active accounts) */}
           {ent.status === "active" && (
-            <section className="rounded border p-4 md:col-span-2">
+            <section id="receipts" className="h-full rounded-xl border border-border/60 bg-card/50 shadow-sm hover:shadow-md transition-colors p-4 md:col-span-1 xl:col-span-2">
               <p className="font-medium mb-2">Receipts</p>
-              <Receipts />
+              <Receipts id="receipts" />
             </section>
           )}
         </div>

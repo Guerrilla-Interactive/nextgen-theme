@@ -137,8 +137,8 @@ const MapboxMapCover: React.FC<MapboxMapCoverProps> = ({
             >
               <p>
                 <span class="font-medium">E-post:</span>
-                <a href="mailto:info@veitrygghet.no" class="underline">
-                  info@veitrygghet.no
+                <a href="mailto:info@nextgen-cli.com" class="underline">
+                  info@nextgen-cli.com
                 </a>
               </p>
               <p><span class="font-medium">Adresse:</span> Bølerveien 84, 2020 Skedsmokorset</p>
@@ -158,8 +158,8 @@ const MapboxMapCover: React.FC<MapboxMapCoverProps> = ({
             >
               <p>
                 <span class="font-medium">E-post:</span>
-                <a href="mailto:info@veitrygghet.no" class="underline text-blue-600">
-                  info@veitrygghet.no
+                <a href="mailto:info@nextgen-cli.com" class="underline text-blue-600">
+                  info@nextgen-cli.com
                 </a>
               </p>
               <p><span class="font-medium">Adresse:</span> Bølerveien 84, 2020 Skedsmokorset</p>

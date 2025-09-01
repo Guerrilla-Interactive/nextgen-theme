@@ -6,14 +6,19 @@ import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/features/unorganized-components/portable-text-renderer";
 import { Button } from "@/features/unorganized-components/ui/button";
 import { Badge } from "@/features/unorganized-components/ui/badge";
+import { SignInButton } from "@clerk/nextjs";
 
 type HeroLink = {
   _key?: string;
   title?: string;
+  useClerkSignIn?: boolean;
   href?: string;
   target?: boolean;
   buttonVariant?: "default" | "secondary" | "link" | "destructive" | "outline" | "ghost" | null | undefined;
   size?: "default" | "sm" | "lg" | null | undefined;
+  clerkMode?: "modal" | "redirect" | null | undefined;
+  afterSignInUrl?: string | null | undefined;
+  afterSignUpUrl?: string | null | undefined;
 };
 
 type HeroProps = Partial<{
@@ -67,23 +72,55 @@ export default function HeroBlockComponent(props: HeroProps) {
 
       {links && links.length > 0 && (
         <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
-          {links.map((link) => (
-            <Button
-              key={link._key ?? link.title}
-              size={stegaClean(link.size) as any}
-              variant={stegaClean(link.buttonVariant) as any}
-              className="px-8 py-6"
-              asChild
-            >
-              <Link
-                href={(link.href || "#") as string}
-                target={link.target ? "_blank" : undefined}
-                rel={link.target ? "noopener" : undefined}
+          {links.map((link) => {
+            const useClerk = Boolean(stegaClean((link as any).useClerkSignIn));
+            if (useClerk) {
+              const mode = (stegaClean((link as any).clerkMode) as "modal" | "redirect") || "modal";
+              const afterSignInUrl = (stegaClean((link as any).afterSignInUrl) as string) || "/dashboard";
+              if (mode === "redirect") {
+                const href = `/sign-in?redirect_url=${encodeURIComponent(afterSignInUrl)}`;
+                return (
+                  <Button
+                    key={link._key ?? link.title}
+                    size={stegaClean(link.size) as any}
+                    variant={stegaClean(link.buttonVariant) as any}
+                    className="px-8 py-6"
+                    asChild
+                  >
+                    <Link href={href}>{link.title}</Link>
+                  </Button>
+                );
+              }
+              return (
+                <SignInButton key={link._key ?? link.title} mode={mode}>
+                  <Button
+                    size={stegaClean(link.size) as any}
+                    variant={stegaClean(link.buttonVariant) as any}
+                    className="px-8 py-6"
+                  >
+                    {link.title}
+                  </Button>
+                </SignInButton>
+              );
+            }
+            return (
+              <Button
+                key={link._key ?? link.title}
+                size={stegaClean(link.size) as any}
+                variant={stegaClean(link.buttonVariant) as any}
+                className="px-8 py-6"
+                asChild
               >
-                {link.title}
-              </Link>
-            </Button>
-          ))}
+                <Link
+                  href={(link.href || "#") as string}
+                  target={link.target ? "_blank" : undefined}
+                  rel={link.target ? "noopener" : undefined}
+                >
+                  {link.title}
+                </Link>
+              </Button>
+            );
+          })}
         </div>
       )}
 

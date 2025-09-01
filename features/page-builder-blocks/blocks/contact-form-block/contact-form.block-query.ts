@@ -4,6 +4,7 @@ import { customContactFormBlockQueryDetails } from "@/features/page-builder-bloc
 const contactFormBlockQuery = groq`
   _type == "contact-form-block" => {
     _type,
+    sectionId,
     title,
     highlight,
     description[]{
