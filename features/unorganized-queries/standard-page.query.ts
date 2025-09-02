@@ -7,6 +7,7 @@ import { pageBuilderQuery } from "../page-builder-blocks/block-queries";
 // @sanity-typegen-ignore
 export const STANDARD_PAGE_QUERY = groq`
   ${pageBuilderQuery},
+    background,
     meta_title,
     meta_description,
     noindex,

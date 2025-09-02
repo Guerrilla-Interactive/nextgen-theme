@@ -63,6 +63,19 @@ export default defineType({
       ],
     }),
 
+    defineField({
+      name: "background",
+      title: "Background",
+      type: "string",
+      group: "visual",
+      initialValue: "Sunrise",
+      options: {
+        list: ["Sunrise", "Aurora", "Custom1", "Custom2", "Custom3", "Custom4"],
+        layout: "radio",
+      },
+      description: "Select the page background effect.",
+    }),
+
  
     defineField({
       name: "blocks",

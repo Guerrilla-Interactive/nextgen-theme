@@ -15,14 +15,12 @@ export async function generateStaticParams() {
 
   
 
-  return pages.map((page) => ({
-    slug: page.slug?.current,
+  return pages.map((page: any) => ({
+    slug: page?.slug?.current,
   }));
 }
 
-export async function generateMetadata(props: {
-  params: Promise<{ slug: string }>;
-}) {
+export async function generateMetadata(props: { params: Promise<{ slug: string }>; }) {
   const params = await props.params;
   const page = await fetchSanityPageBySlug({ slug: params.slug });
 
@@ -30,12 +28,10 @@ export async function generateMetadata(props: {
     notFound();
   }
 
-  return generatePageMetadata({ page, slug: params.slug });
+  return generatePageMetadata({ page: page as any, slug: params.slug });
 }
 
-export default async function Page(props: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function Page(props: { params: Promise<{ slug: string }>; }) {
   const params = await props.params;
   const page = await fetchSanityPageBySlug({ slug: params.slug });
 
@@ -51,10 +47,10 @@ export default async function Page(props: {
   return <>
   
 
-  <FullPageBackground />
+  <FullPageBackground type={(page as any)?.background as any} />
   <UseClientConfigs navigationTextColor={page?.navigationSettings?.navigationTextColor} />
   
-  <Blocks blocks={page?.blocks ?? []} />
+  <Blocks blocks={(page as any)?.blocks ?? []} />
   
   
   </>;
