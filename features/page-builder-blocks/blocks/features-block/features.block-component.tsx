@@ -25,7 +25,7 @@ type FeatureCardsProps = Partial<{
 }>;
 
 export default function FeaturesBlockComponent(props: FeatureCardsProps) {
-  const { layoutVariant = "cards", cardStyle = "default", title, description, cards } = props;
+  const { layoutVariant = "cards", cardStyle = "glass", title, description, cards } = props;
   const cleanedLayoutVariant = (stegaClean(layoutVariant) as string) || "cards";
   const cleanedCardStyle = (stegaClean(cardStyle) as string) || "default";
 

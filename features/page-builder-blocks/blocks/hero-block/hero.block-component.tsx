@@ -6,7 +6,7 @@ import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/features/unorganized-components/portable-text-renderer";
 import { Button } from "@/features/unorganized-components/ui/button";
 import { Badge } from "@/features/unorganized-components/ui/badge";
-import { SignInButton } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 
 type HeroLink = {
   _key?: string;
@@ -31,6 +31,7 @@ type HeroProps = Partial<{
 
 export default function HeroBlockComponent(props: HeroProps) {
   const { badge, title, body, links, bullets } = props;
+  const { isSignedIn } = useUser();
 
   const normalizedTitle = Array.isArray(title)
     ? title
@@ -77,6 +78,21 @@ export default function HeroBlockComponent(props: HeroProps) {
             if (useClerk) {
               const mode = (stegaClean((link as any).clerkMode) as "modal" | "redirect") || "modal";
               const afterSignInUrl = (stegaClean((link as any).afterSignInUrl) as string) || "/dashboard";
+
+              // If the user is already signed in, show a Dashboard link instead of a Login button
+              if (isSignedIn) {
+                return (
+                  <Button
+                    key={link._key ?? link.title}
+                    size={stegaClean(link.size) as any}
+                    variant={stegaClean(link.buttonVariant) as any}
+                    className="px-8 py-6"
+                    asChild
+                  >
+                    <Link href={afterSignInUrl}>Dashboard</Link>
+                  </Button>
+                );
+              }
               if (mode === "redirect") {
                 const href = `/sign-in?redirect_url=${encodeURIComponent(afterSignInUrl)}`;
                 return (

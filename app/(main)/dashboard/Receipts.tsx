@@ -81,7 +81,7 @@ export function Receipts({ id }: { id?: string }) {
   const chargesSorted = [...charges].sort((a, b) => (b.created || 0) - (a.created || 0));
 
   return (
-    <section id={id} className="space-y-4">
+    <section id={id} className="space-y-4 ">
       {invoices.length > 0 && (
         <div>
           <p className="font-medium mb-2">Invoices</p>
@@ -111,7 +111,7 @@ export function Receipts({ id }: { id?: string }) {
       )}
       {charges.length > 0 && (
         <div>
-          <p className="font-medium mt-4 mb-2">Payments</p>
+          
           <ul className="space-y-2">
             {chargesSorted.map(ch => (
               <li key={ch.id} className="flex items-center justify-between text-sm">
