@@ -6,6 +6,7 @@ const isPublic = createRouteMatcher([
   "/(auth)(.*)",
   "/api/stripe/webhook",         // must stay public for Stripe
   "/api/cli/assertion",          // CLI uses API key header; leave public
+  "/api/user/minimal",           // public minimal user info for CLI token verify
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

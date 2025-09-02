@@ -1,6 +1,5 @@
 // app/dashboard/page.tsx
-import { auth, currentUser, verifyToken, clerkClient } from "@clerk/nextjs/server";
-import { headers } from "next/headers";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { UpgradeButtons } from "./UpgradeButtons";
 import { VerifyUpgrade } from "./VerifyUpgrade";
 import { Receipts } from "./Receipts";
@@ -9,33 +8,22 @@ import { Receipts } from "./Receipts";
 
 export const dynamic = "force-dynamic"; // optional: avoid caching
 
-export default async function Dashboard({ searchParams }: { searchParams: Promise<{ [k: string]: string | string[] | undefined }> }) {
-  const params = await searchParams;
-
-  const h = await headers();
-  const authz = h.get("authorization");
-  const headerToken = authz?.toLowerCase().startsWith("bearer ") ? authz.slice(7) : undefined;
-  const queryToken = typeof params?.token === "string" ? params.token : undefined;
-  const incomingToken = headerToken ?? queryToken;
-
-  let user = null as Awaited<ReturnType<typeof currentUser>> | null;
-  if (incomingToken) {
-    try {
-      const payload = await verifyToken(incomingToken, {});
-      const uid = payload.sub as string;
-      const cc = await clerkClient();
-      user = await cc.users.getUser(uid) as any;
-    } catch {
-      user = await currentUser();
-    }
-  } else {
-    user = await currentUser(); // works in Edge or Node
+export default async function Dashboard({ searchParams }: { searchParams?: { [k: string]: string | string[] | undefined } }) {
+  const { userId } = await auth();
+  if (!userId) {
+    return (
+      <main className="max-w-5xl mt-24 mx-auto p-6">
+        <h1 className="text-2xl font-semibold">Please sign in</h1>
+      </main>
+    );
   }
-  const ent =
-    ((user?.privateMetadata as any)?.entitlements?.nextgen_cli) ?? { status: "none" };
+
+  const cc = await clerkClient();
+  const user = await cc.users.getUser(userId as string) as any;
+  const ent = ((user?.privateMetadata as any)?.entitlements?.nextgen_cli) ?? { status: "none" };
   const cli = ((user?.privateMetadata as any)?.cli) ?? {};
 
-  const sessionId = typeof params?.session_id === "string" ? params.session_id : undefined;
+  const sessionId = typeof searchParams?.session_id === "string" ? searchParams.session_id : undefined;
 
   return (
     <>
