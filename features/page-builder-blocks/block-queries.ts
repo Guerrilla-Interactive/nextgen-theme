@@ -14,6 +14,8 @@ import masterBlockQuery from "./blocks/master-block/master.block-query";
 import aboutUsBlockQuery from "./blocks/about-us-block/about-us.block-query";
 import contactFormBlockQuery from "./blocks/contact-form-block/contact-form.block-query";
 
+import narrowPortableTextSectionBlockQuery from "./blocks/narrow-portable-text-section-block/narrow-portable-text-section.block-query";
+import dividerBlockQuery from "./blocks/divider-block/divider.block-query";
 // ADD VALUE 1 ABOVE
 
 import carousel1BlockQuery from "./old-blocks/carousel-block/carousel-1-block/carousel-1.block-query";
@@ -128,6 +130,8 @@ blocks[]{
   ${ aboutUsBlockQuery  },
   ${ contactFormBlockQuery  },
 
+${ narrowPortableTextSectionBlockQuery  },
+${ dividerBlockQuery  },
   // ADD VALUE 2 ABOVE
 }
 `;

@@ -49,6 +49,8 @@ import { MasterBlockComponent, masterBlockQuery, masterBlockSchema } from "./blo
 import { AboutUsBlockComponent, aboutUsBlockQuery, aboutUsBlockSchema } from "./blocks/about-us-block";
 import { ContactFormBlockComponent, contactFormBlockQuery, contactFormBlockSchema } from "./blocks/contact-form-block";
 
+import { NarrowPortableTextSectionBlockComponent, narrowPortableTextSectionBlockQuery, narrowPortableTextSectionBlockSchema } from "./blocks/narrow-portable-text-section-block";
+import { DividerBlockComponent, dividerBlockQuery, dividerBlockSchema } from "./blocks/divider-block";
 // ADD VALUE 1 ABOVE
 
 export const BlockDataMap: {
@@ -105,6 +107,8 @@ export const BlockDataMap: {
 "master-block": { component: MasterBlockComponent, schema: masterBlockSchema, query: masterBlockQuery },
 "about-us-block": { component: AboutUsBlockComponent, schema: aboutUsBlockSchema, query: aboutUsBlockQuery },
 "contact-form-block": { component: ContactFormBlockComponent, schema: contactFormBlockSchema, query: contactFormBlockQuery },
+"narrow-portable-text-section-block": { component: NarrowPortableTextSectionBlockComponent, schema: narrowPortableTextSectionBlockSchema, query: narrowPortableTextSectionBlockQuery },
+"divider-block": { component: DividerBlockComponent, schema: dividerBlockSchema, query: dividerBlockQuery },
   // ADD VALUE 2 ABOVE
 };
 
