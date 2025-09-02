@@ -170,17 +170,9 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                   </p>
                   <InstallTabs />
 
-                  {/* Legal line for install */}
+                  
                   <p className="text-xs text-muted-foreground mt-3">
-                    By installing or using Nextgen CLI, you agree to our{" "}
-                    <Link href="/legal/terms" className="underline underline-offset-2 hover:text-foreground">
-                      Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link href="/legal/privacy" className="underline underline-offset-2 hover:text-foreground">
-                      Privacy Policy
-                    </Link>
-                    .
+                    Run the CLI by typing "nextgen" or "ng" into your terminal.
                   </p>
                 </div>
               </div>
@@ -211,11 +203,11 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           <div className="mt-4 text-xs text-muted-foreground/90 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span>© {new Date().getFullYear()} Guerrilla Interactive</span>
             <span className="opacity-40">•</span>
-            <Link href="/legal/terms" className="underline underline-offset-2 hover:text-foreground">
+            <Link href="/terms-of-service" className="underline underline-offset-2 hover:text-foreground">
               Terms of Service
             </Link>
             <span className="opacity-40">•</span>
-            <Link href="/legal/privacy" className="underline underline-offset-2 hover:text-foreground">
+            <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-foreground">
               Privacy Policy
             </Link>
             {/* Optionally add Refund Policy or Partner Terms when ready */}
