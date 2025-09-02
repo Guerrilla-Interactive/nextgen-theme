@@ -7,8 +7,7 @@ import { Receipts } from "./Receipts";
 import { User as UserIcon, Download as DownloadIcon, Receipt as ReceiptIcon, ShoppingCart as ShoppingCartIcon } from "lucide-react";
 import { InstallTabs } from "./InstallTabs.client";
 import FullPageBackground from "@/features/unorganized-components/magic-background/full-page-background";
-
-
+import Link from "next/link";
 
 export const dynamic = "force-dynamic"; // optional: avoid caching
 
@@ -34,6 +33,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   } else {
     user = await currentUser(); // works in Edge or Node
   }
+
   const ent =
     ((user?.privateMetadata as any)?.entitlements?.nextgen_cli) ?? { status: "none" };
   const cli = ((user?.privateMetadata as any)?.cli) ?? {};
@@ -45,13 +45,11 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
       <FullPageBackground type="Aurora" />
       <main className="container z-10 mt-24 mx-auto p-6 space-y-6">
         {/* Header */}
-        
-        {/* removed debug JSON */}
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold">Welcome{user?.firstName ? `, ${user.firstName}` : ""}</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              {ent.status === "active" ? "Manage your license and receipts." : "Unlock the Nextgen CLI with a one‑time license."}
+              {ent.status === "active" ? "Manage your license and receipts." : "Unlock the Nextgen CLI with a one-time license."}
             </p>
           </div>
         </div>
@@ -62,13 +60,14 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           </div>
         )}
 
-
-
         {/* Content Grid */}
         <div className="grid auto-rows-fr grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 md:gap-8">
           {/* Sales CTA when inactive */}
           {ent.status !== "active" && (
-            <section id="purchase" className="rounded-xl border border-border/50 bg-background/10 backdrop-blur-md shadow-sm hover:shadow-md transition-colors p-6 md:col-span-2 xl:col-span-2">
+            <section
+              id="purchase"
+              className="rounded-xl border border-border/50 bg-background/10 backdrop-blur-md shadow-sm hover:shadow-md transition-colors p-6 md:col-span-2 xl:col-span-2"
+            >
               <div className="flex items-center gap-4">
                 <div className="w-16 flex items-center justify-center">
                   <ShoppingCartIcon className="h-10 w-10 text-muted-foreground" />
@@ -78,7 +77,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                     <div>
                       <p className="font-medium text-lg">Get Nextgen CLI</p>
                       <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
-                        Ship beautiful, on-brand sites faster. One‑time purchase via Stripe. No subscription.
+                        Ship beautiful, on-brand sites faster. One-time purchase via Stripe. No subscription.
                       </p>
                       <ul className="mt-3 text-sm list-disc list-inside space-y-1 text-muted-foreground">
                         <li>Instant license delivery</li>
@@ -90,7 +89,21 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                       <UpgradeButtons status={ent.status} id="purchase" />
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-3">Secure checkout powered by Stripe.</p>
+
+                  {/* Legal line for checkout */}
+                  <p className="text-xs text-muted-foreground mt-3">
+                    By purchasing, you agree to our{" "}
+                    <Link href="/legal/terms" className="underline underline-offset-2 hover:text-foreground">
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link href="/legal/privacy" className="underline underline-offset-2 hover:text-foreground">
+                      Privacy Policy
+                    </Link>
+                    .
+                  </p>
+
+                  <p className="text-xs text-muted-foreground mt-2">Secure checkout powered by Stripe.</p>
                 </div>
               </div>
             </section>
@@ -98,7 +111,10 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
 
           {/* Account */}
           {ent.status === "active" && (
-            <section id="account" className="flex flex-col justify-center h-full rounded-xl border border-border/50 bg-background/10 backdrop-blur-md shadow-sm hover:shadow-md transition-colors p-4 md:col-span-1 xl:col-span-1">
+            <section
+              id="account"
+              className="flex flex-col justify-center h-full rounded-xl border border-border/50 bg-background/10 backdrop-blur-md shadow-sm hover:shadow-md transition-colors p-4 md:col-span-1 xl:col-span-1"
+            >
               <div className="flex items-center gap-4">
                 <div className="w-16 flex items-center justify-center">
                   <UserIcon className="h-10 w-10 text-muted-foreground" />
@@ -130,9 +146,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
                     <p className="text-muted-foreground mt-2 text-sm">
                       Your license is active.
                     </p>
-                    <div className="mt-3 flex items-center gap-3">
-                      
-                    </div>
+                    <div className="mt-3 flex items-center gap-3">{/* room for future actions */}</div>
                   </div>
                 </div>
               </div>
@@ -141,25 +155,44 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
 
           {/* Install (only for active licenses) */}
           {ent.status === "active" && (
-            <section id="install" className="flex flex-col justify-center rounded-xl border border-border/50 bg-background/10 backdrop-blur-md shadow-sm hover:shadow-md transition-colors p-6 md:col-span-1 xl:col-span-1">
+            <section
+              id="install"
+              className="flex flex-col justify-center rounded-xl border border-border/50 bg-background/10 backdrop-blur-md shadow-sm hover:shadow-md transition-colors p-6 md:col-span-1 xl:col-span-1"
+            >
               <div className="flex items-center gap-4">
                 <div className="w-16 flex items-center justify-center">
                   <DownloadIcon className="h-10 w-10 text-muted-foreground" />
                 </div>
                 <div className="flex-1">
                   <p className="font-medium text-lg">Install Nextgen CLI</p>
-                  <p className="text-sm text-muted-foreground mt-1">Install globally using your preferred package manager:</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Install globally using your preferred package manager:
+                  </p>
                   <InstallTabs />
+
+                  {/* Legal line for install */}
+                  <p className="text-xs text-muted-foreground mt-3">
+                    By installing or using Nextgen CLI, you agree to our{" "}
+                    <Link href="/legal/terms" className="underline underline-offset-2 hover:text-foreground">
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link href="/legal/privacy" className="underline underline-offset-2 hover:text-foreground">
+                      Privacy Policy
+                    </Link>
+                    .
+                  </p>
                 </div>
               </div>
             </section>
           )}
 
-          {/* Billing section removed */}
-
           {/* Receipts (only visible for upgraded/active accounts) */}
           {ent.status === "active" && (
-            <section id="receipts" className="flex flex-col justify-center h-full rounded-xl border border-border/50 bg-background/10 backdrop-blur-md shadow-sm hover:shadow-md transition-colors p-4 md:col-span-2 xl:col-span-2">
+            <section
+              id="receipts"
+              className="flex flex-col justify-center h-full rounded-xl border border-border/50 bg-background/10 backdrop-blur-md shadow-sm hover:shadow-md transition-colors p-4 md:col-span-2 xl:col-span-2"
+            >
               <div className="flex items-center gap-4">
                 <div className="w-16 flex items-center justify-center">
                   <ReceiptIcon className="h-10 w-10 text-muted-foreground" />
@@ -171,6 +204,22 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
               </div>
             </section>
           )}
+        </div>
+
+        {/* Global legal footer for the dashboard */}
+        <div className="pt-2">
+          <div className="mt-4 text-xs text-muted-foreground/90 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span>© {new Date().getFullYear()} Guerrilla Interactive</span>
+            <span className="opacity-40">•</span>
+            <Link href="/legal/terms" className="underline underline-offset-2 hover:text-foreground">
+              Terms of Service
+            </Link>
+            <span className="opacity-40">•</span>
+            <Link href="/legal/privacy" className="underline underline-offset-2 hover:text-foreground">
+              Privacy Policy
+            </Link>
+            {/* Optionally add Refund Policy or Partner Terms when ready */}
+          </div>
         </div>
       </main>
     </>
