@@ -59,36 +59,16 @@
   box-shadow: none;
   transform: translate(0px, 0px);}
 
-/* Theme-specific styles for modern */
+/* Theme-specific styles for glowing-border */
 [data-slot="button"]:not([class*="link"]) {
-  transition: all 180ms ease-out;
+  transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 200ms ease-out;
   transform-origin: center center;
-  will-change: opacity, background-color;}
+  will-change: border-color, box-shadow, opacity;}
 
-/* Button variant-specific animations for modern theme */
-[data-slot="button"][data-variant="outline"] {
-  transform: scale(1);
-  opacity: 1;}
-
-[data-slot="button"][data-variant="outline"]:hover:not(:disabled) {
-  opacity: 0.9;}
-
-[data-slot="button"][data-variant="outline"]:focus-visible:not(:disabled) {
-  transform: scale(1);
-  box-shadow: 0 0 0 2px var(--ring);
-  opacity: 0.95;}
-
-[data-slot="button"][data-variant="outline"]:active:not(:disabled) {
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-  opacity: 0.7;}
-
-[data-slot="button"][data-variant="outline"]:disabled {
-  transform: scale(1);
-  opacity: 0.5;}
-
-/* Global button styles for modern theme */
+/* Button variant-specific animations for glowing-border theme */
+/* Global button styles for glowing-border theme */
 [data-slot="button"] {
-  transition: all 180ms ease-out;
+  transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 200ms ease-out;
   transform-origin: center center;
-  will-change: opacity, background-color;}
+  will-change: border-color, box-shadow, opacity;}
 }

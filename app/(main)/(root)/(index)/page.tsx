@@ -30,7 +30,7 @@ export default async function Page() {
   return (
     <>
     {/* @ts-ignore */}
-    <FullPageBackground />
+    <FullPageBackground type={(frontPageData?.background as any)} />
     <UseClientConfigs navigationTextColor={frontPageData?.navigationSettings?.navigationTextColor} />
     <Blocks blocks={frontPageData?.blocks} />  
        

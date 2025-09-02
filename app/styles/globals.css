@@ -20,10 +20,6 @@
     color: var(--foreground);
   }
 
-  /* smooth scroll */
-
-  html { scroll-behavior: smooth; } 
-  
   h1,h2,h3,h4 { @apply text-balance; }
   p { @apply leading-7; }
   p + p { @apply mt-4; }
