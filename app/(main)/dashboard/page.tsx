@@ -198,21 +198,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           )}
         </div>
 
-        {/* Global legal footer for the dashboard */}
-        <div className="pt-2">
-          <div className="mt-4 text-xs text-muted-foreground/90 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span>© {new Date().getFullYear()} Guerrilla Interactive</span>
-            <span className="opacity-40">•</span>
-            <Link href="/terms-of-service" className="underline underline-offset-2 hover:text-foreground">
-              Terms of Service
-            </Link>
-            <span className="opacity-40">•</span>
-            <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-foreground">
-              Privacy Policy
-            </Link>
-            {/* Optionally add Refund Policy or Partner Terms when ready */}
-          </div>
-        </div>
+
       </main>
     </>
   );

@@ -48,6 +48,7 @@ import { ContactFormBlockComponent } from "./blocks/contact-form-block";
 
 import { NarrowPortableTextSectionBlockComponent } from "./blocks/narrow-portable-text-section-block";
 import { DividerBlockComponent } from "./blocks/divider-block";
+import { FooterBlockComponent } from "./blocks/footer-block";
 // ADD VALUE 1 ABOVE
 
 export const BlockComponentMap: {
@@ -103,6 +104,7 @@ export const BlockComponentMap: {
 
 "narrow-portable-text-section-block": NarrowPortableTextSectionBlockComponent,
 "divider-block": DividerBlockComponent,
+"footer-block": FooterBlockComponent,
   // ADD VALUE 2 ABOVE
 };
 

@@ -16,6 +16,7 @@ import contactFormBlockQuery from "./blocks/contact-form-block/contact-form.bloc
 
 import narrowPortableTextSectionBlockQuery from "./blocks/narrow-portable-text-section-block/narrow-portable-text-section.block-query";
 import dividerBlockQuery from "./blocks/divider-block/divider.block-query";
+import footerBlockQuery from "./blocks/footer-block/footer.block-query";
 // ADD VALUE 1 ABOVE
 
 import carousel1BlockQuery from "./old-blocks/carousel-block/carousel-1-block/carousel-1.block-query";
@@ -132,6 +133,7 @@ blocks[]{
 
 ${ narrowPortableTextSectionBlockQuery  },
 ${ dividerBlockQuery  },
+${ footerBlockQuery  },
   // ADD VALUE 2 ABOVE
 }
 `;

@@ -3,7 +3,7 @@ export type LogoProps = {
    * The fill color for the non-orange parts of the logo.
    * Set to "black" or "white".
    */
-  nonOrangeColor?: "black" | "white";
+  nonOrangeColor?: "black" | "white" | string;
   /**
    * The fill color for the orange parts of the logo.
    * Set to a valid CSS color value.

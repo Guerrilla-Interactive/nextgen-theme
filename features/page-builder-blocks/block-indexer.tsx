@@ -51,6 +51,7 @@ import { ContactFormBlockComponent, contactFormBlockQuery, contactFormBlockSchem
 
 import { NarrowPortableTextSectionBlockComponent, narrowPortableTextSectionBlockQuery, narrowPortableTextSectionBlockSchema } from "./blocks/narrow-portable-text-section-block";
 import { DividerBlockComponent, dividerBlockQuery, dividerBlockSchema } from "./blocks/divider-block";
+import { FooterBlockComponent, footerBlockQuery, footerBlockSchema } from "./blocks/footer-block";
 // ADD VALUE 1 ABOVE
 
 export const BlockDataMap: {
@@ -109,6 +110,7 @@ export const BlockDataMap: {
 "contact-form-block": { component: ContactFormBlockComponent, schema: contactFormBlockSchema, query: contactFormBlockQuery },
 "narrow-portable-text-section-block": { component: NarrowPortableTextSectionBlockComponent, schema: narrowPortableTextSectionBlockSchema, query: narrowPortableTextSectionBlockQuery },
 "divider-block": { component: DividerBlockComponent, schema: dividerBlockSchema, query: dividerBlockQuery },
+"footer-block": { component: FooterBlockComponent, schema: footerBlockSchema, query: footerBlockQuery },
   // ADD VALUE 2 ABOVE
 };
 
@@ -220,7 +222,9 @@ blocks[]{
   ${ videoSectionBlockQuery  },
 ${ masterBlockQuery  },
 ${ aboutUsBlockQuery  },
-${ contactFormBlockQuery  }
+${ contactFormBlockQuery  },
+${ footerBlockQuery  },
+
   // ADD VALUE 3 ABOVE
 }
 `;
