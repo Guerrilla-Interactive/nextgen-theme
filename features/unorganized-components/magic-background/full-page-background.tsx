@@ -65,6 +65,7 @@ export default function FullPageBackground({ type = "Sunrise" }: { type?: BGVari
 
   if (type === "Custom3") {
     return (
+      // Make sure it does not overflow the screen
       <div className="pointer-events-none absolute inset-0 -z-10">
         <LiquidMetalBackground>
           <div className="h-full w-full" />

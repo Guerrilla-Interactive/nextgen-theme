@@ -12,7 +12,7 @@ interface LiquidMetalBackgroundProps {
 export default function LiquidMetalBackground({ children }: LiquidMetalBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   return (
-    <div ref={containerRef} className="h-[200rem] w-full bg-background relative ">
+    <div ref={containerRef} className="h-[200rem] max-h-[120rem] overflow-hidden w-full bg-background relative ">
       
         <LiquidMetal
           className="absolute inset-0 w-full  h-full"

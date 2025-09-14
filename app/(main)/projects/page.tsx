@@ -214,10 +214,10 @@ const ProjectsIndexPage = () => {
                     </span>
                   )}
                 </div>
-                {project.description && (
+                {!project.comingSoon && project.description && (
                   <p className="mt-2 text-sm text-muted-foreground">{project.description}</p>
                 )}
-                {project.tags && project.tags.length > 0 && (
+                {!project.comingSoon && project.tags && project.tags.length > 0 && (
                   <div className="mt-4 flex flex-wrap gap-2">
                     {project.tags.map((t) => (
                       <span key={t} className="rounded-full border border-border/50 bg-background/10 px-2 py-0.5 text-xs text-muted-foreground">
@@ -226,15 +226,20 @@ const ProjectsIndexPage = () => {
                     ))}
                   </div>
                 )}
+                {project.comingSoon && (
+                  <p className="mt-2 text-sm text-muted-foreground">Yet to be announced.</p>
+                )}
 
-                <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
-                  <div>
-                    <span className="font-medium text-foreground/80">Status:</span> {project.comingSoon ? "Coming soon" : "Available"}
+                {!project.comingSoon && (
+                  <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
+                    <div>
+                      <span className="font-medium text-foreground/80">Status:</span> Available
+                    </div>
+                    <div className="truncate text-right">
+                      <span className="font-medium text-foreground/80">Path:</span> <code className="text-[10px] opacity-80">/projects/{project.slug}</code>
+                    </div>
                   </div>
-                  <div className="truncate text-right">
-                    <span className="font-medium text-foreground/80">Path:</span> <code className="text-[10px] opacity-80">/projects/{project.slug}</code>
-                  </div>
-                </div>
+                )}
 
                 {project.slug === "next-sanity" && (
                   <div className="mt-3">
@@ -261,7 +266,7 @@ const ProjectsIndexPage = () => {
                     </Link>
                   </div>
                 ) : (
-                  <div className="mt-auto pt-2 text-xs text-muted-foreground">Details will be available soon.</div>
+                  <div className="mt-auto pt-2 text-xs text-muted-foreground">Yet to be announced.</div>
                 )}
               </article>
             );
