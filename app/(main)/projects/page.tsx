@@ -192,81 +192,72 @@ const ProjectsIndexPage = () => {
               <article
                 role="listitem"
                 key={project.slug}
-                className={`group relative min-w-[320px] snap-start rounded-xl border border-border/50 bg-background/10 p-5 shadow-sm backdrop-blur-md transition hover:shadow-md flex flex-col min-h-[280px] md:min-h-[320px] ${project.comingSoon ? "opacity-60" : ""}`}
+                className={`group relative min-w-[320px] snap-start rounded-xl border border-border/50 bg-background/10 p-5 shadow-sm backdrop-blur-md transition hover:shadow-md hover:border-border hover:bg-background/20 hover:ring-1 hover:ring-border/60 focus-within:ring-1 focus-within:ring-border/60 flex flex-col min-h-[280px] md:min-h-[320px] ${project.comingSoon ? "opacity-60" : "cursor-pointer"}`}
                 aria-label={project.title}
                 tabIndex={0}
               >
-                <div className="relative mb-4 aspect-[16/9] w-full overflow-hidden rounded-lg border border-border/50 bg-gradient-to-br from-background/40 to-muted/30">
-                  <Image
-                    src={project.imageUrl || "/images/nextgen-app-icon.svg"}
-                    alt={`${project.title} cover`}
-                    fill
-                    sizes="(min-width: 768px) 320px, 100vw"
-                    className="object-cover"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-                </div>
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold tracking-tight">{project.title}</h2>
-                  {project.comingSoon && (
-                    <span className="ml-3 rounded-full border border-border/50 bg-background/10 px-2.5 py-1 text-xs font-medium text-muted-foreground">
-                      Coming soon
-                    </span>
-                  )}
-                </div>
-                {!project.comingSoon && project.description && (
-                  <p className="mt-2 text-sm text-muted-foreground">{project.description}</p>
-                )}
-                {!project.comingSoon && project.tags && project.tags.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {project.tags.map((t) => (
-                      <span key={t} className="rounded-full border border-border/50 bg-background/10 px-2 py-0.5 text-xs text-muted-foreground">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                {project.comingSoon && (
-                  <p className="mt-2 text-sm text-muted-foreground">Yet to be announced.</p>
-                )}
-
                 {!project.comingSoon && (
-                  <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
-                    <div>
-                      <span className="font-medium text-foreground/80">Status:</span> Available
-                    </div>
-                    <div className="truncate text-right">
-                      <span className="font-medium text-foreground/80">Path:</span> <code className="text-[10px] opacity-80">/projects/{project.slug}</code>
-                    </div>
-                  </div>
+                  <Link
+                    href={href}
+                    aria-label={`Open ${project.title}`}
+                    className="absolute inset-0 z-10 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    tabIndex={-1}
+                  />
                 )}
-
-                {project.slug === "next-sanity" && (
-                  <div className="mt-3">
-                    <h6 className=" text-sm font-semibold tracking-wide text-foreground/80">Featured Commands</h6>
-                    <ul className="mt-0.5 list-disc pl-3 " role="list">
-                      {featuredCommands.map((cmd) => (
-                        <li key={cmd.slug}
-                          className="marker:text-muted-foreground/50 text-muted-foreground leading-[1.5] text-xs">
-                          {cmd.title}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {!project.comingSoon ? (
-                  <div className="mt-auto pt-4">
-                    <Link
-                      href={href}
-                      className="inline-flex items-center rounded-md border border-border/50 bg-background/10 px-3 py-2 text-sm transition hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      aria-label={`Open ${project.title}`}
-                    >
-                      Open <span className="ml-1">↗</span>
-                    </Link>
+                {project.comingSoon ? (
+                  <div className="flex flex-1 items-center justify-center text-center">
+                    <p className="text-sm text-muted-foreground">Yet to be announced.</p>
                   </div>
                 ) : (
-                  <div className="mt-auto pt-2 text-xs text-muted-foreground">Yet to be announced.</div>
+                  <>
+                    <div className="relative mb-4 aspect-[16/9] w-full overflow-hidden rounded-lg border border-border/50 bg-gradient-to-br from-background/40 to-muted/30">
+                      <Image
+                        src={project.imageUrl || "/images/nextgen-app-icon.svg"}
+                        alt={`${project.title} cover`}
+                        fill
+                        sizes="(min-width: 768px) 320px, 100vw"
+                        className="object-cover"
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-lg font-semibold tracking-tight">{project.title}</h2>
+                    </div>
+                    {project.description && (
+                      <p className="mt-2 text-sm text-muted-foreground">{project.description}</p>
+                    )}
+                    {project.tags && project.tags.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {project.tags.map((t) => (
+                          <span key={t} className="rounded-full border border-border/50 bg-background/10 px-2 py-0.5 text-xs text-muted-foreground">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
+                      <div>
+                        <span className="font-medium text-foreground/80">Status:</span> Available
+                      </div>
+                      <div className="truncate text-right">
+                        <span className="font-medium text-foreground/80">Path:</span> <code className="text-[10px] opacity-80">/projects/{project.slug}</code>
+                      </div>
+                    </div>
+                    {project.slug === "next-sanity" && (
+                      <div className="mt-3">
+                        <h6 className=" text-sm font-semibold tracking-wide text-foreground/80">Featured Commands</h6>
+                        <ul className="mt-0.5 list-disc pl-3 " role="list">
+                          {featuredCommands.map((cmd) => (
+                            <li key={cmd.slug}
+                              className="marker:text-muted-foreground/50 text-muted-foreground leading-[1.5] text-xs">
+                              {cmd.title}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    <div className="mt-auto pt-4" />
+                  </>
                 )}
               </article>
             );

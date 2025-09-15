@@ -9,8 +9,9 @@ import { StructureBuilder } from "sanity/structure";
 import { faqCategoryDeskStructure } from "./faq-category/faq-category.document-structure";
 
 
-
-// ADD VALUE 1 ABOVE
+import { nextgenReadyProjectSlugDeskStructure } from "@/app/(main)/nextgen-ready-projects/[slug]/(nextgen-ready-project-slug-core-utilities)/nextgen-ready-project-slug.desk-structure";
+import { commandSlugDeskStructure } from "@/app/(main)/commands/[slug]/(command-slug-core-utilities)/command-slug.desk-structure";
+// ADD IMPORT PAGETYPE DESKSTRUCTURE ABOVE
 export const structure = (S: StructureBuilder, context: any) => {
 
 
@@ -77,7 +78,14 @@ export const structure = (S: StructureBuilder, context: any) => {
       ),
 
 
-      // ADD VALUE 2 ABOVE
+      
+    
+    
+    
+    nextgenReadyProjectSlugDeskStructure(S),
+    commandSlugDeskStructure(S),
+    // ADD PAGETYPES DESKSTRUCTURE ABOVE
+
     ])
 
   }

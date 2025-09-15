@@ -9,16 +9,21 @@ try {
   console.warn('Global context not available:', e.message);
 }
 
-// ADD VALUE 1 ABOVE
 
+
+import nextgenReadyProjectSlugSchema from "@/app/(main)/nextgen-ready-projects/[slug]/(nextgen-ready-project-slug-core-utilities)/nextgen-ready-project-slug.route-schema";
+import commandSlugSchema from "@/app/(main)/commands/[slug]/(command-slug-core-utilities)/command-slug.route-schema";
+// ADD IMPORT PAGETYPE SCHEMAS ABOVE
 const routeDocumentSchemas = {
+// ADD PAGETYPE SCHEMAS BELOW
+commandSlugSchema,
+nextgenReadyProjectSlugSchema,
+
+
   pageSlugSchema, 
   blogSlugSchema,
   serviceSlugSchema,
   courseSlugSchema,
-  
-  
-  // ADD VALUE 2 ABOVE
 };
 
 export const allRouteDocumentSchemas = Object.values(routeDocumentSchemas);

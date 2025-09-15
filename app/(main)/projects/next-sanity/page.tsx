@@ -153,6 +153,8 @@ const featuredCommand = {
 } as const;
 
 const NextSanityProjectPage = () => {
+  const demoVideoSrc = "";
+  const hasVideo = Boolean(demoVideoSrc);
   return (
     <main className="container mt-24 py-12">
       <FullPageBackground type="Aurora" />
@@ -178,36 +180,48 @@ const NextSanityProjectPage = () => {
 
           {/* Quick actions removed per request */}
 
-          <div className="mt-4 grid gap-6 lg:grid-cols-2">
-            <div className="flex flex-col gap-4">
-              <div aria-label="Command demo video" className="relative w-full overflow-hidden rounded-xl border border-border/50 bg-background/10 backdrop-blur-md shadow-sm">
-                {/* Replace the src with an actual demo when available */}
-                <video className="block h-full w-full aspect-video" controls preload="metadata">
-                  <source src="" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                <div className="pointer-events-none absolute inset-0 grid place-items-center gap-2 text-xs text-muted-foreground">
-                  <PlayCircle className="h-6 w-6" />
-                  Demo coming soon
+          <div className={`mt-4 grid gap-6 ${hasVideo ? "lg:grid-cols-2" : ""}`}>
+            {hasVideo && (
+              <div className="flex flex-col gap-4">
+                <div aria-label="Command demo video" className="relative w-full overflow-hidden rounded-xl border border-border/50 bg-background/10 backdrop-blur-md shadow-sm">
+                  <video className="block h-full w-full aspect-video" controls preload="metadata">
+                    <source src={demoVideoSrc} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-semibold tracking-wide text-foreground/80">Variables</h3>
+                  <ul className="mt-2 grid gap-2 sm:grid-cols-2" role="list">
+                    {Object.entries(featuredCommand.variables || {}).map(([key, v]: any) => (
+                      <li key={key} className="rounded-md border p-3 text-sm">
+                        <div className="font-medium">{key}</div>
+                        {Array.isArray(v?.examples) && v.examples.length > 0 && (
+                          <div className="mt-1 text-xs text-muted-foreground">e.g. {v.examples.slice(0, 3).join(", ")}</div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
+            )}
 
-              <div>
-                <h3 className="text-sm font-semibold tracking-wide text-foreground/80">Variables</h3>
-                <ul className="mt-2 grid gap-2 sm:grid-cols-2" role="list">
-                  {Object.entries(featuredCommand.variables || {}).map(([key, v]: any) => (
-                    <li key={key} className="rounded-md border p-3 text-sm">
-                      <div className="font-medium">{key}</div>
-                      {Array.isArray(v?.examples) && v.examples.length > 0 && (
-                        <div className="mt-1 text-xs text-muted-foreground">e.g. {v.examples.slice(0, 3).join(", ")}</div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div>
+            <div className="flex flex-col gap-4">
+              {!hasVideo && (
+                <div>
+                  <h3 className="text-sm font-semibold tracking-wide text-foreground/80">Variables</h3>
+                  <ul className="mt-2 grid gap-2 sm:grid-cols-2" role="list">
+                    {Object.entries(featuredCommand.variables || {}).map(([key, v]: any) => (
+                      <li key={key} className="rounded-md border p-3 text-sm">
+                        <div className="font-medium">{key}</div>
+                        {Array.isArray(v?.examples) && v.examples.length > 0 && (
+                          <div className="mt-1 text-xs text-muted-foreground">e.g. {v.examples.slice(0, 3).join(", ")}</div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div>
                 <h3 className="text-sm font-semibold tracking-wide text-foreground/80">Affects</h3>
                 <div className="mt-2 flex flex-wrap gap-2">
