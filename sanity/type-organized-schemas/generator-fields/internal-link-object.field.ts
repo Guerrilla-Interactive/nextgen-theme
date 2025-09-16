@@ -16,7 +16,12 @@ export const internalLinkObjectField = defineField({
       options: {
         disableNew: true,
       },
-      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "path",
+      title: "Egendefinert sti",
+      type: "string",
+      description: "Manuell intern sti for sider som ikke finnes i Sanity, f.eks. /this-page",
     }),
     defineField({
       name: "icon",
@@ -32,6 +37,13 @@ export const internalLinkObjectField = defineField({
       width: 2,
     },
   },
+  validation: (Rule) =>
+    Rule.custom((value) => {
+      if (!value) return true;
+      const hasRef = Boolean(value.internalLink);
+      const hasPath = Boolean(value.path && typeof value.path === "string" && value.path.trim().length > 0);
+      return hasRef || hasPath || "Velg et dokument eller angi en egendefinert sti";
+    }),
   components: {
     annotation: LinkRenderer,
   },
@@ -39,11 +51,12 @@ export const internalLinkObjectField = defineField({
     select: {
       title: "internalLink.title",
       name: "internalLink.name",
+      path: "path",
       icon: "icon",
     },
-    prepare({ title, name, icon }) {
+    prepare({ title, name, path, icon }) {
       return {
-        title: title || name || "Intern link",
+        title: title || name || path || "Intern link",
         media: icon || Link,
       };
     },

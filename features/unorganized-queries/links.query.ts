@@ -4,15 +4,14 @@ import { groq } from "next-sanity";
 const internalLinkQuery = groq`
   "_ts": "InternalLinkQuery",
   "linkType": "internal",
-  ...(internalLink-> {
-    "title": coalesce(
-      ^.customTitle,
-      title,
-      name
-    ),
-    "slug": slug.current,
-    _type
-  }),
+  "title": coalesce(
+    customTitle,
+    internalLink->title,
+    internalLink->name,
+    path
+  ),
+  "slug": coalesce(internalLink->slug.current, path),
+  "_type": internalLink->_type,
   description,
   icon,
   hideOnMobile,

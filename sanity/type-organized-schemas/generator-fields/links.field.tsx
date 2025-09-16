@@ -102,13 +102,14 @@ const internalLink = (props: LinksFieldProps) => {
       select: {
         internalLinkTitle: "internalLink.title",
         internalLinkName: "internalLink.name",
+        path: "path",
         customTitle: "customTitle",
         icon: "icon",
         linkStyle: "linkStyle",
       },
-      prepare({ internalLinkTitle, internalLinkName, customTitle, icon, linkStyle }) {
+      prepare({ internalLinkTitle, internalLinkName, path, customTitle, icon, linkStyle }) {
         return {
-          title: customTitle ?? internalLinkTitle ?? internalLinkName,
+          title: customTitle ?? internalLinkTitle ?? internalLinkName ?? path,
           subtitle: linkStyle === "button" ? "Button Style" : undefined,
           media: icon,
         };
