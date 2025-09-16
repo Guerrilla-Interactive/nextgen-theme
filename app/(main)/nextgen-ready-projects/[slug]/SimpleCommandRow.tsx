@@ -25,9 +25,9 @@ export default function SimpleCommandRow({ cmd }: { cmd: any }) {
   };
 
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-6 ">
       {/* Card */}
-      <div className="rounded-xl border border-muted/30 bg-card/60 p-4">
+      <div className="rounded-xl border border-muted/30 bg-card/40 backdrop-blur-md p-4">
         {/* Top row: File tree (left) + Title/meta/description (right) */}
         <div className="grid gap-4 md:grid-cols-12">
           <div className="md:col-span-6 ">

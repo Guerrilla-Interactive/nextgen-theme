@@ -52,15 +52,15 @@ export default function CommandsSelector({ commands }: CommandsSelectorProps) {
                 aria-pressed={isActive}
                 aria-label={`Select command ${c?.title ?? ""}`}
                 tabIndex={0}
-                className={`w-full rounded-xl border px-4 py-3 text-sm text-left outline-none transition
-                  ${isActive ? "border-primary/40 bg-primary/5" : "border-muted/30 bg-card/60 hover:bg-muted/20"}
+                className={`w-full backdrop-blur-xl rounded-xl border px-4 py-3 text-sm text-left outline-none transition
+                  ${isActive ? "border-primary/40 bg-primary/5" : "border-muted/30 bg-card/30 hover:bg-muted/20"}
                 `}
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="truncate font-medium">{c?.title}</div>
                 </div>
                 {/* Base command (no variables) under title */}
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px]  text-muted-foreground">
                   <span className="inline-flex items-center gap-1 rounded border border-muted/40 bg-muted/20 px-1.5 py-0.5">
                     <Terminal className="h-3 w-3" />
                     <code className="whitespace-pre">{commandString}</code>

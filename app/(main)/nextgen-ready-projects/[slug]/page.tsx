@@ -6,6 +6,7 @@ import { urlFor } from "@/sanity/lib/image";
 import CommandsSelector from "./CommandsSelector.client";
 import { Github, ExternalLink } from "lucide-react";
 import { fetchSanityNextgenReadyProjectBySlug, fetchSanityNextgenReadyProjectStaticParams } from "./(nextgen-ready-project-slug-core-utilities)/nextgen-ready-project-slug.server-actions";
+import FullPageBackground from "@/features/unorganized-components/magic-background/full-page-background";
 
 export async function generateStaticParams() {
   const posts = await fetchSanityNextgenReadyProjectStaticParams();
@@ -54,9 +55,11 @@ export default async function NextgenReadyProject(props: {
     return lines.join("\n");
   };
   return (
+    <>
+    <FullPageBackground type="Sunrise" />
     <section>
       <div className="container py-16 mt-12 xl:py-20">
-        <div className="relative rounded-2xl border border-muted/30 bg-card p-6 shadow-sm">
+        <div className="relative rounded-2xl border border-muted/30 bg-card/30 backdrop-blur-lg p-6 shadow-sm">
           <div className="grid gap-6 md:grid-cols-12">
 
 
@@ -132,5 +135,6 @@ export default async function NextgenReadyProject(props: {
         </div>
       </div>
     </section>
+    </>
   );
 }
