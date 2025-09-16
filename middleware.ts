@@ -1,15 +1,16 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isPublic = createRouteMatcher([
-  "/",
-  "/pricing",
-  "/(auth)(.*)",
-  "/api/stripe/webhook",         // must stay public for Stripe
-  "/api/cli/assertion",          // CLI uses API key header; leave public
+
+const isPrivate = createRouteMatcher([
+  "/dashboard",
+  "/dashboard(.*)",
+  "/dashboard/:path*",
 ]);
 
+
+
 export default clerkMiddleware(async (auth, req) => {
-  if (!isPublic(req)) {
+  if (isPrivate(req)) {
     await auth.protect();        // requires signed-in user
   }
 });
