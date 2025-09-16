@@ -58,8 +58,19 @@ export default async function NextgenReadyProject(props: {
       <div className="container py-16 mt-12 xl:py-20">
         <div className="relative rounded-2xl border border-muted/30 bg-card p-6 shadow-sm">
           <div className="grid gap-6 md:grid-cols-12">
-            {/* Left: Video/Image */}
-            <div className="md:col-span-6">
+
+
+            {/* Left: Project text and links */}
+            <div className="md:col-span-6 flex flex-col justify-center">
+              <div className="self-center mb-8">
+              <h1 className="truncate text-2xl font-semibold leading-tight">{proj.title}</h1>
+              {proj.description ? (
+                <p className="mt-3 text-sm text-foreground/80">{proj.description}</p>
+              ) : null}
+            </div>
+            </div>
+                        {/* Right: Video/Image */}
+                        <div className="md:col-span-6">
               <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-muted/30 bg-muted/10">
                 {proj.image ? (
                   <Image
@@ -72,20 +83,9 @@ export default async function NextgenReadyProject(props: {
                 ) : null}
               </div>
             </div>
-
-            {/* Right: Project text and links */}
-            <div className="md:col-span-6">
-              <h1 className="truncate text-2xl font-semibold leading-tight">{proj.title}</h1>
-              <div className="mt-1 text-sm text-muted-foreground">
-                <code className="rounded bg-muted/40 px-1.5 py-0.5">/{proj.slug?.current}</code>
-              </div>
-              {proj.description ? (
-                <p className="mt-3 text-sm text-foreground/80">{proj.description}</p>
-              ) : null}
-            </div>
           </div>
           {(proj.repoLink || proj.previewLink) ? (
-            <div className="absolute bottom-4 right-4 flex items-center gap-2">
+            <div className="absolute bottom-4 left-4 flex items-center gap-2">
               {proj.repoLink ? (
                 <a
                   href={proj.repoLink}

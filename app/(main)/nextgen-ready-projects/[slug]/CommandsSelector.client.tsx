@@ -66,9 +66,9 @@ export default function CommandsSelector({ commands }: CommandsSelectorProps) {
                     <code className="whitespace-pre">{commandString}</code>
                   </span>
                 </div>
-                {c?.description ? (
+                {/* {c?.description ? (
                   <p className="mt-1 line-clamp-2 text-[12px] text-foreground/70">{c.description}</p>
-                ) : null}
+                ) : null} */}
                 {/* Bottom badges: vars and goals counts */}
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
                   <span className="inline-flex items-center gap-1 rounded bg-muted/30 px-1.5 py-0.5">
