@@ -8,6 +8,7 @@ export const GET_COMMAND_BY_SLUG_QUERY = groq`
     _id,
     _type,
     _createdAt,
+    description,
     _updatedAt,
     slug,
     ...,
@@ -36,6 +37,7 @@ export const GET_COMMAND_BY_SLUG_QUERY = groq`
 export const GET_ALL_COMMAND_SLUGS_QUERY = groq`
   *[_type == "command-slug" && defined(slug.current)]{
     slug,
+    description,
 
   }
 `;
@@ -47,6 +49,7 @@ export const GET_COMMAND_POST_QUERY = groq`
   *[_type == "command-slug" && slug.current == $slug][0]{
     _id,
     _type,
+    description,
     _createdAt,
     slug,
     _updatedAt,

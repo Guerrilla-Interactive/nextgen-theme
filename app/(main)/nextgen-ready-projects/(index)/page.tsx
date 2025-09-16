@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import FullPageBackground from "@/features/unorganized-components/magic-background/full-page-background";
 import { fetchSanityNextgenReadyProjects } from "../[slug]/(nextgen-ready-project-slug-core-utilities)/nextgen-ready-project-slug.server-actions";
+import { urlFor } from "@/sanity/lib/image";
 
 export const dynamic = "force-static";
 
@@ -38,6 +40,15 @@ export default async function NextgenReadyProjectsIndexPage() {
                   />
 
                   <div className="relative mb-4 aspect-[16/9] w-full overflow-hidden rounded-lg border border-border/50 bg-gradient-to-br from-background/40 to-muted/30">
+                    {p.image ? (
+                      <Image
+                        src={urlFor(p.image).width(800).height(450).auto("format").url()}
+                        alt={`${p.title} cover`}
+                        fill
+                        sizes="(min-width: 1024px) 360px, (min-width: 768px) 50vw, 100vw"
+                        className="object-cover"
+                      />
+                    ) : null}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
                   </div>
 

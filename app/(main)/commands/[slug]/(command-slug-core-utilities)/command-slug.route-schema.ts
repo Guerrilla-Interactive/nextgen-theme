@@ -236,6 +236,12 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "description",
+      title: "Description",
+      type: "text",
+      group: "content",
+    }),
+    defineField({
       name: "excerpt",
       title: "Excerpt",
       type: "text",

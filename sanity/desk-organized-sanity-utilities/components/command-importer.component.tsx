@@ -5,6 +5,7 @@ import {useClient, useFormValue} from "sanity";
 
 type CommandJson = {
   title?: string;
+  description?: string;
   slug?: { _type?: "slug"; current: string };
   excerpt?: string;
   goals?: any[];
@@ -58,7 +59,7 @@ export default function CommandImporter() {
 
       if (typeof data.title === "string") patch.title = data.title;
       if (typeof data.excerpt === "string") patch.excerpt = data.excerpt;
-
+      if (typeof data.description === "string") patch.description = data.description;
       if (data.slug?.current) {
         patch.slug = {_type: "slug", current: data.slug.current};
       }

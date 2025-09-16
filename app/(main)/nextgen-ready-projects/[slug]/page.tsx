@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 
 import { generatePageMetadata } from "@/features/unorganized-utils/metadata";
-import CommandCard from "./CommandCard.client";
+import Image from "next/image";
+import { urlFor } from "@/sanity/lib/image";
+import CommandsSelector from "./CommandsSelector.client";
+import { Github, ExternalLink } from "lucide-react";
 import { fetchSanityNextgenReadyProjectBySlug, fetchSanityNextgenReadyProjectStaticParams } from "./(nextgen-ready-project-slug-core-utilities)/nextgen-ready-project-slug.server-actions";
 
 export async function generateStaticParams() {
@@ -53,27 +56,46 @@ export default async function NextgenReadyProject(props: {
   return (
     <section>
       <div className="container py-16 mt-12 xl:py-20">
-        <div className="rounded-2xl border border-muted/30 bg-card p-6 shadow-sm">
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div className="min-w-0">
+        <div className="relative rounded-2xl border border-muted/30 bg-card p-6 shadow-sm">
+          <div className="grid gap-6 md:grid-cols-12">
+            {/* Left: Video/Image */}
+            <div className="md:col-span-6">
+              <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-muted/30 bg-muted/10">
+                {proj.image ? (
+                  <Image
+                    src={urlFor(proj.image).width(1200).height(675).auto("format").url()}
+                    alt={`${proj.title} cover`}
+                    fill
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                ) : null}
+              </div>
+            </div>
+
+            {/* Right: Project text and links */}
+            <div className="md:col-span-6">
               <h1 className="truncate text-2xl font-semibold leading-tight">{proj.title}</h1>
               <div className="mt-1 text-sm text-muted-foreground">
                 <code className="rounded bg-muted/40 px-1.5 py-0.5">/{proj.slug?.current}</code>
               </div>
-              {proj.description && (
-                <p className="mt-3 max-w-3xl text-sm text-foreground/80">{proj.description}</p>
-              )}
+              {proj.description ? (
+                <p className="mt-3 text-sm text-foreground/80">{proj.description}</p>
+              ) : null}
             </div>
-            <div className="grid gap-2 text-sm">
+          </div>
+          {(proj.repoLink || proj.previewLink) ? (
+            <div className="absolute bottom-4 right-4 flex items-center gap-2">
               {proj.repoLink ? (
                 <a
                   href={proj.repoLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-md border border-muted/40 bg-background px-3 py-1.5 text-sm hover:bg-muted/20"
                   aria-label="Open repository"
+                  title="Open repository"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-muted/40 bg-background hover:bg-muted/20"
                 >
-                  Repo
+                  <Github className="h-4 w-4" />
                 </a>
               ) : null}
               {proj.previewLink ? (
@@ -81,33 +103,22 @@ export default async function NextgenReadyProject(props: {
                   href={proj.previewLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-md border border-muted/40 bg-background px-3 py-1.5 text-sm hover:bg-muted/20"
                   aria-label="Open preview"
+                  title="Open preview"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-muted/40 bg-background hover:bg-muted/20"
                 >
-                  Preview
+                  <ExternalLink className="h-4 w-4" />
                 </a>
               ) : null}
             </div>
-          </div>
+          ) : null}
         </div>
 
-        <div className="mt-8 grid gap-6 ">
+        <div className="mt-8 grid gap-6">
           <div className="space-y-6">
-            <div className="rounded-2xl border border-muted/30 bg-card p-5 shadow-sm">
+            <div>
               <div className="mb-3 text-sm font-semibold tracking-wide">Commands</div>
-              {proj.commands?.length ? (
-                <ul className="space-y-3">
-                  {proj.commands.map((cmd: any) => (
-                    <li key={cmd._id} className="rounded-xl border border-muted/30 bg-background/60 p-3">
-                      <CommandCard cmd={cmd} />
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="rounded-xl border border-dashed border-muted/40 bg-muted/10 p-6 text-center text-sm text-muted-foreground">
-                  No commands linked yet.
-                </div>
-              )}
+              <CommandsSelector commands={proj.commands || []} />
             </div>
           </div>
           <div className="space-y-6">
